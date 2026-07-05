@@ -47,6 +47,80 @@ void ProtocolAbstractionLayer::initCAN() {
 void ProtocolAbstractionLayer::initRS485() {
     RS485::init();
     Logger::info("RS485 initialized");
+
+void ProtocolAbstractionLayer::initEtherCAT() {
+    EtherCAT::init();
+    Logger::info("EtherCAT initialized");
+}
+
+void ProtocolAbstractionLayer::processCommands() {
+    // Process incoming commands based on protocol
+    switch (_config.protocol) {
+        case Protocol::CAN: {
+            uint32_t id;
+            uint8_t data[64];
+            uint8_t length;
+
+            if (CANBus::receiveFrame(id, data, length)) {
+                // Parse and handle command
+                if (length >= 2) {
+                    FrameType frameType = (FrameType)data[0];
+                    uint8_t motorId = data[1];
+
+                    Command cmd;
+                    cmd.frameType = frameType;
+                    cmd.motorId = motorId;
+                    memcpy(cmd.payload, data + 2, length - 2);
+                    cmd.payloadLength = length - 2;
+
+                    Logger::debug("CAN command received: motorId=" + String(motorId) +
+                                  ", frameType=" + String((uint8_t)frameType));
+                }
+            }
+            break;
+        }
+        case Protocol::RS485: {
+            // RS485 command processing
+            Logger::debug("RS485 command processing");
+            break;
+        }
+        case Protocol::ETHERCAT: {
+            // EtherCAT command processing
+            Logger::debug("EtherCAT command processing");
+            break;
+        }
+    }
+}
+
+void ProtocolAbstractionLayer::sendStatusReport(uint8_t motorId, const MotorStatus& status) {
+    // Send status report based on protocol
+    switch (_config.protocol) {
+        case Protocol::CAN: {
+            uint8_t data[8];
+            data[0] = (uint8_t)status.state;
+            data[1] = motorId;
+            memcpy(data + 2, &status.temperature, 4);
+
+            CANBus::sendFrame(0x100 + motorId, data, 6);
+            break;
+        }
+        case Protocol::RS485: {
+            // RS485 status report
+            break;
+        }
+        case Protocol::ETHERCAT: {
+            // EtherCAT status report
+            break;
+        }
+    }
+}
+
+bool ProtocolAbstractionLayer::isInitialized() const {
+    return _initialized;
+}
+
+const StatusReport& ProtocolAbstractionLayer::getStatus() const {
+    return _status;
 }
 
 void ProtocolAbstractionLayer::initEtherCAT() {

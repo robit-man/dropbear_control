@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-05T07:59:02.119Z",
+  "updatedAt": "2026-07-05T08:09:17.674Z",
   "files": {
     "/home/roko/Documents/Projects/myactuator/firmware/esp32/platformio.ini": {
       "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/platformio.ini",
@@ -213,9 +213,9 @@
     "firmware/esp32/src/protocols/pal.cpp": {
       "path": "firmware/esp32/src/protocols/pal.cpp",
       "agentNotes": [],
-      "hotspotScore": 0.6569821537591903,
-      "lastAccessedAt": "2026-07-05T04:35:58.010Z",
-      "accessCount": 7,
+      "hotspotScore": 0.7468072258554381,
+      "lastAccessedAt": "2026-07-05T08:09:17.674Z",
+      "accessCount": 8,
       "relationships": []
     },
     "firmware/esp32/src/drivers/rmd_l_driver.h": {
@@ -406,8 +406,8 @@
       "path": "firmware/esp32/src/motor_controller.cpp",
       "agentNotes": [],
       "hotspotScore": 1,
-      "lastAccessedAt": "2026-07-05T07:55:14.175Z",
-      "accessCount": 17,
+      "lastAccessedAt": "2026-07-05T08:07:18.581Z",
+      "accessCount": 18,
       "relationships": []
     },
     "firmware/esp32/include/config.h": {
@@ -534,8 +534,8 @@
       "path": "firmware/esp32/src/protocols/pal.h",
       "agentNotes": [],
       "hotspotScore": 1,
-      "lastAccessedAt": "2026-07-05T04:35:57.403Z",
-      "accessCount": 13,
+      "lastAccessedAt": "2026-07-05T08:09:17.558Z",
+      "accessCount": 14,
       "relationships": []
     },
     "firmware/esp32/src/utils/pid_controller.h": {

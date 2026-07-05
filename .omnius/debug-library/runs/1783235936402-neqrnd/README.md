@@ -1,15 +1,15 @@
 # Debug Run 1783235936402-neqrnd
 
-Updated: 2026-07-05T08:03:18.266Z
+Updated: 2026-07-05T08:21:47.895Z
 Workspace: /home/roko/Documents/Projects/myactuator
 
 ## Summary
 
-- events: 50
-- tool events: 22
-- context dumps: 28
+- events: 63
+- tool events: 26
+- context dumps: 37
 - failures: 3
-- mutations: 5
+- mutations: 6
 - shell mutations: 0
 - focus blocks: 0
 - suspicious shell events: 0
@@ -17,7 +17,7 @@ Workspace: /home/roko/Documents/Projects/myactuator
 ## Diagnoses
 
 - focus-supervisor-active: 13
-- project-file-mutation: 5
+- project-file-mutation: 6
 - focus-supervisor-cached-evidence: 5
 - tool-failure: 3
 
@@ -38,6 +38,19 @@ Workspace: /home/roko/Documents/Projects/myactuator
 
 ## Latest Events
 
+- 2026-07-05T08:21:47.895Z turn 36 context_window_dump: context dump agent_turn | tokens~71268
+- 2026-07-05T08:21:47.868Z turn 34 tool_result success: file_patch success | diagnoses=project-file-mutation
+- 2026-07-05T08:19:34.788Z turn 35 context_window_dump: context dump agent_turn | tokens~69686
+- 2026-07-05T08:17:24.612Z turn 34 context_window_dump: context dump agent_turn | tokens~69441
+- 2026-07-05T08:17:24.562Z turn 32 tool_result success: shell success | command=git log --oneline -10
+- 2026-07-05T08:15:18.485Z turn 33 context_window_dump: context dump agent_turn | tokens~69003
+- 2026-07-05T08:15:18.464Z turn 31 tool_result success: shell success | command=git log --oneline -10
+- 2026-07-05T08:13:11.171Z turn 32 context_window_dump: context dump agent_turn | tokens~68538
+- 2026-07-05T08:11:12.763Z turn 31 context_window_dump: context dump agent_turn | tokens~67430
+- 2026-07-05T08:10:18.186Z turn 30 context_window_dump: context dump agent_turn | tokens~66907
+- 2026-07-05T08:07:18.687Z turn 29 context_window_dump: context dump agent_turn | tokens~66529
+- 2026-07-05T08:05:17.627Z turn 28 context_window_dump: context dump agent_turn | tokens~66351
+- 2026-07-05T08:05:17.608Z turn 26 tool_result success: shell success | command=git add -A && git commit -m "Add missing getter methods to motor controller"
 - 2026-07-05T08:03:18.265Z turn 27 context_window_dump: context dump agent_turn | tokens~65911
 - 2026-07-05T08:03:18.238Z turn 25 tool_result success: file_patch success | diagnoses=project-file-mutation
 - 2026-07-05T08:01:12.741Z turn 26 context_window_dump: context dump agent_turn | tokens~64256 | required=disambiguate_edit_match | diagnoses=focus-supervisor-active
@@ -65,16 +78,3 @@ Workspace: /home/roko/Documents/Projects/myactuator
 - 2026-07-05T07:38:00.238Z turn 11 tool_result success: file_read success | diagnoses=focus-supervisor-cached-evidence
 - 2026-07-05T07:36:29.842Z turn 12 context_window_dump: context dump agent_turn | tokens~47970
 - 2026-07-05T07:36:29.828Z turn 10 tool_result success: file_read success | diagnoses=focus-supervisor-cached-evidence
-- 2026-07-05T07:34:58.489Z turn 11 context_window_dump: context dump agent_turn | tokens~46191
-- 2026-07-05T07:34:58.479Z turn 9 tool_result success: file_read success | diagnoses=focus-supervisor-cached-evidence
-- 2026-07-05T07:33:26.083Z turn 10 context_window_dump: context dump agent_turn | tokens~45779
-- 2026-07-05T07:31:53.821Z turn 9 context_window_dump: context dump agent_turn | tokens~45406
-- 2026-07-05T07:30:24.437Z turn 8 context_window_dump: context dump agent_turn | tokens~45175
-- 2026-07-05T07:30:24.417Z turn 6 tool_result success: file_patch success | diagnoses=project-file-mutation
-- 2026-07-05T07:28:48.470Z turn 7 context_window_dump: context dump agent_turn | tokens~44284
-- 2026-07-05T07:27:22.876Z turn 6 context_window_dump: context dump agent_turn | tokens~43617 | required=read_authoritative_target | diagnoses=focus-supervisor-active
-- 2026-07-05T07:27:22.862Z turn 4 tool_result failure: file_edit failure | diagnoses=focus-supervisor-active,tool-failure
-- 2026-07-05T07:26:46.368Z turn 5 context_window_dump: context dump agent_turn | tokens~42458
-- 2026-07-05T07:24:33.635Z turn 4 context_window_dump: context dump agent_turn | tokens~40659
-- 2026-07-05T07:24:33.624Z turn 2 tool_result success: shell success | command=git add -A && git commit -m "Initial commit: ESP32 motor controller firmware with protocol contracts"
-- 2026-07-05T07:23:52.435Z turn 3 context_window_dump: context dump agent_turn | tokens~39811 | required=use_cached_evidence | diagnoses=focus-supervisor-active
