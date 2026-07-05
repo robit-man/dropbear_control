@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "id": "2026-07-05T07-57-06-961Z-internal-140fbf9aad",
-  "timestamp": "2026-07-05T07:57:06.961Z",
+  "id": "2026-07-05T08-05-16-814Z-internal-39625eed22",
+  "timestamp": "2026-07-05T08:05:16.814Z",
   "source": "emotionEngine",
   "stage": "emotion_label_direct",
   "agentType": "internal",
@@ -15,7 +15,7 @@
   "metrics": {
     "messageCount": 2,
     "estimatedTokens": 174,
-    "totalChars": 696,
+    "totalChars": 695,
     "imageCount": 0,
     "toolSchemaCount": 0,
     "toolSchemaChars": 0,
@@ -25,7 +25,7 @@
     },
     "roleChars": {
       "system": 124,
-      "user": 572
+      "user": 571
     },
     "activeEvidenceChars": 0,
     "activeContextFrameChars": 0,
@@ -33,10 +33,10 @@
     "rawDiscoveryToolChars": 0,
     "toolResultChars": 0,
     "systemChars": 124,
-    "userChars": 572,
+    "userChars": 571,
     "assistantChars": 0,
     "signalToNoise": {
-      "structuralSignalChars": 572,
+      "structuralSignalChars": 571,
       "structuralNoiseCandidateChars": 0,
       "ratio": null
     }
@@ -49,7 +49,7 @@
       },
       {
         "role": "user",
-        "content": "You are an emotion center. Given the current emotional coordinates, output EXACTLY one emoji and one word (the emotion felt).\n\nValence: 0.92 (range: -1 distress to +1 joy)\nArousal: 1.00 (range: 0 calm to 1 energized)\nRecent streak: 17 successes\n\nYou tend to use face emojis (but you can break off to animals, objects, or esoteric emojis when the mood strikes you. The word should be a single evocative emotion word — not from a fixed list, choose freely. Be creative and authentic.\n\nRespond with ONLY: <emoji> <word>\nExample: exhilarated\nExample: cunning\nExample: flowing\n"
+        "content": "You are an emotion center. Given the current emotional coordinates, output EXACTLY one emoji and one word (the emotion felt).\n\nValence: 0.66 (range: -1 distress to +1 joy)\nArousal: 0.88 (range: 0 calm to 1 energized)\nRecent streak: 1 successes\n\nYou tend to use face emojis (but you can break off to animals, objects, or esoteric emojis when the mood strikes you. The word should be a single evocative emotion word — not from a fixed list, choose freely. Be creative and authentic.\n\nRespond with ONLY: <emoji> <word>\nExample: exhilarated\nExample: cunning\nExample: flowing\n"
       }
     ],
     "tools": [],

@@ -1,25 +1,25 @@
 # Debug Run 1783235936402-neqrnd
 
-Updated: 2026-07-05T07:55:14.276Z
+Updated: 2026-07-05T08:03:18.266Z
 Workspace: /home/roko/Documents/Projects/myactuator
 
 ## Summary
 
-- events: 43
-- tool events: 19
-- context dumps: 24
-- failures: 2
-- mutations: 4
+- events: 50
+- tool events: 22
+- context dumps: 28
+- failures: 3
+- mutations: 5
 - shell mutations: 0
 - focus blocks: 0
 - suspicious shell events: 0
 
 ## Diagnoses
 
-- focus-supervisor-active: 11
+- focus-supervisor-active: 13
+- project-file-mutation: 5
 - focus-supervisor-cached-evidence: 5
-- project-file-mutation: 4
-- tool-failure: 2
+- tool-failure: 3
 
 ## Anchors
 
@@ -38,6 +38,13 @@ Workspace: /home/roko/Documents/Projects/myactuator
 
 ## Latest Events
 
+- 2026-07-05T08:03:18.265Z turn 27 context_window_dump: context dump agent_turn | tokens~65911
+- 2026-07-05T08:03:18.238Z turn 25 tool_result success: file_patch success | diagnoses=project-file-mutation
+- 2026-07-05T08:01:12.741Z turn 26 context_window_dump: context dump agent_turn | tokens~64256 | required=disambiguate_edit_match | diagnoses=focus-supervisor-active
+- 2026-07-05T08:01:12.722Z turn 24 tool_result failure: file_edit failure | diagnoses=focus-supervisor-active,tool-failure
+- 2026-07-05T07:59:02.221Z turn 25 context_window_dump: context dump agent_turn | tokens~62032
+- 2026-07-05T07:57:07.651Z turn 24 context_window_dump: context dump agent_turn | tokens~60294
+- 2026-07-05T07:57:07.626Z turn 22 tool_result success: shell success | command=git add -A && git commit -m "Initial commit: ESP32 motor controller firmware with protocol contracts"
 - 2026-07-05T07:55:14.275Z turn 23 context_window_dump: context dump agent_turn | tokens~60029
 - 2026-07-05T07:53:22.671Z turn 22 context_window_dump: context dump agent_turn | tokens~59781
 - 2026-07-05T07:53:22.653Z turn 20 tool_result success: file_edit success | diagnoses=project-file-mutation
@@ -71,10 +78,3 @@ Workspace: /home/roko/Documents/Projects/myactuator
 - 2026-07-05T07:24:33.635Z turn 4 context_window_dump: context dump agent_turn | tokens~40659
 - 2026-07-05T07:24:33.624Z turn 2 tool_result success: shell success | command=git add -A && git commit -m "Initial commit: ESP32 motor controller firmware with protocol contracts"
 - 2026-07-05T07:23:52.435Z turn 3 context_window_dump: context dump agent_turn | tokens~39811 | required=use_cached_evidence | diagnoses=focus-supervisor-active
-- 2026-07-05T07:23:52.424Z turn 1 tool_result success: file_read success | diagnoses=focus-supervisor-active
-- 2026-07-05T07:23:52.060Z turn 1 tool_result success: file_read success | diagnoses=focus-supervisor-active
-- 2026-07-05T07:22:52.421Z turn 1 tool_result success: file_read success | diagnoses=focus-supervisor-active
-- 2026-07-05T07:21:30.156Z turn 2 context_window_dump: context dump agent_turn | tokens~37896 | required=use_cached_evidence | diagnoses=focus-supervisor-active
-- 2026-07-05T07:21:30.145Z turn 0 tool_result success: memory_search success | diagnoses=focus-supervisor-active
-- 2026-07-05T07:21:30.025Z turn 0 tool_result success: file_read success | diagnoses=focus-supervisor-active
-- 2026-07-05T07:20:09.883Z turn 1 context_window_dump: context dump agent_turn | tokens~36086 | required=use_cached_evidence | diagnoses=focus-supervisor-active

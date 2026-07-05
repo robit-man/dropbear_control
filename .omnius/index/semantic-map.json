@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-05T07:55:14.175Z",
+  "updatedAt": "2026-07-05T07:59:02.119Z",
   "files": {
     "/home/roko/Documents/Projects/myactuator/firmware/esp32/platformio.ini": {
       "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/platformio.ini",
@@ -398,8 +398,8 @@
       "path": "firmware/esp32/src/motor_controller.h",
       "agentNotes": [],
       "hotspotScore": 1,
-      "lastAccessedAt": "2026-07-05T05:41:01.926Z",
-      "accessCount": 28,
+      "lastAccessedAt": "2026-07-05T07:59:00.795Z",
+      "accessCount": 29,
       "relationships": []
     },
     "firmware/esp32/src/motor_controller.cpp": {
@@ -430,8 +430,8 @@
       "path": "firmware/esp32/include/types.h",
       "agentNotes": [],
       "hotspotScore": 1,
-      "lastAccessedAt": "2026-07-05T06:22:21.468Z",
-      "accessCount": 68,
+      "lastAccessedAt": "2026-07-05T07:59:02.119Z",
+      "accessCount": 69,
       "relationships": []
     },
     "firmware/esp32/src/drivers/mcp2515_can.h": {
@@ -493,9 +493,9 @@
     "firmware/esp32/src/drivers/rmd_x_driver.h": {
       "path": "firmware/esp32/src/drivers/rmd_x_driver.h",
       "agentNotes": [],
-      "hotspotScore": 0.7470511594832426,
-      "lastAccessedAt": "2026-07-05T00:37:11.140Z",
-      "accessCount": 8,
+      "hotspotScore": 0.8232861775270002,
+      "lastAccessedAt": "2026-07-05T07:59:02.022Z",
+      "accessCount": 9,
       "relationships": []
     },
     "firmware/esp32/src/drivers/rh_driver.h": {

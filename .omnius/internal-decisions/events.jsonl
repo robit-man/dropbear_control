@@ -322,3 +322,7 @@
 {"timestamp":"2026-07-05T07:51:45.230Z","model":"omnius-robit-ornith-vision-35b","stage":"emotion_label_direct","status":"error","elapsedMs":10295,"error":"The operation was aborted due to timeout","promptChars":696}
 {"timestamp":"2026-07-05T07:53:32.826Z","model":"omnius-robit-ornith-vision-35b","stage":"emotion_label_direct","status":"error","elapsedMs":10328,"error":"The operation was aborted due to timeout","promptChars":696}
 {"timestamp":"2026-07-05T07:55:24.426Z","model":"omnius-robit-ornith-vision-35b","stage":"emotion_label_direct","status":"error","elapsedMs":10314,"error":"The operation was aborted due to timeout","promptChars":696}
+{"timestamp":"2026-07-05T07:57:17.922Z","model":"omnius-robit-ornith-vision-35b","stage":"emotion_label_direct","status":"error","elapsedMs":10961,"error":"The operation was aborted due to timeout","promptChars":696}
+{"timestamp":"2026-07-05T07:59:11.502Z","model":"omnius-robit-ornith-vision-35b","stage":"emotion_label_direct","status":"error","elapsedMs":10754,"error":"The operation was aborted due to timeout","promptChars":696}
+{"timestamp":"2026-07-05T08:01:22.888Z","model":"omnius-robit-ornith-vision-35b","stage":"emotion_label_direct","status":"error","elapsedMs":10338,"error":"The operation was aborted due to timeout","promptChars":696}
+{"timestamp":"2026-07-05T08:03:28.415Z","model":"omnius-robit-ornith-vision-35b","stage":"emotion_label_direct","status":"error","elapsedMs":10395,"error":"The operation was aborted due to timeout","promptChars":694}

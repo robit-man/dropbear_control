@@ -143,12 +143,18 @@
   "shell:git add -A && git commit -m \"Initial commit: ESP32 motor controller firmware with protocol contracts\"": {
     "family": "shell:git add -A && git commit -m \"Initial commit: ESP32 motor controller firmware with protocol contracts\"",
     "rounds": 0,
-    "updatedAtMs": 1783237173861
+    "updatedAtMs": 1783238227625
   },
   "file_edit:firmware/esp32/src/motor_controller.cpp:old_string= // Initialize motor driver based on configured motor series #if defined(MOTOR_RMD_X) if (!#c4318d6f": {
     "family": "file_edit:firmware/esp32/src/motor_controller.cpp:old_string= // Initialize motor driver based on configured motor series #if defined(MOTOR_RMD_X) if (!#c4318d6f",
     "rounds": 1,
     "lastSample": "old_string not found in firmware/esp32/src/motor_controller.cpp. Attempted old_string spans 7 line(s), 191 chars. The diagnostic below is the closest anchor-line match, not proof t",
     "updatedAtMs": 1783236442861
+  },
+  "file_edit:firmware/esp32/src/motor_controller.cpp:old_string=MotorStatus MotorController::getMotorStatus() const { MotorStatus status; status.state = cu#a95a20d8": {
+    "family": "file_edit:firmware/esp32/src/motor_controller.cpp:old_string=MotorStatus MotorController::getMotorStatus() const { MotorStatus status; status.state = cu#a95a20d8",
+    "rounds": 1,
+    "lastSample": "old_string is not unique — found 2 occurrences at lines 176, 188. --- match at line 176 --- 173 | currentState = MOTOR_STATE_READY; 174 | } 175 | > 176 | MotorStatus MotorControlle",
+    "updatedAtMs": 1783238472721
   }
 }

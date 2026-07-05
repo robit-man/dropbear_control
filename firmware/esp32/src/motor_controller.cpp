@@ -195,4 +195,96 @@ MotorStatus MotorController::getMotorStatus() const {
   status.current = current;
   status.safetyMonitoring = safetyMonitoring;
   return status;
+
+float MotorController::getTemperature() const {
+  return temperature;
+}
+
+int32_t MotorController::getPosition() const {
+  return position;
+}
+
+float MotorController::getVelocity() const {
+  return velocity;
+}
+
+float MotorController::getCurrent() const {
+  return current;
+}
+
+FaultCode MotorController::getFaultCode() const {
+  return faultCode;
+}
+
+MotorState MotorController::getState() const {
+  return currentState;
+}
+
+bool MotorController::isSafetyMonitoring() const {
+  return safetyMonitoring;
+}
+
+uint32_t MotorController::getHeartbeat() const {
+  return lastHeartbeat;
+}
+
+float MotorController::getTargetPosition() const {
+  return targetPosition;
+}
+
+float MotorController::getTargetVelocity() const {
+  return targetVelocity;
+}
+
+float MotorController::getTargetTorque() const {
+  return targetTorque;
+}
+
+uint8_t MotorController::getMotorId() const {
+  return motorId;
+}
+
+MotorSeries MotorController::getMotorSeries() const {
+  return motorSeries;
+}
+
+float MotorController::getGearboxRatio() const {
+  return gearboxRatio;
+}
+
+float MotorController::getBacklashCompensation() const {
+  return backlashCompensation;
+}
+
+float MotorController::getKp() const {
+  return kp;
+}
+
+float MotorController::getKi() const {
+  return ki;
+}
+
+float MotorController::getKd() const {
+  return kd;
+}
+
+void MotorController::getLimits(float& maxVelocity, float& maxTorque) const {
+  maxVelocity = maxVelocityLimit;
+  maxTorque = maxTorqueLimit;
+}
+
+CommunicationInterface MotorController::getCommunication() const {
+  return comm;
+}
+
+Encoder MotorController::getEncoder() const {
+  return encoder;
+}
+
+MotorDriver MotorController::getMotorDriver() const {
+  return motorDriver;
+}
+
+MCP2515_CAN* MotorController::getCanBus() const {
+  return canBus;
 }

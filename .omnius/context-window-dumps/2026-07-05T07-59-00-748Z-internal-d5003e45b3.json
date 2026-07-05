@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "id": "2026-07-05T07-59-00-748Z-internal-d5003e45b3",
+  "timestamp": "2026-07-05T07:59:00.748Z",
+  "source": "emotionEngine",
+  "stage": "emotion_label_direct",
+  "agentType": "internal",
+  "sessionId": "1783235936402-neqrnd",
+  "runId": "1783235936402-neqrnd",
+  "turn": 0,
+  "attempt": 0,
+  "model": "omnius-robit-ornith-vision-35b",
+  "cwd": "/home/roko/Documents/Projects/myactuator",
+  "note": "best-effort emotion label refresh",
+  "metrics": {
+    "messageCount": 2,
+    "estimatedTokens": 174,
+    "totalChars": 696,
+    "imageCount": 0,
+    "toolSchemaCount": 0,
+    "toolSchemaChars": 0,
+    "roleCounts": {
+      "system": 1,
+      "user": 1
+    },
+    "roleChars": {
+      "system": 124,
+      "user": 572
+    },
+    "activeEvidenceChars": 0,
+    "activeContextFrameChars": 0,
+    "compactedDiscoveryChars": 0,
+    "rawDiscoveryToolChars": 0,
+    "toolResultChars": 0,
+    "systemChars": 124,
+    "userChars": 572,
+    "assistantChars": 0,
+    "signalToNoise": {
+      "structuralSignalChars": 572,
+      "structuralNoiseCandidateChars": 0,
+      "ratio": null
+    }
+  },
+  "request": {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You produce compact emotion labels. Reply with exactly one emoji, one space, and one lowercase emotion word. No explanation."
+      },
+      {
+        "role": "user",
+        "content": "You are an emotion center. Given the current emotional coordinates, output EXACTLY one emoji and one word (the emotion felt).\n\nValence: 0.93 (range: -1 distress to +1 joy)\nArousal: 1.00 (range: 0 calm to 1 energized)\nRecent streak: 18 successes\n\nYou tend to use face emojis (but you can break off to animals, objects, or esoteric emojis when the mood strikes you. The word should be a single evocative emotion word — not from a fixed list, choose freely. Be creative and authentic.\n\nRespond with ONLY: <emoji> <word>\nExample: exhilarated\nExample: cunning\nExample: flowing\n"
+      }
+    ],
+    "tools": [],
+    "temperature": 0.9,
+    "maxTokens": 24,
+    "timeoutMs": 10000,
+    "think": false,
+    "disableEmptyContentRecovery": true
+  }
+}

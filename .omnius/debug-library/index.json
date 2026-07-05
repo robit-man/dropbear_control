@@ -1,15 +1,15 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-07-05T07:55:14.276Z",
+  "updatedAt": "2026-07-05T08:03:18.266Z",
   "root": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library",
   "runs": [
     {
       "runId": "1783235936402-neqrnd",
       "sessionId": "1783235936402-neqrnd",
       "cwd": "/home/roko/Documents/Projects/myactuator",
-      "updatedAt": "2026-07-05T07:55:14.276Z",
-      "eventCount": 43,
-      "failureCount": 2,
+      "updatedAt": "2026-07-05T08:03:18.266Z",
+      "eventCount": 50,
+      "failureCount": 3,
       "suspiciousShellCount": 0,
       "readmePath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783235936402-neqrnd/README.md",
       "indexPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783235936402-neqrnd/index.json"
@@ -240,19 +240,19 @@
     "runId": "1783235936402-neqrnd",
     "sessionId": "1783235936402-neqrnd",
     "cwd": "/home/roko/Documents/Projects/myactuator",
-    "updatedAt": "2026-07-05T07:55:14.276Z",
-    "eventCount": 43,
-    "failureCount": 2,
+    "updatedAt": "2026-07-05T08:03:18.266Z",
+    "eventCount": 50,
+    "failureCount": 3,
     "focusBlockCount": 0,
     "suspiciousShellCount": 0,
     "readmePath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783235936402-neqrnd/README.md",
     "indexPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783235936402-neqrnd/index.json"
   },
   "diagnoses": {
-    "focus-supervisor-active": 1458,
-    "tool-failure": 502,
+    "focus-supervisor-active": 1460,
+    "tool-failure": 503,
     "focus-supervisor-block": 352,
-    "project-file-mutation": 191,
+    "project-file-mutation": 192,
     "focus-supervisor-cached-evidence": 95,
     "large-context-window": 75,
     "shell-filesystem-mutation": 12
