@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "id": "2026-07-05T07-24-33-624Z-shell-2ba8602f34",
+  "kind": "tool_result",
+  "timestamp": "2026-07-05T07:24:33.624Z",
+  "runId": "1783235936402-neqrnd",
+  "sessionId": "1783235936402-neqrnd",
+  "cwd": "/home/roko/Documents/Projects/myactuator",
+  "turn": 2,
+  "toolCallId": "call_7k5mq9rp",
+  "toolName": "shell",
+  "toolFingerprint": "shell:command=git add -A && git commit -m \"Initial commit: ESP32 motor controller firmware with protocol contracts\"",
+  "argsHash": "2ba8602f34",
+  "argsPreview": "{\"command\":\"git add -A && git commit -m \\\"Initial commit: ESP32 motor controller firmware with protocol contracts\\\"\"}",
+  "success": true,
+  "durationMs": 15214,
+  "outputChars": 9110,
+  "errorChars": 0,
+  "outputPreview": "[LOG PACKET LOG#9b9c37ad36c3 — full output saved to .omnius/logs/. Size: 677006 bytes, 5621 lines.]\n\nHead (first 40 of 5621 lines):\n      1: [master (root-commit) 8b427dd] Initial commit: ESP32 motor controller firmware with protocol contracts\n      2:  5618 files changed, 1484545 insertions(+)\n      3:  create mode 100644 .omnius/checkpoints/turn-0010.json\n      4:  create mode 100644 .omnius/checkpoints/turn-0020.json\n      5:  create mode 100644 .omnius/checkpoints/turn-0030.json\n      6:  create mode 100644 .omnius/checkpoints/turn-0040.json\n      7:  create mode 100644 .omnius/checkpoints/turn-0050.json\n      8:  create mode 100644 .omnius/completion-contracts/1783047475533-kdquqf.json\n      9:  create mode 100644 .omnius/completion-contracts/1783047664467-5c079k.json\n     10:  create mode 100644 .omnius/completion-contracts/1783047674415-7r8axr.json\n     11:  create mode 100644 .omnius/completion-contracts/1783047688422-8ulryd.json\n     12:  create mode 100644 .omnius/completion-contracts/1783047688664-7yqjqo.json\n     13:  create mode 100644 .omnius/completion-contracts/1783048896353-3kt1zu.json\n     14:  create mode 100644 .omnius/completion-contracts/1783051233686-twto82.json\n     15:  create mode 100644 .omnius/completion-contracts/1783052722873-j5j5xm.json\n     16:  create mode 100644 .omnius/completion-contracts/1783054636540-g0c2vs.json\n     17:  create mode 100644 .omnius/completion-contracts/1783056506452-5ra6kv.json\n     18:  create mode 100644 .omnius/completion-contracts/1783061014702-rgaw36.json\n     19:  create mode 100644 .omnius/completion-contracts/1783065197489-zzttvn.json\n     20:  create mode 100644 .omnius/completion-contracts/1783066818924-tz2rco.json\n     21:  create mode 100644 .omnius/completion-contracts/1783067649743-p1k5kq.json\n     22:  create mode 100644 .omnius/completion-contracts/1783095123826-r2p6do.json\n     23:  create mode 100644 .omnius/completion-contracts/1783097556372-khio3d.json\n     24:  create mode 100644 .omnius/completion-contracts/1783098484662-k0bt4g.json\n     25:  create mode 100644 .omnius/completion-contracts/1783100178105-dgntvm.json\n     26:  create mode 100644 .omnius/completion-contracts/1783100539534-ttnzaw.json\n     27:  create mode 100644 .omnius/completion-contracts/1783102391191-glhboy.json\n     28:  create mode 100644 .omnius/completion-contracts/1783103891764-v0fo65.json\n     29:  create mode 100644 .omnius/completion-contracts/1783128455765-azotnp.json\n     30:  create mode 100644 .omnius/completion-contracts/1783130427620-c07cg9.json\n     31:  create mode 100644 .omnius/completion-contracts/1783132565307-m0qc5a.json\n     32:  create mode 100644 .omnius/completion-contracts/1783134746466-mbosnh.json\n     33:  create mode 100644 .omnius/completion-contracts/1783235936402-neqrnd.json\n     34:  create mode 100644 .omnius/completion-ledgers/1783047475533-kdquqf.json\n     35:  create mode 100644 .omnius/completion-ledgers/1783048896353-3kt1zu.json\n     36:  create mode 100644 .omnius/completion-ledgers/1783051233686-twto82.json\n     37:  create mode 100644 .omnius/completion-ledgers/1783052722873-j5j5xm.json\n     38:  create mode 100644 .omnius/completion-ledgers/1783054636540-g0c2vs.json\n     39:  create mode 100644 .omnius/completion-ledgers/1783056506452-5ra6kv.json\n     40:  create mode 100644 .omnius/completion-ledgers/1783061014702-rgaw36.json\n\n  ... 5521 lines elided (use log_explore to view) ...\n\nTail (last 60 lines, starting at line 5562):\n   5562:  create mode 100644 firmware/esp32/.pio/libdeps/esp32s3/ArduinoJson/src/ArduinoJson/Variant/VariantTag.hpp\n   5563:  create mode 100644 firmware/esp32/.pio/libdeps/esp32s3/ArduinoJson/src/ArduinoJson/Variant/VariantTo.hpp\n   5564:  create mode 100644 firmware/esp32/.pio/libdeps/esp32s3/ArduinoJson/src/ArduinoJson/compatibility.hpp\n   5565:  create mode 100644 firmware/esp32/.pio/libdeps/esp32s3/ArduinoJson/src/ArduinoJson/version.hpp\n   5566:  create mode 100644 firmware/esp32/.pio/libdeps/esp32s3/ArduinoJson/s\n[truncated 5110 chars]",
+  "mutation": {
+    "realFileMutation": false,
+    "shellFilesystemMutation": false,
+    "paths": []
+  },
+  "focusSupervisor": {
+    "mode": "auto",
+    "enabled": true,
+    "state": "observe",
+    "directive": null,
+    "lastDecision": "directive_satisfied",
+    "lastReason": "distinct shell action executed after cached evidence",
+    "context": {
+      "pressureRatio": 1,
+      "estimatedTokens": 948,
+      "rawDiscoveryChars": 0,
+      "activeEvidenceChars": 13000,
+      "activeFrameChars": 13000,
+      "signalToNoiseRatio": null,
+      "droppedSignals": 0,
+      "truncatedSignals": 3
+    }
+  },
+  "actionReason": {
+    "task_anchor": "commit-initial-state",
+    "intent": "Commit current state to establish baseline",
+    "evidence": "No commits yet, need to establish baseline before continuing",
+    "expected_result": "Git commit created",
+    "scope": "state_update"
+  },
+  "repeatShortCircuit": false,
+  "runtimeAuthored": false,
+  "diagnoses": [],
+  "summary": "shell success | command=git add -A && git commit -m \"Initial commit: ESP32 motor controller firmware with protocol contracts\"",
+  "anchors": [
+    {
+      "label": "debug_contract",
+      "kind": "contract",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/CONTRACT.md",
+      "note": "Schema and semantics for this debug library.",
+      "relativePath": ".omnius/debug-library/CONTRACT.md",
+      "exists": true
+    },
+    {
+      "label": "run_readme",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783235936402-neqrnd/README.md",
+      "note": "Human summary for this run.",
+      "relativePath": ".omnius/debug-library/runs/1783235936402-neqrnd/README.md",
+      "exists": true
+    },
+    {
+      "label": "run_index",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783235936402-neqrnd/index.json",
+      "note": "Machine-readable run summary.",
+      "relativePath": ".omnius/debug-library/runs/1783235936402-neqrnd/index.json",
+      "exists": true
+    },
+    {
+      "label": "run_events_jsonl",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783235936402-neqrnd/events.jsonl",
+      "note": "Append-only normalized event stream.",
+      "relativePath": ".omnius/debug-library/runs/1783235936402-neqrnd/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "workboard_active",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783235936402-neqrnd/active.json",
+      "note": "Durable workboard snapshot, when present.",
+      "relativePath": ".omnius/workboards/1783235936402-neqrnd/active.json",
+      "exists": true
+    },
+    {
+      "label": "workboard_events",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783235936402-neqrnd/events.jsonl",
+      "note": "Durable workboard event log, when present.",
+      "relativePath": ".omnius/workboards/1783235936402-neqrnd/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "context_dump_latest",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/latest.json",
+      "note": "Latest outbound model request dump.",
+      "relativePath": ".omnius/context-window-dumps/latest.json",
+      "exists": true
+    },
+    {
+      "label": "context_dump_index",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/index.jsonl",
+      "note": "Append-only context-window dump summaries.",
+      "relativePath": ".omnius/context-window-dumps/index.jsonl",
+      "exists": true
+    },
+    {
+      "label": "trajectory_log",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/trajectories/trajectories.jsonl",
+      "note": "Completed run trajectory records.",
+      "relativePath": ".omnius/trajectories/trajectories.jsonl",
+      "exists": true
+    },
+    {
+      "label": "checkpoints_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/checkpoints",
+      "note": "Turn-boundary checkpoints.",
+      "relativePath": ".omnius/checkpoints",
+      "exists": true
+    },
+    {
+      "label": "phases_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/phases",
+      "note": "Phase transcript summaries.",
+      "relativePath": ".omnius/phases",
+      "exists": true
+    },
+    {
+      "label": "completion_ledgers_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/completion-ledgers",
+      "note": "Completion evidence ledgers.",
+      "relativePath": ".omnius/completion-ledgers",
+      "exists": true
+    },
+    {
+      "label": "event_json",
+      "kind": "event",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783235936402-neqrnd/events/turn-0002/2026-07-05T07-24-33-624Z-shell-2ba8602f34.json",
+      "note": "This normalized debug event.",
+      "relativePath": ".omnius/debug-library/runs/1783235936402-neqrnd/events/turn-0002/2026-07-05T07-24-33-624Z-shell-2ba8602f34.json",
+      "exists": true
+    }
+  ]
+}

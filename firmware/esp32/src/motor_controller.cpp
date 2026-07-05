@@ -28,7 +28,10 @@ bool MotorController::initialize() {
     if (!rmd_x_driver.initialize()) {
       faultCode = FAULT_MOTOR_DRIVER;
       return false;
-    }
+
+  // Initialize safety monitoring
+  safetyMonitoring = true;
+  lastHeartbeat = millis();
   #elif defined(MOTOR_RH)
     if (!rh_driver.initialize()) {
       faultCode = FAULT_MOTOR_DRIVER;

@@ -1,23 +1,25 @@
 # Debug Run 1783235936402-neqrnd
 
-Updated: 2026-07-05T07:23:52.435Z
+Updated: 2026-07-05T07:38:00.256Z
 Workspace: /home/roko/Documents/Projects/myactuator
 
 ## Summary
 
-- events: 11
-- tool events: 7
-- context dumps: 4
-- failures: 1
-- mutations: 0
+- events: 27
+- tool events: 13
+- context dumps: 14
+- failures: 2
+- mutations: 1
 - shell mutations: 0
 - focus blocks: 0
 - suspicious shell events: 0
 
 ## Diagnoses
 
-- focus-supervisor-active: 9
-- tool-failure: 1
+- focus-supervisor-active: 11
+- focus-supervisor-cached-evidence: 3
+- tool-failure: 2
+- project-file-mutation: 1
 
 ## Anchors
 
@@ -36,6 +38,22 @@ Workspace: /home/roko/Documents/Projects/myactuator
 
 ## Latest Events
 
+- 2026-07-05T07:38:00.255Z turn 13 context_window_dump: context dump agent_turn | tokens~48900
+- 2026-07-05T07:38:00.238Z turn 11 tool_result success: file_read success | diagnoses=focus-supervisor-cached-evidence
+- 2026-07-05T07:36:29.842Z turn 12 context_window_dump: context dump agent_turn | tokens~47970
+- 2026-07-05T07:36:29.828Z turn 10 tool_result success: file_read success | diagnoses=focus-supervisor-cached-evidence
+- 2026-07-05T07:34:58.489Z turn 11 context_window_dump: context dump agent_turn | tokens~46191
+- 2026-07-05T07:34:58.479Z turn 9 tool_result success: file_read success | diagnoses=focus-supervisor-cached-evidence
+- 2026-07-05T07:33:26.083Z turn 10 context_window_dump: context dump agent_turn | tokens~45779
+- 2026-07-05T07:31:53.821Z turn 9 context_window_dump: context dump agent_turn | tokens~45406
+- 2026-07-05T07:30:24.437Z turn 8 context_window_dump: context dump agent_turn | tokens~45175
+- 2026-07-05T07:30:24.417Z turn 6 tool_result success: file_patch success | diagnoses=project-file-mutation
+- 2026-07-05T07:28:48.470Z turn 7 context_window_dump: context dump agent_turn | tokens~44284
+- 2026-07-05T07:27:22.876Z turn 6 context_window_dump: context dump agent_turn | tokens~43617 | required=read_authoritative_target | diagnoses=focus-supervisor-active
+- 2026-07-05T07:27:22.862Z turn 4 tool_result failure: file_edit failure | diagnoses=focus-supervisor-active,tool-failure
+- 2026-07-05T07:26:46.368Z turn 5 context_window_dump: context dump agent_turn | tokens~42458
+- 2026-07-05T07:24:33.635Z turn 4 context_window_dump: context dump agent_turn | tokens~40659
+- 2026-07-05T07:24:33.624Z turn 2 tool_result success: shell success | command=git add -A && git commit -m "Initial commit: ESP32 motor controller firmware with protocol contracts"
 - 2026-07-05T07:23:52.435Z turn 3 context_window_dump: context dump agent_turn | tokens~39811 | required=use_cached_evidence | diagnoses=focus-supervisor-active
 - 2026-07-05T07:23:52.424Z turn 1 tool_result success: file_read success | diagnoses=focus-supervisor-active
 - 2026-07-05T07:23:52.060Z turn 1 tool_result success: file_read success | diagnoses=focus-supervisor-active

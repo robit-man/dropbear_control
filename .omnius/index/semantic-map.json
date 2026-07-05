@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-05T07:22:52.357Z",
+  "updatedAt": "2026-07-05T07:31:53.742Z",
   "files": {
     "/home/roko/Documents/Projects/myactuator/firmware/esp32/platformio.ini": {
       "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/platformio.ini",
@@ -133,9 +133,9 @@
     "firmware/esp32/src/drivers/rmd_x_driver.cpp": {
       "path": "firmware/esp32/src/drivers/rmd_x_driver.cpp",
       "agentNotes": [],
-      "hotspotScore": 0.931966565849802,
-      "lastAccessedAt": "2026-07-05T00:38:51.110Z",
-      "accessCount": 10,
+      "hotspotScore": 1,
+      "lastAccessedAt": "2026-07-05T07:25:47.114Z",
+      "accessCount": 11,
       "relationships": []
     },
     "firmware/esp32/src/main.cpp": {
@@ -389,9 +389,9 @@
     "contracts/MOTOR_RMD_X_CONTRACT.md": {
       "path": "contracts/MOTOR_RMD_X_CONTRACT.md",
       "agentNotes": [],
-      "hotspotScore": 0.19746277509562557,
-      "lastAccessedAt": "2026-07-04T07:19:47.881Z",
-      "accessCount": 2,
+      "hotspotScore": 0.27763890901518307,
+      "lastAccessedAt": "2026-07-05T07:25:45.978Z",
+      "accessCount": 3,
       "relationships": []
     },
     "firmware/esp32/src/motor_controller.h": {
@@ -406,8 +406,8 @@
       "path": "firmware/esp32/src/motor_controller.cpp",
       "agentNotes": [],
       "hotspotScore": 1,
-      "lastAccessedAt": "2026-07-05T05:05:11.139Z",
-      "accessCount": 12,
+      "lastAccessedAt": "2026-07-05T07:31:53.742Z",
+      "accessCount": 14,
       "relationships": []
     },
     "firmware/esp32/include/config.h": {

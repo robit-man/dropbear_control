@@ -139,5 +139,16 @@
     "rounds": 1,
     "lastSample": "fatal: your current branch 'master' does not have any commits yet",
     "updatedAtMs": 1783236009874
+  },
+  "shell:git add -A && git commit -m \"Initial commit: ESP32 motor controller firmware with protocol contracts\"": {
+    "family": "shell:git add -A && git commit -m \"Initial commit: ESP32 motor controller firmware with protocol contracts\"",
+    "rounds": 0,
+    "updatedAtMs": 1783236273624
+  },
+  "file_edit:firmware/esp32/src/motor_controller.cpp:old_string= // Initialize motor driver based on configured motor series #if defined(MOTOR_RMD_X) if (!#c4318d6f": {
+    "family": "file_edit:firmware/esp32/src/motor_controller.cpp:old_string= // Initialize motor driver based on configured motor series #if defined(MOTOR_RMD_X) if (!#c4318d6f",
+    "rounds": 1,
+    "lastSample": "old_string not found in firmware/esp32/src/motor_controller.cpp. Attempted old_string spans 7 line(s), 191 chars. The diagnostic below is the closest anchor-line match, not proof t",
+    "updatedAtMs": 1783236442861
   }
 }
