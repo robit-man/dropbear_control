@@ -32,6 +32,9 @@ bool MotorController::initialize() {
   // Initialize safety monitoring
   safetyMonitoring = true;
   lastHeartbeat = millis();
+  // Initialize safety monitoring
+  safetyMonitoring = true;
+  lastHeartbeat = millis();
   #elif defined(MOTOR_RH)
     if (!rh_driver.initialize()) {
       faultCode = FAULT_MOTOR_DRIVER;
@@ -168,4 +171,28 @@ FaultCode MotorController::getFaultCode() const {
 void MotorController::clearFault() {
   faultCode = FAULT_NONE;
   currentState = MOTOR_STATE_READY;
+}
+
+MotorStatus MotorController::getMotorStatus() const {
+  MotorStatus status;
+  status.state = currentState;
+  status.faultCode = faultCode;
+  status.temperature = temperature;
+  status.position = position;
+  status.velocity = velocity;
+  status.current = current;
+  status.safetyMonitoring = safetyMonitoring;
+  return status;
+}
+
+MotorStatus MotorController::getMotorStatus() const {
+  MotorStatus status;
+  status.state = currentState;
+  status.faultCode = faultCode;
+  status.temperature = temperature;
+  status.position = position;
+  status.velocity = velocity;
+  status.current = current;
+  status.safetyMonitoring = safetyMonitoring;
+  return status;
 }

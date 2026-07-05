@@ -1,9 +1,9 @@
 {
-  "timestamp": "2026-07-05T07:38:10.474Z",
+  "timestamp": "2026-07-05T07:55:24.426Z",
   "model": "omnius-robit-ornith-vision-35b",
   "stage": "emotion_label_direct",
   "status": "error",
-  "elapsedMs": 10348,
+  "elapsedMs": 10314,
   "error": "The operation was aborted due to timeout",
-  "promptChars": 695
+  "promptChars": 696
 }

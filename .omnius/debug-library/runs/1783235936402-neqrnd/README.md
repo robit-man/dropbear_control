@@ -1,15 +1,15 @@
 # Debug Run 1783235936402-neqrnd
 
-Updated: 2026-07-05T07:38:00.256Z
+Updated: 2026-07-05T07:55:14.276Z
 Workspace: /home/roko/Documents/Projects/myactuator
 
 ## Summary
 
-- events: 27
-- tool events: 13
-- context dumps: 14
+- events: 43
+- tool events: 19
+- context dumps: 24
 - failures: 2
-- mutations: 1
+- mutations: 4
 - shell mutations: 0
 - focus blocks: 0
 - suspicious shell events: 0
@@ -17,9 +17,9 @@ Workspace: /home/roko/Documents/Projects/myactuator
 ## Diagnoses
 
 - focus-supervisor-active: 11
-- focus-supervisor-cached-evidence: 3
+- focus-supervisor-cached-evidence: 5
+- project-file-mutation: 4
 - tool-failure: 2
-- project-file-mutation: 1
 
 ## Anchors
 
@@ -38,6 +38,22 @@ Workspace: /home/roko/Documents/Projects/myactuator
 
 ## Latest Events
 
+- 2026-07-05T07:55:14.275Z turn 23 context_window_dump: context dump agent_turn | tokens~60029
+- 2026-07-05T07:53:22.671Z turn 22 context_window_dump: context dump agent_turn | tokens~59781
+- 2026-07-05T07:53:22.653Z turn 20 tool_result success: file_edit success | diagnoses=project-file-mutation
+- 2026-07-05T07:51:35.097Z turn 21 context_window_dump: context dump agent_turn | tokens~58926
+- 2026-07-05T07:49:46.709Z turn 20 context_window_dump: context dump agent_turn | tokens~57880
+- 2026-07-05T07:49:46.690Z turn 18 tool_result success: file_edit success | diagnoses=project-file-mutation
+- 2026-07-05T07:47:53.922Z turn 19 context_window_dump: context dump agent_turn | tokens~56168
+- 2026-07-05T07:46:09.358Z turn 18 context_window_dump: context dump agent_turn | tokens~54966
+- 2026-07-05T07:46:09.339Z turn 16 tool_result success: file_patch success | diagnoses=project-file-mutation
+- 2026-07-05T07:44:29.854Z turn 17 context_window_dump: context dump agent_turn | tokens~53565
+- 2026-07-05T07:44:29.837Z turn 15 tool_result success: file_read success | diagnoses=focus-supervisor-cached-evidence
+- 2026-07-05T07:42:52.938Z turn 16 context_window_dump: context dump agent_turn | tokens~51954
+- 2026-07-05T07:41:14.713Z turn 15 context_window_dump: context dump agent_turn | tokens~50771
+- 2026-07-05T07:41:14.700Z turn 13 tool_result success: file_read success | diagnoses=focus-supervisor-cached-evidence
+- 2026-07-05T07:39:33.881Z turn 14 context_window_dump: context dump agent_turn | tokens~50194
+- 2026-07-05T07:39:33.862Z turn 12 tool_result success: shell success | command=git add -A && git commit -m "Initial commit: ESP32 motor controller firmware with protocol contracts"
 - 2026-07-05T07:38:00.255Z turn 13 context_window_dump: context dump agent_turn | tokens~48900
 - 2026-07-05T07:38:00.238Z turn 11 tool_result success: file_read success | diagnoses=focus-supervisor-cached-evidence
 - 2026-07-05T07:36:29.842Z turn 12 context_window_dump: context dump agent_turn | tokens~47970
@@ -62,6 +78,3 @@ Workspace: /home/roko/Documents/Projects/myactuator
 - 2026-07-05T07:21:30.145Z turn 0 tool_result success: memory_search success | diagnoses=focus-supervisor-active
 - 2026-07-05T07:21:30.025Z turn 0 tool_result success: file_read success | diagnoses=focus-supervisor-active
 - 2026-07-05T07:20:09.883Z turn 1 context_window_dump: context dump agent_turn | tokens~36086 | required=use_cached_evidence | diagnoses=focus-supervisor-active
-- 2026-07-05T07:20:09.875Z turn 0 tool_result failure: shell failure | diagnoses=focus-supervisor-active,tool-failure | command=git log --oneline -20
-- 2026-07-05T07:20:09.689Z turn 0 tool_result success: shell success | command=git status
-- 2026-07-05T07:18:59.440Z turn 0 context_window_dump: context dump agent_turn | tokens~33204
