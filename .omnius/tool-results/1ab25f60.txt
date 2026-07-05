@@ -1,0 +1,200 @@
+# Tool: shell
+# Turn: 26
+# Timestamp: 2026-07-05T06:35:45.879Z
+# Size: 11807 chars, 195 lines
+
+[LOG PACKET LOG#056f8b33c9e9 — full output saved to .omnius/logs/. Size: 354243 bytes, 4685 lines.]
+
+Head (first 40 of 4685 lines):
+      1: In file included from src/drivers/rmd_h_driver.cpp:10:
+      2: /home/roko/.platformio/packages/framework-arduinoespressif32/cores/esp32/Arduino.h:43: warning: "PI" redefined
+      3:  #define PI 3.1415926535897932384626433832795
+      4:  
+      5: In file included from src/drivers/rmd_h_driver.cpp:9:
+      6: src/drivers/../../include/constants.h:7: note: this is the location of the previous definition
+      7:  #define PI                  3.14159265358979323846f
+      8:  
+      9: In file included from src/drivers/rmd_h_driver.cpp:10:
+     10: /home/roko/.platformio/packages/framework-arduinoespressif32/cores/esp32/Arduino.h:46: warning: "DEG_TO_RAD" redefined
+     11:  #define DEG_TO_RAD 0.017453292519943295769236907684886
+     12:  
+     13: In file included from src/drivers/rmd_h_driver.cpp:9:
+     14: src/drivers/../../include/constants.h:10: note: this is the location of the previous definition
+     15:  #define DEG_TO_RAD          (PI / 180.0f)
+     16:  
+     17: In file included from src/drivers/rmd_h_driver.cpp:10:
+     18: /home/roko/.platformio/packages/framework-arduinoespressif32/cores/esp32/Arduino.h:47: warning: "RAD_TO_DEG" redefined
+     19:  #define RAD_TO_DEG 57.295779513082320876798154814105
+     20:  
+     21: In file included from src/drivers/rmd_h_driver.cpp:9:
+     22: src/drivers/../../include/constants.h:13: note: this is the location of the previous definition
+     23:  #define RAD_TO_DEG          (180.0f / PI)
+     24:  
+     25: In file included from src/drivers/mcp2515_can.cpp:1:
+     26: src/drivers/mcp2515_can.h:5:10: fatal error: mcp2515.h: No such file or directory
+     27: 
+     28: *****************************************************************
+     29: * Looking for mcp2515.h dependency? Check our library registry!
+     30: *
+     31: * CLI  > platformio lib search "header:mcp2515.h"
+     32: * Web  > https://registry.platformio.org/search?q=header:mcp2515.h
+     33: *
+     34: *****************************************************************
+     35: 
+     36:  #include <mcp2515.h>
+     37:           ^~~~~~~~~~~
+     38: compilation terminated.
+     39: src/drivers/rmd_h_driver.cpp:12:10: fatal error: ../motor_driver.h: No such file or directory
+     40:  #include "../motor_driver.h"
+
+  ... 4585 lines elided (use log_explore to view) ...
+
+Tail (last 60 lines, starting at line 4626):
+   4626: DEBUG: Current (esp-builtin) On-board (esp-builtin) External (cmsis-dap, esp-bridge, esp-prog, iot-bus-jtag, jlink, minimodule, olimex-arm-usb-ocd, olimex-arm-usb-ocd-h, olimex-arm-usb-tiny-h, olimex-jtag-tiny, tumpa)
+   4627: PACKAGES: 
+   4628:  - framework-arduinoespressif32 @ 3.20017.241212+sha.dcc1105b 
+   4629:  - tool-esptoolpy @ 2.41100.0 (4.11.0) 
+   4630:  - toolchain-riscv32-esp @ 8.4.0+2021r2-patch5 
+   4631:  - toolchain-xtensa-esp32s3 @ 8.4.0+2021r2-patch5
+   4632: LDF: Library Dependency Finder -> https://bit.ly/configure-pio-ldf
+   4633: LDF Modes: Finder ~ chain, Compatibility ~ soft
+   4634: Found 35 compatible libraries
+   4635: Scanning dependencies...
+   4636: Dependency Graph
+   4637: |-- ArduinoJson @ 7.4.3
+   4638: |-- MCP2515 @ 1.0.0
+   4639: |-- SPI @ 2.0.0
+   4640: Building in release mode
+   4641: Compiling .pio/build/esp32s3/src/drivers/cem_driver.cpp.o
+   4642: Compiling .pio/build/esp32s3/src/drivers/mcp2515_can.cpp.o
+   4643: Compiling .pio/build/esp32s3/src/drivers/rmd_h_driver.cpp.o
+   4644: Compiling .pio/build/esp32s3/src/drivers/rmd_l_driver.cpp.o
+   4645: Compiling .pio/build/esp32s3/src/drivers/rmd_x_driver.cpp.o
+   4646: Compiling .pio/build/esp32s3/src/main.cpp.o
+   4647: Compiling .pio/build/esp32s3/src/motor_controller.cpp.o
+   4648: Compiling .pio/build/esp32s3/src/protocols/pal.cpp.o
+   4649: Compiling .pio/build/esp32s3/FrameworkArduino/Esp.cpp.o
+   4650: 
+   4651: Processing esp32c3 (platform: espressif32; board: esp32-c3-devkitm-1; framework: arduino)
+   4652: --------------------------------------------------------------------------------
+   4653: Verbose mode can be enabled via `-v, --verbose` option
+   4654: CONFIGURATION: https://docs.platformio.org/page/boards/espressif32/esp32-c3-devkitm-1.html
+   4655: PLATFORM: Espressif 32 (7.0.1) > Espressif ESP32-C3-DevKitM-1
+   4656: HARDWARE: ESP32C3 160MHz, 320KB RAM, 4MB Flash
+   4657: DEBUG: Current (cmsis-dap) External (cmsis-dap, esp-bridge, esp-builtin, esp-prog, iot-bus-jtag, jlink, minimodule, olimex-arm-usb-ocd, olimex-arm-usb-ocd-h, olimex-arm-usb-tiny-h, olimex-jtag-tiny, tumpa)
+   4658: PACKAGES: 
+   4659:  - framework-arduinoespressif32 @ 3.20017.241212+sha.dcc1105b 
+   4660:  - tool-esptoolpy @ 2.41100.0 (4.11.0) 
+   4661:  - toolchain-riscv32-esp @ 8.4.0+2021r2-patch5
+   4662: LDF: Library Dependency Finder -> https://bit.ly/configure-pio-ldf
+   4663: LDF Modes: Finder ~ chain, Compatibility ~ soft
+   4664: Found 35 compatible libraries
+   4665: Scanning dependencies...
+   4666: Dependency Graph
+   4667: |-- ArduinoJson @ 7.4.3
+   4668: |-- MCP2515 @ 1.0.0
+   4669: |-- SPI @ 2.0.0
+   4670: Building in release mode
+   4671: Compiling .pio/build/esp32c3/src/drivers/cem_driver.cpp.o
+   4672: Compiling .pio/build/esp32c3/src/drivers/mcp2515_can.cpp.o
+   4673: Compiling .pio/build/esp32c3/src/drivers/rmd_h_driver.cpp.o
+   4674: Compiling .pio/build/esp32c3/src/drivers/rmd_l_driver.cpp.o
+   4675: Compiling .pio/build/esp32c3/src/drivers/rmd_x_driver.cpp.o
+   4676: Compiling .pio/build/esp32c3/src/main.cpp.o
+   4677: Compiling .pio/build/esp32c3/src/motor_controller.cpp.o
+   4678: Compiling .pio/build/esp32c3/src/protocols/pal.cpp.o
+   4679: Archiving .pio/build/esp32c3/lib7fe/libMCP2515.a
+   4680: Indexing .pio/build/esp32c3/lib7fe/libMCP2515.a
+   4681: 
+   4682: Processing esp32s3dev (platform: espressif32; board: esp32-s3-devkitc-1; framework: arduino)
+   4683: --------------------------------------------------------------------------------
+   4684: Library Manager: Installing z212/MCP2515 @ ^1.6.0
+   4685: 
+
+Auto-detected error/warning markers (8 blocks of context):
+  --- block @ line 23 ---
+       23:  #define RAD_TO_DEG          (180.0f / PI)
+       24:  
+       25: In file included from src/drivers/mcp2515_can.cpp:1:
+       26: src/drivers/mcp2515_can.h:5:10: fatal error: mcp2515.h: No such file or directory
+       27: 
+       28: *****************************************************************
+       29: * Looking for mcp2515.h dependency? Check our library registry!
+       30: *
+       31: * CLI  > platformio lib search "header:mcp2515.h"
+  --- block @ line 36 ---
+       36:  #include <mcp2515.h>
+       37:           ^~~~~~~~~~~
+       38: compilation terminated.
+       39: src/drivers/rmd_h_driver.cpp:12:10: fatal error: ../motor_driver.h: No such file or directory
+       40:  #include "../motor_driver.h"
+       41:           ^~~~~~~~~~~~~~~~~~~
+       42: compilation terminated.
+       43: In file included from src/drivers/cem_driver.cpp:108:
+       44: include/../include/types.h:150:7: error: redefinition of 'class<unnamed struct>::CommunicationInterface'
+  --- block @ line 47 ---
+       47: include/../include/types.h:140:7: note: previous definition of 'class<unnamed struct>::CommunicationInterface'
+       48:  class CommunicationInterface {
+       49:        ^~~~~~~~~~~~~~~~~~~~~~
+       50: src/drivers/cem_driver.cpp:113:64: error: cannot define member function 'CEMDriver::CEMDriver' within '<unnamed struct>'
+       51:  CEMDriver::CEMDriver(uint8_t motorId, const MotorConfig& config)
+       52:                                                                 ^
+       53: src/drivers/cem_driver.cpp:118:22: error: cannot define member function 'CEMDriver::init' within '<unnamed struct>'
+       54:  bool CEMDriver::init() {
+       55:                       ^
+  --- block @ line 53 ---
+       53: src/drivers/cem_driver.cpp:118:22: error: cannot define member function 'CEMDriver::init' within '<unnamed struct>'
+       54:  bool CEMDriver::init() {
+       55:                       ^
+       56: src/drivers/cem_driver.cpp:130:24: error: cannot define member function 'CEMDriver::deinit' within '<unnamed struct>'
+       57:  void CEMDriver::deinit() {
+       58:                         ^
+       59: src/drivers/cem_driver.cpp:136:34: error: cannot define member function 'CEMDriver::getStatus' within '<unnamed struct>'
+       60:  MotorStatus CEMDriver::getStatus() { return _status; }
+       61:                                   ^
+  --- block @ line 59 ---
+       59: src/drivers/cem_driver.cpp:136:34: error: cannot define member function 'CEMDriver::getStatus' within '<unnamed struct>'
+       60:  MotorStatus CEMDriver::getStatus() { return _status; }
+       61:                                   ^
+       62: src/drivers/cem_driver.cpp:138:33: error: cannot define member function 'CEMDriver::getTemperature' within '<unnamed struct>'
+       63:  float CEMDriver::getTemperature() {
+       64:                                  ^
+       65: src/drivers/cem_driver.cpp:145:32: error: cannot define member function 'CEMDriver::getPosition' within '<unnamed struct>'
+       66:  int32_t CEMDriver::getPosition() {
+       67:                                 ^
+  --- block @ line 65 ---
+       65: src/drivers/cem_driver.cpp:145:32: error: cannot define member function 'CEMDriver::getPosition' within '<unnamed struct>'
+       66:  int32_t CEMDriver::getPosition() {
+       67:                                 ^
+       68: src/drivers/cem_driver.cpp:150:30: error: cannot define member function 'CEMDriver::getVelocity' within '<unnamed struct>'
+       69:  float CEMDriver::getVelocity() {
+       70:                               ^
+       71: src/drivers/cem_driver.cpp:155:29: error: cannot define member function 'CEMDriver::getCurrent' within '<unnamed struct>'
+       72:  float CEMDriver::getCurrent() {
+       73:                              ^
+  --- block @ line 71 ---
+       71: src/drivers/cem_driver.cpp:155:29: error: cannot define member function 'CEMDriver::getCurrent' within '<unnamed struct>'
+       72:  float CEMDriver::getCurrent() {
+       73:                              ^
+       74: src/drivers/cem_driver.cpp:162:41: error: cannot define member function 'CEMDriver::setPosition' within '<unnamed struct>'
+       75:  void CEMDriver::setPosition(float target) {
+       76:                                          ^
+       77: src/drivers/cem_driver.cpp:167:41: error: cannot define member function 'CEMDriver::setVelocity' within '<unnamed struct>'
+       78:  void CEMDriver::setVelocity(float target) {
+       79:                                          ^
+  --- block @ line 77 ---
+       77: src/drivers/cem_driver.cpp:167:41: error: cannot define member function 'CEMDriver::setVelocity' within '<unnamed struct>'
+       78:  void CEMDriver::setVelocity(float target) {
+       79:                                          ^
+       80: src/drivers/cem_driver.cpp:171:39: error: cannot define member function 'CEMDriver::setTorque' within '<unnamed struct>'
+       81:  void CEMDriver::setTorque(float target) {
+       82:                                        ^
+       83: src/drivers/cem_driver.cpp:176:24: error: cannot define member function 'CEMDriver::enable' within '<unnamed struct>'
+       84:  void CEMDriver::enable() {
+       85:                         ^
+
+Explore further with the log_explore tool:
+  log_explore({"packet":"LOG#056f8b33c9e9", "op":"grep", "pattern":"<text|regex>"})
+  log_explore({"packet":"LOG#056f8b33c9e9", "op":"lines", "start":<n>, "end":<m>})
+  log_explore({"packet":"LOG#056f8b33c9e9", "op":"errors"})    -- expanded list
+  log_explore({"packet":"LOG#056f8b33c9e9", "op":"summary"})   -- this view again

@@ -1,0 +1,273 @@
+{
+  "runId": "1783067649743-p1k5kq",
+  "goal": "continue",
+  "createdAtIso": "2026-07-04T21:35:57.610Z",
+  "updatedAtIso": "2026-07-04T22:12:54.893Z",
+  "proposedClaims": [],
+  "evidence": [
+    {
+      "id": "ev_0001",
+      "kind": "tool_result",
+      "observedAtIso": "2026-07-04T21:41:26.568Z",
+      "summary": "file_edit failed args={\"path\":\"/home/roko/Documents/Projects/myactuator/firmware/esp32/src/motor_controller.cpp\",\"expected_hash\":\"12c6fe000cf4c617f145d3f252d2b2b46223c4b63448344ee7c794e940ccc209\"} output=file_edit old_string is required. Call: file_edit({\"path\": \"/home/roko/Documents/Projects/myactuator/firmware/esp32/src/motor_controller.cpp\", \"old_string\": \"...\", \"new_string\": \"...\"}) or pass old_string_base64 for exact UTF-8 text that is hard to JSON-escape. Do not switch to shell sed/perl/python file rewrites for this; retry file_edit with old_string_base64 if exact text encoding is the problem.",
+      "toolName": "file_edit",
+      "success": false,
+      "targetPaths": [
+        "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/motor_controller.cpp"
+      ]
+    },
+    {
+      "id": "ev_0002",
+      "kind": "tool_result",
+      "observedAtIso": "2026-07-04T21:42:31.398Z",
+      "summary": "file_edit failed args={\"path\":\"/home/roko/Documents/Projects/myactuator/firmware/esp32/src/motor_controller.cpp\",\"expected_hash\":\"12c6fe000cf4c617f145d3f252d2b2b46223c4b63448344ee7c794e940ccc209\"} output=file_edit old_string is required. Call: file_edit({\"path\": \"/home/roko/Documents/Projects/myactuator/firmware/esp32/src/motor_controller.cpp\", \"old_string\": \"...\", \"new_string\": \"...\"}) or pass old_string_base64 for exact UTF-8 text that is hard to JSON-escape. Do not switch to shell sed/perl/python file rewrites for this; retry file_edit with old_string_base64 if exact text encoding is the problem.",
+      "toolName": "file_edit",
+      "success": false,
+      "targetPaths": [
+        "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/motor_controller.cpp"
+      ]
+    },
+    {
+      "id": "ev_0003",
+      "kind": "tool_result",
+      "observedAtIso": "2026-07-04T21:43:07.308Z",
+      "summary": "file_edit failed args={\"path\":\"/home/roko/Documents/Projects/myactuator/firmware/esp32/src/motor_controller.cpp\",\"expected_hash\":\"12c6fe000cf4c617f145d3f252d2b2b46223c4b63448344ee7c794e940ccc209\",\"actio output=[FOCUS SUPERVISOR BLOCK] The previous directive was ignored: same file_edit failure family repeated 2 times: file_edit old_string is required. Call: file_edit({\"path\": \"/home/roko/Documents/Projects/myactuator/firmware/esp32/src/motor_controller.cpp\", \"old_string\": \"...\", \"new_string\": \". Required next action: read_authoritative_target. Blocked action family: file_edit:/home/roko/Documents/Projects/myactuator/firmware/esp32/src/motor_controller.cpp:expected_hash=12c6fe000cf4c617f145d3f252d2b2b46",
+      "toolName": "file_edit",
+      "success": false,
+      "role": "blocker",
+      "family": "stale_edit"
+    },
+    {
+      "id": "ev_0004",
+      "kind": "tool_result",
+      "observedAtIso": "2026-07-04T21:44:26.190Z",
+      "summary": "file_edit failed args={\"path\":\"/home/roko/Documents/Projects/myactuator/firmware/esp32/src/motor_controller.cpp\",\"expected_hash\":\"12c6fe000cf4c617f145d3f252d2b2b46223c4b63448344ee7c794e940ccc209\"} output=file_edit old_string is required. Call: file_edit({\"path\": \"/home/roko/Documents/Projects/myactuator/firmware/esp32/src/motor_controller.cpp\", \"old_string\": \"...\", \"new_string\": \"...\"}) or pass old_string_base64 for exact UTF-8 text that is hard to JSON-escape. Do not switch to shell sed/perl/python file rewrites for this; retry file_edit with old_string_base64 if exact text encoding is the problem.",
+      "toolName": "file_edit",
+      "success": false,
+      "targetPaths": [
+        "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/motor_controller.cpp"
+      ]
+    },
+    {
+      "id": "ev_0005",
+      "kind": "tool_result",
+      "observedAtIso": "2026-07-04T21:45:12.828Z",
+      "summary": "file_patch succeeded args={\"path\":\"/home/roko/Documents/Projects/myactuator/firmware/esp32/src/motor_controller.cpp\",\"start_line\":26,\"end_line\":26,\"expected_hash\":\"12c6fe000cf4c617f145d3f252d2b2b46223c4b634 output=/home/roko/Documents/Projects/myactuator/firmware/esp32/src/motor_controller.cpp: Replaced lines 26-26 (1 lines → 33 lines) (137 → 169 total lines, sha256 12c6fe000cf4c617f145d3f252d2b2b46223c4b63448344ee7c794e940ccc209 → ded2ec536a6bb15a45921d3e7bca1e358058ef3662f6bd3b4fc93b7c2fc9c3c6) Replaced lines 26-26 (1 lines → 33 lines) Before: 24 - faultCode = FAULT_COMMUNICATION; 25 - return false; 26 - } 27 - 28 - // Initialize motor driver based on configured motor series",
+      "toolName": "file_patch",
+      "success": true,
+      "targetPaths": [
+        "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/motor_controller.cpp"
+      ],
+      "role": "mutation",
+      "verificationImpact": "invalidates"
+    },
+    {
+      "id": "ev_0006",
+      "kind": "file_change",
+      "observedAtIso": "2026-07-04T21:45:12.828Z",
+      "summary": "file change: /home/roko/Documents/Projects/myactuator/firmware/esp32/src/motor_controller.cpp",
+      "toolName": "file_patch",
+      "success": true,
+      "rawRef": "file:///home/roko/Documents/Projects/myactuator/firmware/esp32/src/motor_controller.cpp",
+      "targetPaths": [
+        "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/motor_controller.cpp"
+      ],
+      "role": "mutation",
+      "verificationImpact": "invalidates"
+    },
+    {
+      "id": "ev_0007",
+      "kind": "tool_result",
+      "observedAtIso": "2026-07-04T21:45:49.922Z",
+      "summary": "shell failed args={\"command\":\"cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio run -t build 2>&1 | tail -30\"} output=Error: Exit code 1 [SHELL TRANSCRIPT] command: cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio run -t build 2>&1 | tail -30 cwd_before: /home/roko/Documents/Projects/myactuator cwd_after: /home/roko/Documents/Projects/myactuator/firmware/esp32 cwd_note: cd changes are command-local; next shell call starts at /home/roko/Documents/Projects/myactuator status: failure exit_code: 1 error: Exit code 1 stdout: |-- SPI @ 2.0.0 Building in release mode *** Do not know how to make File t",
+      "toolName": "shell",
+      "success": false,
+      "role": "verification",
+      "family": "shell-action:verify_build_build_output_showing_success_or_errors"
+    },
+    {
+      "id": "ev_0008",
+      "kind": "tool_result",
+      "observedAtIso": "2026-07-04T21:46:27.940Z",
+      "summary": "shell failed args={\"command\":\"cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio run -t build 2>&1 | tail -40\"} output=Error: Exit code 1 [SHELL TRANSCRIPT] command: cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio run -t build 2>&1 | tail -40 cwd_before: /home/roko/Documents/Projects/myactuator cwd_after: /home/roko/Documents/Projects/myactuator/firmware/esp32 cwd_note: cd changes are command-local; next shell call starts at /home/roko/Documents/Projects/myactuator status: failure exit_code: 1 error: Exit code 1 stdout: PACKAGES: - framework-arduinoespressif32 @ 3.20017.241212+sha.dcc1105b",
+      "toolName": "shell",
+      "success": false,
+      "role": "verification",
+      "family": "shell-action:verify_build_build_output_showing_success_or_errors"
+    },
+    {
+      "id": "ev_0009",
+      "kind": "tool_result",
+      "observedAtIso": "2026-07-04T21:47:43.054Z",
+      "summary": "shell failed args={\"command\":\"cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio run 2>&1\"} output=Error: Exit code 1 [SHELL TRANSCRIPT] command: cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio run 2>&1 cwd_before: /home/roko/Documents/Projects/myactuator cwd_after: /home/roko/Documents/Projects/myactuator/firmware/esp32 cwd_note: cd changes are command-local; next shell call starts at /home/roko/Documents/Projects/myactuator status: failure exit_code: 1 error: Exit code 1 stdout: Processing esp32 (platform: espressif32; board: esp32dev; framework: arduino) -----------------",
+      "toolName": "shell",
+      "success": false,
+      "role": "verification",
+      "family": "shell-action:verify_build_build_output_showing_success_or_errors"
+    },
+    {
+      "id": "ev_0010",
+      "kind": "tool_result",
+      "observedAtIso": "2026-07-04T21:48:55.393Z",
+      "summary": "shell failed args={\"command\":\"cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio run 2>&1\",\"action_reason\":{\"evidence\":\"pio run failed with exit code 1, need to see full error output\" output=Error: Cached verifier failure reused; command was not re-executed unchanged. [CACHED VERIFIER FAILURE — this same shell command already produced debugging evidence and was not re-executed unchanged. Treat the cached transcript below as the current failure signal. Change the code/config, run a genuinely different verifier/diagnostic command, or report the blocker with this evidence.] [SHELL RESULT CACHE] status: failure command: cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio",
+      "toolName": "shell",
+      "success": false,
+      "role": "blocker",
+      "family": "runtime_control"
+    },
+    {
+      "id": "ev_0011",
+      "kind": "tool_result",
+      "observedAtIso": "2026-07-04T21:55:01.514Z",
+      "summary": "file_patch failed args={\"path\":\"/home/roko/Documents/Projects/myactuator/firmware/esp32/include/types.h\",\"start_line\":112,\"end_line\":119,\"expected_hash\":\"24de7cba4dc0908583d04025a728c91040fff11d1dd39ea7d output=file_patch mode=replace requires non-empty new_content. Use mode=\"delete\" for removal, or set allow_empty_content=true for an intentional blank edit.",
+      "toolName": "file_patch",
+      "success": false,
+      "targetPaths": [
+        "/home/roko/Documents/Projects/myactuator/firmware/esp32/include/types.h"
+      ]
+    },
+    {
+      "id": "ev_0012",
+      "kind": "tool_result",
+      "observedAtIso": "2026-07-04T21:56:51.241Z",
+      "summary": "shell succeeded args={\"command\":\"cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio lib install \\\"MCP2515\\\"\"} output=[SHELL TRANSCRIPT] command: cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio lib install \"MCP2515\" cwd_before: /home/roko/Documents/Projects/myactuator cwd_after: /home/roko/Documents/Projects/myactuator/firmware/esp32 cwd_note: cd changes are command-local; next shell call starts at /home/roko/Documents/Projects/myactuator status: success exit_code: 0 stdout: WARNING: This command is deprecated and will be removed in the next releases. Please use `pio pkg install` instead. R",
+      "toolName": "shell",
+      "success": true
+    },
+    {
+      "id": "ev_0013",
+      "kind": "tool_result",
+      "observedAtIso": "2026-07-04T21:57:39.324Z",
+      "summary": "shell failed args={\"command\":\"cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio pkg install \\\"MCP2515\\\"\"} output=Error: Usage: pio pkg install [OPTIONS] Try 'pio pkg install -h' for help. Error: Got unexpected extra argument (MCP2515) [SHELL TRANSCRIPT] command: cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio pkg install \"MCP2515\" cwd_before: /home/roko/Documents/Projects/myactuator cwd_after: /home/roko/Documents/Projects/myactuator/firmware/esp32 cwd_note: cd changes are command-local; next shell call starts at /home/roko/Documents/Projects/myactuator status: failure exit_code: 2 erro",
+      "toolName": "shell",
+      "success": false
+    },
+    {
+      "id": "ev_0014",
+      "kind": "tool_result",
+      "observedAtIso": "2026-07-04T21:59:13.564Z",
+      "summary": "shell succeeded args={\"command\":\"cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio lib list 2>&1\"} output=[SHELL TRANSCRIPT] command: cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio lib list 2>&1 cwd_before: /home/roko/Documents/Projects/myactuator cwd_after: /home/roko/Documents/Projects/myactuator/firmware/esp32 cwd_note: cd changes are command-local; next shell call starts at /home/roko/Documents/Projects/myactuator status: success exit_code: 0 stdout: WARNING: This command is deprecated and will be removed in the next releases. Please use `pio pkg list` instead. Resolving es",
+      "toolName": "shell",
+      "success": true,
+      "role": "verification",
+      "family": "shell-action:verify_mcp2515_library_list_of_installed_libraries"
+    },
+    {
+      "id": "ev_0015",
+      "kind": "tool_result",
+      "observedAtIso": "2026-07-04T22:00:04.854Z",
+      "summary": "file_patch succeeded args={\"path\":\"/home/roko/Documents/Projects/myactuator/firmware/esp32/include/types.h\",\"start_line\":112,\"end_line\":119,\"expected_hash\":\"24de7cba4dc0908583d04025a728c91040fff11d1dd39ea7d output=/home/roko/Documents/Projects/myactuator/firmware/esp32/include/types.h: Deleted lines 112-119 (8 lines removed) (213 → 205 total lines, sha256 24de7cba4dc0908583d04025a728c91040fff11d1dd39ea7d9ba2780a0006f87 → 17b5b4e954a83c029f7e05d052bb6b9c73e3a8c181c30a2faa4a36ee0ba075c0) Deleted lines 112-119 (8 lines removed) Before: 110 - 111 - // Gearbox type 112 - typedef enum { 113 - GEARBOX_PLANETARY = 0, 114 - GEARBOX_HARMONIC, 115 - GEARBOX_DIRECT, 116 - GEARBOX_CYCLOID, 1",
+      "toolName": "file_patch",
+      "success": true,
+      "targetPaths": [
+        "/home/roko/Documents/Projects/myactuator/firmware/esp32/include/types.h"
+      ],
+      "role": "mutation",
+      "verificationImpact": "invalidates"
+    },
+    {
+      "id": "ev_0016",
+      "kind": "file_change",
+      "observedAtIso": "2026-07-04T22:00:04.854Z",
+      "summary": "file change: /home/roko/Documents/Projects/myactuator/firmware/esp32/include/types.h",
+      "toolName": "file_patch",
+      "success": true,
+      "rawRef": "file:///home/roko/Documents/Projects/myactuator/firmware/esp32/include/types.h",
+      "targetPaths": [
+        "/home/roko/Documents/Projects/myactuator/firmware/esp32/include/types.h"
+      ],
+      "role": "mutation",
+      "verificationImpact": "invalidates"
+    },
+    {
+      "id": "ev_0017",
+      "kind": "tool_result",
+      "observedAtIso": "2026-07-04T22:00:54.146Z",
+      "summary": "shell succeeded args={\"command\":\"cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio lib install \\\"MCP2515\\\" 2>&1\"} output=[SHELL TRANSCRIPT] command: cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio lib install \"MCP2515\" 2>&1 cwd_before: /home/roko/Documents/Projects/myactuator cwd_after: /home/roko/Documents/Projects/myactuator/firmware/esp32 cwd_note: cd changes are command-local; next shell call starts at /home/roko/Documents/Projects/myactuator status: success exit_code: 0 stdout: WARNING: This command is deprecated and will be removed in the next releases. Please use `pio pkg install` instea",
+      "toolName": "shell",
+      "success": true
+    },
+    {
+      "id": "ev_0018",
+      "kind": "tool_result",
+      "observedAtIso": "2026-07-04T22:01:50.007Z",
+      "summary": "shell failed args={\"command\":\"cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio run 2>&1 | tail -50\"} output=Error: Exit code 1 [SHELL TRANSCRIPT] command: cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio run 2>&1 | tail -50 cwd_before: /home/roko/Documents/Projects/myactuator cwd_after: /home/roko/Documents/Projects/myactuator/firmware/esp32 cwd_note: cd changes are command-local; next shell call starts at /home/roko/Documents/Projects/myactuator status: failure exit_code: 1 error: Exit code 1 stdout: * Looking for ArduinoJson.h dependency? Check our library registry! * * CLI > platf",
+      "toolName": "shell",
+      "success": false,
+      "role": "verification",
+      "family": "shell-action:verify_build_build_success_or_remaining_errors"
+    },
+    {
+      "id": "ev_0019",
+      "kind": "tool_result",
+      "observedAtIso": "2026-07-04T22:05:09.668Z",
+      "summary": "shell succeeded args={\"command\":\"cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio lib install \\\"ArduinoJson\\\" 2>&1\"} output=[SHELL TRANSCRIPT] command: cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio lib install \"ArduinoJson\" 2>&1 cwd_before: /home/roko/Documents/Projects/myactuator cwd_after: /home/roko/Documents/Projects/myactuator/firmware/esp32 cwd_note: cd changes are command-local; next shell call starts at /home/roko/Documents/Projects/myactuator status: success exit_code: 0 stdout: WARNING: This command is deprecated and will be removed in the next releases. Please use `pio pkg install` in",
+      "toolName": "shell",
+      "success": true
+    },
+    {
+      "id": "ev_0020",
+      "kind": "tool_result",
+      "observedAtIso": "2026-07-04T22:06:00.314Z",
+      "summary": "shell succeeded args={\"command\":\"cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio lib install \\\"MCP2515\\\" 2>&1\"} output=[SHELL TRANSCRIPT] command: cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio lib install \"MCP2515\" 2>&1 cwd_before: /home/roko/Documents/Projects/myactuator cwd_after: /home/roko/Documents/Projects/myactuator/firmware/esp32 cwd_note: cd changes are command-local; next shell call starts at /home/roko/Documents/Projects/myactuator status: success exit_code: 0 stdout: WARNING: This command is deprecated and will be removed in the next releases. Please use `pio pkg install` instea",
+      "toolName": "shell",
+      "success": true
+    },
+    {
+      "id": "ev_0021",
+      "kind": "tool_result",
+      "observedAtIso": "2026-07-04T22:06:01.459Z",
+      "summary": "shell succeeded args={\"command\":\"cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio lib install \\\"ArduinoJson\\\" 2>&1\"} output=[SHELL TRANSCRIPT] command: cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio lib install \"ArduinoJson\" 2>&1 cwd_before: /home/roko/Documents/Projects/myactuator cwd_after: /home/roko/Documents/Projects/myactuator/firmware/esp32 cwd_note: cd changes are command-local; next shell call starts at /home/roko/Documents/Projects/myactuator status: success exit_code: 0 stdout: WARNING: This command is deprecated and will be removed in the next releases. Please use `pio pkg install` in",
+      "toolName": "shell",
+      "success": true
+    },
+    {
+      "id": "ev_0022",
+      "kind": "tool_result",
+      "observedAtIso": "2026-07-04T22:07:41.714Z",
+      "summary": "shell succeeded args={\"command\":\"cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio lib list 2>&1\"} output=[SHELL TRANSCRIPT] command: cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio lib list 2>&1 cwd_before: /home/roko/Documents/Projects/myactuator cwd_after: /home/roko/Documents/Projects/myactuator/firmware/esp32 cwd_note: cd changes are command-local; next shell call starts at /home/roko/Documents/Projects/myactuator status: success exit_code: 0 stdout: WARNING: This command is deprecated and will be removed in the next releases. Please use `pio pkg list` instead. Resolving es",
+      "toolName": "shell",
+      "success": true
+    },
+    {
+      "id": "ev_0023",
+      "kind": "tool_result",
+      "observedAtIso": "2026-07-04T22:08:41.515Z",
+      "summary": "shell failed args={\"command\":\"cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio run 2>&1 | tail -100\"} output=Error: Exit code 1 [SHELL TRANSCRIPT] command: cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio run 2>&1 | tail -100 cwd_before: /home/roko/Documents/Projects/myactuator cwd_after: /home/roko/Documents/Projects/myactuator/firmware/esp32 cwd_note: cd changes are command-local; next shell call starts at /home/roko/Documents/Projects/myactuator status: failure exit_code: 1 error: Exit code 1 stdout: src/drivers/rmd_l_driver.cpp:109:23: error: 'MotorDriver' has not been declared",
+      "toolName": "shell",
+      "success": false,
+      "role": "verification",
+      "family": "shell-action:verify_build_status_build_output_showing_remaining_errors"
+    },
+    {
+      "id": "ev_0024",
+      "kind": "tool_result",
+      "observedAtIso": "2026-07-04T22:12:54.893Z",
+      "summary": "file_edit succeeded args={\"path\":\"/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/rmd_l_driver.cpp\",\"expected_hash\":\"03335ee02c4fd44d4be14f1f2372cc6a51d96a8eb78ddd48bad2862b600886bf\",\"o output=Edited /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/rmd_l_driver.cpp at line 109 (sha256 03335ee02c4fd44d4be14f1f2372cc6a51d96a8eb78ddd48bad2862b600886bf → d7f387ea5ace3cc7ecfbb0f8e9158b47795e7242c156ed05803f279e064286e4) 109 - _status.enabled = MotorDriver::getInstance().isEnabled(); 109 + _status.enabled = IMotorDriver::getInstance().isEnabled();",
+      "toolName": "file_edit",
+      "success": true,
+      "targetPaths": [
+        "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/rmd_l_driver.cpp"
+      ],
+      "role": "mutation",
+      "verificationImpact": "invalidates"
+    },
+    {
+      "id": "ev_0025",
+      "kind": "file_change",
+      "observedAtIso": "2026-07-04T22:12:54.893Z",
+      "summary": "file change: /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/rmd_l_driver.cpp",
+      "toolName": "file_edit",
+      "success": true,
+      "rawRef": "file:///home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/rmd_l_driver.cpp",
+      "targetPaths": [
+        "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/rmd_l_driver.cpp"
+      ],
+      "role": "mutation",
+      "verificationImpact": "invalidates"
+    }
+  ],
+  "critiques": [],
+  "unresolved": [],
+  "status": "open"
+}

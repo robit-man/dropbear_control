@@ -1,0 +1,196 @@
+{
+  "schemaVersion": 1,
+  "id": "2026-07-03T18-30-16-228Z-context-aa481ee75c",
+  "kind": "context_window_dump",
+  "timestamp": "2026-07-03T18:30:16.228Z",
+  "runId": "1783102391191-glhboy",
+  "sessionId": "1783102391191-glhboy",
+  "cwd": "/home/roko/Documents/Projects/myactuator",
+  "turn": 16,
+  "contextDump": {
+    "id": "2026-07-03T18-30-16-222Z-main-c36fc46bab",
+    "stage": "agent_turn",
+    "agentType": "main",
+    "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/2026-07-03T18-30-16-222Z-main-c36fc46bab.json",
+    "metrics": {
+      "messageCount": 118,
+      "estimatedTokens": 58653,
+      "totalChars": 193472,
+      "imageCount": 0,
+      "toolSchemaCount": 24,
+      "toolSchemaChars": 41140,
+      "roleCounts": {
+        "system": 55,
+        "user": 1,
+        "assistant": 30,
+        "tool": 32
+      },
+      "roleChars": {
+        "system": 141789,
+        "user": 4368,
+        "assistant": 24292,
+        "tool": 23023
+      },
+      "activeEvidenceChars": 17441,
+      "activeContextFrameChars": 13000,
+      "compactedDiscoveryChars": 8119,
+      "rawDiscoveryToolChars": 0,
+      "toolResultChars": 23023,
+      "systemChars": 141789,
+      "userChars": 4368,
+      "assistantChars": 24292,
+      "signalToNoise": {
+        "structuralSignalChars": 67220,
+        "structuralNoiseCandidateChars": 0,
+        "ratio": null
+      }
+    }
+  },
+  "focusSupervisor": {
+    "mode": "auto",
+    "enabled": true,
+    "state": "forced_replan",
+    "lastDecision": "warn_not_enforced",
+    "lastReason": "same file_edit failure family repeated 2 times: old_string not found in /home/roko/Documents/Projects/myactuator/firmware/esp32/platformio.ini. Current file content (closest match, 19% similarity, lines 118–126 of 126): 118 | -D",
+    "directive": {
+      "id": "focus_8",
+      "state": "forced_replan",
+      "reason": "same file_edit failure family repeated 2 times: old_string not found in /home/roko/Documents/Projects/myactuator/firmware/esp32/platformio.ini. Current file content (closest match, 19% similarity, lines 118–126 of 126): 118 | -D",
+      "requiredNextAction": "read_authoritative_target",
+      "forbiddenActionFamilies": [
+        "file_edit:/home/roko/Documents/Projects/myactuator/firmware/esp32/platformio.ini:old_string=lib_deps = bblanchon/ArduinoJson@^6.21.0 adafruit/Adafruit NeoPixel@^1.12.0 paulstoffregen/#db0ab538",
+        "file_edit"
+      ],
+      "createdTurn": 14,
+      "ignoredCount": 0
+    },
+    "context": {
+      "pressureRatio": 1,
+      "estimatedTokens": 1503,
+      "rawDiscoveryChars": 0,
+      "activeEvidenceChars": 17441,
+      "activeFrameChars": 13000,
+      "signalToNoiseRatio": null,
+      "droppedSignals": 2,
+      "truncatedSignals": 4
+    }
+  },
+  "diagnoses": [
+    "focus-supervisor-active"
+  ],
+  "summary": "context dump agent_turn | tokens~58653 | required=read_authoritative_target | diagnoses=focus-supervisor-active",
+  "anchors": [
+    {
+      "label": "debug_contract",
+      "kind": "contract",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/CONTRACT.md",
+      "note": "Schema and semantics for this debug library.",
+      "relativePath": ".omnius/debug-library/CONTRACT.md",
+      "exists": true
+    },
+    {
+      "label": "run_readme",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783102391191-glhboy/README.md",
+      "note": "Human summary for this run.",
+      "relativePath": ".omnius/debug-library/runs/1783102391191-glhboy/README.md",
+      "exists": true
+    },
+    {
+      "label": "run_index",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783102391191-glhboy/index.json",
+      "note": "Machine-readable run summary.",
+      "relativePath": ".omnius/debug-library/runs/1783102391191-glhboy/index.json",
+      "exists": true
+    },
+    {
+      "label": "run_events_jsonl",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783102391191-glhboy/events.jsonl",
+      "note": "Append-only normalized event stream.",
+      "relativePath": ".omnius/debug-library/runs/1783102391191-glhboy/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "workboard_active",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783102391191-glhboy/active.json",
+      "note": "Durable workboard snapshot, when present.",
+      "relativePath": ".omnius/workboards/1783102391191-glhboy/active.json",
+      "exists": true
+    },
+    {
+      "label": "workboard_events",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783102391191-glhboy/events.jsonl",
+      "note": "Durable workboard event log, when present.",
+      "relativePath": ".omnius/workboards/1783102391191-glhboy/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "context_dump_latest",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/latest.json",
+      "note": "Latest outbound model request dump.",
+      "relativePath": ".omnius/context-window-dumps/latest.json",
+      "exists": true
+    },
+    {
+      "label": "context_dump_index",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/index.jsonl",
+      "note": "Append-only context-window dump summaries.",
+      "relativePath": ".omnius/context-window-dumps/index.jsonl",
+      "exists": true
+    },
+    {
+      "label": "trajectory_log",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/trajectories/trajectories.jsonl",
+      "note": "Completed run trajectory records.",
+      "relativePath": ".omnius/trajectories/trajectories.jsonl",
+      "exists": true
+    },
+    {
+      "label": "checkpoints_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/checkpoints",
+      "note": "Turn-boundary checkpoints.",
+      "relativePath": ".omnius/checkpoints",
+      "exists": true
+    },
+    {
+      "label": "phases_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/phases",
+      "note": "Phase transcript summaries.",
+      "relativePath": ".omnius/phases",
+      "exists": true
+    },
+    {
+      "label": "completion_ledgers_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/completion-ledgers",
+      "note": "Completion evidence ledgers.",
+      "relativePath": ".omnius/completion-ledgers",
+      "exists": true
+    },
+    {
+      "label": "context_window_dump",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/2026-07-03T18-30-16-222Z-main-c36fc46bab.json",
+      "note": "Full outbound model request for this turn.",
+      "relativePath": ".omnius/context-window-dumps/2026-07-03T18-30-16-222Z-main-c36fc46bab.json",
+      "exists": true
+    },
+    {
+      "label": "event_json",
+      "kind": "event",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783102391191-glhboy/events/turn-0016/2026-07-03T18-30-16-228Z-context-aa481ee75c.json",
+      "note": "This normalized debug event.",
+      "relativePath": ".omnius/debug-library/runs/1783102391191-glhboy/events/turn-0016/2026-07-03T18-30-16-228Z-context-aa481ee75c.json",
+      "exists": true
+    }
+  ]
+}

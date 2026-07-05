@@ -1,0 +1,358 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-07-05T07:23:52.435Z",
+  "root": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library",
+  "runs": [
+    {
+      "runId": "1783235936402-neqrnd",
+      "sessionId": "1783235936402-neqrnd",
+      "cwd": "/home/roko/Documents/Projects/myactuator",
+      "updatedAt": "2026-07-05T07:23:52.435Z",
+      "eventCount": 11,
+      "failureCount": 1,
+      "suspiciousShellCount": 0,
+      "readmePath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783235936402-neqrnd/README.md",
+      "indexPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783235936402-neqrnd/index.json"
+    },
+    {
+      "runId": "1783056506452-5ra6kv",
+      "sessionId": "1783056506452-5ra6kv",
+      "cwd": "/home/roko/Documents/Projects/myactuator",
+      "updatedAt": "2026-07-05T07:08:23.814Z",
+      "eventCount": 841,
+      "failureCount": 108,
+      "suspiciousShellCount": 0,
+      "readmePath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783056506452-5ra6kv/README.md",
+      "indexPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783056506452-5ra6kv/index.json"
+    },
+    {
+      "runId": "1783067649743-p1k5kq",
+      "sessionId": "1783067649743-p1k5kq",
+      "cwd": "/home/roko/Documents/Projects/myactuator",
+      "updatedAt": "2026-07-04T22:17:35.429Z",
+      "eventCount": 355,
+      "failureCount": 53,
+      "suspiciousShellCount": 0,
+      "readmePath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783067649743-p1k5kq/README.md",
+      "indexPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783067649743-p1k5kq/index.json"
+    },
+    {
+      "runId": "1783054636540-g0c2vs",
+      "sessionId": "1783054636540-g0c2vs",
+      "cwd": "/home/roko/Documents/Projects/myactuator",
+      "updatedAt": "2026-07-04T21:34:55.370Z",
+      "eventCount": 600,
+      "failureCount": 59,
+      "suspiciousShellCount": 0,
+      "readmePath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783054636540-g0c2vs/README.md",
+      "indexPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783054636540-g0c2vs/index.json"
+    },
+    {
+      "runId": "1783061014702-rgaw36",
+      "sessionId": "1783061014702-rgaw36",
+      "cwd": "/home/roko/Documents/Projects/myactuator",
+      "updatedAt": "2026-07-04T18:11:34.036Z",
+      "eventCount": 707,
+      "failureCount": 76,
+      "suspiciousShellCount": 0,
+      "readmePath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783061014702-rgaw36/README.md",
+      "indexPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783061014702-rgaw36/index.json"
+    },
+    {
+      "runId": "1783048896353-3kt1zu",
+      "sessionId": "1783048896353-3kt1zu",
+      "cwd": "/home/roko/Documents/Projects/myactuator",
+      "updatedAt": "2026-07-04T07:42:24.518Z",
+      "eventCount": 186,
+      "failureCount": 38,
+      "suspiciousShellCount": 0,
+      "readmePath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783048896353-3kt1zu/README.md",
+      "indexPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783048896353-3kt1zu/index.json"
+    },
+    {
+      "runId": "1783103891764-v0fo65",
+      "sessionId": "1783103891764-v0fo65",
+      "cwd": "/home/roko/Documents/Projects/myactuator",
+      "updatedAt": "2026-07-04T04:01:32.368Z",
+      "eventCount": 139,
+      "failureCount": 17,
+      "suspiciousShellCount": 0,
+      "readmePath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783103891764-v0fo65/README.md",
+      "indexPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783103891764-v0fo65/index.json"
+    },
+    {
+      "runId": "1783134746466-mbosnh",
+      "sessionId": "1783134746466-mbosnh",
+      "cwd": "/home/roko/Documents/Projects/myactuator",
+      "updatedAt": "2026-07-04T03:50:15.193Z",
+      "eventCount": 114,
+      "failureCount": 18,
+      "suspiciousShellCount": 0,
+      "readmePath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783134746466-mbosnh/README.md",
+      "indexPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783134746466-mbosnh/index.json"
+    },
+    {
+      "runId": "1783132565307-m0qc5a",
+      "sessionId": "1783132565307-m0qc5a",
+      "cwd": "/home/roko/Documents/Projects/myactuator",
+      "updatedAt": "2026-07-04T03:11:05.538Z",
+      "eventCount": 85,
+      "failureCount": 19,
+      "suspiciousShellCount": 0,
+      "readmePath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783132565307-m0qc5a/README.md",
+      "indexPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783132565307-m0qc5a/index.json"
+    },
+    {
+      "runId": "1783130427620-c07cg9",
+      "sessionId": "1783130427620-c07cg9",
+      "cwd": "/home/roko/Documents/Projects/myactuator",
+      "updatedAt": "2026-07-04T02:35:04.690Z",
+      "eventCount": 76,
+      "failureCount": 6,
+      "suspiciousShellCount": 0,
+      "readmePath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783130427620-c07cg9/README.md",
+      "indexPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783130427620-c07cg9/index.json"
+    },
+    {
+      "runId": "1783128455765-azotnp",
+      "sessionId": "1783128455765-azotnp",
+      "cwd": "/home/roko/Documents/Projects/myactuator",
+      "updatedAt": "2026-07-04T01:59:56.172Z",
+      "eventCount": 110,
+      "failureCount": 13,
+      "suspiciousShellCount": 0,
+      "readmePath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783128455765-azotnp/README.md",
+      "indexPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783128455765-azotnp/index.json"
+    },
+    {
+      "runId": "1783102391191-glhboy",
+      "sessionId": "1783102391191-glhboy",
+      "cwd": "/home/roko/Documents/Projects/myactuator",
+      "updatedAt": "2026-07-03T18:37:13.491Z",
+      "eventCount": 52,
+      "failureCount": 8,
+      "suspiciousShellCount": 0,
+      "readmePath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783102391191-glhboy/README.md",
+      "indexPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783102391191-glhboy/index.json"
+    },
+    {
+      "runId": "1783100539534-ttnzaw",
+      "sessionId": "1783100539534-ttnzaw",
+      "cwd": "/home/roko/Documents/Projects/myactuator",
+      "updatedAt": "2026-07-03T18:10:11.274Z",
+      "eventCount": 86,
+      "failureCount": 6,
+      "suspiciousShellCount": 0,
+      "readmePath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783100539534-ttnzaw/README.md",
+      "indexPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783100539534-ttnzaw/index.json"
+    },
+    {
+      "runId": "1783100178105-dgntvm",
+      "sessionId": "1783100178105-dgntvm",
+      "cwd": "/home/roko/Documents/Projects/myactuator",
+      "updatedAt": "2026-07-03T17:41:46.155Z",
+      "eventCount": 13,
+      "failureCount": 0,
+      "suspiciousShellCount": 0,
+      "readmePath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783100178105-dgntvm/README.md",
+      "indexPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783100178105-dgntvm/index.json"
+    },
+    {
+      "runId": "1783098484662-k0bt4g",
+      "sessionId": "1783098484662-k0bt4g",
+      "cwd": "/home/roko/Documents/Projects/myactuator",
+      "updatedAt": "2026-07-03T17:35:16.736Z",
+      "eventCount": 106,
+      "failureCount": 16,
+      "suspiciousShellCount": 0,
+      "readmePath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783098484662-k0bt4g/README.md",
+      "indexPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783098484662-k0bt4g/index.json"
+    },
+    {
+      "runId": "1783097556372-khio3d",
+      "sessionId": "1783097556372-khio3d",
+      "cwd": "/home/roko/Documents/Projects/myactuator",
+      "updatedAt": "2026-07-03T17:07:05.491Z",
+      "eventCount": 49,
+      "failureCount": 8,
+      "suspiciousShellCount": 0,
+      "readmePath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783097556372-khio3d/README.md",
+      "indexPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783097556372-khio3d/index.json"
+    },
+    {
+      "runId": "1783095123826-r2p6do",
+      "sessionId": "1783095123826-r2p6do",
+      "cwd": "/home/roko/Documents/Projects/myactuator",
+      "updatedAt": "2026-07-03T16:52:18.447Z",
+      "eventCount": 122,
+      "failureCount": 19,
+      "suspiciousShellCount": 0,
+      "readmePath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/README.md",
+      "indexPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/index.json"
+    },
+    {
+      "runId": "1783066818924-tz2rco",
+      "sessionId": "1783066818924-tz2rco",
+      "cwd": "/home/roko/Documents/Projects/myactuator",
+      "updatedAt": "2026-07-03T08:33:35.517Z",
+      "eventCount": 72,
+      "failureCount": 13,
+      "suspiciousShellCount": 0,
+      "readmePath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783066818924-tz2rco/README.md",
+      "indexPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783066818924-tz2rco/index.json"
+    },
+    {
+      "runId": "1783065197489-zzttvn",
+      "sessionId": "1783065197489-zzttvn",
+      "cwd": "/home/roko/Documents/Projects/myactuator",
+      "updatedAt": "2026-07-03T08:16:40.743Z",
+      "eventCount": 88,
+      "failureCount": 11,
+      "suspiciousShellCount": 0,
+      "readmePath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783065197489-zzttvn/README.md",
+      "indexPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783065197489-zzttvn/index.json"
+    },
+    {
+      "runId": "1783052722873-j5j5xm",
+      "sessionId": "1783052722873-j5j5xm",
+      "cwd": "/home/roko/Documents/Projects/myactuator",
+      "updatedAt": "2026-07-03T04:49:10.541Z",
+      "eventCount": 97,
+      "failureCount": 7,
+      "suspiciousShellCount": 0,
+      "readmePath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783052722873-j5j5xm/README.md",
+      "indexPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783052722873-j5j5xm/index.json"
+    },
+    {
+      "runId": "1783051233686-twto82",
+      "sessionId": "1783051233686-twto82",
+      "cwd": "/home/roko/Documents/Projects/myactuator",
+      "updatedAt": "2026-07-03T04:23:48.276Z",
+      "eventCount": 82,
+      "failureCount": 5,
+      "suspiciousShellCount": 0,
+      "readmePath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783051233686-twto82/README.md",
+      "indexPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783051233686-twto82/index.json"
+    }
+  ],
+  "runCount": 21,
+  "latestRun": {
+    "runId": "1783235936402-neqrnd",
+    "sessionId": "1783235936402-neqrnd",
+    "cwd": "/home/roko/Documents/Projects/myactuator",
+    "updatedAt": "2026-07-05T07:23:52.435Z",
+    "eventCount": 11,
+    "failureCount": 1,
+    "focusBlockCount": 0,
+    "suspiciousShellCount": 0,
+    "readmePath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783235936402-neqrnd/README.md",
+    "indexPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783235936402-neqrnd/index.json"
+  },
+  "diagnoses": {
+    "focus-supervisor-active": 1456,
+    "tool-failure": 501,
+    "focus-supervisor-block": 352,
+    "project-file-mutation": 187,
+    "focus-supervisor-cached-evidence": 90,
+    "large-context-window": 75,
+    "shell-filesystem-mutation": 12
+  },
+  "anchors": [
+    {
+      "label": "debug_contract",
+      "kind": "contract",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/CONTRACT.md",
+      "note": "Schema and semantics for this debug library.",
+      "relativePath": ".omnius/debug-library/CONTRACT.md",
+      "exists": true
+    },
+    {
+      "label": "run_readme",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783235936402-neqrnd/README.md",
+      "note": "Human summary for this run.",
+      "relativePath": ".omnius/debug-library/runs/1783235936402-neqrnd/README.md",
+      "exists": true
+    },
+    {
+      "label": "run_index",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783235936402-neqrnd/index.json",
+      "note": "Machine-readable run summary.",
+      "relativePath": ".omnius/debug-library/runs/1783235936402-neqrnd/index.json",
+      "exists": true
+    },
+    {
+      "label": "run_events_jsonl",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783235936402-neqrnd/events.jsonl",
+      "note": "Append-only normalized event stream.",
+      "relativePath": ".omnius/debug-library/runs/1783235936402-neqrnd/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "workboard_active",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783235936402-neqrnd/active.json",
+      "note": "Durable workboard snapshot, when present.",
+      "relativePath": ".omnius/workboards/1783235936402-neqrnd/active.json",
+      "exists": true
+    },
+    {
+      "label": "workboard_events",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783235936402-neqrnd/events.jsonl",
+      "note": "Durable workboard event log, when present.",
+      "relativePath": ".omnius/workboards/1783235936402-neqrnd/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "context_dump_latest",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/latest.json",
+      "note": "Latest outbound model request dump.",
+      "relativePath": ".omnius/context-window-dumps/latest.json",
+      "exists": true
+    },
+    {
+      "label": "context_dump_index",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/index.jsonl",
+      "note": "Append-only context-window dump summaries.",
+      "relativePath": ".omnius/context-window-dumps/index.jsonl",
+      "exists": true
+    },
+    {
+      "label": "trajectory_log",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/trajectories/trajectories.jsonl",
+      "note": "Completed run trajectory records.",
+      "relativePath": ".omnius/trajectories/trajectories.jsonl",
+      "exists": true
+    },
+    {
+      "label": "checkpoints_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/checkpoints",
+      "note": "Turn-boundary checkpoints.",
+      "relativePath": ".omnius/checkpoints",
+      "exists": true
+    },
+    {
+      "label": "phases_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/phases",
+      "note": "Phase transcript summaries.",
+      "relativePath": ".omnius/phases",
+      "exists": true
+    },
+    {
+      "label": "completion_ledgers_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/completion-ledgers",
+      "note": "Completion evidence ledgers.",
+      "relativePath": ".omnius/completion-ledgers",
+      "exists": true
+    }
+  ]
+}

@@ -1,0 +1,614 @@
+{
+  "version": 1,
+  "updatedAt": "2026-07-05T07:22:52.357Z",
+  "files": {
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/platformio.ini": {
+      "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/platformio.ini",
+      "agentNotes": [],
+      "hotspotScore": 0.9850362367035942,
+      "lastAccessedAt": "2026-07-04T22:03:29.281Z",
+      "accessCount": 21,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/contracts/PROTOCOLS_CONTRACT.md": {
+      "path": "/home/roko/Documents/Projects/myactuator/contracts/PROTOCOLS_CONTRACT.md",
+      "agentNotes": [],
+      "hotspotScore": 0.6712463067619815,
+      "lastAccessedAt": "2026-07-03T18:39:06.427Z",
+      "accessCount": 7,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/contracts/MOTOR_RMD_X_CONTRACT.md": {
+      "path": "/home/roko/Documents/Projects/myactuator/contracts/MOTOR_RMD_X_CONTRACT.md",
+      "agentNotes": [],
+      "hotspotScore": 0.6036339372778778,
+      "lastAccessedAt": "2026-07-04T21:37:14.252Z",
+      "accessCount": 7,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/contracts/MOTOR_RH_CONTRACT.md": {
+      "path": "/home/roko/Documents/Projects/myactuator/contracts/MOTOR_RH_CONTRACT.md",
+      "agentNotes": [],
+      "hotspotScore": 0.4354509577464637,
+      "lastAccessedAt": "2026-07-04T21:37:15.525Z",
+      "accessCount": 5,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/contracts/MOTOR_CEM_CONTRACT.md": {
+      "path": "/home/roko/Documents/Projects/myactuator/contracts/MOTOR_CEM_CONTRACT.md",
+      "agentNotes": [],
+      "hotspotScore": 0.4354506339926093,
+      "lastAccessedAt": "2026-07-04T21:37:16.939Z",
+      "accessCount": 5,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/contracts/MOTOR_RMD_H_CONTRACT.md": {
+      "path": "/home/roko/Documents/Projects/myactuator/contracts/MOTOR_RMD_H_CONTRACT.md",
+      "agentNotes": [],
+      "hotspotScore": 0.4354535083557135,
+      "lastAccessedAt": "2026-07-04T21:37:17.054Z",
+      "accessCount": 5,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/README.md": {
+      "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/README.md",
+      "agentNotes": [],
+      "hotspotScore": 0.48003938170496785,
+      "lastAccessedAt": "2026-07-03T17:42:50.148Z",
+      "accessCount": 5,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/main.cpp": {
+      "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/main.cpp",
+      "agentNotes": [],
+      "hotspotScore": 1,
+      "lastAccessedAt": "2026-07-03T18:39:08.253Z",
+      "accessCount": 20,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/can_bus.h": {
+      "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/can_bus.h",
+      "agentNotes": [],
+      "hotspotScore": 0.19400853213293315,
+      "lastAccessedAt": "2026-07-03T18:25:00.792Z",
+      "accessCount": 2,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/encoder.h": {
+      "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/encoder.h",
+      "agentNotes": [],
+      "hotspotScore": 0.1,
+      "lastAccessedAt": "2026-07-03T04:20:35.408Z",
+      "accessCount": 1,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/protocols/pal.h": {
+      "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/protocols/pal.h",
+      "agentNotes": [],
+      "hotspotScore": 0.48437610456202607,
+      "lastAccessedAt": "2026-07-03T17:45:15.742Z",
+      "accessCount": 5,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/utils/config.h": {
+      "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/utils/config.h",
+      "agentNotes": [],
+      "hotspotScore": 0.1,
+      "lastAccessedAt": "2026-07-03T04:20:36.668Z",
+      "accessCount": 1,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/utils/logger.h": {
+      "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/utils/logger.h",
+      "agentNotes": [],
+      "hotspotScore": 0.1,
+      "lastAccessedAt": "2026-07-03T04:20:36.835Z",
+      "accessCount": 1,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/contracts/ESP32_FIRMWARE_CONTRACT.md": {
+      "path": "/home/roko/Documents/Projects/myactuator/contracts/ESP32_FIRMWARE_CONTRACT.md",
+      "agentNotes": [],
+      "hotspotScore": 0.4832877784462548,
+      "lastAccessedAt": "2026-07-03T18:39:07.031Z",
+      "accessCount": 5,
+      "relationships": []
+    },
+    "firmware/esp32/src/drivers/cem_driver.h": {
+      "path": "firmware/esp32/src/drivers/cem_driver.h",
+      "agentNotes": [],
+      "hotspotScore": 0.46239817584687937,
+      "lastAccessedAt": "2026-07-05T00:39:54.881Z",
+      "accessCount": 5,
+      "relationships": []
+    },
+    "firmware/esp32/src/drivers/fl_driver.h": {
+      "path": "firmware/esp32/src/drivers/fl_driver.h",
+      "agentNotes": [],
+      "hotspotScore": 0.36231763928673166,
+      "lastAccessedAt": "2026-07-05T00:39:55.962Z",
+      "accessCount": 4,
+      "relationships": []
+    },
+    "firmware/esp32/src/drivers/rmd_x_driver.cpp": {
+      "path": "firmware/esp32/src/drivers/rmd_x_driver.cpp",
+      "agentNotes": [],
+      "hotspotScore": 0.931966565849802,
+      "lastAccessedAt": "2026-07-05T00:38:51.110Z",
+      "accessCount": 10,
+      "relationships": []
+    },
+    "firmware/esp32/src/main.cpp": {
+      "path": "firmware/esp32/src/main.cpp",
+      "agentNotes": [],
+      "hotspotScore": 1,
+      "lastAccessedAt": "2026-07-05T07:22:52.357Z",
+      "accessCount": 11,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/motor_controller.h": {
+      "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/motor_controller.h",
+      "agentNotes": [],
+      "hotspotScore": 0.9914902935964341,
+      "lastAccessedAt": "2026-07-04T21:36:28.770Z",
+      "accessCount": 16,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/motor_controller.cpp": {
+      "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/motor_controller.cpp",
+      "agentNotes": [],
+      "hotspotScore": 1,
+      "lastAccessedAt": "2026-07-04T22:06:48.435Z",
+      "accessCount": 14,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/rmd_l_driver.h": {
+      "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/rmd_l_driver.h",
+      "agentNotes": [],
+      "hotspotScore": 0.48478086675481036,
+      "lastAccessedAt": "2026-07-03T18:44:09.348Z",
+      "accessCount": 5,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/rmd_x_driver.h": {
+      "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/rmd_x_driver.h",
+      "agentNotes": [],
+      "hotspotScore": 0.7071070828100556,
+      "lastAccessedAt": "2026-07-04T21:39:02.667Z",
+      "accessCount": 8,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/motor_driver.h": {
+      "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/motor_driver.h",
+      "agentNotes": [],
+      "hotspotScore": 0.7936885072905074,
+      "lastAccessedAt": "2026-07-04T21:39:56.397Z",
+      "accessCount": 9,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/include/constants.h": {
+      "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/include/constants.h",
+      "agentNotes": [],
+      "hotspotScore": 0.5855885667483889,
+      "lastAccessedAt": "2026-07-03T18:14:20.225Z",
+      "accessCount": 6,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/protocols/pal.cpp": {
+      "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/protocols/pal.cpp",
+      "agentNotes": [],
+      "hotspotScore": 0.29020202861330857,
+      "lastAccessedAt": "2026-07-03T17:39:17.791Z",
+      "accessCount": 3,
+      "relationships": []
+    },
+    "firmware/esp32/platformio.ini": {
+      "path": "firmware/esp32/platformio.ini",
+      "agentNotes": [],
+      "hotspotScore": 1,
+      "lastAccessedAt": "2026-07-05T06:14:30.966Z",
+      "accessCount": 14,
+      "relationships": []
+    },
+    "firmware/esp32/src/protocols/pal.cpp": {
+      "path": "firmware/esp32/src/protocols/pal.cpp",
+      "agentNotes": [],
+      "hotspotScore": 0.6569821537591903,
+      "lastAccessedAt": "2026-07-05T04:35:58.010Z",
+      "accessCount": 7,
+      "relationships": []
+    },
+    "firmware/esp32/src/drivers/rmd_l_driver.h": {
+      "path": "firmware/esp32/src/drivers/rmd_l_driver.h",
+      "agentNotes": [],
+      "hotspotScore": 0.37269435750505864,
+      "lastAccessedAt": "2026-07-05T00:39:55.797Z",
+      "accessCount": 4,
+      "relationships": []
+    },
+    "firmware/esp32/src/drivers/ce_m_driver.h": {
+      "path": "firmware/esp32/src/drivers/ce_m_driver.h",
+      "agentNotes": [],
+      "hotspotScore": 0.1,
+      "lastAccessedAt": "2026-07-03T06:18:01.550Z",
+      "accessCount": 1,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/include/types.h": {
+      "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/include/types.h",
+      "agentNotes": [],
+      "hotspotScore": 0.9876899730153332,
+      "lastAccessedAt": "2026-07-04T21:49:33.801Z",
+      "accessCount": 16,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/rmd_l_driver.cpp": {
+      "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/rmd_l_driver.cpp",
+      "agentNotes": [],
+      "hotspotScore": 0.27282633772130915,
+      "lastAccessedAt": "2026-07-04T22:11:08.049Z",
+      "accessCount": 3,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/include/config.h": {
+      "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/include/config.h",
+      "agentNotes": [],
+      "hotspotScore": 0.6833498160657304,
+      "lastAccessedAt": "2026-07-03T18:14:19.652Z",
+      "accessCount": 7,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/rmd_x_driver.cpp": {
+      "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/rmd_x_driver.cpp",
+      "agentNotes": [],
+      "hotspotScore": 0.44992885453415543,
+      "lastAccessedAt": "2026-07-04T21:39:02.784Z",
+      "accessCount": 5,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/cem_driver.h": {
+      "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/cem_driver.h",
+      "agentNotes": [],
+      "hotspotScore": 0.2953796949586063,
+      "lastAccessedAt": "2026-07-03T18:44:07.505Z",
+      "accessCount": 3,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/cem_driver.cpp": {
+      "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/cem_driver.cpp",
+      "agentNotes": [],
+      "hotspotScore": 0.19622523302526979,
+      "lastAccessedAt": "2026-07-03T17:47:35.976Z",
+      "accessCount": 2,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/rmd_h_driver.h": {
+      "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/rmd_h_driver.h",
+      "agentNotes": [],
+      "hotspotScore": 0.2954505711282961,
+      "lastAccessedAt": "2026-07-03T18:44:08.753Z",
+      "accessCount": 3,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/fl_driver.h": {
+      "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/fl_driver.h",
+      "agentNotes": [],
+      "hotspotScore": 0.2954961948113241,
+      "lastAccessedAt": "2026-07-03T18:44:09.456Z",
+      "accessCount": 3,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/rh_driver.h": {
+      "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/rh_driver.h",
+      "agentNotes": [],
+      "hotspotScore": 0.2773114224629805,
+      "lastAccessedAt": "2026-07-04T21:40:25.439Z",
+      "accessCount": 3,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/rh_driver.cpp": {
+      "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/rh_driver.cpp",
+      "agentNotes": [],
+      "hotspotScore": 0.1884797476650348,
+      "lastAccessedAt": "2026-07-04T21:40:25.566Z",
+      "accessCount": 2,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/rmd_h_driver.cpp": {
+      "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/rmd_h_driver.cpp",
+      "agentNotes": [],
+      "hotspotScore": 0.1,
+      "lastAccessedAt": "2026-07-03T17:47:36.606Z",
+      "accessCount": 1,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/fl_driver.cpp": {
+      "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/fl_driver.cpp",
+      "agentNotes": [],
+      "hotspotScore": 0.1,
+      "lastAccessedAt": "2026-07-03T17:47:37.356Z",
+      "accessCount": 1,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/can_bus.cpp": {
+      "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/can_bus.cpp",
+      "agentNotes": [],
+      "hotspotScore": 0.1,
+      "lastAccessedAt": "2026-07-03T18:25:00.973Z",
+      "accessCount": 1,
+      "relationships": []
+    },
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/mcp2515_can.h": {
+      "path": "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/mcp2515_can.h",
+      "agentNotes": [],
+      "hotspotScore": 0.18870474218840855,
+      "lastAccessedAt": "2026-07-04T22:02:40.035Z",
+      "accessCount": 2,
+      "relationships": []
+    },
+    "contracts/PROTOCOLS_CONTRACT.md": {
+      "path": "contracts/PROTOCOLS_CONTRACT.md",
+      "agentNotes": [],
+      "hotspotScore": 0.6395021719623758,
+      "lastAccessedAt": "2026-07-05T07:22:51.069Z",
+      "accessCount": 7,
+      "relationships": []
+    },
+    "contracts/ESP32_FIRMWARE_CONTRACT.md": {
+      "path": "contracts/ESP32_FIRMWARE_CONTRACT.md",
+      "agentNotes": [],
+      "hotspotScore": 0.4628870023282752,
+      "lastAccessedAt": "2026-07-05T07:22:52.237Z",
+      "accessCount": 5,
+      "relationships": []
+    },
+    "contracts/MOTOR_CEM_CONTRACT.md": {
+      "path": "contracts/MOTOR_CEM_CONTRACT.md",
+      "agentNotes": [],
+      "hotspotScore": 0.19743731981853097,
+      "lastAccessedAt": "2026-07-04T07:23:21.149Z",
+      "accessCount": 2,
+      "relationships": []
+    },
+    "contracts/MOTOR_RH_CONTRACT.md": {
+      "path": "contracts/MOTOR_RH_CONTRACT.md",
+      "agentNotes": [],
+      "hotspotScore": 0.19743736045497257,
+      "lastAccessedAt": "2026-07-04T07:23:21.230Z",
+      "accessCount": 2,
+      "relationships": []
+    },
+    "contracts/MOTOR_RMD_H_CONTRACT.md": {
+      "path": "contracts/MOTOR_RMD_H_CONTRACT.md",
+      "agentNotes": [],
+      "hotspotScore": 0.19743746976946094,
+      "lastAccessedAt": "2026-07-04T07:23:20.736Z",
+      "accessCount": 2,
+      "relationships": []
+    },
+    "contracts/MOTOR_RMD_X_CONTRACT.md": {
+      "path": "contracts/MOTOR_RMD_X_CONTRACT.md",
+      "agentNotes": [],
+      "hotspotScore": 0.19746277509562557,
+      "lastAccessedAt": "2026-07-04T07:19:47.881Z",
+      "accessCount": 2,
+      "relationships": []
+    },
+    "firmware/esp32/src/motor_controller.h": {
+      "path": "firmware/esp32/src/motor_controller.h",
+      "agentNotes": [],
+      "hotspotScore": 1,
+      "lastAccessedAt": "2026-07-05T05:41:01.926Z",
+      "accessCount": 28,
+      "relationships": []
+    },
+    "firmware/esp32/src/motor_controller.cpp": {
+      "path": "firmware/esp32/src/motor_controller.cpp",
+      "agentNotes": [],
+      "hotspotScore": 1,
+      "lastAccessedAt": "2026-07-05T05:05:11.139Z",
+      "accessCount": 12,
+      "relationships": []
+    },
+    "firmware/esp32/include/config.h": {
+      "path": "firmware/esp32/include/config.h",
+      "agentNotes": [],
+      "hotspotScore": 0.28997252076782565,
+      "lastAccessedAt": "2026-07-05T01:34:29.440Z",
+      "accessCount": 3,
+      "relationships": []
+    },
+    "firmware/esp32/include/constants.h": {
+      "path": "firmware/esp32/include/constants.h",
+      "agentNotes": [],
+      "hotspotScore": 0.1,
+      "lastAccessedAt": "2026-07-04T01:30:19.556Z",
+      "accessCount": 1,
+      "relationships": []
+    },
+    "firmware/esp32/include/types.h": {
+      "path": "firmware/esp32/include/types.h",
+      "agentNotes": [],
+      "hotspotScore": 1,
+      "lastAccessedAt": "2026-07-05T06:22:21.468Z",
+      "accessCount": 68,
+      "relationships": []
+    },
+    "firmware/esp32/src/drivers/mcp2515_can.h": {
+      "path": "firmware/esp32/src/drivers/mcp2515_can.h",
+      "agentNotes": [],
+      "hotspotScore": 0.8516586686348329,
+      "lastAccessedAt": "2026-07-05T00:32:57.411Z",
+      "accessCount": 9,
+      "relationships": []
+    },
+    "firmware/esp32/src/drivers/mcp2515_can.cpp": {
+      "path": "firmware/esp32/src/drivers/mcp2515_can.cpp",
+      "agentNotes": [],
+      "hotspotScore": 0.19038291645786093,
+      "lastAccessedAt": "2026-07-05T00:32:57.866Z",
+      "accessCount": 2,
+      "relationships": []
+    },
+    "firmware/esp32/src/drivers/can_bus.h": {
+      "path": "firmware/esp32/src/drivers/can_bus.h",
+      "agentNotes": [],
+      "hotspotScore": 0.37314854210479365,
+      "lastAccessedAt": "2026-07-05T00:32:58.322Z",
+      "accessCount": 4,
+      "relationships": []
+    },
+    "firmware/esp32/src/drivers/can_bus.cpp": {
+      "path": "firmware/esp32/src/drivers/can_bus.cpp",
+      "agentNotes": [],
+      "hotspotScore": 0.1903829644024795,
+      "lastAccessedAt": "2026-07-05T00:32:58.376Z",
+      "accessCount": 2,
+      "relationships": []
+    },
+    "firmware/esp32/src/drivers/rs485.h": {
+      "path": "firmware/esp32/src/drivers/rs485.h",
+      "agentNotes": [],
+      "hotspotScore": 0.19037948435055027,
+      "lastAccessedAt": "2026-07-05T00:33:30.428Z",
+      "accessCount": 2,
+      "relationships": []
+    },
+    "firmware/esp32/src/drivers/rs485.cpp": {
+      "path": "firmware/esp32/src/drivers/rs485.cpp",
+      "agentNotes": [],
+      "hotspotScore": 0.1,
+      "lastAccessedAt": "2026-07-04T01:31:00.945Z",
+      "accessCount": 1,
+      "relationships": []
+    },
+    "firmware/esp32/src/utils/logger.h": {
+      "path": "firmware/esp32/src/utils/logger.h",
+      "agentNotes": [],
+      "hotspotScore": 0.292749694131951,
+      "lastAccessedAt": "2026-07-04T18:13:33.690Z",
+      "accessCount": 3,
+      "relationships": []
+    },
+    "firmware/esp32/src/drivers/rmd_x_driver.h": {
+      "path": "firmware/esp32/src/drivers/rmd_x_driver.h",
+      "agentNotes": [],
+      "hotspotScore": 0.7470511594832426,
+      "lastAccessedAt": "2026-07-05T00:37:11.140Z",
+      "accessCount": 8,
+      "relationships": []
+    },
+    "firmware/esp32/src/drivers/rh_driver.h": {
+      "path": "firmware/esp32/src/drivers/rh_driver.h",
+      "agentNotes": [],
+      "hotspotScore": 0.2872207924266079,
+      "lastAccessedAt": "2026-07-05T00:39:54.378Z",
+      "accessCount": 3,
+      "relationships": []
+    },
+    "firmware/esp32/src/drivers/rh_driver.cpp": {
+      "path": "firmware/esp32/src/drivers/rh_driver.cpp",
+      "agentNotes": [],
+      "hotspotScore": 0.3899236654372523,
+      "lastAccessedAt": "2026-07-05T01:09:56.441Z",
+      "accessCount": 4,
+      "relationships": []
+    },
+    "firmware/esp32/src/drivers/cem_driver.cpp": {
+      "path": "firmware/esp32/src/drivers/cem_driver.cpp",
+      "agentNotes": [],
+      "hotspotScore": 0.4727193864486777,
+      "lastAccessedAt": "2026-07-05T07:04:31.949Z",
+      "accessCount": 5,
+      "relationships": []
+    },
+    "firmware/esp32/src/drivers/motor_driver.h": {
+      "path": "firmware/esp32/src/drivers/motor_driver.h",
+      "agentNotes": [],
+      "hotspotScore": 0.8378106652678664,
+      "lastAccessedAt": "2026-07-05T00:34:55.704Z",
+      "accessCount": 9,
+      "relationships": []
+    },
+    "firmware/esp32/src/protocols/pal.h": {
+      "path": "firmware/esp32/src/protocols/pal.h",
+      "agentNotes": [],
+      "hotspotScore": 1,
+      "lastAccessedAt": "2026-07-05T04:35:57.403Z",
+      "accessCount": 13,
+      "relationships": []
+    },
+    "firmware/esp32/src/utils/pid_controller.h": {
+      "path": "firmware/esp32/src/utils/pid_controller.h",
+      "agentNotes": [],
+      "hotspotScore": 0.1,
+      "lastAccessedAt": "2026-07-04T01:59:03.012Z",
+      "accessCount": 1,
+      "relationships": []
+    },
+    "firmware/esp32/src/drivers/rmd_h_driver.h": {
+      "path": "firmware/esp32/src/drivers/rmd_h_driver.h",
+      "agentNotes": [],
+      "hotspotScore": 0.583441661195264,
+      "lastAccessedAt": "2026-07-05T05:19:56.976Z",
+      "accessCount": 6,
+      "relationships": []
+    },
+    "firmware/esp32/src/drivers/rmd_h_driver.cpp": {
+      "path": "firmware/esp32/src/drivers/rmd_h_driver.cpp",
+      "agentNotes": [],
+      "hotspotScore": 0.8834278521169036,
+      "lastAccessedAt": "2026-07-05T05:23:47.313Z",
+      "accessCount": 9,
+      "relationships": []
+    },
+    "firmware/esp32/src/drivers/rmd_l_driver.cpp": {
+      "path": "firmware/esp32/src/drivers/rmd_l_driver.cpp",
+      "agentNotes": [],
+      "hotspotScore": 0.4865585074280413,
+      "lastAccessedAt": "2026-07-05T01:19:09.926Z",
+      "accessCount": 5,
+      "relationships": []
+    },
+    "firmware/esp32/src/utils/logger.cpp": {
+      "path": "firmware/esp32/src/utils/logger.cpp",
+      "agentNotes": [],
+      "hotspotScore": 0.19981699900464261,
+      "lastAccessedAt": "2026-07-04T18:13:34.133Z",
+      "accessCount": 2,
+      "relationships": []
+    },
+    "firmware/esp32/src/protocols/rs485_protocol.h": {
+      "path": "firmware/esp32/src/protocols/rs485_protocol.h",
+      "agentNotes": [],
+      "hotspotScore": 0.1,
+      "lastAccessedAt": "2026-07-05T00:33:29.962Z",
+      "accessCount": 1,
+      "relationships": []
+    },
+    "firmware/esp32/src/drivers/ethercat.h": {
+      "path": "firmware/esp32/src/drivers/ethercat.h",
+      "agentNotes": [],
+      "hotspotScore": 0.1,
+      "lastAccessedAt": "2026-07-05T00:33:30.485Z",
+      "accessCount": 1,
+      "relationships": []
+    },
+    "firmware/esp32/src/drivers/fl_driver.cpp": {
+      "path": "firmware/esp32/src/drivers/fl_driver.cpp",
+      "agentNotes": [],
+      "hotspotScore": 0.19977070771240749,
+      "lastAccessedAt": "2026-07-05T01:05:53.310Z",
+      "accessCount": 2,
+      "relationships": []
+    },
+    "firmware/esp32/README.md": {
+      "path": "firmware/esp32/README.md",
+      "agentNotes": [],
+      "hotspotScore": 0.1,
+      "lastAccessedAt": "2026-07-05T07:21:29.965Z",
+      "accessCount": 1,
+      "relationships": []
+    }
+  }
+}

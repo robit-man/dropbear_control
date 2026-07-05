@@ -1,0 +1,195 @@
+{
+  "schemaVersion": 1,
+  "id": "2026-07-03T16-56-32-910Z-context-68c3f1885e",
+  "kind": "context_window_dump",
+  "timestamp": "2026-07-03T16:56:32.910Z",
+  "runId": "1783097556372-khio3d",
+  "sessionId": "1783097556372-khio3d",
+  "cwd": "/home/roko/Documents/Projects/myactuator",
+  "turn": 9,
+  "contextDump": {
+    "id": "2026-07-03T16-56-32-906Z-main-71a101a929",
+    "stage": "agent_turn",
+    "agentType": "main",
+    "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/2026-07-03T16-56-32-906Z-main-71a101a929.json",
+    "metrics": {
+      "messageCount": 88,
+      "estimatedTokens": 47424,
+      "totalChars": 164231,
+      "imageCount": 0,
+      "toolSchemaCount": 23,
+      "toolSchemaChars": 25464,
+      "roleCounts": {
+        "system": 45,
+        "user": 1,
+        "assistant": 22,
+        "tool": 20
+      },
+      "roleChars": {
+        "system": 116659,
+        "user": 4885,
+        "assistant": 6147,
+        "tool": 36540
+      },
+      "activeEvidenceChars": 14935,
+      "activeContextFrameChars": 13000,
+      "compactedDiscoveryChars": 13569,
+      "rawDiscoveryToolChars": 0,
+      "toolResultChars": 36540,
+      "systemChars": 116659,
+      "userChars": 4885,
+      "assistantChars": 6147,
+      "signalToNoise": {
+        "structuralSignalChars": 52536,
+        "structuralNoiseCandidateChars": 0,
+        "ratio": null
+      }
+    }
+  },
+  "focusSupervisor": {
+    "mode": "auto",
+    "enabled": true,
+    "state": "cached_evidence",
+    "lastDecision": "runtime_authored_not_satisfied",
+    "lastReason": "runtime-authored control result did not execute the requested tool",
+    "directive": {
+      "id": "focus_2",
+      "state": "cached_evidence",
+      "reason": "cached failed shell evidence already exists",
+      "requiredNextAction": "use_cached_evidence",
+      "forbiddenActionFamilies": [
+        "shell:cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio run -t build 2>&1 | tail -80"
+      ],
+      "createdTurn": 7,
+      "ignoredCount": 0
+    },
+    "context": {
+      "pressureRatio": 1,
+      "estimatedTokens": 1864,
+      "rawDiscoveryChars": 0,
+      "activeEvidenceChars": 14700,
+      "activeFrameChars": 12765,
+      "signalToNoiseRatio": null,
+      "droppedSignals": 0,
+      "truncatedSignals": 1
+    }
+  },
+  "diagnoses": [
+    "focus-supervisor-active"
+  ],
+  "summary": "context dump agent_turn | tokens~47424 | required=use_cached_evidence | diagnoses=focus-supervisor-active",
+  "anchors": [
+    {
+      "label": "debug_contract",
+      "kind": "contract",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/CONTRACT.md",
+      "note": "Schema and semantics for this debug library.",
+      "relativePath": ".omnius/debug-library/CONTRACT.md",
+      "exists": true
+    },
+    {
+      "label": "run_readme",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783097556372-khio3d/README.md",
+      "note": "Human summary for this run.",
+      "relativePath": ".omnius/debug-library/runs/1783097556372-khio3d/README.md",
+      "exists": true
+    },
+    {
+      "label": "run_index",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783097556372-khio3d/index.json",
+      "note": "Machine-readable run summary.",
+      "relativePath": ".omnius/debug-library/runs/1783097556372-khio3d/index.json",
+      "exists": true
+    },
+    {
+      "label": "run_events_jsonl",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783097556372-khio3d/events.jsonl",
+      "note": "Append-only normalized event stream.",
+      "relativePath": ".omnius/debug-library/runs/1783097556372-khio3d/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "workboard_active",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783097556372-khio3d/active.json",
+      "note": "Durable workboard snapshot, when present.",
+      "relativePath": ".omnius/workboards/1783097556372-khio3d/active.json",
+      "exists": true
+    },
+    {
+      "label": "workboard_events",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783097556372-khio3d/events.jsonl",
+      "note": "Durable workboard event log, when present.",
+      "relativePath": ".omnius/workboards/1783097556372-khio3d/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "context_dump_latest",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/latest.json",
+      "note": "Latest outbound model request dump.",
+      "relativePath": ".omnius/context-window-dumps/latest.json",
+      "exists": true
+    },
+    {
+      "label": "context_dump_index",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/index.jsonl",
+      "note": "Append-only context-window dump summaries.",
+      "relativePath": ".omnius/context-window-dumps/index.jsonl",
+      "exists": true
+    },
+    {
+      "label": "trajectory_log",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/trajectories/trajectories.jsonl",
+      "note": "Completed run trajectory records.",
+      "relativePath": ".omnius/trajectories/trajectories.jsonl",
+      "exists": true
+    },
+    {
+      "label": "checkpoints_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/checkpoints",
+      "note": "Turn-boundary checkpoints.",
+      "relativePath": ".omnius/checkpoints",
+      "exists": true
+    },
+    {
+      "label": "phases_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/phases",
+      "note": "Phase transcript summaries.",
+      "relativePath": ".omnius/phases",
+      "exists": true
+    },
+    {
+      "label": "completion_ledgers_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/completion-ledgers",
+      "note": "Completion evidence ledgers.",
+      "relativePath": ".omnius/completion-ledgers",
+      "exists": true
+    },
+    {
+      "label": "context_window_dump",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/2026-07-03T16-56-32-906Z-main-71a101a929.json",
+      "note": "Full outbound model request for this turn.",
+      "relativePath": ".omnius/context-window-dumps/2026-07-03T16-56-32-906Z-main-71a101a929.json",
+      "exists": true
+    },
+    {
+      "label": "event_json",
+      "kind": "event",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783097556372-khio3d/events/turn-0009/2026-07-03T16-56-32-910Z-context-68c3f1885e.json",
+      "note": "This normalized debug event.",
+      "relativePath": ".omnius/debug-library/runs/1783097556372-khio3d/events/turn-0009/2026-07-03T16-56-32-910Z-context-68c3f1885e.json",
+      "exists": true
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "sessionId": "1783048896353-3kt1zu",
+  "createdAt": "2026-07-04T07:18:56.556Z",
+  "contract": {
+    "goalSummary": "<session-recap> <active-task-anchor> Source: completion ledger 1783048896353-3kt1zu; status=request_changes Goal: continue Recorded evidence: 87; unresolved items: 11 Material evidence: - shell ok: shell succeeded args={\"command\":\"find /home/roko/Documents/Projects/myactuator -maxdepth 3 -type f -o -type d | head -100\"} output=[SHELL TRANSCRIPT] command: find /home/roko/Documents/Projects/myactuator -maxdepth 3 -type f -o -type d | he - shell ok: shell succeeded args={\"command\":\"find /home/roko/",
+    "surfaces": [],
+    "fields": [
+      {
+        "key": "claims.evidence_map",
+        "label": "Claim evidence map",
+        "fieldType": "json",
+        "elevation": "required",
+        "sourceMode": "derived",
+        "description": "A run-local mapping from each final claim to the observed result that supports it.",
+        "acceptanceCriteria": "Each material claim is either backed by observed evidence from this run or named as unverified/blocked."
+      },
+      {
+        "key": "claims.unverified",
+        "label": "Unverified claims",
+        "fieldType": "json",
+        "elevation": "required",
+        "sourceMode": "derived",
+        "description": "Claims that could not be proven from the run's observations.",
+        "acceptanceCriteria": "Unverified claims are not presented as completed work."
+      }
+    ],
+    "requirements": [],
+    "phases": [
+      {
+        "key": "execute",
+        "label": "Execute",
+        "instructions": "Do the requested work while preserving observations needed to evaluate the result.",
+        "requirementIds": [],
+        "fields": [],
+        "gate": {
+          "key": "execution_trace",
+          "instructions": "Keep enough concrete run output to distinguish facts from assumptions."
+        }
+      },
+      {
+        "key": "verify",
+        "label": "Verify",
+        "instructions": "Derive the needed evidence from the actual request and final claims, then compare those claims to observed results.",
+        "requirementIds": [],
+        "fields": [
+          {
+            "key": "claims.evidence_map",
+            "label": "Claim evidence map",
+            "fieldType": "json",
+            "elevation": "required",
+            "sourceMode": "derived",
+            "description": "A run-local mapping from each final claim to the observed result that supports it.",
+            "acceptanceCriteria": "Each material claim is either backed by observed evidence from this run or named as unverified/blocked."
+          },
+          {
+            "key": "claims.unverified",
+            "label": "Unverified claims",
+            "fieldType": "json",
+            "elevation": "required",
+            "sourceMode": "derived",
+            "description": "Claims that could not be proven from the run's observations.",
+            "acceptanceCriteria": "Unverified claims are not presented as completed work."
+          }
+        ],
+        "gate": {
+          "key": "claim_evidence_review",
+          "instructions": "Judge whether the actual claim is supported by the actual observations."
+        }
+      },
+      {
+        "key": "deliver",
+        "label": "Deliver",
+        "instructions": "Report completed, verified, unverified, and blocked items without overstating what was observed.",
+        "requirementIds": [],
+        "fields": [],
+        "gate": {
+          "key": "result_readback",
+          "instructions": "Final wording must not exceed the observed evidence."
+        }
+      }
+    ],
+    "acceptanceCriteria": [
+      "The final response distinguishes completed work from verified evidence and unverified or blocked claims."
+    ]
+  }
+}

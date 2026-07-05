@@ -1,0 +1,21 @@
+{
+  "name": "MCP2515",
+  "export": {},
+  "version": "1.0.0",
+  "frameworks": [
+    "arduino"
+  ],
+  "description": "MCP2515 CAN-Bus-Controller",
+  "platforms": [
+    "atmelavr"
+  ],
+  "repository": {
+    "url": "https://github.com/watterott/Arduino-Libs.git",
+    "type": "git"
+  },
+  "keywords": [
+    "spi",
+    "can-bus",
+    "canbus"
+  ]
+}

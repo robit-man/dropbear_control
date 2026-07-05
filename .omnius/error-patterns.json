@@ -1,0 +1,1154 @@
+{
+  "shell:unknown": {
+    "count": 4419,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1783234575779,
+    "tool": "shell",
+    "errorType": "unknown",
+    "firstSeen": 1782977875185
+  },
+  "file_read:unknown": {
+    "count": 3163,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1783235120358,
+    "tool": "file_read",
+    "errorType": "unknown",
+    "firstSeen": 1782979270106
+  },
+  "echo:unknown": {
+    "count": 1056,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1782378523830,
+    "tool": "echo",
+    "errorType": "unknown",
+    "firstSeen": 1782378523830
+  },
+  "file_edit:not_found": {
+    "count": 965,
+    "guidance": "File/resource not found. Before retrying: use list_directory or find_files to verify the path exists. Common causes: wrong directory, typo in filename, file was moved/renamed.",
+    "lastSeen": 1783139097580,
+    "tool": "file_edit",
+    "errorType": "not_found",
+    "firstSeen": 1782971801326
+  },
+  "task_complete:unknown": {
+    "count": 1233,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1783222186854,
+    "tool": "task_complete",
+    "errorType": "unknown",
+    "firstSeen": 1783035891812
+  },
+  "web_fetch:unknown": {
+    "count": 476,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1783212882355,
+    "tool": "web_fetch",
+    "errorType": "unknown",
+    "firstSeen": 1782940159800
+  },
+  "noop_a:unknown": {
+    "count": 466,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1781066768945,
+    "tool": "noop_a",
+    "errorType": "unknown",
+    "firstSeen": 1781066768945
+  },
+  "file_write:unknown": {
+    "count": 418,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1783071506398,
+    "tool": "file_write",
+    "errorType": "unknown",
+    "firstSeen": 1782979358650
+  },
+  "shell:not_found": {
+    "count": 346,
+    "guidance": "File/resource not found. Before retrying: use list_directory or find_files to verify the path exists. Common causes: wrong directory, typo in filename, file was moved/renamed.",
+    "lastSeen": 1783228309018,
+    "tool": "shell",
+    "errorType": "not_found",
+    "firstSeen": 1782850551820
+  },
+  "memory_read:unknown": {
+    "count": 224,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1783188528490,
+    "tool": "memory_read",
+    "errorType": "unknown",
+    "firstSeen": 1782973552372
+  },
+  "failing_tool:unknown": {
+    "count": 267,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1783222162631,
+    "tool": "failing_tool",
+    "errorType": "unknown",
+    "firstSeen": 1782884015173
+  },
+  "nonexistent_tool:unknown": {
+    "count": 267,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1783222159142,
+    "tool": "nonexistent_tool",
+    "errorType": "unknown",
+    "firstSeen": 1782884014543
+  },
+  "file_read:not_found": {
+    "count": 209,
+    "guidance": "File/resource not found. Before retrying: use list_directory or find_files to verify the path exists. Common causes: wrong directory, typo in filename, file was moved/renamed.",
+    "lastSeen": 1783054668044,
+    "tool": "file_read",
+    "errorType": "not_found",
+    "firstSeen": 1782547250142
+  },
+  "shell:timeout": {
+    "count": 194,
+    "guidance": "Operation timed out. The target may be unreachable or overloaded. Try: shorter timeout, different endpoint, or verify network connectivity first.",
+    "lastSeen": 1783233303050,
+    "tool": "shell",
+    "errorType": "timeout",
+    "firstSeen": 1783035143214
+  },
+  "file_read:syntax": {
+    "count": 175,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1783228251167,
+    "tool": "file_read",
+    "errorType": "syntax",
+    "firstSeen": 1782852385198
+  },
+  "list_directory:unknown": {
+    "count": 142,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1783188071329,
+    "tool": "list_directory",
+    "errorType": "unknown",
+    "firstSeen": 1782953243334
+  },
+  "todo_write:unknown": {
+    "count": 141,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1783131769051,
+    "tool": "todo_write",
+    "errorType": "unknown",
+    "firstSeen": 1782979216984
+  },
+  "browser_action:unknown": {
+    "count": 129,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1782930509989,
+    "tool": "browser_action",
+    "errorType": "unknown",
+    "firstSeen": 1782930509989
+  },
+  "repl_exec:unknown": {
+    "count": 129,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1781196623532,
+    "tool": "repl_exec",
+    "errorType": "unknown",
+    "firstSeen": 1781196623532
+  },
+  "grep_search:unknown": {
+    "count": 84,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1782607320172,
+    "tool": "grep_search",
+    "errorType": "unknown",
+    "firstSeen": 1782607320172
+  },
+  "telegram_send_file:unknown": {
+    "count": 72,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1782709674449,
+    "tool": "telegram_send_file",
+    "errorType": "unknown",
+    "firstSeen": 1782709674449
+  },
+  "web_fetch:not_found": {
+    "count": 73,
+    "guidance": "File/resource not found. Before retrying: use list_directory or find_files to verify the path exists. Common causes: wrong directory, typo in filename, file was moved/renamed.",
+    "lastSeen": 1783056743782,
+    "tool": "web_fetch",
+    "errorType": "not_found",
+    "firstSeen": 1780848870146
+  },
+  "file_edit:unknown": {
+    "count": 101,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1783234120661,
+    "tool": "file_edit",
+    "errorType": "unknown",
+    "firstSeen": 1782976899026
+  },
+  "shell:permission": {
+    "count": 69,
+    "guidance": "Permission denied. The command may need sudo/elevated privileges. Use shell with sudo, or check file ownership with 'ls -la'.",
+    "lastSeen": 1783068498878,
+    "tool": "shell",
+    "errorType": "permission",
+    "firstSeen": 1782787557864
+  },
+  "sub_agent:unknown": {
+    "count": 75,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1783097164261,
+    "tool": "sub_agent",
+    "errorType": "unknown",
+    "firstSeen": 1782852395472
+  },
+  "sub_agent:syntax": {
+    "count": 113,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1783222143140,
+    "tool": "sub_agent",
+    "errorType": "syntax",
+    "firstSeen": 1782884011549
+  },
+  "shell:syntax": {
+    "count": 55,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1782952253945,
+    "tool": "shell",
+    "errorType": "syntax",
+    "firstSeen": 1782952253945
+  },
+  "list_directory:not_found": {
+    "count": 43,
+    "guidance": "File/resource not found. Before retrying: use list_directory or find_files to verify the path exists. Common causes: wrong directory, typo in filename, file was moved/renamed.",
+    "lastSeen": 1782952057394,
+    "tool": "list_directory",
+    "errorType": "not_found",
+    "firstSeen": 1782952057394
+  },
+  "find_files:unknown": {
+    "count": 41,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1782574548530,
+    "tool": "find_files",
+    "errorType": "unknown",
+    "firstSeen": 1782574548530
+  },
+  "task_complete:syntax": {
+    "count": 38,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1779778799866,
+    "tool": "task_complete",
+    "errorType": "syntax",
+    "firstSeen": 1779778799866
+  },
+  "tool_search:unknown": {
+    "count": 38,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1780884501825,
+    "tool": "tool_search",
+    "errorType": "unknown",
+    "firstSeen": 1780884501825
+  },
+  "memory_search:unknown": {
+    "count": 40,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1783071298331,
+    "tool": "memory_search",
+    "errorType": "unknown",
+    "firstSeen": 1781565213299
+  },
+  "repl_exec:timeout": {
+    "count": 31,
+    "guidance": "Operation timed out. The target may be unreachable or overloaded. Try: shorter timeout, different endpoint, or verify network connectivity first.",
+    "lastSeen": 1779643673515,
+    "tool": "repl_exec",
+    "errorType": "timeout",
+    "firstSeen": 1779643673515
+  },
+  "playwright_browser:unknown": {
+    "count": 27,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1780865247829,
+    "tool": "playwright_browser",
+    "errorType": "unknown",
+    "firstSeen": 1780865247829
+  },
+  "file_patch:unknown": {
+    "count": 30,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1783232439809,
+    "tool": "file_patch",
+    "errorType": "unknown",
+    "firstSeen": 1782977208747
+  },
+  "file_patch:syntax": {
+    "count": 29,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1783154567771,
+    "tool": "file_patch",
+    "errorType": "syntax",
+    "firstSeen": 1782969880923
+  },
+  "list_directory:network": {
+    "count": 23,
+    "guidance": "Network error. Check connectivity: ping the target, verify the URL/host is correct, check if a proxy is needed.",
+    "lastSeen": 1781507448341,
+    "tool": "list_directory",
+    "errorType": "network",
+    "firstSeen": 1781507448341
+  },
+  "file_explore:syntax": {
+    "count": 22,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1781065750045,
+    "tool": "file_explore",
+    "errorType": "syntax",
+    "firstSeen": 1781065750045
+  },
+  "gps_location:unknown": {
+    "count": 22,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1775875088255,
+    "tool": "gps_location",
+    "errorType": "unknown",
+    "firstSeen": 1775875088255
+  },
+  "batch_edit:unknown": {
+    "count": 22,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1783058371496,
+    "tool": "batch_edit",
+    "errorType": "unknown",
+    "firstSeen": 1781255978631
+  },
+  "scheduler:unknown": {
+    "count": 19,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1778853863903,
+    "tool": "scheduler",
+    "errorType": "unknown",
+    "firstSeen": 1778853863903
+  },
+  "memory_write:unknown": {
+    "count": 16,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1782327015012,
+    "tool": "memory_write",
+    "errorType": "unknown",
+    "firstSeen": 1782327015012
+  },
+  "find_files:permission": {
+    "count": 15,
+    "guidance": "Permission denied. The command may need sudo/elevated privileges. Use shell with sudo, or check file ownership with 'ls -la'.",
+    "lastSeen": 1776998891329,
+    "tool": "find_files",
+    "errorType": "permission",
+    "firstSeen": 1776998891329
+  },
+  "reminder:syntax": {
+    "count": 15,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1781293892372,
+    "tool": "reminder",
+    "errorType": "syntax",
+    "firstSeen": 1781293892372
+  },
+  "shell:busy": {
+    "count": 24,
+    "guidance": "Resource is busy/locked. Another process may be using it. Check with 'lsof' or 'fuser', or wait and retry.",
+    "lastSeen": 1783212428071,
+    "tool": "shell",
+    "errorType": "busy",
+    "firstSeen": 1782352747218
+  },
+  "image_read:syntax": {
+    "count": 13,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1781552735821,
+    "tool": "image_read",
+    "errorType": "syntax",
+    "firstSeen": 1781552735821
+  },
+  "telegram:unknown": {
+    "count": 13,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1780299285292,
+    "tool": "telegram",
+    "errorType": "unknown",
+    "firstSeen": 1780299285292
+  },
+  "gps_location:network": {
+    "count": 12,
+    "guidance": "Network error. Check connectivity: ping the target, verify the URL/host is correct, check if a proxy is needed.",
+    "lastSeen": 1775875101234,
+    "tool": "gps_location",
+    "errorType": "network",
+    "firstSeen": 1775875101234
+  },
+  "grep_search:permission": {
+    "count": 11,
+    "guidance": "Permission denied. The command may need sudo/elevated privileges. Use shell with sudo, or check file ownership with 'ls -la'.",
+    "lastSeen": 1776998895544,
+    "tool": "grep_search",
+    "errorType": "permission",
+    "firstSeen": 1776998895544
+  },
+  "playwright_browser:timeout": {
+    "count": 11,
+    "guidance": "Operation timed out. The target may be unreachable or overloaded. Try: shorter timeout, different endpoint, or verify network connectivity first.",
+    "lastSeen": 1780299522001,
+    "tool": "playwright_browser",
+    "errorType": "timeout",
+    "firstSeen": 1780299522001
+  },
+  "web_crawl:unknown": {
+    "count": 11,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1778808391554,
+    "tool": "web_crawl",
+    "errorType": "unknown",
+    "firstSeen": 1778808391554
+  },
+  "web_search:unknown": {
+    "count": 11,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1779700582435,
+    "tool": "web_search",
+    "errorType": "unknown",
+    "firstSeen": 1779700582435
+  },
+  "nexus:unknown": {
+    "count": 10,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1779571025413,
+    "tool": "nexus",
+    "errorType": "unknown",
+    "firstSeen": 1779571025413
+  },
+  "todo_write:syntax": {
+    "count": 11,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1783137791071,
+    "tool": "todo_write",
+    "errorType": "syntax",
+    "firstSeen": 1776305127357
+  },
+  "task_complete:not_found": {
+    "count": 9,
+    "guidance": "File not found. Use list_directory to verify the path exists first.",
+    "lastSeen": 1775502881225,
+    "tool": "task_complete",
+    "errorType": "not_found",
+    "firstSeen": 1775502881225
+  },
+  "vision:syntax": {
+    "count": 9,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1780077137051,
+    "tool": "vision",
+    "errorType": "syntax",
+    "firstSeen": 1780077137051
+  },
+  "file_write:not_found": {
+    "count": 8,
+    "guidance": "File/resource not found. Before retrying: use list_directory or find_files to verify the path exists. Common causes: wrong directory, typo in filename, file was moved/renamed.",
+    "lastSeen": 1780470605844,
+    "tool": "file_write",
+    "errorType": "not_found",
+    "firstSeen": 1780470605844
+  },
+  "generate_audio:unknown": {
+    "count": 7,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1779744113073,
+    "tool": "generate_audio",
+    "errorType": "unknown",
+    "firstSeen": 1779744113073
+  },
+  "reminder:unknown": {
+    "count": 7,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1778853852426,
+    "tool": "reminder",
+    "errorType": "unknown",
+    "firstSeen": 1778853852426
+  },
+  "task_complete:timeout": {
+    "count": 7,
+    "guidance": "Operation timed out. The target may be unreachable or overloaded. Try: shorter timeout, different endpoint, or verify network connectivity first.",
+    "lastSeen": 1778358460349,
+    "tool": "task_complete",
+    "errorType": "timeout",
+    "firstSeen": 1778358460349
+  },
+  "aiwg_workflow:unknown": {
+    "count": 6,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1779216229520,
+    "tool": "aiwg_workflow",
+    "errorType": "unknown",
+    "firstSeen": 1779216229520
+  },
+  "image_read:not_found": {
+    "count": 6,
+    "guidance": "File/resource not found. Before retrying: use list_directory or find_files to verify the path exists. Common causes: wrong directory, typo in filename, file was moved/renamed.",
+    "lastSeen": 1780275321756,
+    "tool": "image_read",
+    "errorType": "not_found",
+    "firstSeen": 1780275321756
+  },
+  "memory_search:syntax": {
+    "count": 6,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1781046151518,
+    "tool": "memory_search",
+    "errorType": "syntax",
+    "firstSeen": 1781046151518
+  },
+  "web_fetch:timeout": {
+    "count": 6,
+    "guidance": "Operation timed out. The target may be unreachable or overloaded. Try: shorter timeout, different endpoint, or verify network connectivity first.",
+    "lastSeen": 1778189201287,
+    "tool": "web_fetch",
+    "errorType": "timeout",
+    "firstSeen": 1778189201287
+  },
+  "background_run:unknown": {
+    "count": 5,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1782577087528,
+    "tool": "background_run",
+    "errorType": "unknown",
+    "firstSeen": 1782577087528
+  },
+  "create_tool:unknown": {
+    "count": 5,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1780038040780,
+    "tool": "create_tool",
+    "errorType": "unknown",
+    "firstSeen": 1780038040780
+  },
+  "git_info:unknown": {
+    "count": 5,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1775761380173,
+    "tool": "git_info",
+    "errorType": "unknown",
+    "firstSeen": 1775761380173
+  },
+  "screenshot:unknown": {
+    "count": 5,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1780508134558,
+    "tool": "screenshot",
+    "errorType": "unknown",
+    "firstSeen": 1780508134558
+  },
+  "skill_list:unknown": {
+    "count": 5,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1778822764694,
+    "tool": "skill_list",
+    "errorType": "unknown",
+    "firstSeen": 1778822764694
+  },
+  "cron_agent:unknown": {
+    "count": 4,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1776046733709,
+    "tool": "cron_agent",
+    "errorType": "unknown",
+    "firstSeen": 1776046733709
+  },
+  "file_write:syntax": {
+    "count": 6,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1783154029131,
+    "tool": "file_write",
+    "errorType": "syntax",
+    "firstSeen": 1779815783689
+  },
+  "generate_image:syntax": {
+    "count": 4,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1778946530946,
+    "tool": "generate_image",
+    "errorType": "syntax",
+    "firstSeen": 1778946530946
+  },
+  "generate_model:unknown": {
+    "count": 4,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1779767691829,
+    "tool": "generate_model",
+    "errorType": "unknown",
+    "firstSeen": 1779767691829
+  },
+  "grep_search:not_found": {
+    "count": 4,
+    "guidance": "File/resource not found. Before retrying: use list_directory or find_files to verify the path exists. Common causes: wrong directory, typo in filename, file was moved/renamed.",
+    "lastSeen": 1781143974369,
+    "tool": "grep_search",
+    "errorType": "not_found",
+    "firstSeen": 1781143974369
+  },
+  "memex_retrieve:unknown": {
+    "count": 4,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1780728569968,
+    "tool": "memex_retrieve",
+    "errorType": "unknown",
+    "firstSeen": 1780728569968
+  },
+  "memory_metabolize:unknown": {
+    "count": 4,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1776121806659,
+    "tool": "memory_metabolize",
+    "errorType": "unknown",
+    "firstSeen": 1776121806659
+  },
+  "memory_write:not_found": {
+    "count": 4,
+    "guidance": "File/resource not found. Before retrying: use list_directory or find_files to verify the path exists. Common causes: wrong directory, typo in filename, file was moved/renamed.",
+    "lastSeen": 1776121705834,
+    "tool": "memory_write",
+    "errorType": "not_found",
+    "firstSeen": 1776121705834
+  },
+  "memory_write:syntax": {
+    "count": 4,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1778155042098,
+    "tool": "memory_write",
+    "errorType": "syntax",
+    "firstSeen": 1778155042098
+  },
+  "playwright_browser:syntax": {
+    "count": 4,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1780864332126,
+    "tool": "playwright_browser",
+    "errorType": "syntax",
+    "firstSeen": 1780864332126
+  },
+  "task_complete:network": {
+    "count": 4,
+    "guidance": "Network error. Check connectivity: ping the target, verify the URL/host is correct, check if a proxy is needed.",
+    "lastSeen": 1775813898656,
+    "tool": "task_complete",
+    "errorType": "network",
+    "firstSeen": 1775813898656
+  },
+  "tuple_of_calls::unknown": {
+    "count": 4,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1776303983307,
+    "tool": "tuple_of_calls:",
+    "errorType": "unknown",
+    "firstSeen": 1776303983307
+  },
+  "web_download:not_found": {
+    "count": 4,
+    "guidance": "File/resource not found. Before retrying: use list_directory or find_files to verify the path exists. Common causes: wrong directory, typo in filename, file was moved/renamed.",
+    "lastSeen": 1780127008693,
+    "tool": "web_download",
+    "errorType": "not_found",
+    "firstSeen": 1780127008693
+  },
+  "web_download:unknown": {
+    "count": 4,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1779738972368,
+    "tool": "web_download",
+    "errorType": "unknown",
+    "firstSeen": 1779738972368
+  },
+  "agent:unknown": {
+    "count": 3,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1777088605491,
+    "tool": "agent",
+    "errorType": "unknown",
+    "firstSeen": 1777088605491
+  },
+  "audio_playback:unknown": {
+    "count": 3,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1778826141310,
+    "tool": "audio_playback",
+    "errorType": "unknown",
+    "firstSeen": 1778826141310
+  },
+  "file_explore:unknown": {
+    "count": 3,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1781065846008,
+    "tool": "file_explore",
+    "errorType": "unknown",
+    "firstSeen": 1781065846008
+  },
+  "file_write:permission": {
+    "count": 3,
+    "guidance": "Permission denied. The command may need sudo/elevated privileges. Use shell with sudo, or check file ownership with 'ls -la'.",
+    "lastSeen": 1775878883055,
+    "tool": "file_write",
+    "errorType": "permission",
+    "firstSeen": 1775878883055
+  },
+  "generate_audio:syntax": {
+    "count": 3,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1778819632068,
+    "tool": "generate_audio",
+    "errorType": "syntax",
+    "firstSeen": 1778819632068
+  },
+  "image_read:unknown": {
+    "count": 3,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1778803088774,
+    "tool": "image_read",
+    "errorType": "unknown",
+    "firstSeen": 1778803088774
+  },
+  "memory_read:syntax": {
+    "count": 3,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1779631742182,
+    "tool": "memory_read",
+    "errorType": "syntax",
+    "firstSeen": 1779631742182
+  },
+  "ocr:syntax": {
+    "count": 3,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1780275269378,
+    "tool": "ocr",
+    "errorType": "syntax",
+    "firstSeen": 1780275269378
+  },
+  "ocr:unknown": {
+    "count": 3,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1778803101997,
+    "tool": "ocr",
+    "errorType": "unknown",
+    "firstSeen": 1778803101997
+  },
+  "playwright_browser:network": {
+    "count": 3,
+    "guidance": "Network error. Check connectivity: ping the target, verify the URL/host is correct, check if a proxy is needed.",
+    "lastSeen": 1782353689406,
+    "tool": "playwright_browser",
+    "errorType": "network",
+    "firstSeen": 1782353689406
+  },
+  "skill_execute:syntax": {
+    "count": 3,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1782188836375,
+    "tool": "skill_execute",
+    "errorType": "syntax",
+    "firstSeen": 1782188836375
+  },
+  "skill_execute:unknown": {
+    "count": 3,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1778822848059,
+    "tool": "skill_execute",
+    "errorType": "unknown",
+    "firstSeen": 1778822848059
+  },
+  "task_status:unknown": {
+    "count": 3,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1775635038832,
+    "tool": "task_status",
+    "errorType": "unknown",
+    "firstSeen": 1775635038832
+  },
+  "vision:not_found": {
+    "count": 3,
+    "guidance": "File/resource not found. Before retrying: use list_directory or find_files to verify the path exists. Common causes: wrong directory, typo in filename, file was moved/renamed.",
+    "lastSeen": 1776115914506,
+    "tool": "vision",
+    "errorType": "not_found",
+    "firstSeen": 1776115914506
+  },
+  "web_download:syntax": {
+    "count": 3,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1780126930394,
+    "tool": "web_download",
+    "errorType": "syntax",
+    "firstSeen": 1780126930394
+  },
+  "aiwg_setup:unknown": {
+    "count": 2,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1779152757392,
+    "tool": "aiwg_setup",
+    "errorType": "unknown",
+    "firstSeen": 1779152757392
+  },
+  "asr_listen:unknown": {
+    "count": 2,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1775597587407,
+    "tool": "asr_listen",
+    "errorType": "unknown",
+    "firstSeen": 1775597587407
+  },
+  "camera_capture:unknown": {
+    "count": 2,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1775504489042,
+    "tool": "camera_capture",
+    "errorType": "unknown",
+    "firstSeen": 1775504489042
+  },
+  "code_sandbox:unknown": {
+    "count": 2,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1776049721043,
+    "tool": "code_sandbox",
+    "errorType": "unknown",
+    "firstSeen": 1776049721043
+  },
+  "file_patch:not_found": {
+    "count": 2,
+    "guidance": "File/resource not found. Before retrying: use list_directory or find_files to verify the path exists. Common causes: wrong directory, typo in filename, file was moved/renamed.",
+    "lastSeen": 1781072933111,
+    "tool": "file_patch",
+    "errorType": "not_found",
+    "firstSeen": 1781072933111
+  },
+  "find_files:not_found": {
+    "count": 2,
+    "guidance": "File/resource not found. Before retrying: use list_directory or find_files to verify the path exists. Common causes: wrong directory, typo in filename, file was moved/renamed.",
+    "lastSeen": 1775495068417,
+    "tool": "find_files",
+    "errorType": "not_found",
+    "firstSeen": 1775495068417
+  },
+  "generate_tts:syntax": {
+    "count": 2,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1778824121884,
+    "tool": "generate_tts",
+    "errorType": "syntax",
+    "firstSeen": 1778824121884
+  },
+  "grep_search:syntax": {
+    "count": 2,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1776011964237,
+    "tool": "grep_search",
+    "errorType": "syntax",
+    "firstSeen": 1776011964237
+  },
+  "grep_search:timeout": {
+    "count": 2,
+    "guidance": "Operation timed out. The target may be unreachable or overloaded. Try: shorter timeout, different endpoint, or verify network connectivity first.",
+    "lastSeen": 1781476356972,
+    "tool": "grep_search",
+    "errorType": "timeout",
+    "firstSeen": 1781476356972
+  },
+  "read_file:unknown": {
+    "count": 2,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1780462491532,
+    "tool": "read_file",
+    "errorType": "unknown",
+    "firstSeen": 1780462491532
+  },
+  "read_structured_file:not_found": {
+    "count": 2,
+    "guidance": "File/resource not found. Before retrying: use list_directory or find_files to verify the path exists. Common causes: wrong directory, typo in filename, file was moved/renamed.",
+    "lastSeen": 1776062674202,
+    "tool": "read_structured_file",
+    "errorType": "not_found",
+    "firstSeen": 1776062674202
+  },
+  "repl:unknown": {
+    "count": 2,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1775981785327,
+    "tool": "repl",
+    "errorType": "unknown",
+    "firstSeen": 1775981785327
+  },
+  "task_output:not_found": {
+    "count": 2,
+    "guidance": "File/resource not found. Before retrying: use list_directory or find_files to verify the path exists. Common causes: wrong directory, typo in filename, file was moved/renamed.",
+    "lastSeen": 1775843636307,
+    "tool": "task_output",
+    "errorType": "not_found",
+    "firstSeen": 1775843636307
+  },
+  "task_output:syntax": {
+    "count": 2,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1778411871398,
+    "tool": "task_output",
+    "errorType": "syntax",
+    "firstSeen": 1778411871398
+  },
+  "task_status:not_found": {
+    "count": 2,
+    "guidance": "File/resource not found. Before retrying: use list_directory or find_files to verify the path exists. Common causes: wrong directory, typo in filename, file was moved/renamed.",
+    "lastSeen": 1775633079599,
+    "tool": "task_status",
+    "errorType": "not_found",
+    "firstSeen": 1775633079599
+  },
+  "telegram_send_file:syntax": {
+    "count": 2,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1778822756969,
+    "tool": "telegram_send_file",
+    "errorType": "syntax",
+    "firstSeen": 1778822756969
+  },
+  "todo_read:unknown": {
+    "count": 2,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1777082212163,
+    "tool": "todo_read",
+    "errorType": "unknown",
+    "firstSeen": 1777082212163
+  },
+  "tool_search:network": {
+    "count": 2,
+    "guidance": "Network error. Check connectivity: ping the target, verify the URL/host is correct, check if a proxy is needed.",
+    "lastSeen": 1779571062746,
+    "tool": "tool_search",
+    "errorType": "network",
+    "firstSeen": 1779571062746
+  },
+  "\"memory_read\":unknown": {
+    "count": 1,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1779480429087,
+    "tool": "\"memory_read\"",
+    "errorType": "unknown",
+    "firstSeen": 1779480429087
+  },
+  "agenda:unknown": {
+    "count": 1,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1775801916871,
+    "tool": "agenda",
+    "errorType": "unknown",
+    "firstSeen": 1775801916871
+  },
+  "aiwg_workflow:timeout": {
+    "count": 1,
+    "guidance": "Operation timed out. The target may be unreachable or overloaded. Try: shorter timeout, different endpoint, or verify network connectivity first.",
+    "lastSeen": 1779152894205,
+    "tool": "aiwg_workflow",
+    "errorType": "timeout",
+    "firstSeen": 1779152894205
+  },
+  "audio_generate:unknown": {
+    "count": 1,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1778817762652,
+    "tool": "audio_generate",
+    "errorType": "unknown",
+    "firstSeen": 1778817762652
+  },
+  "code_sandbox:syntax": {
+    "count": 1,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1780701218167,
+    "tool": "code_sandbox",
+    "errorType": "syntax",
+    "firstSeen": 1780701218167
+  },
+  "cron_agent:syntax": {
+    "count": 1,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1778009044167,
+    "tool": "cron_agent",
+    "errorType": "syntax",
+    "firstSeen": 1778009044167
+  },
+  "desktop_click:unknown": {
+    "count": 1,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1779703100790,
+    "tool": "desktop_click",
+    "errorType": "unknown",
+    "firstSeen": 1779703100790
+  },
+  "embedding_search:unknown": {
+    "count": 1,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1779643209534,
+    "tool": "embedding_search",
+    "errorType": "unknown",
+    "firstSeen": 1779643209534
+  },
+  "explore_tools:unknown": {
+    "count": 1,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1775677077272,
+    "tool": "explore_tools",
+    "errorType": "unknown",
+    "firstSeen": 1775677077272
+  },
+  "file_edit:permission": {
+    "count": 1,
+    "guidance": "Permission denied. The command may need sudo/elevated privileges. Use shell with sudo, or check file ownership with 'ls -la'.",
+    "lastSeen": 1776998941708,
+    "tool": "file_edit",
+    "errorType": "permission",
+    "firstSeen": 1776998941708
+  },
+  "flipper_zero:network": {
+    "count": 1,
+    "guidance": "Network error. Check connectivity: ping the target, verify the URL/host is correct, check if a proxy is needed.",
+    "lastSeen": 1775767958450,
+    "tool": "flipper_zero",
+    "errorType": "network",
+    "firstSeen": 1775767958450
+  },
+  "flipper_zero:timeout": {
+    "count": 1,
+    "guidance": "Operation timed out. The target may be unreachable or overloaded. Try: shorter timeout, different endpoint, or verify network connectivity first.",
+    "lastSeen": 1779601743802,
+    "tool": "flipper_zero",
+    "errorType": "timeout",
+    "firstSeen": 1779601743802
+  },
+  "full_sub_agent:not_found": {
+    "count": 1,
+    "guidance": "File/resource not found. Before retrying: use list_directory or find_files to verify the path exists. Common causes: wrong directory, typo in filename, file was moved/renamed.",
+    "lastSeen": 1775597703319,
+    "tool": "full_sub_agent",
+    "errorType": "not_found",
+    "firstSeen": 1775597703319
+  },
+  "generate_video:syntax": {
+    "count": 1,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1778983929505,
+    "tool": "generate_video",
+    "errorType": "syntax",
+    "firstSeen": 1778983929505
+  },
+  "memory_metabolize:syntax": {
+    "count": 1,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1778437641301,
+    "tool": "memory_metabolize",
+    "errorType": "syntax",
+    "firstSeen": 1778437641301
+  },
+  "ocr:not_found": {
+    "count": 1,
+    "guidance": "File/resource not found. Before retrying: use list_directory or find_files to verify the path exists. Common causes: wrong directory, typo in filename, file was moved/renamed.",
+    "lastSeen": 1780280566809,
+    "tool": "ocr",
+    "errorType": "not_found",
+    "firstSeen": 1780280566809
+  },
+  "repl_exec:syntax": {
+    "count": 1,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1779638350134,
+    "tool": "repl_exec",
+    "errorType": "syntax",
+    "firstSeen": 1779638350134
+  },
+  "send_message:unknown": {
+    "count": 1,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1775463651787,
+    "tool": "send_message",
+    "errorType": "unknown",
+    "firstSeen": 1775463651787
+  },
+  "shell:network": {
+    "count": 1,
+    "guidance": "Network error. Check connectivity: ping the target, verify the URL/host is correct, check if a proxy is needed.",
+    "lastSeen": 1777006555091,
+    "tool": "shell",
+    "errorType": "network",
+    "firstSeen": 1777006555091
+  },
+  "telegram_send_message:unknown": {
+    "count": 1,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1782546780994,
+    "tool": "telegram_send_message",
+    "errorType": "unknown",
+    "firstSeen": 1782546780994
+  },
+  "telegram:syntax": {
+    "count": 1,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1780619632396,
+    "tool": "telegram",
+    "errorType": "syntax",
+    "firstSeen": 1780619632396
+  },
+  "update_todos:unknown": {
+    "count": 1,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1782973459079,
+    "tool": "update_todos",
+    "errorType": "unknown",
+    "firstSeen": 1782973459079
+  },
+  "vision_action:unknown": {
+    "count": 1,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1780883409724,
+    "tool": "vision_action",
+    "errorType": "unknown",
+    "firstSeen": 1780883409724
+  },
+  "web_search:timeout": {
+    "count": 1,
+    "guidance": "Operation timed out. The target may be unreachable or overloaded. Try: shorter timeout, different endpoint, or verify network connectivity first.",
+    "lastSeen": 1782503439643,
+    "tool": "web_search",
+    "errorType": "timeout",
+    "firstSeen": 1782503439643
+  },
+  "xdotool:unknown": {
+    "count": 1,
+    "guidance": "This tool failed previously with a similar error. Review the error message carefully and adjust your approach before retrying.",
+    "lastSeen": 1781507575871,
+    "tool": "xdotool",
+    "errorType": "unknown",
+    "firstSeen": 1781507575871
+  },
+  "file_edit:syntax": {
+    "count": 75,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1783232405041,
+    "tool": "file_edit",
+    "errorType": "syntax",
+    "firstSeen": 1783101632599
+  },
+  "custom_write:syntax": {
+    "count": 23,
+    "guidance": "Syntax/parse error. Review the command or input for typos, missing quotes, or incorrect parameter format.",
+    "lastSeen": 1783222141175,
+    "tool": "custom_write",
+    "errorType": "syntax",
+    "firstSeen": 1783135345426
+  },
+  "file_edit:busy": {
+    "count": 1,
+    "guidance": "Resource is busy/locked. Another process may be using it. Check with 'lsof' or 'fuser', or wait and retry.",
+    "lastSeen": 1783139197553,
+    "tool": "file_edit",
+    "errorType": "busy",
+    "firstSeen": 1783139197553
+  }
+}

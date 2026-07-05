@@ -1,0 +1,2861 @@
+[SHELL TRANSCRIPT]
+command: cd firmware/esp32 && pio run 2>&1
+cwd_before: /home/roko/Documents/Projects/myactuator
+cwd_after: /home/roko/Documents/Projects/myactuator/firmware/esp32
+cwd_note: cd changes are command-local; next shell call starts at /home/roko/Documents/Projects/myactuator
+status: failure
+exit_code: 1
+error: Exit code 1
+stdout:
+Processing esp32 (platform: espressif32; board: esp32dev; framework: arduino)
+--------------------------------------------------------------------------------
+Verbose mode can be enabled via `-v, --verbose` option
+CONFIGURATION: https://docs.platformio.org/page/boards/espressif32/esp32dev.html
+PLATFORM: Espressif 32 (7.0.1) > Espressif ESP32 Dev Module
+HARDWARE: ESP32 240MHz, 320KB RAM, 4MB Flash
+DEBUG: Current (cmsis-dap) External (cmsis-dap, esp-bridge, esp-prog, iot-bus-jtag, jlink, minimodule, olimex-arm-usb-ocd, olimex-arm-usb-ocd-h, olimex-arm-usb-tiny-h, olimex-jtag-tiny, tumpa)
+PACKAGES: 
+ - framework-arduinoespressif32 @ 3.20017.241212+sha.dcc1105b 
+ - tool-esptoolpy @ 2.41100.0 (4.11.0) 
+ - toolchain-xtensa-esp32 @ 8.4.0+2021r2-patch5
+LDF: Library Dependency Finder -> https://bit.ly/configure-pio-ldf
+LDF Modes: Finder ~ chain, Compatibility ~ soft
+Found 36 compatible libraries
+Scanning dependencies...
+Dependency Graph
+|-- CAN @ 0.3.1
+|-- MCP2515 @ 1.0.0
+|-- ArduinoJson @ 6.21.6
+|-- SPI @ 2.0.0
+Building in release mode
+Compiling .pio/build/esp32/src/drivers/cem_driver.cpp.o
+Compiling .pio/build/esp32/src/drivers/fl_driver.cpp.o
+Compiling .pio/build/esp32/src/drivers/mcp2515_can.cpp.o
+Compiling .pio/build/esp32/src/drivers/rh_driver.cpp.o
+Compiling .pio/build/esp32/src/drivers/rmd_h_driver.cpp.o
+Compiling .pio/build/esp32/src/drivers/rmd_l_driver.cpp.o
+Compiling .pio/build/esp32/src/drivers/rmd_x_driver.cpp.o
+Compiling .pio/build/esp32/src/main.cpp.o
+Compiling .pio/build/esp32/src/motor_controller.cpp.o
+Compiling .pio/build/esp32/src/protocols/pal.cpp.o
+In file included from src/drivers/mcp2515_can.cpp:1:
+src/drivers/mcp2515_can.h:5:10: fatal error: mcp2515.h: No such file or directory
+
+*****************************************************************
+* Looking for mcp2515.h dependency? Check our library registry!
+*
+* CLI  > platformio lib search "header:mcp2515.h"
+* Web  > https://registry.platformio.org/search?q=header:mcp2515.h
+*
+*****************************************************************
+
+ #include <mcp2515.h>
+          ^~~~~~~~~~~
+compilation terminated.
+Archiving .pio/build/esp32/lib169/libSPI.a
+*** [.pio/build/esp32/src/drivers/mcp2515_can.cpp.o] Error 1
+In file included from src/drivers/cem_driver.cpp:128:
+include/../include/types.h:93:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/cem_driver.h:3,
+                 from src/drivers/cem_driver.cpp:127:
+src/drivers/motor_driver.h:25:3: note: previous declaration as 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/cem_driver.cpp:128:
+include/../include/types.h:133:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/cem_driver.h:3,
+                 from src/drivers/cem_driver.cpp:127:
+src/drivers/motor_driver.h:25:3: note: previous declaration as 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/cem_driver.cpp:128:
+include/../include/types.h:168:5: error: redefinition of 'MOTOR_STATE_TORQUE_CONTROL'
+     MOTOR_STATE_TORQUE_CONTROL
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:167:5: note: 'MOTOR_STATE_TORQUE_CONTROL' previously defined here
+     MOTOR_STATE_TORQUE_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:180:3: error: conflicting declaration 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+include/../include/types.h:101:3: note: previous declaration as 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+src/drivers/cem_driver.cpp:230:6: error: redefinition of 'void CEMDriver::deinit()'
+ void CEMDriver::deinit() {
+      ^~~~~~~~~
+src/drivers/cem_driver.cpp:150:6: note: 'virtual void CEMDriver::deinit()' previously defined here
+ void CEMDriver::deinit() {
+      ^~~~~~~~~
+src/drivers/cem_driver.cpp:236:13: error: redefinition of 'MotorStatus CEMDriver::getStatus()'
+ MotorStatus CEMDriver::getStatus() {
+             ^~~~~~~~~
+src/drivers/cem_driver.cpp:156:13: note: 'virtual MotorStatus CEMDriver::getStatus()' previously defined here
+ MotorStatus CEMDriver::getStatus() { return _status; }
+             ^~~~~~~~~
+src/drivers/cem_driver.cpp:240:7: error: redefinition of 'float CEMDriver::getTemperature()'
+ float CEMDriver::getTemperature() {
+       ^~~~~~~~~
+src/drivers/cem_driver.cpp:158:7: note: 'virtual float CEMDriver::getTemperature()' previously defined here
+ float CEMDriver::getTemperature() {
+       ^~~~~~~~~
+src/drivers/cem_driver.cpp:244:9: error: redefinition of 'int32_t CEMDriver::getPosition()'
+ int32_t CEMDriver::getPosition() {
+         ^~~~~~~~~
+src/drivers/cem_driver.cpp:165:9: note: 'virtual int32_t CEMDriver::getPosition()' previously defined here
+ int32_t CEMDriver::getPosition() {
+         ^~~~~~~~~
+src/drivers/cem_driver.cpp:248:7: error: redefinition of 'float CEMDriver::getVelocity()'
+ float CEMDriver::getVelocity() {
+       ^~~~~~~~~
+src/drivers/cem_driver.cpp:170:7: note: 'virtual float CEMDriver::getVelocity()' previously defined here
+ float CEMDriver::getVelocity() {
+       ^~~~~~~~~
+src/drivers/cem_driver.cpp:252:7: error: redefinition of 'float CEMDriver::getCurrent()'
+ float CEMDriver::getCurrent() {
+       ^~~~~~~~~
+src/drivers/cem_driver.cpp:175:7: note: 'virtual float CEMDriver::getCurrent()' previously defined here
+ float CEMDriver::getCurrent() {
+       ^~~~~~~~~
+src/drivers/fl_driver.cpp:111:6: error: redefinition of 'void FLDriver::deinit()'
+ void FLDriver::deinit() {
+      ^~~~~~~~
+src/drivers/fl_driver.cpp:30:6: note: 'virtual void FLDriver::deinit()' previously defined here
+ void FLDriver::deinit() {
+      ^~~~~~~~
+src/drivers/fl_driver.cpp:117:13: error: redefinition of 'MotorStatus FLDriver::getStatus()'
+ MotorStatus FLDriver::getStatus() {
+             ^~~~~~~~
+src/drivers/fl_driver.cpp:36:13: note: 'virtual MotorStatus FLDriver::getStatus()' previously defined here
+ MotorStatus FLDriver::getStatus() { return _status; }
+             ^~~~~~~~
+src/drivers/fl_driver.cpp:121:7: error: redefinition of 'float FLDriver::getTemperature()'
+ float FLDriver::getTemperature() {
+       ^~~~~~~~
+src/drivers/fl_driver.cpp:38:7: note: 'virtual float FLDriver::getTemperature()' previously defined here
+ float FLDriver::getTemperature() {
+       ^~~~~~~~
+src/drivers/fl_driver.cpp:125:9: error: redefinition of 'int32_t FLDriver::getPosition()'
+ int32_t FLDriver::getPosition() {
+         ^~~~~~~~
+src/drivers/fl_driver.cpp:45:9: note: 'virtual int32_t FLDriver::getPosition()' previously defined here
+ int32_t FLDriver::getPosition() {
+         ^~~~~~~~
+src/drivers/fl_driver.cpp:129:7: error: redefinition of 'float FLDriver::getVelocity()'
+ float FLDriver::getVelocity() {
+       ^~~~~~~~
+src/drivers/fl_driver.cpp:50:7: note: 'virtual float FLDriver::getVelocity()' previously defined here
+ float FLDriver::getVelocity() {
+       ^~~~~~~~
+src/drivers/fl_driver.cpp:133:7: error: redefinition of 'float FLDriver::getCurrent()'
+ float FLDriver::getCurrent() {
+       ^~~~~~~~
+src/drivers/fl_driver.cpp:55:7: note: 'virtual float FLDriver::getCurrent()' previously defined here
+ float FLDriver::getCurrent() {
+       ^~~~~~~~
+*** [.pio/build/esp32/src/drivers/cem_driver.cpp.o] Error 1
+Indexing .pio/build/esp32/lib169/libSPI.a
+src/drivers/rh_driver.cpp:90:6: error: redefinition of 'void RHDriver::deinit()'
+ void RHDriver::deinit() {
+      ^~~~~~~~
+src/drivers/rh_driver.cpp:30:6: note: 'virtual void RHDriver::deinit()' previously defined here
+ void RHDriver::deinit() {
+      ^~~~~~~~
+src/drivers/rh_driver.cpp:96:13: error: redefinition of 'MotorStatus RHDriver::getStatus()'
+ MotorStatus RHDriver::getStatus() {
+             ^~~~~~~~
+src/drivers/rh_driver.cpp:36:13: note: 'virtual MotorStatus RHDriver::getStatus()' previously defined here
+ MotorStatus RHDriver::getStatus() { return _status; }
+             ^~~~~~~~
+src/drivers/rh_driver.cpp:100:7: error: redefinition of 'float RHDriver::getTemperature()'
+ float RHDriver::getTemperature() {
+       ^~~~~~~~
+src/drivers/rh_driver.cpp:37:7: note: 'virtual float RHDriver::getTemperature()' previously defined here
+ float RHDriver::getTemperature() {
+       ^~~~~~~~
+src/drivers/rh_driver.cpp:104:9: error: redefinition of 'int32_t RHDriver::getPosition()'
+ int32_t RHDriver::getPosition() {
+         ^~~~~~~~
+src/drivers/rh_driver.cpp:43:9: note: 'virtual int32_t RHDriver::getPosition()' previously defined here
+ int32_t RHDriver::getPosition() { _position = 0; return _position; }
+         ^~~~~~~~
+src/drivers/rh_driver.cpp:108:7: error: redefinition of 'float RHDriver::getVelocity()'
+ float RHDriver::getVelocity() {
+       ^~~~~~~~
+src/drivers/rh_driver.cpp:44:7: note: 'virtual float RHDriver::getVelocity()' previously defined here
+ float RHDriver::getVelocity() { _velocity = 0.0f; return _velocity; }
+       ^~~~~~~~
+src/drivers/rh_driver.cpp:112:7: error: redefinition of 'float RHDriver::getCurrent()'
+ float RHDriver::getCurrent() {
+       ^~~~~~~~
+src/drivers/rh_driver.cpp:45:7: note: 'virtual float RHDriver::getCurrent()' previously defined here
+ float RHDriver::getCurrent() {
+       ^~~~~~~~
+*** [.pio/build/esp32/src/drivers/fl_driver.cpp.o] Error 1
+*** [.pio/build/esp32/src/drivers/rh_driver.cpp.o] Error 1
+src/drivers/rmd_h_driver.cpp:117:6: error: redefinition of 'void RMDHDriver::deinit()'
+ void RMDHDriver::deinit() {
+      ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:37:6: note: 'virtual void RMDHDriver::deinit()' previously defined here
+ void RMDHDriver::deinit() {
+      ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:123:13: error: redefinition of 'MotorStatus RMDHDriver::getStatus()'
+ MotorStatus RMDHDriver::getStatus() {
+             ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:43:13: note: 'virtual MotorStatus RMDHDriver::getStatus()' previously defined here
+ MotorStatus RMDHDriver::getStatus() { return _status; }
+             ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:127:7: error: redefinition of 'float RMDHDriver::getTemperature()'
+ float RMDHDriver::getTemperature() {
+       ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:45:7: note: 'virtual float RMDHDriver::getTemperature()' previously defined here
+ float RMDHDriver::getTemperature() {
+       ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:131:9: error: redefinition of 'int32_t RMDHDriver::getPosition()'
+ int32_t RMDHDriver::getPosition() {
+         ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:52:9: note: 'virtual int32_t RMDHDriver::getPosition()' previously defined here
+ int32_t RMDHDriver::getPosition() {
+         ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:135:7: error: redefinition of 'float RMDHDriver::getVelocity()'
+ float RMDHDriver::getVelocity() {
+       ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:57:7: note: 'virtual float RMDHDriver::getVelocity()' previously defined here
+ float RMDHDriver::getVelocity() {
+       ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:139:7: error: redefinition of 'float RMDHDriver::getCurrent()'
+ float RMDHDriver::getCurrent() {
+       ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:62:7: note: 'virtual float RMDHDriver::getCurrent()' previously defined here
+ float RMDHDriver::getCurrent() {
+       ^~~~~~~~~~
+*** [.pio/build/esp32/src/drivers/rmd_h_driver.cpp.o] Error 1
+In file included from src/main.cpp:21:
+src/drivers/mcp2515_can.h:5:10: fatal error: mcp2515.h: No such file or directory
+
+*****************************************************************
+* Looking for mcp2515.h dependency? Check our library registry!
+*
+* CLI  > platformio lib search "header:mcp2515.h"
+* Web  > https://registry.platformio.org/search?q=header:mcp2515.h
+*
+*****************************************************************
+
+ #include <mcp2515.h>
+          ^~~~~~~~~~~
+compilation terminated.
+In file included from src/motor_controller.cpp:3:
+src/drivers/mcp2515_can.h:5:10: fatal error: mcp2515.h: No such file or directory
+
+*****************************************************************
+* Looking for mcp2515.h dependency? Check our library registry!
+*
+* CLI  > platformio lib search "header:mcp2515.h"
+* Web  > https://registry.platformio.org/search?q=header:mcp2515.h
+*
+*****************************************************************
+
+ #include <mcp2515.h>
+          ^~~~~~~~~~~
+compilation terminated.
+*** [.pio/build/esp32/src/main.cpp.o] Error 1
+*** [.pio/build/esp32/src/motor_controller.cpp.o] Error 1
+In file included from src/drivers/rmd_l_driver.cpp:22:
+include/../include/types.h:93:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.h:3,
+                 from src/drivers/rmd_l_driver.cpp:21:
+src/drivers/motor_driver.h:25:3: note: previous declaration as 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:22:
+include/../include/types.h:133:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.h:3,
+                 from src/drivers/rmd_l_driver.cpp:21:
+src/drivers/motor_driver.h:25:3: note: previous declaration as 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:22:
+include/../include/types.h:168:5: error: redefinition of 'MOTOR_STATE_TORQUE_CONTROL'
+     MOTOR_STATE_TORQUE_CONTROL
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:167:5: note: 'MOTOR_STATE_TORQUE_CONTROL' previously defined here
+     MOTOR_STATE_TORQUE_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:180:3: error: conflicting declaration 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+include/../include/types.h:101:3: note: previous declaration as 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+In file included from src/motor_controller.h:10,
+                 from src/drivers/rmd_l_driver.cpp:30:
+src/drivers/rmd_x_driver.h:23:10: error: 'void RMDXDriver::setBacklashCompensation(float)' marked 'override', but does not override
+     void setBacklashCompensation(float compensation) override;
+          ^~~~~~~~~~~~~~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:1:
+src/drivers/rmd_x_driver.h:23:10: error: 'void RMDXDriver::setBacklashCompensation(float)' marked 'override', but does not override
+     void setBacklashCompensation(float compensation) override;
+          ^~~~~~~~~~~~~~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:2:
+include/../include/types.h:93:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.h:2,
+                 from src/drivers/rmd_x_driver.cpp:1:
+src/drivers/motor_driver.h:25:3: note: previous declaration as 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:2:
+include/../include/types.h:133:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.h:2,
+                 from src/drivers/rmd_x_driver.cpp:1:
+src/drivers/motor_driver.h:25:3: note: previous declaration as 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:2:
+include/../include/types.h:168:5: error: redefinition of 'MOTOR_STATE_TORQUE_CONTROL'
+     MOTOR_STATE_TORQUE_CONTROL
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:167:5: note: 'MOTOR_STATE_TORQUE_CONTROL' previously defined here
+     MOTOR_STATE_TORQUE_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:180:3: error: conflicting declaration 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+include/../include/types.h:101:3: note: previous declaration as 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:30:
+src/motor_controller.h:52:3: error: 'FaultCode' does not name a type
+   FaultCode getFaultCode() const;
+   ^~~~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:10:
+src/motor_controller.h:52:3: error: 'FaultCode' does not name a type
+   FaultCode getFaultCode() const;
+   ^~~~~~~~~
+src/motor_controller.h:58:3: error: 'FaultCode' does not name a type
+   FaultCode faultCode;
+   ^~~~~~~~~
+src/motor_controller.h:58:3: error: 'FaultCode' does not name a type
+   FaultCode faultCode;
+   ^~~~~~~~~
+src/motor_controller.h:80:3: error: 'MCP2515_CAN' does not name a type
+   MCP2515_CAN* canBus;
+   ^~~~~~~~~~~
+src/motor_controller.h:83:18: error: 'MCP2515_CAN' has not been declared
+   void setCanBus(MCP2515_CAN* bus) { canBus = bus; }
+                  ^~~~~~~~~~~
+src/motor_controller.h:86:23: error: 'MotorDriver' has not been declared
+   void setMotorDriver(MotorDriver& driver) { motorDriver = &driver; }
+                       ^~~~~~~~~~~
+src/motor_controller.h: In member function 'void MotorController::setCanBus(int*)':
+src/motor_controller.h:83:38: error: 'canBus' was not declared in this scope
+   void setCanBus(MCP2515_CAN* bus) { canBus = bus; }
+                                      ^~~~~~
+src/motor_controller.h:80:3: error: 'MCP2515_CAN' does not name a type
+   MCP2515_CAN* canBus;
+   ^~~~~~~~~~~
+src/motor_controller.h:83:18: error: 'MCP2515_CAN' has not been declared
+   void setCanBus(MCP2515_CAN* bus) { canBus = bus; }
+                  ^~~~~~~~~~~
+src/motor_controller.h:86:23: error: 'MotorDriver' has not been declared
+   void setMotorDriver(MotorDriver& driver) { motorDriver = &driver; }
+                       ^~~~~~~~~~~
+src/motor_controller.h: In member function 'void MotorController::setCanBus(int*)':
+src/motor_controller.h:83:38: error: 'canBus' was not declared in this scope
+   void setCanBus(MCP2515_CAN* bus) { canBus = bus; }
+                                      ^~~~~~
+src/motor_controller.h:83:38: note: suggested alternative: 'CANBus'
+   void setCanBus(MCP2515_CAN* bus) { canBus = bus; }
+                                      ^~~~~~
+                                      CANBus
+src/motor_controller.h: In member function 'void MotorController::setEncoder(Encoder&)':
+src/motor_controller.h:85:55: error: no match for 'operator=' (operand types are 'EncoderInterface' and 'Encoder')
+   void setEncoder(Encoder& encoder) { this->encoder = encoder; }
+                                                       ^~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:22:
+include/../include/types.h:188:3: note: candidate: 'EncoderInterface& EncoderInterface::operator=(const EncoderInterface&)'
+ } EncoderInterface;
+   ^~~~~~~~~~~~~~~~
+include/../include/types.h:188:3: note:   no known conversion for argument 1 from 'Encoder' to 'const EncoderInterface&'
+include/../include/types.h:188:3: note: candidate: 'EncoderInterface& EncoderInterface::operator=(EncoderInterface&&)'
+include/../include/types.h:188:3: note:   no known conversion for argument 1 from 'Encoder' to 'EncoderInterface&&'
+src/motor_controller.h:83:38: note: suggested alternative: 'CANBus'
+   void setCanBus(MCP2515_CAN* bus) { canBus = bus; }
+                                      ^~~~~~
+                                      CANBus
+src/motor_controller.h: In member function 'void MotorController::setEncoder(Encoder&)':
+src/motor_controller.h:85:55: error: no match for 'operator=' (operand types are 'EncoderInterface' and 'Encoder')
+   void setEncoder(Encoder& encoder) { this->encoder = encoder; }
+                                                       ^~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:2:
+include/../include/types.h:188:3: note: candidate: 'EncoderInterface& EncoderInterface::operator=(const EncoderInterface&)'
+ } EncoderInterface;
+   ^~~~~~~~~~~~~~~~
+include/../include/types.h:188:3: note:   no known conversion for argument 1 from 'Encoder' to 'const EncoderInterface&'
+include/../include/types.h:188:3: note: candidate: 'EncoderInterface& EncoderInterface::operator=(EncoderInterface&&)'
+include/../include/types.h:188:3: note:   no known conversion for argument 1 from 'Encoder' to 'EncoderInterface&&'
+src/drivers/rmd_x_driver.cpp: At global scope:
+src/drivers/rmd_x_driver.cpp:120:6: error: no declaration matches 'void RMDXDriver::setGearboxRatio(float)'
+ void RMDXDriver::setGearboxRatio(float ratio) {
+      ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:120:6: note: no functions named 'void RMDXDriver::setGearboxRatio(float)'
+In file included from src/drivers/rmd_x_driver.cpp:1:
+src/drivers/rmd_x_driver.h:4:7: note: 'class RMDXDriver' defined here
+ class RMDXDriver : public IMotorDriver {
+       ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:129:6: error: redefinition of 'void RMDXDriver::deinit()'
+ void RMDXDriver::deinit() {
+      ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:39:6: note: 'virtual void RMDXDriver::deinit()' previously defined here
+ void RMDXDriver::deinit() {
+      ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:135:13: error: redefinition of 'MotorStatus RMDXDriver::getStatus()'
+ MotorStatus RMDXDriver::getStatus() {
+             ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:45:13: note: 'virtual MotorStatus RMDXDriver::getStatus()' previously defined here
+ MotorStatus RMDXDriver::getStatus() {
+             ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:139:7: error: redefinition of 'float RMDXDriver::getTemperature()'
+ float RMDXDriver::getTemperature() {
+       ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:49:7: note: 'virtual float RMDXDriver::getTemperature()' previously defined here
+ float RMDXDriver::getTemperature() {
+       ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:143:9: error: redefinition of 'int32_t RMDXDriver::getPosition()'
+ int32_t RMDXDriver::getPosition() {
+         ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:57:9: note: 'virtual int32_t RMDXDriver::getPosition()' previously defined here
+ int32_t RMDXDriver::getPosition() {
+         ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:147:7: error: redefinition of 'float RMDXDriver::getVelocity()'
+ float RMDXDriver::getVelocity() {
+       ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:63:7: note: 'virtual float RMDXDriver::getVelocity()' previously defined here
+ float RMDXDriver::getVelocity() {
+       ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:151:7: error: redefinition of 'float RMDXDriver::getCurrent()'
+ float RMDXDriver::getCurrent() {
+       ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:69:7: note: 'virtual float RMDXDriver::getCurrent()' previously defined here
+ float RMDXDriver::getCurrent() {
+       ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: At global scope:
+src/drivers/rmd_l_driver.cpp:46:1: error: definition of explicitly-defaulted 'RMDLDriver::~RMDLDriver()'
+ RMDLDriver::~RMDLDriver() = default;
+ ^~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:21:
+src/drivers/rmd_l_driver.h:8:5: note: 'virtual RMDLDriver::~RMDLDriver()' explicitly defaulted here
+     ~RMDLDriver() override = default;
+     ^
+src/drivers/rmd_l_driver.cpp: In member function 'virtual bool RMDLDriver::init()':
+src/drivers/rmd_l_driver.cpp:50:17: error: 'struct MotorConfig' has no member named 'communication'
+     if (_config.communication == COMM_CAN) {
+                 ^~~~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:51:22: error: 'getInstance' is not a member of 'CANBus'
+         if (!CANBus::getInstance().begin(_config.canBusSpeed)) {
+                      ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:51:50: error: 'struct MotorConfig' has no member named 'canBusSpeed'
+         if (!CANBus::getInstance().begin(_config.canBusSpeed)) {
+                                                  ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:52:64: error: no matching function for call to 'Logger::error(const char [36])'
+             Logger::error("RMD-L: Failed to initialize CAN bus");
+                                                                ^
+In file included from src/drivers/rmd_l_driver.cpp:32:
+src/drivers/../utils/logger.h:25:17: note: candidate: 'static void Logger::error(const char*, const char*, ...)'
+     static void error(const char* module, const char* fmt, ...);
+                 ^~~~~
+src/drivers/../utils/logger.h:25:17: note:   candidate expects 2 arguments, 1 provided
+src/drivers/rmd_l_driver.cpp:58:17: error: 'struct MotorConfig' has no member named 'communication'
+     if (_config.communication == COMM_RS485) {
+                 ^~~~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:59:21: error: 'getInstance' is not a member of 'RS485'
+         if (!RS485::getInstance().begin(_config.rs485BaudRate)) {
+                     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:59:49: error: 'struct MotorConfig' has no member named 'rs485BaudRate'
+         if (!RS485::getInstance().begin(_config.rs485BaudRate)) {
+                                                 ^~~~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:60:62: error: no matching function for call to 'Logger::error(const char [34])'
+             Logger::error("RMD-L: Failed to initialize RS485");
+                                                              ^
+In file included from src/drivers/rmd_l_driver.cpp:32:
+src/drivers/../utils/logger.h:25:17: note: candidate: 'static void Logger::error(const char*, const char*, ...)'
+     static void error(const char* module, const char* fmt, ...);
+                 ^~~~~
+src/drivers/../utils/logger.h:25:17: note:   candidate expects 2 arguments, 1 provided
+src/drivers/rmd_l_driver.cpp:66:19: error: 'getInstance' is not a member of 'Encoder'
+     if (!Encoder::getInstance().begin(_config.encoderPinA, _config.encoderPinB, _config.encoderPinZ)) {
+                   ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:66:47: error: 'struct MotorConfig' has no member named 'encoderPinA'
+     if (!Encoder::getInstance().begin(_config.encoderPinA, _config.encoderPinB, _config.encoderPinZ)) {
+                                               ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:66:68: error: 'struct MotorConfig' has no member named 'encoderPinB'
+     if (!Encoder::getInstance().begin(_config.encoderPinA, _config.encoderPinB, _config.encoderPinZ)) {
+                                                                    ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:66:89: error: 'struct MotorConfig' has no member named 'encoderPinZ'
+     if (!Encoder::getInstance().begin(_config.encoderPinA, _config.encoderPinB, _config.encoderPinZ)) {
+                                                                                         ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:67:60: error: no matching function for call to 'Logger::error(const char [36])'
+         Logger::error("RMD-L: Failed to initialize encoder");
+                                                            ^
+In file included from src/drivers/rmd_l_driver.cpp:32:
+src/drivers/../utils/logger.h:25:17: note: candidate: 'static void Logger::error(const char*, const char*, ...)'
+     static void error(const char* module, const char* fmt, ...);
+                 ^~~~~
+src/drivers/../utils/logger.h:25:17: note:   candidate expects 2 arguments, 1 provided
+src/drivers/rmd_l_driver.cpp:72:10: error: 'MotorDriver' has not been declared
+     if (!MotorDriver::getInstance().begin(_config.motorPinPWM, _config.motorPinDir)) {
+          ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:72:51: error: 'struct MotorConfig' has no member named 'motorPinPWM'
+     if (!MotorDriver::getInstance().begin(_config.motorPinPWM, _config.motorPinDir)) {
+                                                   ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:72:72: error: 'struct MotorConfig' has no member named 'motorPinDir'
+     if (!MotorDriver::getInstance().begin(_config.motorPinPWM, _config.motorPinDir)) {
+                                                                        ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:73:65: error: no matching function for call to 'Logger::error(const char [41])'
+         Logger::error("RMD-L: Failed to initialize motor driver");
+                                                                 ^
+In file included from src/drivers/rmd_l_driver.cpp:32:
+src/drivers/../utils/logger.h:25:17: note: candidate: 'static void Logger::error(const char*, const char*, ...)'
+     static void error(const char* module, const char* fmt, ...);
+                 ^~~~~
+src/drivers/../utils/logger.h:25:17: note:   candidate expects 2 arguments, 1 provided
+src/drivers/rmd_l_driver.cpp:83:78: error: no matching function for call to 'Logger::info(StringSumHelper&)'
+     Logger::info("RMD-L: Driver initialized for motor ID " + String(_motorId));
+                                                                              ^
+In file included from src/drivers/rmd_l_driver.cpp:32:
+src/drivers/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/drivers/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::deinit()':
+src/drivers/rmd_l_driver.cpp:88:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().end();
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:89:14: error: 'getInstance' is not a member of 'Encoder'
+     Encoder::getInstance().end();
+              ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:90:47: error: no matching function for call to 'Logger::info(const char [28])'
+     Logger::info("RMD-L: Driver deinitialized");
+                                               ^
+In file included from src/drivers/rmd_l_driver.cpp:32:
+src/drivers/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/drivers/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+src/drivers/rmd_l_driver.cpp: In member function 'virtual MotorStatus RMDLDriver::getStatus()':
+src/drivers/rmd_l_driver.cpp:95:26: error: 'getInstance' is not a member of 'Encoder'
+     _position = Encoder::getInstance().getPosition();
+                          ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:96:26: error: 'getInstance' is not a member of 'Encoder'
+     _velocity = Encoder::getInstance().getVelocity();
+                          ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:99:16: error: 'MotorDriver' has not been declared
+     _current = MotorDriver::getInstance().getCurrent();
+                ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:102:20: error: 'MotorDriver' has not been declared
+     _temperature = MotorDriver::getInstance().getTemperature();
+                    ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:105:13: error: request for member 'position' in '((RMDLDriver*)this)->RMDLDriver::_status', which is of non-class type 'MotorStatus'
+     _status.position = _position;
+             ^~~~~~~~
+src/drivers/rmd_l_driver.cpp:106:13: error: request for member 'velocity' in '((RMDLDriver*)this)->RMDLDriver::_status', which is of non-class type 'MotorStatus'
+     _status.velocity = _velocity;
+             ^~~~~~~~
+src/drivers/rmd_l_driver.cpp:107:13: error: request for member 'current' in '((RMDLDriver*)this)->RMDLDriver::_status', which is of non-class type 'MotorStatus'
+     _status.current = _current;
+             ^~~~~~~
+src/drivers/rmd_l_driver.cpp:108:13: error: request for member 'temperature' in '((RMDLDriver*)this)->RMDLDriver::_status', which is of non-class type 'MotorStatus'
+     _status.temperature = _temperature;
+             ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:109:13: error: request for member 'enabled' in '((RMDLDriver*)this)->RMDLDriver::_status', which is of non-class type 'MotorStatus'
+     _status.enabled = IMotorDriver::getInstance().isEnabled();
+             ^~~~~~~
+src/drivers/rmd_l_driver.cpp:109:37: error: 'getInstance' is not a member of 'IMotorDriver'
+     _status.enabled = IMotorDriver::getInstance().isEnabled();
+                                     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::setPosition(float)':
+src/drivers/rmd_l_driver.cpp:135:26: error: 'struct MotorConfig' has no member named 'maxPosition'
+     if (target > _config.maxPosition) {
+                          ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:136:26: error: 'struct MotorConfig' has no member named 'maxPosition'
+         target = _config.maxPosition;
+                          ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:137:34: error: 'struct MotorConfig' has no member named 'maxPosition'
+     } else if (target < -_config.maxPosition) {
+                                  ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:138:27: error: 'struct MotorConfig' has no member named 'maxPosition'
+         target = -_config.maxPosition;
+                           ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:141:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().setPosition(target);
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::setVelocity(float)':
+src/drivers/rmd_l_driver.cpp:152:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().setVelocity(target);
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::setTorque(float)':
+src/drivers/rmd_l_driver.cpp:163:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().setTorque(target);
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::enable()':
+src/drivers/rmd_l_driver.cpp:167:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().enable();
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:168:40: error: no matching function for call to 'Logger::info(const char [21])'
+     Logger::info("RMD-L: Motor enabled");
+                                        ^
+In file included from src/drivers/rmd_l_driver.cpp:32:
+src/drivers/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/drivers/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::disable()':
+src/drivers/rmd_l_driver.cpp:172:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().disable();
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:173:41: error: no matching function for call to 'Logger::info(const char [22])'
+     Logger::info("RMD-L: Motor disabled");
+                                         ^
+In file included from src/drivers/rmd_l_driver.cpp:32:
+src/drivers/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/drivers/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::faultReset()':
+src/drivers/rmd_l_driver.cpp:177:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().faultReset();
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:178:38: error: no matching function for call to 'Logger::info(const char [19])'
+     Logger::info("RMD-L: Fault reset");
+                                      ^
+In file included from src/drivers/rmd_l_driver.cpp:32:
+src/drivers/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/drivers/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::setLimits(float, float)':
+src/drivers/rmd_l_driver.cpp:184:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().setLimits(maxVelocity, maxTorque);
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::setGains(float, float, float)':
+src/drivers/rmd_l_driver.cpp:191:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().setGains(kp, ki, kd);
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: At global scope:
+src/drivers/rmd_l_driver.cpp:199:6: error: redefinition of 'void RMDLDriver::deinit()'
+ void RMDLDriver::deinit() {
+      ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:87:6: note: 'virtual void RMDLDriver::deinit()' previously defined here
+ void RMDLDriver::deinit() {
+      ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:205:13: error: redefinition of 'MotorStatus RMDLDriver::getStatus()'
+ MotorStatus RMDLDriver::getStatus() {
+             ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:93:13: note: 'virtual MotorStatus RMDLDriver::getStatus()' previously defined here
+ MotorStatus RMDLDriver::getStatus() {
+             ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:209:7: error: redefinition of 'float RMDLDriver::getTemperature()'
+ float RMDLDriver::getTemperature() {
+       ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:114:7: note: 'virtual float RMDLDriver::getTemperature()' previously defined here
+ float RMDLDriver::getTemperature() {
+       ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:213:9: error: redefinition of 'int32_t RMDLDriver::getPosition()'
+ int32_t RMDLDriver::getPosition() {
+         ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:118:9: note: 'virtual int32_t RMDLDriver::getPosition()' previously defined here
+ int32_t RMDLDriver::getPosition() {
+         ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:217:7: error: redefinition of 'float RMDLDriver::getVelocity()'
+ float RMDLDriver::getVelocity() {
+       ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:122:7: note: 'virtual float RMDLDriver::getVelocity()' previously defined here
+ float RMDLDriver::getVelocity() {
+       ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:221:7: error: redefinition of 'float RMDLDriver::getCurrent()'
+ float RMDLDriver::getCurrent() {
+       ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:126:7: note: 'virtual float RMDLDriver::getCurrent()' previously defined here
+ float RMDLDriver::getCurrent() {
+       ^~~~~~~~~~
+In file included from src/protocols/pal.h:13,
+                 from src/protocols/pal.cpp:7:
+include/../include/types.h:133:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+include/../include/types.h:93:3: note: previous declaration as 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+include/../include/types.h:168:5: error: redefinition of 'MOTOR_STATE_TORQUE_CONTROL'
+     MOTOR_STATE_TORQUE_CONTROL
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:167:5: note: 'MOTOR_STATE_TORQUE_CONTROL' previously defined here
+     MOTOR_STATE_TORQUE_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:180:3: error: conflicting declaration 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+include/../include/types.h:101:3: note: previous declaration as 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+In file included from src/protocols/pal.h:14,
+                 from src/protocols/pal.cpp:7:
+src/protocols/../drivers/motor_driver.h:25:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/protocols/pal.h:13,
+                 from src/protocols/pal.cpp:7:
+include/../include/types.h:93:3: note: previous declaration as 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+src/protocols/pal.cpp:21:6: error: no declaration matches 'void ProtocolAbstractionLayer::init(const MotorConfig&)'
+ void ProtocolAbstractionLayer::init(const MotorConfig& config) {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:21:6: note: no functions named 'void ProtocolAbstractionLayer::init(const MotorConfig&)'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:42:6: error: no declaration matches 'void ProtocolAbstractionLayer::initCAN()'
+ void ProtocolAbstractionLayer::initCAN() {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:42:6: note: no functions named 'void ProtocolAbstractionLayer::initCAN()'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:47:6: error: no declaration matches 'void ProtocolAbstractionLayer::initRS485()'
+ void ProtocolAbstractionLayer::initRS485() {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:47:6: note: no functions named 'void ProtocolAbstractionLayer::initRS485()'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:52:6: error: no declaration matches 'void ProtocolAbstractionLayer::initEtherCAT()'
+ void ProtocolAbstractionLayer::initEtherCAT() {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:52:6: note: no functions named 'void ProtocolAbstractionLayer::initEtherCAT()'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:57:6: error: no declaration matches 'void ProtocolAbstractionLayer::processCommands()'
+ void ProtocolAbstractionLayer::processCommands() {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:57:6: note: no functions named 'void ProtocolAbstractionLayer::processCommands()'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:163:6: error: no declaration matches 'void ProtocolAbstractionLayer::sendStatusReport()'
+ void ProtocolAbstractionLayer::sendStatusReport() {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:163:6: note: no functions named 'void ProtocolAbstractionLayer::sendStatusReport()'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:197:6: error: no declaration matches 'void ProtocolAbstractionLayer::sendHeartbeat()'
+ void ProtocolAbstractionLayer::sendHeartbeat() {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:197:6: note: no functions named 'void ProtocolAbstractionLayer::sendHeartbeat()'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:215:14: error: no declaration matches 'StatusReport ProtocolAbstractionLayer::getStatus() const'
+ StatusReport ProtocolAbstractionLayer::getStatus() const {
+              ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:215:14: note: no functions named 'StatusReport ProtocolAbstractionLayer::getStatus() const'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:219:6: error: no declaration matches 'void ProtocolAbstractionLayer::setPosition(int32_t)'
+ void ProtocolAbstractionLayer::setPosition(int32_t position) {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:219:6: note: no functions named 'void ProtocolAbstractionLayer::setPosition(int32_t)'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:223:6: error: no declaration matches 'void ProtocolAbstractionLayer::setVelocity(int32_t)'
+ void ProtocolAbstractionLayer::setVelocity(int32_t velocity) {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:223:6: note: no functions named 'void ProtocolAbstractionLayer::setVelocity(int32_t)'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:227:6: error: no declaration matches 'void ProtocolAbstractionLayer::setTorque(int16_t)'
+ void ProtocolAbstractionLayer::setTorque(int16_t torque) {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:227:6: note: no functions named 'void ProtocolAbstractionLayer::setTorque(int16_t)'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:231:6: error: no declaration matches 'bool ProtocolAbstractionLayer::readParameter(uint8_t, uint8_t*, uint8_t)'
+ bool ProtocolAbstractionLayer::readParameter(uint8_t paramId, uint8_t* data, uint8_t length) {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:231:6: note: no functions named 'bool ProtocolAbstractionLayer::readParameter(uint8_t, uint8_t*, uint8_t)'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:236:6: error: no declaration matches 'bool ProtocolAbstractionLayer::writeParameter(uint8_t, const uint8_t*, uint8_t)'
+ bool ProtocolAbstractionLayer::writeParameter(uint8_t paramId, const uint8_t* data, uint8_t length) {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:236:6: note: no functions named 'bool ProtocolAbstractionLayer::writeParameter(uint8_t, const uint8_t*, uint8_t)'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp: In member function 'String ProtocolAbstractionLayer::getProtocolName() const':
+src/protocols/pal.cpp:242:21: error: 'const struct MotorConfig' has no member named 'protocol'
+     switch (_config.protocol) {
+                     ^~~~~~~~
+src/protocols/pal.cpp:243:14: error: 'Protocol' has not been declared
+         case Protocol::CAN: return "CAN";
+              ^~~~~~~~
+src/protocols/pal.cpp:244:14: error: 'Protocol' has not been declared
+         case Protocol::RS485: return "RS485";
+              ^~~~~~~~
+src/protocols/pal.cpp:245:14: error: 'Protocol' has not been declared
+         case Protocol::ETHERCAT: return "EtherCAT";
+              ^~~~~~~~
+src/protocols/pal.cpp: In member function 'String ProtocolAbstractionLayer::getMotorSeriesName() const':
+src/protocols/pal.cpp:251:21: error: 'const struct MotorConfig' has no member named 'motorSeries'; did you mean 'motor_id'?
+     switch (_config.motorSeries) {
+                     ^~~~~~~~~~~
+                     motor_id
+src/protocols/pal.cpp: In member function 'void ProtocolAbstractionLayer::handlePositionCmd(const Command&)':
+src/protocols/pal.cpp:263:13: error: 'const struct Command' has no member named 'payloadLength'
+     if (cmd.payloadLength >= 4) {
+             ^~~~~~~~~~~~~
+src/protocols/pal.cpp:265:31: error: 'const struct Command' has no member named 'payload'
+         memcpy(&position, cmd.payload, 4);
+                               ^~~~~~~
+src/protocols/pal.cpp:266:9: error: 'setPosition' was not declared in this scope
+         setPosition(position);
+         ^~~~~~~~~~~
+src/protocols/pal.cpp:266:9: note: suggested alternative: 'position'
+         setPosition(position);
+         ^~~~~~~~~~~
+         position
+src/protocols/pal.cpp:267:61: error: no matching function for call to 'Logger::info(StringSumHelper&)'
+         Logger::info("Position command: " + String(position));
+                                                             ^
+In file included from src/protocols/pal.cpp:11:
+src/protocols/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/protocols/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+src/protocols/pal.cpp: In member function 'void ProtocolAbstractionLayer::handleVelocityCmd(const Command&)':
+src/protocols/pal.cpp:272:13: error: 'const struct Command' has no member named 'payloadLength'
+     if (cmd.payloadLength >= 4) {
+             ^~~~~~~~~~~~~
+src/protocols/pal.cpp:274:31: error: 'const struct Command' has no member named 'payload'
+         memcpy(&velocity, cmd.payload, 4);
+                               ^~~~~~~
+src/protocols/pal.cpp:275:9: error: 'setVelocity' was not declared in this scope
+         setVelocity(velocity);
+         ^~~~~~~~~~~
+src/protocols/pal.cpp:275:9: note: suggested alternative: 'velocity'
+         setVelocity(velocity);
+         ^~~~~~~~~~~
+         velocity
+src/protocols/pal.cpp:276:61: error: no matching function for call to 'Logger::info(StringSumHelper&)'
+         Logger::info("Velocity command: " + String(velocity));
+                                                             ^
+In file included from src/protocols/pal.cpp:11:
+src/protocols/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/protocols/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+src/protocols/pal.cpp: In member function 'void ProtocolAbstractionLayer::handleTorqueCmd(const Command&)':
+src/protocols/pal.cpp:281:13: error: 'const struct Command' has no member named 'payloadLength'
+     if (cmd.payloadLength >= 2) {
+             ^~~~~~~~~~~~~
+src/protocols/pal.cpp:283:29: error: 'const struct Command' has no member named 'payload'
+         memcpy(&torque, cmd.payload, 2);
+                             ^~~~~~~
+src/protocols/pal.cpp:284:9: error: 'setTorque' was not declared in this scope
+         setTorque(torque);
+         ^~~~~~~~~
+*** [.pio/build/esp32/src/drivers/rmd_l_driver.cpp.o] Error 1
+src/protocols/pal.cpp:284:9: note: suggested alternative: 'torque'
+         setTorque(torque);
+         ^~~~~~~~~
+         torque
+src/protocols/pal.cpp:285:57: error: no matching function for call to 'Logger::info(StringSumHelper&)'
+         Logger::info("Torque command: " + String(torque));
+                                                         ^
+In file included from src/protocols/pal.cpp:11:
+src/protocols/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/protocols/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+src/protocols/pal.cpp: In member function 'void ProtocolAbstractionLayer::handleParamRead(const Command&)':
+src/protocols/pal.cpp:290:76: error: no matching function for call to 'Logger::info(StringSumHelper&)'
+     Logger::info("Parameter read request from motor " + String(cmd.motorId));
+                                                                            ^
+In file included from src/protocols/pal.cpp:11:
+src/protocols/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/protocols/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+src/protocols/pal.cpp: In member function 'void ProtocolAbstractionLayer::handleParamWrite(const Command&)':
+src/protocols/pal.cpp:294:77: error: no matching function for call to 'Logger::info(StringSumHelper&)'
+     Logger::info("Parameter write request from motor " + String(cmd.motorId));
+                                                                             ^
+In file included from src/protocols/pal.cpp:11:
+src/protocols/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/protocols/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+src/protocols/pal.cpp: At global scope:
+src/protocols/pal.cpp:297:6: error: no declaration matches 'void ProtocolAbstractionLayer::handleDiagnostic(const Command&)'
+ void ProtocolAbstractionLayer::handleDiagnostic(const Command& cmd) {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:297:6: note: no functions named 'void ProtocolAbstractionLayer::handleDiagnostic(const Command&)'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp: In member function 'void ProtocolAbstractionLayer::handleFirmwareUpdate(const Command&)':
+src/protocols/pal.cpp:302:77: error: no matching function for call to 'Logger::info(StringSumHelper&)'
+     Logger::info("Firmware update request from motor " + String(cmd.motorId));
+                                                                             ^
+In file included from src/protocols/pal.cpp:11:
+src/protocols/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/protocols/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+*** [.pio/build/esp32/src/drivers/rmd_x_driver.cpp.o] Error 1
+src/protocols/pal.cpp: In member function 'String ProtocolAbstractionLayer::getProtocolName() const':
+src/protocols/pal.cpp:248:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+src/protocols/pal.cpp: In member function 'String ProtocolAbstractionLayer::getMotorSeriesName() const':
+src/protocols/pal.cpp:260:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+*** [.pio/build/esp32/src/protocols/pal.cpp.o] Error 1
+========================== [FAILED] Took 1.09 seconds ==========================
+
+Processing esp32s3 (platform: espressif32; board: esp32-s3-devkitc-1; framework: arduino)
+--------------------------------------------------------------------------------
+Verbose mode can be enabled via `-v, --verbose` option
+CONFIGURATION: https://docs.platformio.org/page/boards/espressif32/esp32-s3-devkitc-1.html
+PLATFORM: Espressif 32 (7.0.1) > Espressif ESP32-S3-DevKitC-1-N8 (8 MB QD, No PSRAM)
+HARDWARE: ESP32S3 240MHz, 320KB RAM, 8MB Flash
+DEBUG: Current (esp-builtin) On-board (esp-builtin) External (cmsis-dap, esp-bridge, esp-prog, iot-bus-jtag, jlink, minimodule, olimex-arm-usb-ocd, olimex-arm-usb-ocd-h, olimex-arm-usb-tiny-h, olimex-jtag-tiny, tumpa)
+PACKAGES: 
+ - framework-arduinoespressif32 @ 3.20017.241212+sha.dcc1105b 
+ - tool-esptoolpy @ 2.41100.0 (4.11.0) 
+ - toolchain-riscv32-esp @ 8.4.0+2021r2-patch5 
+ - toolchain-xtensa-esp32s3 @ 8.4.0+2021r2-patch5
+LDF: Library Dependency Finder -> https://bit.ly/configure-pio-ldf
+LDF Modes: Finder ~ chain, Compatibility ~ soft
+Found 35 compatible libraries
+Scanning dependencies...
+Dependency Graph
+|-- MCP2515 @ 1.0.0
+|-- ArduinoJson @ 7.4.3
+|-- SPI @ 2.0.0
+Building in release mode
+Compiling .pio/build/esp32s3/src/drivers/cem_driver.cpp.o
+Compiling .pio/build/esp32s3/src/drivers/fl_driver.cpp.o
+Compiling .pio/build/esp32s3/src/drivers/mcp2515_can.cpp.o
+Compiling .pio/build/esp32s3/src/drivers/rh_driver.cpp.o
+Compiling .pio/build/esp32s3/src/drivers/rmd_h_driver.cpp.o
+Compiling .pio/build/esp32s3/src/drivers/rmd_l_driver.cpp.o
+Compiling .pio/build/esp32s3/src/drivers/rmd_x_driver.cpp.o
+Compiling .pio/build/esp32s3/src/main.cpp.o
+Compiling .pio/build/esp32s3/src/motor_controller.cpp.o
+Compiling .pio/build/esp32s3/src/protocols/pal.cpp.o
+In file included from src/drivers/mcp2515_can.cpp:1:
+src/drivers/mcp2515_can.h:5:10: fatal error: mcp2515.h: No such file or directory
+
+*****************************************************************
+* Looking for mcp2515.h dependency? Check our library registry!
+*
+* CLI  > platformio lib search "header:mcp2515.h"
+* Web  > https://registry.platformio.org/search?q=header:mcp2515.h
+*
+*****************************************************************
+
+ #include <mcp2515.h>
+          ^~~~~~~~~~~
+compilation terminated.
+Archiving .pio/build/esp32s3/lib169/libSPI.a
+*** [.pio/build/esp32s3/src/drivers/mcp2515_can.cpp.o] Error 1
+In file included from src/drivers/cem_driver.cpp:128:
+include/../include/types.h:93:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/cem_driver.h:3,
+                 from src/drivers/cem_driver.cpp:127:
+src/drivers/motor_driver.h:25:3: note: previous declaration as 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/cem_driver.cpp:128:
+include/../include/types.h:133:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/cem_driver.h:3,
+                 from src/drivers/cem_driver.cpp:127:
+src/drivers/motor_driver.h:25:3: note: previous declaration as 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/cem_driver.cpp:128:
+include/../include/types.h:168:5: error: redefinition of 'MOTOR_STATE_TORQUE_CONTROL'
+     MOTOR_STATE_TORQUE_CONTROL
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:167:5: note: 'MOTOR_STATE_TORQUE_CONTROL' previously defined here
+     MOTOR_STATE_TORQUE_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:180:3: error: conflicting declaration 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+include/../include/types.h:101:3: note: previous declaration as 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+src/drivers/cem_driver.cpp:230:6: error: redefinition of 'void CEMDriver::deinit()'
+ void CEMDriver::deinit() {
+      ^~~~~~~~~
+src/drivers/cem_driver.cpp:150:6: note: 'virtual void CEMDriver::deinit()' previously defined here
+ void CEMDriver::deinit() {
+      ^~~~~~~~~
+src/drivers/cem_driver.cpp:236:13: error: redefinition of 'MotorStatus CEMDriver::getStatus()'
+ MotorStatus CEMDriver::getStatus() {
+             ^~~~~~~~~
+src/drivers/cem_driver.cpp:156:13: note: 'virtual MotorStatus CEMDriver::getStatus()' previously defined here
+ MotorStatus CEMDriver::getStatus() { return _status; }
+             ^~~~~~~~~
+src/drivers/cem_driver.cpp:240:7: error: redefinition of 'float CEMDriver::getTemperature()'
+ float CEMDriver::getTemperature() {
+       ^~~~~~~~~
+src/drivers/cem_driver.cpp:158:7: note: 'virtual float CEMDriver::getTemperature()' previously defined here
+ float CEMDriver::getTemperature() {
+       ^~~~~~~~~
+src/drivers/cem_driver.cpp:244:9: error: redefinition of 'int32_t CEMDriver::getPosition()'
+ int32_t CEMDriver::getPosition() {
+         ^~~~~~~~~
+src/drivers/cem_driver.cpp:165:9: note: 'virtual int32_t CEMDriver::getPosition()' previously defined here
+ int32_t CEMDriver::getPosition() {
+         ^~~~~~~~~
+src/drivers/cem_driver.cpp:248:7: error: redefinition of 'float CEMDriver::getVelocity()'
+ float CEMDriver::getVelocity() {
+       ^~~~~~~~~
+src/drivers/cem_driver.cpp:170:7: note: 'virtual float CEMDriver::getVelocity()' previously defined here
+ float CEMDriver::getVelocity() {
+       ^~~~~~~~~
+src/drivers/cem_driver.cpp:252:7: error: redefinition of 'float CEMDriver::getCurrent()'
+ float CEMDriver::getCurrent() {
+       ^~~~~~~~~
+src/drivers/cem_driver.cpp:175:7: note: 'virtual float CEMDriver::getCurrent()' previously defined here
+ float CEMDriver::getCurrent() {
+       ^~~~~~~~~
+Indexing .pio/build/esp32s3/lib169/libSPI.a
+*** [.pio/build/esp32s3/src/drivers/cem_driver.cpp.o] Error 1
+src/drivers/fl_driver.cpp:111:6: error: redefinition of 'void FLDriver::deinit()'
+ void FLDriver::deinit() {
+      ^~~~~~~~
+src/drivers/fl_driver.cpp:30:6: note: 'virtual void FLDriver::deinit()' previously defined here
+ void FLDriver::deinit() {
+      ^~~~~~~~
+src/drivers/fl_driver.cpp:117:13: error: redefinition of 'MotorStatus FLDriver::getStatus()'
+ MotorStatus FLDriver::getStatus() {
+             ^~~~~~~~
+src/drivers/fl_driver.cpp:36:13: note: 'virtual MotorStatus FLDriver::getStatus()' previously defined here
+ MotorStatus FLDriver::getStatus() { return _status; }
+             ^~~~~~~~
+src/drivers/fl_driver.cpp:121:7: error: redefinition of 'float FLDriver::getTemperature()'
+ float FLDriver::getTemperature() {
+       ^~~~~~~~
+src/drivers/fl_driver.cpp:38:7: note: 'virtual float FLDriver::getTemperature()' previously defined here
+ float FLDriver::getTemperature() {
+       ^~~~~~~~
+src/drivers/fl_driver.cpp:125:9: error: redefinition of 'int32_t FLDriver::getPosition()'
+ int32_t FLDriver::getPosition() {
+         ^~~~~~~~
+src/drivers/fl_driver.cpp:45:9: note: 'virtual int32_t FLDriver::getPosition()' previously defined here
+ int32_t FLDriver::getPosition() {
+         ^~~~~~~~
+src/drivers/fl_driver.cpp:129:7: error: redefinition of 'float FLDriver::getVelocity()'
+ float FLDriver::getVelocity() {
+       ^~~~~~~~
+src/drivers/fl_driver.cpp:50:7: note: 'virtual float FLDriver::getVelocity()' previously defined here
+ float FLDriver::getVelocity() {
+       ^~~~~~~~
+src/drivers/fl_driver.cpp:133:7: error: redefinition of 'float FLDriver::getCurrent()'
+ float FLDriver::getCurrent() {
+       ^~~~~~~~
+src/drivers/fl_driver.cpp:55:7: note: 'virtual float FLDriver::getCurrent()' previously defined here
+ float FLDriver::getCurrent() {
+       ^~~~~~~~
+src/drivers/rh_driver.cpp:90:6: error: redefinition of 'void RHDriver::deinit()'
+ void RHDriver::deinit() {
+      ^~~~~~~~
+src/drivers/rh_driver.cpp:30:6: note: 'virtual void RHDriver::deinit()' previously defined here
+ void RHDriver::deinit() {
+      ^~~~~~~~
+src/drivers/rh_driver.cpp:96:13: error: redefinition of 'MotorStatus RHDriver::getStatus()'
+ MotorStatus RHDriver::getStatus() {
+             ^~~~~~~~
+src/drivers/rh_driver.cpp:36:13: note: 'virtual MotorStatus RHDriver::getStatus()' previously defined here
+ MotorStatus RHDriver::getStatus() { return _status; }
+             ^~~~~~~~
+src/drivers/rh_driver.cpp:100:7: error: redefinition of 'float RHDriver::getTemperature()'
+ float RHDriver::getTemperature() {
+       ^~~~~~~~
+src/drivers/rh_driver.cpp:37:7: note: 'virtual float RHDriver::getTemperature()' previously defined here
+ float RHDriver::getTemperature() {
+       ^~~~~~~~
+src/drivers/rh_driver.cpp:104:9: error: redefinition of 'int32_t RHDriver::getPosition()'
+ int32_t RHDriver::getPosition() {
+         ^~~~~~~~
+src/drivers/rh_driver.cpp:43:9: note: 'virtual int32_t RHDriver::getPosition()' previously defined here
+ int32_t RHDriver::getPosition() { _position = 0; return _position; }
+         ^~~~~~~~
+src/drivers/rh_driver.cpp:108:7: error: redefinition of 'float RHDriver::getVelocity()'
+ float RHDriver::getVelocity() {
+       ^~~~~~~~
+src/drivers/rh_driver.cpp:44:7: note: 'virtual float RHDriver::getVelocity()' previously defined here
+ float RHDriver::getVelocity() { _velocity = 0.0f; return _velocity; }
+       ^~~~~~~~
+src/drivers/rh_driver.cpp:112:7: error: redefinition of 'float RHDriver::getCurrent()'
+ float RHDriver::getCurrent() {
+       ^~~~~~~~
+src/drivers/rh_driver.cpp:45:7: note: 'virtual float RHDriver::getCurrent()' previously defined here
+ float RHDriver::getCurrent() {
+       ^~~~~~~~
+*** [.pio/build/esp32s3/src/drivers/fl_driver.cpp.o] Error 1
+*** [.pio/build/esp32s3/src/drivers/rh_driver.cpp.o] Error 1
+src/drivers/rmd_h_driver.cpp:117:6: error: redefinition of 'void RMDHDriver::deinit()'
+ void RMDHDriver::deinit() {
+      ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:37:6: note: 'virtual void RMDHDriver::deinit()' previously defined here
+ void RMDHDriver::deinit() {
+      ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:123:13: error: redefinition of 'MotorStatus RMDHDriver::getStatus()'
+ MotorStatus RMDHDriver::getStatus() {
+             ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:43:13: note: 'virtual MotorStatus RMDHDriver::getStatus()' previously defined here
+ MotorStatus RMDHDriver::getStatus() { return _status; }
+             ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:127:7: error: redefinition of 'float RMDHDriver::getTemperature()'
+ float RMDHDriver::getTemperature() {
+       ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:45:7: note: 'virtual float RMDHDriver::getTemperature()' previously defined here
+ float RMDHDriver::getTemperature() {
+       ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:131:9: error: redefinition of 'int32_t RMDHDriver::getPosition()'
+ int32_t RMDHDriver::getPosition() {
+         ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:52:9: note: 'virtual int32_t RMDHDriver::getPosition()' previously defined here
+ int32_t RMDHDriver::getPosition() {
+         ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:135:7: error: redefinition of 'float RMDHDriver::getVelocity()'
+ float RMDHDriver::getVelocity() {
+       ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:57:7: note: 'virtual float RMDHDriver::getVelocity()' previously defined here
+ float RMDHDriver::getVelocity() {
+       ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:139:7: error: redefinition of 'float RMDHDriver::getCurrent()'
+ float RMDHDriver::getCurrent() {
+       ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:62:7: note: 'virtual float RMDHDriver::getCurrent()' previously defined here
+ float RMDHDriver::getCurrent() {
+       ^~~~~~~~~~
+In file included from src/main.cpp:21:
+src/drivers/mcp2515_can.h:5:10: fatal error: mcp2515.h: No such file or directory
+
+*****************************************************************
+* Looking for mcp2515.h dependency? Check our library registry!
+*
+* CLI  > platformio lib search "header:mcp2515.h"
+* Web  > https://registry.platformio.org/search?q=header:mcp2515.h
+*
+*****************************************************************
+
+ #include <mcp2515.h>
+          ^~~~~~~~~~~
+compilation terminated.
+*** [.pio/build/esp32s3/src/drivers/rmd_h_driver.cpp.o] Error 1
+*** [.pio/build/esp32s3/src/main.cpp.o] Error 1
+In file included from src/motor_controller.cpp:3:
+src/drivers/mcp2515_can.h:5:10: fatal error: mcp2515.h: No such file or directory
+
+*****************************************************************
+* Looking for mcp2515.h dependency? Check our library registry!
+*
+* CLI  > platformio lib search "header:mcp2515.h"
+* Web  > https://registry.platformio.org/search?q=header:mcp2515.h
+*
+*****************************************************************
+
+ #include <mcp2515.h>
+          ^~~~~~~~~~~
+compilation terminated.
+*** [.pio/build/esp32s3/src/motor_controller.cpp.o] Error 1
+In file included from src/drivers/rmd_l_driver.cpp:22:
+include/../include/types.h:93:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.h:3,
+                 from src/drivers/rmd_l_driver.cpp:21:
+src/drivers/motor_driver.h:25:3: note: previous declaration as 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:22:
+include/../include/types.h:133:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.h:3,
+                 from src/drivers/rmd_l_driver.cpp:21:
+src/drivers/motor_driver.h:25:3: note: previous declaration as 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:22:
+include/../include/types.h:168:5: error: redefinition of 'MOTOR_STATE_TORQUE_CONTROL'
+     MOTOR_STATE_TORQUE_CONTROL
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:167:5: note: 'MOTOR_STATE_TORQUE_CONTROL' previously defined here
+     MOTOR_STATE_TORQUE_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:180:3: error: conflicting declaration 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+include/../include/types.h:101:3: note: previous declaration as 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+In file included from src/motor_controller.h:10,
+                 from src/drivers/rmd_l_driver.cpp:30:
+src/drivers/rmd_x_driver.h:23:10: error: 'void RMDXDriver::setBacklashCompensation(float)' marked 'override', but does not override
+     void setBacklashCompensation(float compensation) override;
+          ^~~~~~~~~~~~~~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:30:
+src/motor_controller.h:52:3: error: 'FaultCode' does not name a type
+   FaultCode getFaultCode() const;
+   ^~~~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:1:
+src/drivers/rmd_x_driver.h:23:10: error: 'void RMDXDriver::setBacklashCompensation(float)' marked 'override', but does not override
+     void setBacklashCompensation(float compensation) override;
+          ^~~~~~~~~~~~~~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:2:
+include/../include/types.h:93:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.h:2,
+                 from src/drivers/rmd_x_driver.cpp:1:
+src/drivers/motor_driver.h:25:3: note: previous declaration as 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:2:
+include/../include/types.h:133:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.h:2,
+                 from src/drivers/rmd_x_driver.cpp:1:
+src/drivers/motor_driver.h:25:3: note: previous declaration as 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:2:
+include/../include/types.h:168:5: error: redefinition of 'MOTOR_STATE_TORQUE_CONTROL'
+     MOTOR_STATE_TORQUE_CONTROL
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+src/motor_controller.h:58:3: error: 'FaultCode' does not name a type
+   FaultCode faultCode;
+   ^~~~~~~~~
+include/../include/types.h:167:5: note: 'MOTOR_STATE_TORQUE_CONTROL' previously defined here
+     MOTOR_STATE_TORQUE_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:180:3: error: conflicting declaration 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+include/../include/types.h:101:3: note: previous declaration as 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+src/motor_controller.h:80:3: error: 'MCP2515_CAN' does not name a type
+   MCP2515_CAN* canBus;
+   ^~~~~~~~~~~
+src/motor_controller.h:83:18: error: 'MCP2515_CAN' has not been declared
+   void setCanBus(MCP2515_CAN* bus) { canBus = bus; }
+                  ^~~~~~~~~~~
+src/motor_controller.h:86:23: error: 'MotorDriver' has not been declared
+   void setMotorDriver(MotorDriver& driver) { motorDriver = &driver; }
+                       ^~~~~~~~~~~
+src/motor_controller.h: In member function 'void MotorController::setCanBus(int*)':
+src/motor_controller.h:83:38: error: 'canBus' was not declared in this scope
+   void setCanBus(MCP2515_CAN* bus) { canBus = bus; }
+                                      ^~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:10:
+src/motor_controller.h:52:3: error: 'FaultCode' does not name a type
+   FaultCode getFaultCode() const;
+   ^~~~~~~~~
+src/motor_controller.h:83:38: note: suggested alternative: 'CANBus'
+   void setCanBus(MCP2515_CAN* bus) { canBus = bus; }
+                                      ^~~~~~
+                                      CANBus
+src/motor_controller.h: In member function 'void MotorController::setEncoder(Encoder&)':
+src/motor_controller.h:85:55: error: no match for 'operator=' (operand types are 'EncoderInterface' and 'Encoder')
+   void setEncoder(Encoder& encoder) { this->encoder = encoder; }
+                                                       ^~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:22:
+include/../include/types.h:188:3: note: candidate: 'EncoderInterface& EncoderInterface::operator=(const EncoderInterface&)'
+ } EncoderInterface;
+   ^~~~~~~~~~~~~~~~
+include/../include/types.h:188:3: note:   no known conversion for argument 1 from 'Encoder' to 'const EncoderInterface&'
+include/../include/types.h:188:3: note: candidate: 'EncoderInterface& EncoderInterface::operator=(EncoderInterface&&)'
+include/../include/types.h:188:3: note:   no known conversion for argument 1 from 'Encoder' to 'EncoderInterface&&'
+src/motor_controller.h:58:3: error: 'FaultCode' does not name a type
+   FaultCode faultCode;
+   ^~~~~~~~~
+src/motor_controller.h:80:3: error: 'MCP2515_CAN' does not name a type
+   MCP2515_CAN* canBus;
+   ^~~~~~~~~~~
+src/motor_controller.h:83:18: error: 'MCP2515_CAN' has not been declared
+   void setCanBus(MCP2515_CAN* bus) { canBus = bus; }
+                  ^~~~~~~~~~~
+src/motor_controller.h:86:23: error: 'MotorDriver' has not been declared
+   void setMotorDriver(MotorDriver& driver) { motorDriver = &driver; }
+                       ^~~~~~~~~~~
+src/motor_controller.h: In member function 'void MotorController::setCanBus(int*)':
+src/motor_controller.h:83:38: error: 'canBus' was not declared in this scope
+   void setCanBus(MCP2515_CAN* bus) { canBus = bus; }
+                                      ^~~~~~
+src/motor_controller.h:83:38: note: suggested alternative: 'CANBus'
+   void setCanBus(MCP2515_CAN* bus) { canBus = bus; }
+                                      ^~~~~~
+                                      CANBus
+src/motor_controller.h: In member function 'void MotorController::setEncoder(Encoder&)':
+src/motor_controller.h:85:55: error: no match for 'operator=' (operand types are 'EncoderInterface' and 'Encoder')
+   void setEncoder(Encoder& encoder) { this->encoder = encoder; }
+                                                       ^~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:2:
+include/../include/types.h:188:3: note: candidate: 'EncoderInterface& EncoderInterface::operator=(const EncoderInterface&)'
+ } EncoderInterface;
+   ^~~~~~~~~~~~~~~~
+include/../include/types.h:188:3: note:   no known conversion for argument 1 from 'Encoder' to 'const EncoderInterface&'
+include/../include/types.h:188:3: note: candidate: 'EncoderInterface& EncoderInterface::operator=(EncoderInterface&&)'
+include/../include/types.h:188:3: note:   no known conversion for argument 1 from 'Encoder' to 'EncoderInterface&&'
+src/drivers/rmd_l_driver.cpp: At global scope:
+src/drivers/rmd_l_driver.cpp:46:1: error: definition of explicitly-defaulted 'RMDLDriver::~RMDLDriver()'
+ RMDLDriver::~RMDLDriver() = default;
+ ^~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:21:
+src/drivers/rmd_l_driver.h:8:5: note: 'virtual RMDLDriver::~RMDLDriver()' explicitly defaulted here
+     ~RMDLDriver() override = default;
+     ^
+src/drivers/rmd_l_driver.cpp: In member function 'virtual bool RMDLDriver::init()':
+src/drivers/rmd_l_driver.cpp:50:17: error: 'struct MotorConfig' has no member named 'communication'
+     if (_config.communication == COMM_CAN) {
+                 ^~~~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:51:22: error: 'getInstance' is not a member of 'CANBus'
+         if (!CANBus::getInstance().begin(_config.canBusSpeed)) {
+                      ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:51:50: error: 'struct MotorConfig' has no member named 'canBusSpeed'
+         if (!CANBus::getInstance().begin(_config.canBusSpeed)) {
+                                                  ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:52:64: error: no matching function for call to 'Logger::error(const char [36])'
+             Logger::error("RMD-L: Failed to initialize CAN bus");
+                                                                ^
+In file included from src/drivers/rmd_l_driver.cpp:32:
+src/drivers/../utils/logger.h:25:17: note: candidate: 'static void Logger::error(const char*, const char*, ...)'
+     static void error(const char* module, const char* fmt, ...);
+                 ^~~~~
+src/drivers/../utils/logger.h:25:17: note:   candidate expects 2 arguments, 1 provided
+src/drivers/rmd_l_driver.cpp:58:17: error: 'struct MotorConfig' has no member named 'communication'
+     if (_config.communication == COMM_RS485) {
+                 ^~~~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:59:21: error: 'getInstance' is not a member of 'RS485'
+         if (!RS485::getInstance().begin(_config.rs485BaudRate)) {
+                     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:59:49: error: 'struct MotorConfig' has no member named 'rs485BaudRate'
+         if (!RS485::getInstance().begin(_config.rs485BaudRate)) {
+                                                 ^~~~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:60:62: error: no matching function for call to 'Logger::error(const char [34])'
+             Logger::error("RMD-L: Failed to initialize RS485");
+                                                              ^
+In file included from src/drivers/rmd_l_driver.cpp:32:
+src/drivers/../utils/logger.h:25:17: note: candidate: 'static void Logger::error(const char*, const char*, ...)'
+     static void error(const char* module, const char* fmt, ...);
+                 ^~~~~
+src/drivers/../utils/logger.h:25:17: note:   candidate expects 2 arguments, 1 provided
+src/drivers/rmd_l_driver.cpp:66:19: error: 'getInstance' is not a member of 'Encoder'
+     if (!Encoder::getInstance().begin(_config.encoderPinA, _config.encoderPinB, _config.encoderPinZ)) {
+                   ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:66:47: error: 'struct MotorConfig' has no member named 'encoderPinA'
+     if (!Encoder::getInstance().begin(_config.encoderPinA, _config.encoderPinB, _config.encoderPinZ)) {
+                                               ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:66:68: error: 'struct MotorConfig' has no member named 'encoderPinB'
+     if (!Encoder::getInstance().begin(_config.encoderPinA, _config.encoderPinB, _config.encoderPinZ)) {
+                                                                    ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:66:89: error: 'struct MotorConfig' has no member named 'encoderPinZ'
+     if (!Encoder::getInstance().begin(_config.encoderPinA, _config.encoderPinB, _config.encoderPinZ)) {
+                                                                                         ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:67:60: error: no matching function for call to 'Logger::error(const char [36])'
+         Logger::error("RMD-L: Failed to initialize encoder");
+                                                            ^
+In file included from src/drivers/rmd_l_driver.cpp:32:
+src/drivers/../utils/logger.h:25:17: note: candidate: 'static void Logger::error(const char*, const char*, ...)'
+     static void error(const char* module, const char* fmt, ...);
+                 ^~~~~
+src/drivers/../utils/logger.h:25:17: note:   candidate expects 2 arguments, 1 provided
+src/drivers/rmd_l_driver.cpp:72:10: error: 'MotorDriver' has not been declared
+     if (!MotorDriver::getInstance().begin(_config.motorPinPWM, _config.motorPinDir)) {
+          ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:72:51: error: 'struct MotorConfig' has no member named 'motorPinPWM'
+     if (!MotorDriver::getInstance().begin(_config.motorPinPWM, _config.motorPinDir)) {
+                                                   ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:72:72: error: 'struct MotorConfig' has no member named 'motorPinDir'
+     if (!MotorDriver::getInstance().begin(_config.motorPinPWM, _config.motorPinDir)) {
+                                                                        ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:73:65: error: no matching function for call to 'Logger::error(const char [41])'
+         Logger::error("RMD-L: Failed to initialize motor driver");
+                                                                 ^
+In file included from src/drivers/rmd_l_driver.cpp:32:
+src/drivers/../utils/logger.h:25:17: note: candidate: 'static void Logger::error(const char*, const char*, ...)'
+     static void error(const char* module, const char* fmt, ...);
+                 ^~~~~
+src/drivers/../utils/logger.h:25:17: note:   candidate expects 2 arguments, 1 provided
+src/drivers/rmd_l_driver.cpp:83:78: error: no matching function for call to 'Logger::info(StringSumHelper&)'
+     Logger::info("RMD-L: Driver initialized for motor ID " + String(_motorId));
+                                                                              ^
+In file included from src/drivers/rmd_l_driver.cpp:32:
+src/drivers/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/drivers/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::deinit()':
+src/drivers/rmd_l_driver.cpp:88:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().end();
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:89:14: error: 'getInstance' is not a member of 'Encoder'
+     Encoder::getInstance().end();
+              ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:90:47: error: no matching function for call to 'Logger::info(const char [28])'
+     Logger::info("RMD-L: Driver deinitialized");
+                                               ^
+In file included from src/drivers/rmd_l_driver.cpp:32:
+src/drivers/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/drivers/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+src/drivers/rmd_l_driver.cpp: In member function 'virtual MotorStatus RMDLDriver::getStatus()':
+src/drivers/rmd_l_driver.cpp:95:26: error: 'getInstance' is not a member of 'Encoder'
+     _position = Encoder::getInstance().getPosition();
+                          ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:96:26: error: 'getInstance' is not a member of 'Encoder'
+     _velocity = Encoder::getInstance().getVelocity();
+                          ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:99:16: error: 'MotorDriver' has not been declared
+     _current = MotorDriver::getInstance().getCurrent();
+                ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:102:20: error: 'MotorDriver' has not been declared
+     _temperature = MotorDriver::getInstance().getTemperature();
+                    ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:105:13: error: request for member 'position' in '((RMDLDriver*)this)->RMDLDriver::_status', which is of non-class type 'MotorStatus'
+     _status.position = _position;
+             ^~~~~~~~
+src/drivers/rmd_l_driver.cpp:106:13: error: request for member 'velocity' in '((RMDLDriver*)this)->RMDLDriver::_status', which is of non-class type 'MotorStatus'
+     _status.velocity = _velocity;
+             ^~~~~~~~
+src/drivers/rmd_l_driver.cpp:107:13: error: request for member 'current' in '((RMDLDriver*)this)->RMDLDriver::_status', which is of non-class type 'MotorStatus'
+     _status.current = _current;
+             ^~~~~~~
+src/drivers/rmd_l_driver.cpp:108:13: error: request for member 'temperature' in '((RMDLDriver*)this)->RMDLDriver::_status', which is of non-class type 'MotorStatus'
+     _status.temperature = _temperature;
+             ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:109:13: error: request for member 'enabled' in '((RMDLDriver*)this)->RMDLDriver::_status', which is of non-class type 'MotorStatus'
+     _status.enabled = IMotorDriver::getInstance().isEnabled();
+             ^~~~~~~
+src/drivers/rmd_l_driver.cpp:109:37: error: 'getInstance' is not a member of 'IMotorDriver'
+     _status.enabled = IMotorDriver::getInstance().isEnabled();
+                                     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::setPosition(float)':
+src/drivers/rmd_l_driver.cpp:135:26: error: 'struct MotorConfig' has no member named 'maxPosition'
+     if (target > _config.maxPosition) {
+                          ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:136:26: error: 'struct MotorConfig' has no member named 'maxPosition'
+         target = _config.maxPosition;
+                          ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:137:34: error: 'struct MotorConfig' has no member named 'maxPosition'
+     } else if (target < -_config.maxPosition) {
+                                  ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:138:27: error: 'struct MotorConfig' has no member named 'maxPosition'
+         target = -_config.maxPosition;
+                           ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:141:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().setPosition(target);
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::setVelocity(float)':
+src/drivers/rmd_l_driver.cpp:152:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().setVelocity(target);
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::setTorque(float)':
+src/drivers/rmd_l_driver.cpp:163:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().setTorque(target);
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::enable()':
+src/drivers/rmd_l_driver.cpp:167:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().enable();
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:168:40: error: no matching function for call to 'Logger::info(const char [21])'
+     Logger::info("RMD-L: Motor enabled");
+                                        ^
+In file included from src/drivers/rmd_l_driver.cpp:32:
+src/drivers/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/drivers/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::disable()':
+src/drivers/rmd_l_driver.cpp:172:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().disable();
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:173:41: error: no matching function for call to 'Logger::info(const char [22])'
+     Logger::info("RMD-L: Motor disabled");
+                                         ^
+In file included from src/drivers/rmd_l_driver.cpp:32:
+src/drivers/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/drivers/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::faultReset()':
+src/drivers/rmd_l_driver.cpp:177:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().faultReset();
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:178:38: error: no matching function for call to 'Logger::info(const char [19])'
+     Logger::info("RMD-L: Fault reset");
+                                      ^
+In file included from src/drivers/rmd_l_driver.cpp:32:
+src/drivers/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/drivers/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::setLimits(float, float)':
+src/drivers/rmd_l_driver.cpp:184:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().setLimits(maxVelocity, maxTorque);
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::setGains(float, float, float)':
+src/drivers/rmd_l_driver.cpp:191:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().setGains(kp, ki, kd);
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: At global scope:
+src/drivers/rmd_l_driver.cpp:199:6: error: redefinition of 'void RMDLDriver::deinit()'
+ void RMDLDriver::deinit() {
+      ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:87:6: note: 'virtual void RMDLDriver::deinit()' previously defined here
+ void RMDLDriver::deinit() {
+      ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:205:13: error: redefinition of 'MotorStatus RMDLDriver::getStatus()'
+ MotorStatus RMDLDriver::getStatus() {
+             ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:93:13: note: 'virtual MotorStatus RMDLDriver::getStatus()' previously defined here
+ MotorStatus RMDLDriver::getStatus() {
+             ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:209:7: error: redefinition of 'float RMDLDriver::getTemperature()'
+ float RMDLDriver::getTemperature() {
+       ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:114:7: note: 'virtual float RMDLDriver::getTemperature()' previously defined here
+ float RMDLDriver::getTemperature() {
+       ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:213:9: error: redefinition of 'int32_t RMDLDriver::getPosition()'
+ int32_t RMDLDriver::getPosition() {
+         ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:118:9: note: 'virtual int32_t RMDLDriver::getPosition()' previously defined here
+ int32_t RMDLDriver::getPosition() {
+         ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:217:7: error: redefinition of 'float RMDLDriver::getVelocity()'
+ float RMDLDriver::getVelocity() {
+       ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:122:7: note: 'virtual float RMDLDriver::getVelocity()' previously defined here
+ float RMDLDriver::getVelocity() {
+       ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:221:7: error: redefinition of 'float RMDLDriver::getCurrent()'
+ float RMDLDriver::getCurrent() {
+       ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:126:7: note: 'virtual float RMDLDriver::getCurrent()' previously defined here
+ float RMDLDriver::getCurrent() {
+       ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp: At global scope:
+src/drivers/rmd_x_driver.cpp:120:6: error: no declaration matches 'void RMDXDriver::setGearboxRatio(float)'
+ void RMDXDriver::setGearboxRatio(float ratio) {
+      ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:120:6: note: no functions named 'void RMDXDriver::setGearboxRatio(float)'
+In file included from src/drivers/rmd_x_driver.cpp:1:
+src/drivers/rmd_x_driver.h:4:7: note: 'class RMDXDriver' defined here
+ class RMDXDriver : public IMotorDriver {
+       ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:129:6: error: redefinition of 'void RMDXDriver::deinit()'
+ void RMDXDriver::deinit() {
+      ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:39:6: note: 'virtual void RMDXDriver::deinit()' previously defined here
+ void RMDXDriver::deinit() {
+      ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:135:13: error: redefinition of 'MotorStatus RMDXDriver::getStatus()'
+ MotorStatus RMDXDriver::getStatus() {
+             ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:45:13: note: 'virtual MotorStatus RMDXDriver::getStatus()' previously defined here
+ MotorStatus RMDXDriver::getStatus() {
+             ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:139:7: error: redefinition of 'float RMDXDriver::getTemperature()'
+ float RMDXDriver::getTemperature() {
+       ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:49:7: note: 'virtual float RMDXDriver::getTemperature()' previously defined here
+ float RMDXDriver::getTemperature() {
+       ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:143:9: error: redefinition of 'int32_t RMDXDriver::getPosition()'
+ int32_t RMDXDriver::getPosition() {
+         ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:57:9: note: 'virtual int32_t RMDXDriver::getPosition()' previously defined here
+ int32_t RMDXDriver::getPosition() {
+         ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:147:7: error: redefinition of 'float RMDXDriver::getVelocity()'
+ float RMDXDriver::getVelocity() {
+       ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:63:7: note: 'virtual float RMDXDriver::getVelocity()' previously defined here
+ float RMDXDriver::getVelocity() {
+       ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:151:7: error: redefinition of 'float RMDXDriver::getCurrent()'
+ float RMDXDriver::getCurrent() {
+       ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:69:7: note: 'virtual float RMDXDriver::getCurrent()' previously defined here
+ float RMDXDriver::getCurrent() {
+       ^~~~~~~~~~
+In file included from src/protocols/pal.h:13,
+                 from src/protocols/pal.cpp:7:
+include/../include/types.h:133:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+include/../include/types.h:93:3: note: previous declaration as 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+include/../include/types.h:168:5: error: redefinition of 'MOTOR_STATE_TORQUE_CONTROL'
+     MOTOR_STATE_TORQUE_CONTROL
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:167:5: note: 'MOTOR_STATE_TORQUE_CONTROL' previously defined here
+     MOTOR_STATE_TORQUE_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:180:3: error: conflicting declaration 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+include/../include/types.h:101:3: note: previous declaration as 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+In file included from src/protocols/pal.h:14,
+                 from src/protocols/pal.cpp:7:
+src/protocols/../drivers/motor_driver.h:25:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/protocols/pal.h:13,
+                 from src/protocols/pal.cpp:7:
+include/../include/types.h:93:3: note: previous declaration as 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+src/protocols/pal.cpp:21:6: error: no declaration matches 'void ProtocolAbstractionLayer::init(const MotorConfig&)'
+ void ProtocolAbstractionLayer::init(const MotorConfig& config) {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:21:6: note: no functions named 'void ProtocolAbstractionLayer::init(const MotorConfig&)'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:42:6: error: no declaration matches 'void ProtocolAbstractionLayer::initCAN()'
+ void ProtocolAbstractionLayer::initCAN() {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:42:6: note: no functions named 'void ProtocolAbstractionLayer::initCAN()'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:47:6: error: no declaration matches 'void ProtocolAbstractionLayer::initRS485()'
+ void ProtocolAbstractionLayer::initRS485() {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:47:6: note: no functions named 'void ProtocolAbstractionLayer::initRS485()'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:52:6: error: no declaration matches 'void ProtocolAbstractionLayer::initEtherCAT()'
+ void ProtocolAbstractionLayer::initEtherCAT() {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:52:6: note: no functions named 'void ProtocolAbstractionLayer::initEtherCAT()'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:57:6: error: no declaration matches 'void ProtocolAbstractionLayer::processCommands()'
+ void ProtocolAbstractionLayer::processCommands() {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:57:6: note: no functions named 'void ProtocolAbstractionLayer::processCommands()'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:163:6: error: no declaration matches 'void ProtocolAbstractionLayer::sendStatusReport()'
+ void ProtocolAbstractionLayer::sendStatusReport() {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:163:6: note: no functions named 'void ProtocolAbstractionLayer::sendStatusReport()'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:197:6: error: no declaration matches 'void ProtocolAbstractionLayer::sendHeartbeat()'
+ void ProtocolAbstractionLayer::sendHeartbeat() {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:197:6: note: no functions named 'void ProtocolAbstractionLayer::sendHeartbeat()'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:215:14: error: no declaration matches 'StatusReport ProtocolAbstractionLayer::getStatus() const'
+ StatusReport ProtocolAbstractionLayer::getStatus() const {
+              ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:215:14: note: no functions named 'StatusReport ProtocolAbstractionLayer::getStatus() const'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:219:6: error: no declaration matches 'void ProtocolAbstractionLayer::setPosition(int32_t)'
+ void ProtocolAbstractionLayer::setPosition(int32_t position) {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:219:6: note: no functions named 'void ProtocolAbstractionLayer::setPosition(int32_t)'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:223:6: error: no declaration matches 'void ProtocolAbstractionLayer::setVelocity(int32_t)'
+ void ProtocolAbstractionLayer::setVelocity(int32_t velocity) {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:223:6: note: no functions named 'void ProtocolAbstractionLayer::setVelocity(int32_t)'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:227:6: error: no declaration matches 'void ProtocolAbstractionLayer::setTorque(int16_t)'
+ void ProtocolAbstractionLayer::setTorque(int16_t torque) {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:227:6: note: no functions named 'void ProtocolAbstractionLayer::setTorque(int16_t)'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:231:6: error: no declaration matches 'bool ProtocolAbstractionLayer::readParameter(uint8_t, uint8_t*, uint8_t)'
+ bool ProtocolAbstractionLayer::readParameter(uint8_t paramId, uint8_t* data, uint8_t length) {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:231:6: note: no functions named 'bool ProtocolAbstractionLayer::readParameter(uint8_t, uint8_t*, uint8_t)'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:236:6: error: no declaration matches 'bool ProtocolAbstractionLayer::writeParameter(uint8_t, const uint8_t*, uint8_t)'
+ bool ProtocolAbstractionLayer::writeParameter(uint8_t paramId, const uint8_t* data, uint8_t length) {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:236:6: note: no functions named 'bool ProtocolAbstractionLayer::writeParameter(uint8_t, const uint8_t*, uint8_t)'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp: In member function 'String ProtocolAbstractionLayer::getProtocolName() const':
+src/protocols/pal.cpp:242:21: error: 'const struct MotorConfig' has no member named 'protocol'
+     switch (_config.protocol) {
+                     ^~~~~~~~
+src/protocols/pal.cpp:243:14: error: 'Protocol' has not been declared
+         case Protocol::CAN: return "CAN";
+              ^~~~~~~~
+src/protocols/pal.cpp:244:14: error: 'Protocol' has not been declared
+         case Protocol::RS485: return "RS485";
+              ^~~~~~~~
+src/protocols/pal.cpp:245:14: error: 'Protocol' has not been declared
+         case Protocol::ETHERCAT: return "EtherCAT";
+              ^~~~~~~~
+src/protocols/pal.cpp: In member function 'String ProtocolAbstractionLayer::getMotorSeriesName() const':
+src/protocols/pal.cpp:251:21: error: 'const struct MotorConfig' has no member named 'motorSeries'; did you mean 'motor_id'?
+     switch (_config.motorSeries) {
+                     ^~~~~~~~~~~
+                     motor_id
+src/protocols/pal.cpp: In member function 'void ProtocolAbstractionLayer::handlePositionCmd(const Command&)':
+src/protocols/pal.cpp:263:13: error: 'const struct Command' has no member named 'payloadLength'
+     if (cmd.payloadLength >= 4) {
+             ^~~~~~~~~~~~~
+src/protocols/pal.cpp:265:31: error: 'const struct Command' has no member named 'payload'
+         memcpy(&position, cmd.payload, 4);
+                               ^~~~~~~
+src/protocols/pal.cpp:266:9: error: 'setPosition' was not declared in this scope
+         setPosition(position);
+         ^~~~~~~~~~~
+src/protocols/pal.cpp:266:9: note: suggested alternative: 'position'
+         setPosition(position);
+         ^~~~~~~~~~~
+         position
+src/protocols/pal.cpp:267:61: error: no matching function for call to 'Logger::info(StringSumHelper&)'
+         Logger::info("Position command: " + String(position));
+                                                             ^
+In file included from src/protocols/pal.cpp:11:
+src/protocols/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/protocols/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+src/protocols/pal.cpp: In member function 'void ProtocolAbstractionLayer::handleVelocityCmd(const Command&)':
+src/protocols/pal.cpp:272:13: error: 'const struct Command' has no member named 'payloadLength'
+     if (cmd.payloadLength >= 4) {
+             ^~~~~~~~~~~~~
+src/protocols/pal.cpp:274:31: error: 'const struct Command' has no member named 'payload'
+         memcpy(&velocity, cmd.payload, 4);
+                               ^~~~~~~
+src/protocols/pal.cpp:275:9: error: 'setVelocity' was not declared in this scope
+         setVelocity(velocity);
+         ^~~~~~~~~~~
+src/protocols/pal.cpp:275:9: note: suggested alternative: 'velocity'
+         setVelocity(velocity);
+         ^~~~~~~~~~~
+         velocity
+src/protocols/pal.cpp:276:61: error: no matching function for call to 'Logger::info(StringSumHelper&)'
+         Logger::info("Velocity command: " + String(velocity));
+                                                             ^
+In file included from src/protocols/pal.cpp:11:
+src/protocols/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/protocols/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+src/protocols/pal.cpp: In member function 'void ProtocolAbstractionLayer::handleTorqueCmd(const Command&)':
+src/protocols/pal.cpp:281:13: error: 'const struct Command' has no member named 'payloadLength'
+     if (cmd.payloadLength >= 2) {
+             ^~~~~~~~~~~~~
+src/protocols/pal.cpp:283:29: error: 'const struct Command' has no member named 'payload'
+         memcpy(&torque, cmd.payload, 2);
+                             ^~~~~~~
+src/protocols/pal.cpp:284:9: error: 'setTorque' was not declared in this scope
+         setTorque(torque);
+         ^~~~~~~~~
+src/protocols/pal.cpp:284:9: note: suggested alternative: 'torque'
+         setTorque(torque);
+         ^~~~~~~~~
+         torque
+src/protocols/pal.cpp:285:57: error: no matching function for call to 'Logger::info(StringSumHelper&)'
+         Logger::info("Torque command: " + String(torque));
+                                                         ^
+In file included from src/protocols/pal.cpp:11:
+src/protocols/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/protocols/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+src/protocols/pal.cpp: In member function 'void ProtocolAbstractionLayer::handleParamRead(const Command&)':
+src/protocols/pal.cpp:290:76: error: no matching function for call to 'Logger::info(StringSumHelper&)'
+     Logger::info("Parameter read request from motor " + String(cmd.motorId));
+                                                                            ^
+In file included from src/protocols/pal.cpp:11:
+src/protocols/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/protocols/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+src/protocols/pal.cpp: In member function 'void ProtocolAbstractionLayer::handleParamWrite(const Command&)':
+src/protocols/pal.cpp:294:77: error: no matching function for call to 'Logger::info(StringSumHelper&)'
+     Logger::info("Parameter write request from motor " + String(cmd.motorId));
+                                                                             ^
+In file included from src/protocols/pal.cpp:11:
+src/protocols/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/protocols/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+src/protocols/pal.cpp: At global scope:
+src/protocols/pal.cpp:297:6: error: no declaration matches 'void ProtocolAbstractionLayer::handleDiagnostic(const Command&)'
+ void ProtocolAbstractionLayer::handleDiagnostic(const Command& cmd) {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:297:6: note: no functions named 'void ProtocolAbstractionLayer::handleDiagnostic(const Command&)'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp: In member function 'void ProtocolAbstractionLayer::handleFirmwareUpdate(const Command&)':
+src/protocols/pal.cpp:302:77: error: no matching function for call to 'Logger::info(StringSumHelper&)'
+     Logger::info("Firmware update request from motor " + String(cmd.motorId));
+                                                                             ^
+In file included from src/protocols/pal.cpp:11:
+src/protocols/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/protocols/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+*** [.pio/build/esp32s3/src/drivers/rmd_l_driver.cpp.o] Error 1
+*** [.pio/build/esp32s3/src/drivers/rmd_x_driver.cpp.o] Error 1
+src/protocols/pal.cpp: In member function 'String ProtocolAbstractionLayer::getProtocolName() const':
+src/protocols/pal.cpp:248:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+src/protocols/pal.cpp: In member function 'String ProtocolAbstractionLayer::getMotorSeriesName() const':
+src/protocols/pal.cpp:260:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+*** [.pio/build/esp32s3/src/protocols/pal.cpp.o] Error 1
+========================== [FAILED] Took 1.14 seconds ==========================
+
+Processing esp32c3 (platform: espressif32; board: esp32-c3-devkitm-1; framework: arduino)
+--------------------------------------------------------------------------------
+Verbose mode can be enabled via `-v, --verbose` option
+CONFIGURATION: https://docs.platformio.org/page/boards/espressif32/esp32-c3-devkitm-1.html
+PLATFORM: Espressif 32 (7.0.1) > Espressif ESP32-C3-DevKitM-1
+HARDWARE: ESP32C3 160MHz, 320KB RAM, 4MB Flash
+DEBUG: Current (cmsis-dap) External (cmsis-dap, esp-bridge, esp-builtin, esp-prog, iot-bus-jtag, jlink, minimodule, olimex-arm-usb-ocd, olimex-arm-usb-ocd-h, olimex-arm-usb-tiny-h, olimex-jtag-tiny, tumpa)
+PACKAGES: 
+ - framework-arduinoespressif32 @ 3.20017.241212+sha.dcc1105b 
+ - tool-esptoolpy @ 2.41100.0 (4.11.0) 
+ - toolchain-riscv32-esp @ 8.4.0+2021r2-patch5
+LDF: Library Dependency Finder -> https://bit.ly/configure-pio-ldf
+LDF Modes: Finder ~ chain, Compatibility ~ soft
+Found 35 compatible libraries
+Scanning dependencies...
+Dependency Graph
+|-- MCP2515 @ 1.0.0
+|-- ArduinoJson @ 7.4.3
+|-- SPI @ 2.0.0
+Building in release mode
+Compiling .pio/build/esp32c3/src/drivers/cem_driver.cpp.o
+Compiling .pio/build/esp32c3/src/drivers/fl_driver.cpp.o
+Compiling .pio/build/esp32c3/src/drivers/mcp2515_can.cpp.o
+Compiling .pio/build/esp32c3/src/drivers/rh_driver.cpp.o
+Compiling .pio/build/esp32c3/src/drivers/rmd_h_driver.cpp.o
+Compiling .pio/build/esp32c3/src/drivers/rmd_l_driver.cpp.o
+Compiling .pio/build/esp32c3/src/drivers/rmd_x_driver.cpp.o
+Compiling .pio/build/esp32c3/src/main.cpp.o
+Compiling .pio/build/esp32c3/src/motor_controller.cpp.o
+Compiling .pio/build/esp32c3/src/protocols/pal.cpp.o
+In file included from src/drivers/mcp2515_can.cpp:1:
+src/drivers/mcp2515_can.h:5:10: fatal error: mcp2515.h: No such file or directory
+
+*****************************************************************
+* Looking for mcp2515.h dependency? Check our library registry!
+*
+* CLI  > platformio lib search "header:mcp2515.h"
+* Web  > https://registry.platformio.org/search?q=header:mcp2515.h
+*
+*****************************************************************
+
+ #include <mcp2515.h>
+          ^~~~~~~~~~~
+compilation terminated.
+Archiving .pio/build/esp32c3/lib169/libSPI.a
+*** [.pio/build/esp32c3/src/drivers/mcp2515_can.cpp.o] Error 1
+In file included from src/drivers/cem_driver.cpp:128:
+include/../include/types.h:93:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/cem_driver.h:3,
+                 from src/drivers/cem_driver.cpp:127:
+src/drivers/motor_driver.h:25:3: note: previous declaration as 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/cem_driver.cpp:128:
+include/../include/types.h:133:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/cem_driver.h:3,
+                 from src/drivers/cem_driver.cpp:127:
+src/drivers/motor_driver.h:25:3: note: previous declaration as 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/cem_driver.cpp:128:
+include/../include/types.h:168:5: error: redefinition of 'MOTOR_STATE_TORQUE_CONTROL'
+     MOTOR_STATE_TORQUE_CONTROL
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:167:5: note: 'MOTOR_STATE_TORQUE_CONTROL' previously defined here
+     MOTOR_STATE_TORQUE_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:180:3: error: conflicting declaration 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+include/../include/types.h:101:3: note: previous declaration as 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+src/drivers/cem_driver.cpp:230:6: error: redefinition of 'void CEMDriver::deinit()'
+ void CEMDriver::deinit() {
+      ^~~~~~~~~
+src/drivers/cem_driver.cpp:150:6: note: 'virtual void CEMDriver::deinit()' previously defined here
+ void CEMDriver::deinit() {
+      ^~~~~~~~~
+src/drivers/cem_driver.cpp:236:13: error: redefinition of 'MotorStatus CEMDriver::getStatus()'
+ MotorStatus CEMDriver::getStatus() {
+             ^~~~~~~~~
+src/drivers/cem_driver.cpp:156:13: note: 'virtual MotorStatus CEMDriver::getStatus()' previously defined here
+ MotorStatus CEMDriver::getStatus() { return _status; }
+             ^~~~~~~~~
+src/drivers/cem_driver.cpp:240:7: error: redefinition of 'float CEMDriver::getTemperature()'
+ float CEMDriver::getTemperature() {
+       ^~~~~~~~~
+src/drivers/cem_driver.cpp:158:7: note: 'virtual float CEMDriver::getTemperature()' previously defined here
+ float CEMDriver::getTemperature() {
+       ^~~~~~~~~
+src/drivers/cem_driver.cpp:244:9: error: redefinition of 'int32_t CEMDriver::getPosition()'
+ int32_t CEMDriver::getPosition() {
+         ^~~~~~~~~
+src/drivers/cem_driver.cpp:165:9: note: 'virtual int32_t CEMDriver::getPosition()' previously defined here
+ int32_t CEMDriver::getPosition() {
+         ^~~~~~~~~
+src/drivers/cem_driver.cpp:248:7: error: redefinition of 'float CEMDriver::getVelocity()'
+ float CEMDriver::getVelocity() {
+       ^~~~~~~~~
+src/drivers/cem_driver.cpp:170:7: note: 'virtual float CEMDriver::getVelocity()' previously defined here
+ float CEMDriver::getVelocity() {
+       ^~~~~~~~~
+src/drivers/cem_driver.cpp:252:7: error: redefinition of 'float CEMDriver::getCurrent()'
+ float CEMDriver::getCurrent() {
+       ^~~~~~~~~
+src/drivers/cem_driver.cpp:175:7: note: 'virtual float CEMDriver::getCurrent()' previously defined here
+ float CEMDriver::getCurrent() {
+       ^~~~~~~~~
+Indexing .pio/build/esp32c3/lib169/libSPI.a
+src/drivers/fl_driver.cpp:111:6: error: redefinition of 'void FLDriver::deinit()'
+ void FLDriver::deinit() {
+      ^~~~~~~~
+src/drivers/fl_driver.cpp:30:6: note: 'virtual void FLDriver::deinit()' previously defined here
+ void FLDriver::deinit() {
+      ^~~~~~~~
+src/drivers/fl_driver.cpp:117:13: error: redefinition of 'MotorStatus FLDriver::getStatus()'
+ MotorStatus FLDriver::getStatus() {
+             ^~~~~~~~
+src/drivers/fl_driver.cpp:36:13: note: 'virtual MotorStatus FLDriver::getStatus()' previously defined here
+ MotorStatus FLDriver::getStatus() { return _status; }
+             ^~~~~~~~
+src/drivers/fl_driver.cpp:121:7: error: redefinition of 'float FLDriver::getTemperature()'
+ float FLDriver::getTemperature() {
+       ^~~~~~~~
+src/drivers/fl_driver.cpp:38:7: note: 'virtual float FLDriver::getTemperature()' previously defined here
+ float FLDriver::getTemperature() {
+       ^~~~~~~~
+src/drivers/fl_driver.cpp:125:9: error: redefinition of 'int32_t FLDriver::getPosition()'
+ int32_t FLDriver::getPosition() {
+         ^~~~~~~~
+src/drivers/fl_driver.cpp:45:9: note: 'virtual int32_t FLDriver::getPosition()' previously defined here
+ int32_t FLDriver::getPosition() {
+         ^~~~~~~~
+src/drivers/fl_driver.cpp:129:7: error: redefinition of 'float FLDriver::getVelocity()'
+ float FLDriver::getVelocity() {
+       ^~~~~~~~
+src/drivers/fl_driver.cpp:50:7: note: 'virtual float FLDriver::getVelocity()' previously defined here
+ float FLDriver::getVelocity() {
+       ^~~~~~~~
+src/drivers/fl_driver.cpp:133:7: error: redefinition of 'float FLDriver::getCurrent()'
+ float FLDriver::getCurrent() {
+       ^~~~~~~~
+src/drivers/fl_driver.cpp:55:7: note: 'virtual float FLDriver::getCurrent()' previously defined here
+ float FLDriver::getCurrent() {
+       ^~~~~~~~
+*** [.pio/build/esp32c3/src/drivers/cem_driver.cpp.o] Error 1
+src/drivers/rh_driver.cpp:90:6: error: redefinition of 'void RHDriver::deinit()'
+ void RHDriver::deinit() {
+      ^~~~~~~~
+src/drivers/rh_driver.cpp:30:6: note: 'virtual void RHDriver::deinit()' previously defined here
+ void RHDriver::deinit() {
+      ^~~~~~~~
+src/drivers/rh_driver.cpp:96:13: error: redefinition of 'MotorStatus RHDriver::getStatus()'
+ MotorStatus RHDriver::getStatus() {
+             ^~~~~~~~
+src/drivers/rh_driver.cpp:36:13: note: 'virtual MotorStatus RHDriver::getStatus()' previously defined here
+ MotorStatus RHDriver::getStatus() { return _status; }
+             ^~~~~~~~
+src/drivers/rh_driver.cpp:100:7: error: redefinition of 'float RHDriver::getTemperature()'
+ float RHDriver::getTemperature() {
+       ^~~~~~~~
+src/drivers/rh_driver.cpp:37:7: note: 'virtual float RHDriver::getTemperature()' previously defined here
+ float RHDriver::getTemperature() {
+       ^~~~~~~~
+src/drivers/rh_driver.cpp:104:9: error: redefinition of 'int32_t RHDriver::getPosition()'
+ int32_t RHDriver::getPosition() {
+         ^~~~~~~~
+src/drivers/rh_driver.cpp:43:9: note: 'virtual int32_t RHDriver::getPosition()' previously defined here
+ int32_t RHDriver::getPosition() { _position = 0; return _position; }
+         ^~~~~~~~
+src/drivers/rh_driver.cpp:108:7: error: redefinition of 'float RHDriver::getVelocity()'
+ float RHDriver::getVelocity() {
+       ^~~~~~~~
+src/drivers/rh_driver.cpp:44:7: note: 'virtual float RHDriver::getVelocity()' previously defined here
+ float RHDriver::getVelocity() { _velocity = 0.0f; return _velocity; }
+       ^~~~~~~~
+src/drivers/rh_driver.cpp:112:7: error: redefinition of 'float RHDriver::getCurrent()'
+ float RHDriver::getCurrent() {
+       ^~~~~~~~
+src/drivers/rh_driver.cpp:45:7: note: 'virtual float RHDriver::getCurrent()' previously defined here
+ float RHDriver::getCurrent() {
+       ^~~~~~~~
+*** [.pio/build/esp32c3/src/drivers/fl_driver.cpp.o] Error 1
+*** [.pio/build/esp32c3/src/drivers/rh_driver.cpp.o] Error 1
+src/drivers/rmd_h_driver.cpp:117:6: error: redefinition of 'void RMDHDriver::deinit()'
+ void RMDHDriver::deinit() {
+      ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:37:6: note: 'virtual void RMDHDriver::deinit()' previously defined here
+ void RMDHDriver::deinit() {
+      ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:123:13: error: redefinition of 'MotorStatus RMDHDriver::getStatus()'
+ MotorStatus RMDHDriver::getStatus() {
+             ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:43:13: note: 'virtual MotorStatus RMDHDriver::getStatus()' previously defined here
+ MotorStatus RMDHDriver::getStatus() { return _status; }
+             ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:127:7: error: redefinition of 'float RMDHDriver::getTemperature()'
+ float RMDHDriver::getTemperature() {
+       ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:45:7: note: 'virtual float RMDHDriver::getTemperature()' previously defined here
+ float RMDHDriver::getTemperature() {
+       ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:131:9: error: redefinition of 'int32_t RMDHDriver::getPosition()'
+ int32_t RMDHDriver::getPosition() {
+         ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:52:9: note: 'virtual int32_t RMDHDriver::getPosition()' previously defined here
+ int32_t RMDHDriver::getPosition() {
+         ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:135:7: error: redefinition of 'float RMDHDriver::getVelocity()'
+ float RMDHDriver::getVelocity() {
+       ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:57:7: note: 'virtual float RMDHDriver::getVelocity()' previously defined here
+ float RMDHDriver::getVelocity() {
+       ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:139:7: error: redefinition of 'float RMDHDriver::getCurrent()'
+ float RMDHDriver::getCurrent() {
+       ^~~~~~~~~~
+src/drivers/rmd_h_driver.cpp:62:7: note: 'virtual float RMDHDriver::getCurrent()' previously defined here
+ float RMDHDriver::getCurrent() {
+       ^~~~~~~~~~
+In file included from src/main.cpp:21:
+src/drivers/mcp2515_can.h:5:10: fatal error: mcp2515.h: No such file or directory
+
+*****************************************************************
+* Looking for mcp2515.h dependency? Check our library registry!
+*
+* CLI  > platformio lib search "header:mcp2515.h"
+* Web  > https://registry.platformio.org/search?q=header:mcp2515.h
+*
+*****************************************************************
+
+ #include <mcp2515.h>
+          ^~~~~~~~~~~
+compilation terminated.
+*** [.pio/build/esp32c3/src/main.cpp.o] Error 1
+*** [.pio/build/esp32c3/src/drivers/rmd_h_driver.cpp.o] Error 1
+In file included from src/motor_controller.cpp:3:
+src/drivers/mcp2515_can.h:5:10: fatal error: mcp2515.h: No such file or directory
+
+*****************************************************************
+* Looking for mcp2515.h dependency? Check our library registry!
+*
+* CLI  > platformio lib search "header:mcp2515.h"
+* Web  > https://registry.platformio.org/search?q=header:mcp2515.h
+*
+*****************************************************************
+
+ #include <mcp2515.h>
+          ^~~~~~~~~~~
+compilation terminated.
+*** [.pio/build/esp32c3/src/motor_controller.cpp.o] Error 1
+In file included from src/drivers/rmd_l_driver.cpp:22:
+include/../include/types.h:93:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.h:3,
+                 from src/drivers/rmd_l_driver.cpp:21:
+src/drivers/motor_driver.h:25:3: note: previous declaration as 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:22:
+include/../include/types.h:133:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.h:3,
+                 from src/drivers/rmd_l_driver.cpp:21:
+src/drivers/motor_driver.h:25:3: note: previous declaration as 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:22:
+include/../include/types.h:168:5: error: redefinition of 'MOTOR_STATE_TORQUE_CONTROL'
+     MOTOR_STATE_TORQUE_CONTROL
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:167:5: note: 'MOTOR_STATE_TORQUE_CONTROL' previously defined here
+     MOTOR_STATE_TORQUE_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:180:3: error: conflicting declaration 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+include/../include/types.h:101:3: note: previous declaration as 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+In file included from src/motor_controller.h:10,
+                 from src/drivers/rmd_l_driver.cpp:30:
+src/drivers/rmd_x_driver.h:23:10: error: 'void RMDXDriver::setBacklashCompensation(float)' marked 'override', but does not override
+     void setBacklashCompensation(float compensation) override;
+          ^~~~~~~~~~~~~~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:30:
+src/motor_controller.h:52:3: error: 'FaultCode' does not name a type
+   FaultCode getFaultCode() const;
+   ^~~~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:1:
+src/drivers/rmd_x_driver.h:23:10: error: 'void RMDXDriver::setBacklashCompensation(float)' marked 'override', but does not override
+     void setBacklashCompensation(float compensation) override;
+          ^~~~~~~~~~~~~~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:2:
+include/../include/types.h:93:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.h:2,
+                 from src/drivers/rmd_x_driver.cpp:1:
+src/drivers/motor_driver.h:25:3: note: previous declaration as 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:2:
+include/../include/types.h:133:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.h:2,
+                 from src/drivers/rmd_x_driver.cpp:1:
+src/drivers/motor_driver.h:25:3: note: previous declaration as 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:2:
+include/../include/types.h:168:5: error: redefinition of 'MOTOR_STATE_TORQUE_CONTROL'
+     MOTOR_STATE_TORQUE_CONTROL
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:167:5: note: 'MOTOR_STATE_TORQUE_CONTROL' previously defined here
+     MOTOR_STATE_TORQUE_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:180:3: error: conflicting declaration 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+include/../include/types.h:101:3: note: previous declaration as 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+src/motor_controller.h:58:3: error: 'FaultCode' does not name a type
+   FaultCode faultCode;
+   ^~~~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:10:
+src/motor_controller.h:52:3: error: 'FaultCode' does not name a type
+   FaultCode getFaultCode() const;
+   ^~~~~~~~~
+src/motor_controller.h:80:3: error: 'MCP2515_CAN' does not name a type
+   MCP2515_CAN* canBus;
+   ^~~~~~~~~~~
+src/motor_controller.h:83:18: error: 'MCP2515_CAN' has not been declared
+   void setCanBus(MCP2515_CAN* bus) { canBus = bus; }
+                  ^~~~~~~~~~~
+src/motor_controller.h:86:23: error: 'MotorDriver' has not been declared
+   void setMotorDriver(MotorDriver& driver) { motorDriver = &driver; }
+                       ^~~~~~~~~~~
+src/motor_controller.h: In member function 'void MotorController::setCanBus(int*)':
+src/motor_controller.h:83:38: error: 'canBus' was not declared in this scope
+   void setCanBus(MCP2515_CAN* bus) { canBus = bus; }
+                                      ^~~~~~
+src/motor_controller.h:83:38: note: suggested alternative: 'CANBus'
+   void setCanBus(MCP2515_CAN* bus) { canBus = bus; }
+                                      ^~~~~~
+                                      CANBus
+src/motor_controller.h: In member function 'void MotorController::setEncoder(Encoder&)':
+src/motor_controller.h:85:55: error: no match for 'operator=' (operand types are 'EncoderInterface' and 'Encoder')
+   void setEncoder(Encoder& encoder) { this->encoder = encoder; }
+                                                       ^~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:22:
+include/../include/types.h:188:3: note: candidate: 'EncoderInterface& EncoderInterface::operator=(const EncoderInterface&)'
+ } EncoderInterface;
+   ^~~~~~~~~~~~~~~~
+include/../include/types.h:188:3: note:   no known conversion for argument 1 from 'Encoder' to 'const EncoderInterface&'
+include/../include/types.h:188:3: note: candidate: 'EncoderInterface& EncoderInterface::operator=(EncoderInterface&&)'
+include/../include/types.h:188:3: note:   no known conversion for argument 1 from 'Encoder' to 'EncoderInterface&&'
+src/motor_controller.h:58:3: error: 'FaultCode' does not name a type
+   FaultCode faultCode;
+   ^~~~~~~~~
+src/motor_controller.h:80:3: error: 'MCP2515_CAN' does not name a type
+   MCP2515_CAN* canBus;
+   ^~~~~~~~~~~
+src/motor_controller.h:83:18: error: 'MCP2515_CAN' has not been declared
+   void setCanBus(MCP2515_CAN* bus) { canBus = bus; }
+                  ^~~~~~~~~~~
+src/motor_controller.h:86:23: error: 'MotorDriver' has not been declared
+   void setMotorDriver(MotorDriver& driver) { motorDriver = &driver; }
+                       ^~~~~~~~~~~
+src/motor_controller.h: In member function 'void MotorController::setCanBus(int*)':
+src/motor_controller.h:83:38: error: 'canBus' was not declared in this scope
+   void setCanBus(MCP2515_CAN* bus) { canBus = bus; }
+                                      ^~~~~~
+src/motor_controller.h:83:38: note: suggested alternative: 'CANBus'
+   void setCanBus(MCP2515_CAN* bus) { canBus = bus; }
+                                      ^~~~~~
+                                      CANBus
+src/motor_controller.h: In member function 'void MotorController::setEncoder(Encoder&)':
+src/motor_controller.h:85:55: error: no match for 'operator=' (operand types are 'EncoderInterface' and 'Encoder')
+   void setEncoder(Encoder& encoder) { this->encoder = encoder; }
+                                                       ^~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:2:
+include/../include/types.h:188:3: note: candidate: 'EncoderInterface& EncoderInterface::operator=(const EncoderInterface&)'
+ } EncoderInterface;
+   ^~~~~~~~~~~~~~~~
+include/../include/types.h:188:3: note:   no known conversion for argument 1 from 'Encoder' to 'const EncoderInterface&'
+include/../include/types.h:188:3: note: candidate: 'EncoderInterface& EncoderInterface::operator=(EncoderInterface&&)'
+include/../include/types.h:188:3: note:   no known conversion for argument 1 from 'Encoder' to 'EncoderInterface&&'
+src/drivers/rmd_l_driver.cpp: At global scope:
+src/drivers/rmd_l_driver.cpp:46:1: error: definition of explicitly-defaulted 'RMDLDriver::~RMDLDriver()'
+ RMDLDriver::~RMDLDriver() = default;
+ ^~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:21:
+src/drivers/rmd_l_driver.h:8:5: note: 'virtual RMDLDriver::~RMDLDriver()' explicitly defaulted here
+     ~RMDLDriver() override = default;
+     ^
+src/drivers/rmd_l_driver.cpp: In member function 'virtual bool RMDLDriver::init()':
+src/drivers/rmd_l_driver.cpp:50:17: error: 'struct MotorConfig' has no member named 'communication'
+     if (_config.communication == COMM_CAN) {
+                 ^~~~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:51:22: error: 'getInstance' is not a member of 'CANBus'
+         if (!CANBus::getInstance().begin(_config.canBusSpeed)) {
+                      ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:51:50: error: 'struct MotorConfig' has no member named 'canBusSpeed'
+         if (!CANBus::getInstance().begin(_config.canBusSpeed)) {
+                                                  ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:52:64: error: no matching function for call to 'Logger::error(const char [36])'
+             Logger::error("RMD-L: Failed to initialize CAN bus");
+                                                                ^
+In file included from src/drivers/rmd_l_driver.cpp:32:
+src/drivers/../utils/logger.h:25:17: note: candidate: 'static void Logger::error(const char*, const char*, ...)'
+     static void error(const char* module, const char* fmt, ...);
+                 ^~~~~
+src/drivers/../utils/logger.h:25:17: note:   candidate expects 2 arguments, 1 provided
+src/drivers/rmd_l_driver.cpp:58:17: error: 'struct MotorConfig' has no member named 'communication'
+     if (_config.communication == COMM_RS485) {
+                 ^~~~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:59:21: error: 'getInstance' is not a member of 'RS485'
+         if (!RS485::getInstance().begin(_config.rs485BaudRate)) {
+                     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:59:49: error: 'struct MotorConfig' has no member named 'rs485BaudRate'
+         if (!RS485::getInstance().begin(_config.rs485BaudRate)) {
+                                                 ^~~~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:60:62: error: no matching function for call to 'Logger::error(const char [34])'
+             Logger::error("RMD-L: Failed to initialize RS485");
+                                                              ^
+In file included from src/drivers/rmd_l_driver.cpp:32:
+src/drivers/../utils/logger.h:25:17: note: candidate: 'static void Logger::error(const char*, const char*, ...)'
+     static void error(const char* module, const char* fmt, ...);
+                 ^~~~~
+src/drivers/../utils/logger.h:25:17: note:   candidate expects 2 arguments, 1 provided
+src/drivers/rmd_l_driver.cpp:66:19: error: 'getInstance' is not a member of 'Encoder'
+     if (!Encoder::getInstance().begin(_config.encoderPinA, _config.encoderPinB, _config.encoderPinZ)) {
+                   ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:66:47: error: 'struct MotorConfig' has no member named 'encoderPinA'
+     if (!Encoder::getInstance().begin(_config.encoderPinA, _config.encoderPinB, _config.encoderPinZ)) {
+                                               ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:66:68: error: 'struct MotorConfig' has no member named 'encoderPinB'
+     if (!Encoder::getInstance().begin(_config.encoderPinA, _config.encoderPinB, _config.encoderPinZ)) {
+                                                                    ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:66:89: error: 'struct MotorConfig' has no member named 'encoderPinZ'
+     if (!Encoder::getInstance().begin(_config.encoderPinA, _config.encoderPinB, _config.encoderPinZ)) {
+                                                                                         ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:67:60: error: no matching function for call to 'Logger::error(const char [36])'
+         Logger::error("RMD-L: Failed to initialize encoder");
+                                                            ^
+In file included from src/drivers/rmd_l_driver.cpp:32:
+src/drivers/../utils/logger.h:25:17: note: candidate: 'static void Logger::error(const char*, const char*, ...)'
+     static void error(const char* module, const char* fmt, ...);
+                 ^~~~~
+src/drivers/../utils/logger.h:25:17: note:   candidate expects 2 arguments, 1 provided
+src/drivers/rmd_l_driver.cpp:72:10: error: 'MotorDriver' has not been declared
+     if (!MotorDriver::getInstance().begin(_config.motorPinPWM, _config.motorPinDir)) {
+          ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:72:51: error: 'struct MotorConfig' has no member named 'motorPinPWM'
+     if (!MotorDriver::getInstance().begin(_config.motorPinPWM, _config.motorPinDir)) {
+                                                   ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:72:72: error: 'struct MotorConfig' has no member named 'motorPinDir'
+     if (!MotorDriver::getInstance().begin(_config.motorPinPWM, _config.motorPinDir)) {
+                                                                        ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:73:65: error: no matching function for call to 'Logger::error(const char [41])'
+         Logger::error("RMD-L: Failed to initialize motor driver");
+                                                                 ^
+In file included from src/drivers/rmd_l_driver.cpp:32:
+src/drivers/../utils/logger.h:25:17: note: candidate: 'static void Logger::error(const char*, const char*, ...)'
+     static void error(const char* module, const char* fmt, ...);
+                 ^~~~~
+src/drivers/../utils/logger.h:25:17: note:   candidate expects 2 arguments, 1 provided
+src/drivers/rmd_l_driver.cpp:83:78: error: no matching function for call to 'Logger::info(StringSumHelper&)'
+     Logger::info("RMD-L: Driver initialized for motor ID " + String(_motorId));
+                                                                              ^
+In file included from src/drivers/rmd_l_driver.cpp:32:
+src/drivers/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/drivers/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::deinit()':
+src/drivers/rmd_l_driver.cpp:88:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().end();
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:89:14: error: 'getInstance' is not a member of 'Encoder'
+     Encoder::getInstance().end();
+              ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:90:47: error: no matching function for call to 'Logger::info(const char [28])'
+     Logger::info("RMD-L: Driver deinitialized");
+                                               ^
+In file included from src/drivers/rmd_l_driver.cpp:32:
+src/drivers/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/drivers/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+src/drivers/rmd_l_driver.cpp: In member function 'virtual MotorStatus RMDLDriver::getStatus()':
+src/drivers/rmd_l_driver.cpp:95:26: error: 'getInstance' is not a member of 'Encoder'
+     _position = Encoder::getInstance().getPosition();
+                          ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:96:26: error: 'getInstance' is not a member of 'Encoder'
+     _velocity = Encoder::getInstance().getVelocity();
+                          ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:99:16: error: 'MotorDriver' has not been declared
+     _current = MotorDriver::getInstance().getCurrent();
+                ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:102:20: error: 'MotorDriver' has not been declared
+     _temperature = MotorDriver::getInstance().getTemperature();
+                    ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:105:13: error: request for member 'position' in '((RMDLDriver*)this)->RMDLDriver::_status', which is of non-class type 'MotorStatus'
+     _status.position = _position;
+             ^~~~~~~~
+src/drivers/rmd_l_driver.cpp:106:13: error: request for member 'velocity' in '((RMDLDriver*)this)->RMDLDriver::_status', which is of non-class type 'MotorStatus'
+     _status.velocity = _velocity;
+             ^~~~~~~~
+src/drivers/rmd_l_driver.cpp:107:13: error: request for member 'current' in '((RMDLDriver*)this)->RMDLDriver::_status', which is of non-class type 'MotorStatus'
+     _status.current = _current;
+             ^~~~~~~
+src/drivers/rmd_l_driver.cpp:108:13: error: request for member 'temperature' in '((RMDLDriver*)this)->RMDLDriver::_status', which is of non-class type 'MotorStatus'
+     _status.temperature = _temperature;
+             ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:109:13: error: request for member 'enabled' in '((RMDLDriver*)this)->RMDLDriver::_status', which is of non-class type 'MotorStatus'
+     _status.enabled = IMotorDriver::getInstance().isEnabled();
+             ^~~~~~~
+src/drivers/rmd_l_driver.cpp:109:37: error: 'getInstance' is not a member of 'IMotorDriver'
+     _status.enabled = IMotorDriver::getInstance().isEnabled();
+                                     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::setPosition(float)':
+src/drivers/rmd_l_driver.cpp:135:26: error: 'struct MotorConfig' has no member named 'maxPosition'
+     if (target > _config.maxPosition) {
+                          ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:136:26: error: 'struct MotorConfig' has no member named 'maxPosition'
+         target = _config.maxPosition;
+                          ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:137:34: error: 'struct MotorConfig' has no member named 'maxPosition'
+     } else if (target < -_config.maxPosition) {
+                                  ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:138:27: error: 'struct MotorConfig' has no member named 'maxPosition'
+         target = -_config.maxPosition;
+                           ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:141:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().setPosition(target);
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::setVelocity(float)':
+src/drivers/rmd_l_driver.cpp:152:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().setVelocity(target);
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::setTorque(float)':
+src/drivers/rmd_l_driver.cpp:163:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().setTorque(target);
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::enable()':
+src/drivers/rmd_l_driver.cpp:167:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().enable();
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:168:40: error: no matching function for call to 'Logger::info(const char [21])'
+     Logger::info("RMD-L: Motor enabled");
+                                        ^
+In file included from src/drivers/rmd_l_driver.cpp:32:
+src/drivers/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/drivers/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::disable()':
+src/drivers/rmd_l_driver.cpp:172:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().disable();
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:173:41: error: no matching function for call to 'Logger::info(const char [22])'
+     Logger::info("RMD-L: Motor disabled");
+                                         ^
+In file included from src/drivers/rmd_l_driver.cpp:32:
+src/drivers/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/drivers/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::faultReset()':
+src/drivers/rmd_l_driver.cpp:177:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().faultReset();
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:178:38: error: no matching function for call to 'Logger::info(const char [19])'
+     Logger::info("RMD-L: Fault reset");
+                                      ^
+In file included from src/drivers/rmd_l_driver.cpp:32:
+src/drivers/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/drivers/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::setLimits(float, float)':
+src/drivers/rmd_l_driver.cpp:184:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().setLimits(maxVelocity, maxTorque);
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::setGains(float, float, float)':
+src/drivers/rmd_l_driver.cpp:191:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().setGains(kp, ki, kd);
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: At global scope:
+src/drivers/rmd_l_driver.cpp:199:6: error: redefinition of 'void RMDLDriver::deinit()'
+ void RMDLDriver::deinit() {
+      ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:87:6: note: 'virtual void RMDLDriver::deinit()' previously defined here
+ void RMDLDriver::deinit() {
+      ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:205:13: error: redefinition of 'MotorStatus RMDLDriver::getStatus()'
+ MotorStatus RMDLDriver::getStatus() {
+             ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:93:13: note: 'virtual MotorStatus RMDLDriver::getStatus()' previously defined here
+ MotorStatus RMDLDriver::getStatus() {
+             ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:209:7: error: redefinition of 'float RMDLDriver::getTemperature()'
+ float RMDLDriver::getTemperature() {
+       ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:114:7: note: 'virtual float RMDLDriver::getTemperature()' previously defined here
+ float RMDLDriver::getTemperature() {
+       ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:213:9: error: redefinition of 'int32_t RMDLDriver::getPosition()'
+ int32_t RMDLDriver::getPosition() {
+         ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:118:9: note: 'virtual int32_t RMDLDriver::getPosition()' previously defined here
+ int32_t RMDLDriver::getPosition() {
+         ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:217:7: error: redefinition of 'float RMDLDriver::getVelocity()'
+ float RMDLDriver::getVelocity() {
+       ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:122:7: note: 'virtual float RMDLDriver::getVelocity()' previously defined here
+ float RMDLDriver::getVelocity() {
+       ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:221:7: error: redefinition of 'float RMDLDriver::getCurrent()'
+ float RMDLDriver::getCurrent() {
+       ^~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:126:7: note: 'virtual float RMDLDriver::getCurrent()' previously defined here
+ float RMDLDriver::getCurrent() {
+       ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp: At global scope:
+src/drivers/rmd_x_driver.cpp:120:6: error: no declaration matches 'void RMDXDriver::setGearboxRatio(float)'
+ void RMDXDriver::setGearboxRatio(float ratio) {
+      ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:120:6: note: no functions named 'void RMDXDriver::setGearboxRatio(float)'
+In file included from src/drivers/rmd_x_driver.cpp:1:
+src/drivers/rmd_x_driver.h:4:7: note: 'class RMDXDriver' defined here
+ class RMDXDriver : public IMotorDriver {
+       ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:129:6: error: redefinition of 'void RMDXDriver::deinit()'
+ void RMDXDriver::deinit() {
+      ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:39:6: note: 'virtual void RMDXDriver::deinit()' previously defined here
+ void RMDXDriver::deinit() {
+      ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:135:13: error: redefinition of 'MotorStatus RMDXDriver::getStatus()'
+ MotorStatus RMDXDriver::getStatus() {
+             ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:45:13: note: 'virtual MotorStatus RMDXDriver::getStatus()' previously defined here
+ MotorStatus RMDXDriver::getStatus() {
+             ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:139:7: error: redefinition of 'float RMDXDriver::getTemperature()'
+ float RMDXDriver::getTemperature() {
+       ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:49:7: note: 'virtual float RMDXDriver::getTemperature()' previously defined here
+ float RMDXDriver::getTemperature() {
+       ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:143:9: error: redefinition of 'int32_t RMDXDriver::getPosition()'
+ int32_t RMDXDriver::getPosition() {
+         ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:57:9: note: 'virtual int32_t RMDXDriver::getPosition()' previously defined here
+ int32_t RMDXDriver::getPosition() {
+         ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:147:7: error: redefinition of 'float RMDXDriver::getVelocity()'
+ float RMDXDriver::getVelocity() {
+       ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:63:7: note: 'virtual float RMDXDriver::getVelocity()' previously defined here
+ float RMDXDriver::getVelocity() {
+       ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:151:7: error: redefinition of 'float RMDXDriver::getCurrent()'
+ float RMDXDriver::getCurrent() {
+       ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:69:7: note: 'virtual float RMDXDriver::getCurrent()' previously defined here
+ float RMDXDriver::getCurrent() {
+       ^~~~~~~~~~
+In file included from src/protocols/pal.h:13,
+                 from src/protocols/pal.cpp:7:
+include/../include/types.h:133:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+include/../include/types.h:93:3: note: previous declaration as 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+include/../include/types.h:168:5: error: redefinition of 'MOTOR_STATE_TORQUE_CONTROL'
+     MOTOR_STATE_TORQUE_CONTROL
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:167:5: note: 'MOTOR_STATE_TORQUE_CONTROL' previously defined here
+     MOTOR_STATE_TORQUE_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:180:3: error: conflicting declaration 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+include/../include/types.h:101:3: note: previous declaration as 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+In file included from src/protocols/pal.h:14,
+                 from src/protocols/pal.cpp:7:
+src/protocols/../drivers/motor_driver.h:25:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/protocols/pal.h:13,
+                 from src/protocols/pal.cpp:7:
+include/../include/types.h:93:3: note: previous declaration as 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+src/protocols/pal.cpp:21:6: error: no declaration matches 'void ProtocolAbstractionLayer::init(const MotorConfig&)'
+ void ProtocolAbstractionLayer::init(const MotorConfig& config) {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:21:6: note: no functions named 'void ProtocolAbstractionLayer::init(const MotorConfig&)'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:42:6: error: no declaration matches 'void ProtocolAbstractionLayer::initCAN()'
+ void ProtocolAbstractionLayer::initCAN() {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:42:6: note: no functions named 'void ProtocolAbstractionLayer::initCAN()'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:47:6: error: no declaration matches 'void ProtocolAbstractionLayer::initRS485()'
+ void ProtocolAbstractionLayer::initRS485() {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:47:6: note: no functions named 'void ProtocolAbstractionLayer::initRS485()'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:52:6: error: no declaration matches 'void ProtocolAbstractionLayer::initEtherCAT()'
+ void ProtocolAbstractionLayer::initEtherCAT() {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:52:6: note: no functions named 'void ProtocolAbstractionLayer::initEtherCAT()'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:57:6: error: no declaration matches 'void ProtocolAbstractionLayer::processCommands()'
+ void ProtocolAbstractionLayer::processCommands() {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:57:6: note: no functions named 'void ProtocolAbstractionLayer::processCommands()'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:163:6: error: no declaration matches 'void ProtocolAbstractionLayer::sendStatusReport()'
+ void ProtocolAbstractionLayer::sendStatusReport() {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:163:6: note: no functions named 'void ProtocolAbstractionLayer::sendStatusReport()'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:197:6: error: no declaration matches 'void ProtocolAbstractionLayer::sendHeartbeat()'
+ void ProtocolAbstractionLayer::sendHeartbeat() {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:197:6: note: no functions named 'void ProtocolAbstractionLayer::sendHeartbeat()'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:215:14: error: no declaration matches 'StatusReport ProtocolAbstractionLayer::getStatus() const'
+ StatusReport ProtocolAbstractionLayer::getStatus() const {
+              ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:215:14: note: no functions named 'StatusReport ProtocolAbstractionLayer::getStatus() const'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:219:6: error: no declaration matches 'void ProtocolAbstractionLayer::setPosition(int32_t)'
+ void ProtocolAbstractionLayer::setPosition(int32_t position) {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:219:6: note: no functions named 'void ProtocolAbstractionLayer::setPosition(int32_t)'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:223:6: error: no declaration matches 'void ProtocolAbstractionLayer::setVelocity(int32_t)'
+ void ProtocolAbstractionLayer::setVelocity(int32_t velocity) {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:223:6: note: no functions named 'void ProtocolAbstractionLayer::setVelocity(int32_t)'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:227:6: error: no declaration matches 'void ProtocolAbstractionLayer::setTorque(int16_t)'
+ void ProtocolAbstractionLayer::setTorque(int16_t torque) {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:227:6: note: no functions named 'void ProtocolAbstractionLayer::setTorque(int16_t)'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:231:6: error: no declaration matches 'bool ProtocolAbstractionLayer::readParameter(uint8_t, uint8_t*, uint8_t)'
+ bool ProtocolAbstractionLayer::readParameter(uint8_t paramId, uint8_t* data, uint8_t length) {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:231:6: note: no functions named 'bool ProtocolAbstractionLayer::readParameter(uint8_t, uint8_t*, uint8_t)'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:236:6: error: no declaration matches 'bool ProtocolAbstractionLayer::writeParameter(uint8_t, const uint8_t*, uint8_t)'
+ bool ProtocolAbstractionLayer::writeParameter(uint8_t paramId, const uint8_t* data, uint8_t length) {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:236:6: note: no functions named 'bool ProtocolAbstractionLayer::writeParameter(uint8_t, const uint8_t*, uint8_t)'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp: In member function 'String ProtocolAbstractionLayer::getProtocolName() const':
+src/protocols/pal.cpp:242:21: error: 'const struct MotorConfig' has no member named 'protocol'
+     switch (_config.protocol) {
+                     ^~~~~~~~
+src/protocols/pal.cpp:243:14: error: 'Protocol' has not been declared
+         case Protocol::CAN: return "CAN";
+              ^~~~~~~~
+src/protocols/pal.cpp:244:14: error: 'Protocol' has not been declared
+         case Protocol::RS485: return "RS485";
+              ^~~~~~~~
+src/protocols/pal.cpp:245:14: error: 'Protocol' has not been declared
+         case Protocol::ETHERCAT: return "EtherCAT";
+              ^~~~~~~~
+src/protocols/pal.cpp: In member function 'String ProtocolAbstractionLayer::getMotorSeriesName() const':
+src/protocols/pal.cpp:251:21: error: 'const struct MotorConfig' has no member named 'motorSeries'; did you mean 'motor_id'?
+     switch (_config.motorSeries) {
+                     ^~~~~~~~~~~
+                     motor_id
+src/protocols/pal.cpp: In member function 'void ProtocolAbstractionLayer::handlePositionCmd(const Command&)':
+src/protocols/pal.cpp:263:13: error: 'const struct Command' has no member named 'payloadLength'
+     if (cmd.payloadLength >= 4) {
+             ^~~~~~~~~~~~~
+src/protocols/pal.cpp:265:31: error: 'const struct Command' has no member named 'payload'
+         memcpy(&position, cmd.payload, 4);
+                               ^~~~~~~
+src/protocols/pal.cpp:266:9: error: 'setPosition' was not declared in this scope
+         setPosition(position);
+         ^~~~~~~~~~~
+src/protocols/pal.cpp:266:9: note: suggested alternative: 'position'
+         setPosition(position);
+         ^~~~~~~~~~~
+         position
+src/protocols/pal.cpp:267:61: error: no matching function for call to 'Logger::info(StringSumHelper&)'
+         Logger::info("Position command: " + String(position));
+                                                             ^
+In file included from src/protocols/pal.cpp:11:
+src/protocols/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/protocols/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+src/protocols/pal.cpp: In member function 'void ProtocolAbstractionLayer::handleVelocityCmd(const Command&)':
+src/protocols/pal.cpp:272:13: error: 'const struct Command' has no member named 'payloadLength'
+     if (cmd.payloadLength >= 4) {
+             ^~~~~~~~~~~~~
+src/protocols/pal.cpp:274:31: error: 'const struct Command' has no member named 'payload'
+         memcpy(&velocity, cmd.payload, 4);
+                               ^~~~~~~
+src/protocols/pal.cpp:275:9: error: 'setVelocity' was not declared in this scope
+         setVelocity(velocity);
+         ^~~~~~~~~~~
+src/protocols/pal.cpp:275:9: note: suggested alternative: 'velocity'
+         setVelocity(velocity);
+         ^~~~~~~~~~~
+         velocity
+src/protocols/pal.cpp:276:61: error: no matching function for call to 'Logger::info(StringSumHelper&)'
+         Logger::info("Velocity command: " + String(velocity));
+                                                             ^
+In file included from src/protocols/pal.cpp:11:
+src/protocols/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/protocols/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+src/protocols/pal.cpp: In member function 'void ProtocolAbstractionLayer::handleTorqueCmd(const Command&)':
+src/protocols/pal.cpp:281:13: error: 'const struct Command' has no member named 'payloadLength'
+     if (cmd.payloadLength >= 2) {
+             ^~~~~~~~~~~~~
+src/protocols/pal.cpp:283:29: error: 'const struct Command' has no member named 'payload'
+         memcpy(&torque, cmd.payload, 2);
+                             ^~~~~~~
+src/protocols/pal.cpp:284:9: error: 'setTorque' was not declared in this scope
+         setTorque(torque);
+         ^~~~~~~~~
+src/protocols/pal.cpp:284:9: note: suggested alternative: 'torque'
+         setTorque(torque);
+         ^~~~~~~~~
+         torque
+src/protocols/pal.cpp:285:57: error: no matching function for call to 'Logger::info(StringSumHelper&)'
+         Logger::info("Torque command: " + String(torque));
+                                                         ^
+In file included from src/protocols/pal.cpp:11:
+src/protocols/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/protocols/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+src/protocols/pal.cpp: In member function 'void ProtocolAbstractionLayer::handleParamRead(const Command&)':
+src/protocols/pal.cpp:290:76: error: no matching function for call to 'Logger::info(StringSumHelper&)'
+     Logger::info("Parameter read request from motor " + String(cmd.motorId));
+                                                                            ^
+In file included from src/protocols/pal.cpp:11:
+src/protocols/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/protocols/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+src/protocols/pal.cpp: In member function 'void ProtocolAbstractionLayer::handleParamWrite(const Command&)':
+src/protocols/pal.cpp:294:77: error: no matching function for call to 'Logger::info(StringSumHelper&)'
+     Logger::info("Parameter write request from motor " + String(cmd.motorId));
+                                                                             ^
+In file included from src/protocols/pal.cpp:11:
+src/protocols/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/protocols/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+src/protocols/pal.cpp: At global scope:
+src/protocols/pal.cpp:297:6: error: no declaration matches 'void ProtocolAbstractionLayer::handleDiagnostic(const Command&)'
+ void ProtocolAbstractionLayer::handleDiagnostic(const Command& cmd) {
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp:297:6: note: no functions named 'void ProtocolAbstractionLayer::handleDiagnostic(const Command&)'
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:39:7: note: 'class ProtocolAbstractionLayer' defined here
+ class ProtocolAbstractionLayer {
+       ^~~~~~~~~~~~~~~~~~~~~~~~
+src/protocols/pal.cpp: In member function 'void ProtocolAbstractionLayer::handleFirmwareUpdate(const Command&)':
+src/protocols/pal.cpp:302:77: error: no matching function for call to 'Logger::info(StringSumHelper&)'
+     Logger::info("Firmware update request from motor " + String(cmd.motorId));
+                                                                             ^
+In file included from src/protocols/pal.cpp:11:
+src/protocols/../utils/logger.h:23:17: note: candidate: 'static void Logger::info(const char*, const char*, ...)'
+     static void info(const char* module, const char* fmt, ...);
+                 ^~~~
+src/protocols/../utils/logger.h:23:17: note:   candidate expects 2 arguments, 1 provided
+*** [.pio/build/esp32c3/src/drivers/rmd_l_driver.cpp.o] Error 1
+*** [.pio/build/esp32c3/src/drivers/rmd_x_driver.cpp.o] Error 1
+src/protocols/pal.cpp: In member function 'String ProtocolAbstractionLayer::getProtocolName() const':
+src/protocols/pal.cpp:248:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+src/protocols/pal.cpp: In member function 'String ProtocolAbstractionLayer::getMotorSeriesName() const':
+src/protocols/pal.cpp:260:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+*** [.pio/build/esp32c3/src/protocols/pal.cpp.o] Error 1
+========================== [FAILED] Took 1.10 seconds ==========================
+
+Processing esp32s3dev (platform: espressif32; board: esp32-s3-devkitc-1; framework: arduino)
+--------------------------------------------------------------------------------
+Library Manager: Installing z212/MCP2515 @ ^1.6.0
+UnknownPackageError: Could not find the package with 'z212/MCP2515 @ ^1.6.0' requirements
+stderr:
+[no stderr captured]

@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "id": "2026-07-04T19-05-31-692Z-list_directory-a8aa18902c",
+  "kind": "tool_result",
+  "timestamp": "2026-07-04T19:05:31.692Z",
+  "runId": "1783054636540-g0c2vs",
+  "sessionId": "1783054636540-g0c2vs",
+  "cwd": "/home/roko/Documents/Projects/myactuator",
+  "turn": 45,
+  "toolCallId": "call_w1xlm30z",
+  "toolName": "list_directory",
+  "toolFingerprint": "list_directory:path=.omnius/logs",
+  "argsHash": "a8aa18902c",
+  "argsPreview": "{\"path\":\".omnius/logs\"}",
+  "success": true,
+  "durationMs": 36,
+  "outputChars": 787,
+  "errorChars": 0,
+  "outputPreview": "f  .omnius/logs/09964def84c9.log  65267\nf  .omnius/logs/4c2e4da4b8d1.log  75329\nf  .omnius/logs/67ed655023ac.log  64081\nf  .omnius/logs/6a31b4484346.log  113763\nf  .omnius/logs/7090a78788d4.log  144270\nf  .omnius/logs/8364dd66bc8a.log  66688\nf  .omnius/logs/867f2cc26b86.log  78519\nf  .omnius/logs/9050399469c6.log  132369\nf  .omnius/logs/a7ca61169135.log  135459\nf  .omnius/logs/b590a4eccc19.log  110980\nf  .omnius/logs/dfbf5b3b5b08.log  75310\nf  .omnius/logs/e5166f590d55.log  74367\n\nDiscovered child paths (data only):\n  files: .omnius/logs/09964def84c9.log, .omnius/logs/4c2e4da4b8d1.log, .omnius/logs/67ed655023ac.log, .omnius/logs/6a31b4484346.log, .omnius/logs/7090a78788d4.log, .omnius/logs/8364dd66bc8a.log, .omnius/logs/867f2cc26b86.log, .omnius/logs/9050399469c6.log (+4 more)",
+  "mutation": {
+    "realFileMutation": false,
+    "shellFilesystemMutation": false,
+    "paths": []
+  },
+  "focusSupervisor": {
+    "mode": "auto",
+    "enabled": true,
+    "state": "warn",
+    "directive": {
+      "id": "focus_24",
+      "state": "warn",
+      "reason": "first file_edit failure (stale_expected_hash): Refusing to edit firmware/esp32/src/utils/logger.h: expected_hash does not match current file content. expected_hash: 8d4e0d133981e738f5f42c90cf05c2635b43d03b4d4fc83cff2f87d1064914",
+      "requiredNextAction": "read_authoritative_target",
+      "forbiddenActionFamilies": [
+        "file_edit:firmware/esp32/src/utils/logger.h:old_string= static void info(const String& message); static void warn(const String& message); static v#466801f4"
+      ],
+      "createdTurn": 44,
+      "ignoredCount": 0
+    },
+    "lastDecision": "pass",
+    "lastReason": "",
+    "context": {
+      "pressureRatio": 1,
+      "estimatedTokens": 1292,
+      "rawDiscoveryChars": 0,
+      "activeEvidenceChars": 13521,
+      "activeFrameChars": 12999,
+      "signalToNoiseRatio": null,
+      "droppedSignals": 1,
+      "truncatedSignals": 5
+    }
+  },
+  "actionReason": {
+    "task_anchor": "editing: firmware/esp32/src/utils/logger.h",
+    "intent": "Run read-only list_directory for .omnius/logs to gather current evidence.",
+    "evidence": "Read-only metadata fallback; no project mutation is authorized by this action.",
+    "expected_result": "Current list_directory evidence for the next decision.",
+    "scope": "discovery"
+  },
+  "repeatShortCircuit": false,
+  "runtimeAuthored": false,
+  "diagnoses": [
+    "focus-supervisor-active"
+  ],
+  "summary": "list_directory success | diagnoses=focus-supervisor-active",
+  "anchors": [
+    {
+      "label": "debug_contract",
+      "kind": "contract",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/CONTRACT.md",
+      "note": "Schema and semantics for this debug library.",
+      "relativePath": ".omnius/debug-library/CONTRACT.md",
+      "exists": true
+    },
+    {
+      "label": "run_readme",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783054636540-g0c2vs/README.md",
+      "note": "Human summary for this run.",
+      "relativePath": ".omnius/debug-library/runs/1783054636540-g0c2vs/README.md",
+      "exists": true
+    },
+    {
+      "label": "run_index",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783054636540-g0c2vs/index.json",
+      "note": "Machine-readable run summary.",
+      "relativePath": ".omnius/debug-library/runs/1783054636540-g0c2vs/index.json",
+      "exists": true
+    },
+    {
+      "label": "run_events_jsonl",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783054636540-g0c2vs/events.jsonl",
+      "note": "Append-only normalized event stream.",
+      "relativePath": ".omnius/debug-library/runs/1783054636540-g0c2vs/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "workboard_active",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783054636540-g0c2vs/active.json",
+      "note": "Durable workboard snapshot, when present.",
+      "relativePath": ".omnius/workboards/1783054636540-g0c2vs/active.json",
+      "exists": true
+    },
+    {
+      "label": "workboard_events",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783054636540-g0c2vs/events.jsonl",
+      "note": "Durable workboard event log, when present.",
+      "relativePath": ".omnius/workboards/1783054636540-g0c2vs/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "context_dump_latest",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/latest.json",
+      "note": "Latest outbound model request dump.",
+      "relativePath": ".omnius/context-window-dumps/latest.json",
+      "exists": true
+    },
+    {
+      "label": "context_dump_index",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/index.jsonl",
+      "note": "Append-only context-window dump summaries.",
+      "relativePath": ".omnius/context-window-dumps/index.jsonl",
+      "exists": true
+    },
+    {
+      "label": "trajectory_log",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/trajectories/trajectories.jsonl",
+      "note": "Completed run trajectory records.",
+      "relativePath": ".omnius/trajectories/trajectories.jsonl",
+      "exists": true
+    },
+    {
+      "label": "checkpoints_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/checkpoints",
+      "note": "Turn-boundary checkpoints.",
+      "relativePath": ".omnius/checkpoints",
+      "exists": true
+    },
+    {
+      "label": "phases_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/phases",
+      "note": "Phase transcript summaries.",
+      "relativePath": ".omnius/phases",
+      "exists": true
+    },
+    {
+      "label": "completion_ledgers_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/completion-ledgers",
+      "note": "Completion evidence ledgers.",
+      "relativePath": ".omnius/completion-ledgers",
+      "exists": true
+    },
+    {
+      "label": "event_json",
+      "kind": "event",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783054636540-g0c2vs/events/turn-0045/2026-07-04T19-05-31-692Z-list_directory-a8aa18902c.json",
+      "note": "This normalized debug event.",
+      "relativePath": ".omnius/debug-library/runs/1783054636540-g0c2vs/events/turn-0045/2026-07-04T19-05-31-692Z-list_directory-a8aa18902c.json",
+      "exists": true
+    }
+  ]
+}

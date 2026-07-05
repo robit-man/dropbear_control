@@ -1,0 +1,6 @@
+watterott/MCP2515@^1.0.0
+bblanchon/ArduinoJson@^6.21.6
+Wire@^1.0.0
+SPI@^1.0.0
+can@^1.0.0
+z212/MCP2515@^1.6.0

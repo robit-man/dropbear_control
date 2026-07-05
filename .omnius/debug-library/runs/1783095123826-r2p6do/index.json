@@ -1,0 +1,477 @@
+{
+  "schemaVersion": 1,
+  "runId": "1783095123826-r2p6do",
+  "sessionId": "1783095123826-r2p6do",
+  "cwd": "/home/roko/Documents/Projects/myactuator",
+  "createdAt": "2026-07-03T16:12:04.783Z",
+  "updatedAt": "2026-07-03T16:52:18.447Z",
+  "contractPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/CONTRACT.md",
+  "readmePath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/README.md",
+  "indexPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/index.json",
+  "eventsJsonlPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events.jsonl",
+  "summary": {
+    "eventCount": 122,
+    "toolEventCount": 42,
+    "contextDumpCount": 80,
+    "successCount": 23,
+    "failureCount": 19,
+    "mutationCount": 4,
+    "shellMutationCount": 0,
+    "focusBlockCount": 17,
+    "suspiciousShellCount": 0
+  },
+  "diagnoses": {
+    "focus-supervisor-active": 67,
+    "project-file-mutation": 4,
+    "tool-failure": 19,
+    "focus-supervisor-block": 17
+  },
+  "anchors": [
+    {
+      "label": "debug_contract",
+      "kind": "contract",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/CONTRACT.md",
+      "note": "Schema and semantics for this debug library.",
+      "relativePath": ".omnius/debug-library/CONTRACT.md",
+      "exists": true
+    },
+    {
+      "label": "run_readme",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/README.md",
+      "note": "Human summary for this run.",
+      "relativePath": ".omnius/debug-library/runs/1783095123826-r2p6do/README.md",
+      "exists": true
+    },
+    {
+      "label": "run_index",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/index.json",
+      "note": "Machine-readable run summary.",
+      "relativePath": ".omnius/debug-library/runs/1783095123826-r2p6do/index.json",
+      "exists": true
+    },
+    {
+      "label": "run_events_jsonl",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events.jsonl",
+      "note": "Append-only normalized event stream.",
+      "relativePath": ".omnius/debug-library/runs/1783095123826-r2p6do/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "workboard_active",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783095123826-r2p6do/active.json",
+      "note": "Durable workboard snapshot, when present.",
+      "relativePath": ".omnius/workboards/1783095123826-r2p6do/active.json",
+      "exists": true
+    },
+    {
+      "label": "workboard_events",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783095123826-r2p6do/events.jsonl",
+      "note": "Durable workboard event log, when present.",
+      "relativePath": ".omnius/workboards/1783095123826-r2p6do/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "context_dump_latest",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/latest.json",
+      "note": "Latest outbound model request dump.",
+      "relativePath": ".omnius/context-window-dumps/latest.json",
+      "exists": true
+    },
+    {
+      "label": "context_dump_index",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/index.jsonl",
+      "note": "Append-only context-window dump summaries.",
+      "relativePath": ".omnius/context-window-dumps/index.jsonl",
+      "exists": true
+    },
+    {
+      "label": "trajectory_log",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/trajectories/trajectories.jsonl",
+      "note": "Completed run trajectory records.",
+      "relativePath": ".omnius/trajectories/trajectories.jsonl",
+      "exists": true
+    },
+    {
+      "label": "checkpoints_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/checkpoints",
+      "note": "Turn-boundary checkpoints.",
+      "relativePath": ".omnius/checkpoints",
+      "exists": true
+    },
+    {
+      "label": "phases_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/phases",
+      "note": "Phase transcript summaries.",
+      "relativePath": ".omnius/phases",
+      "exists": true
+    },
+    {
+      "label": "completion_ledgers_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/completion-ledgers",
+      "note": "Completion evidence ledgers.",
+      "relativePath": ".omnius/completion-ledgers",
+      "exists": true
+    }
+  ],
+  "latestEvents": [
+    {
+      "id": "2026-07-03T16-52-18-447Z-context-435fe0425a",
+      "kind": "context_window_dump",
+      "timestamp": "2026-07-03T16:52:18.447Z",
+      "turn": 0,
+      "summary": "context dump agent_turn | tokens~15249",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0000/2026-07-03T16-52-18-447Z-context-435fe0425a.json"
+    },
+    {
+      "id": "2026-07-03T16-52-18-225Z-context-7aa6e66ff1",
+      "kind": "context_window_dump",
+      "timestamp": "2026-07-03T16:52:18.225Z",
+      "turn": 43,
+      "summary": "context dump agent_turn | tokens~75207 | required=report_incomplete | diagnoses=focus-supervisor-active",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0043/2026-07-03T16-52-18-225Z-context-7aa6e66ff1.json"
+    },
+    {
+      "id": "2026-07-03T16-52-18-164Z-file_read-53eec49ab1",
+      "kind": "tool_result",
+      "timestamp": "2026-07-03T16:52:18.164Z",
+      "turn": 41,
+      "toolName": "file_read",
+      "success": false,
+      "summary": "file_read failure | diagnoses=focus-supervisor-active,focus-supervisor-block,tool-failure",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0041/2026-07-03T16-52-18-164Z-file_read-53eec49ab1.json"
+    },
+    {
+      "id": "2026-07-03T16-50-54-323Z-context-8b59a7476d",
+      "kind": "context_window_dump",
+      "timestamp": "2026-07-03T16:50:54.323Z",
+      "turn": 0,
+      "summary": "context dump agent_turn | tokens~15240",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0000/2026-07-03T16-50-54-323Z-context-8b59a7476d.json"
+    },
+    {
+      "id": "2026-07-03T16-50-54-129Z-context-5b06b32a53",
+      "kind": "context_window_dump",
+      "timestamp": "2026-07-03T16:50:54.129Z",
+      "turn": 42,
+      "summary": "context dump agent_turn | tokens~77165 | required=report_incomplete | diagnoses=focus-supervisor-active",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0042/2026-07-03T16-50-54-129Z-context-5b06b32a53.json"
+    },
+    {
+      "id": "2026-07-03T16-50-54-116Z-file_read-53eec49ab1",
+      "kind": "tool_result",
+      "timestamp": "2026-07-03T16:50:54.116Z",
+      "turn": 40,
+      "toolName": "file_read",
+      "success": false,
+      "summary": "file_read failure | diagnoses=focus-supervisor-active,focus-supervisor-block,tool-failure",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0040/2026-07-03T16-50-54-116Z-file_read-53eec49ab1.json"
+    },
+    {
+      "id": "2026-07-03T16-50-53-995Z-file_read-3be1b4df68",
+      "kind": "tool_result",
+      "timestamp": "2026-07-03T16:50:53.995Z",
+      "turn": 40,
+      "toolName": "file_read",
+      "success": true,
+      "summary": "file_read success | diagnoses=focus-supervisor-active,focus-supervisor-block",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0040/2026-07-03T16-50-53-995Z-file_read-3be1b4df68.json"
+    },
+    {
+      "id": "2026-07-03T16-49-34-253Z-context-9428aea49a",
+      "kind": "context_window_dump",
+      "timestamp": "2026-07-03T16:49:34.253Z",
+      "turn": 0,
+      "summary": "context dump agent_turn | tokens~15240",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0000/2026-07-03T16-49-34-253Z-context-9428aea49a.json"
+    },
+    {
+      "id": "2026-07-03T16-49-34-039Z-context-b589e5b430",
+      "kind": "context_window_dump",
+      "timestamp": "2026-07-03T16:49:34.039Z",
+      "turn": 41,
+      "summary": "context dump agent_turn | tokens~76059 | required=report_incomplete | diagnoses=focus-supervisor-active",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0041/2026-07-03T16-49-34-039Z-context-b589e5b430.json"
+    },
+    {
+      "id": "2026-07-03T16-47-49-197Z-context-d6d0cad7cb",
+      "kind": "context_window_dump",
+      "timestamp": "2026-07-03T16:47:49.197Z",
+      "turn": 0,
+      "summary": "context dump agent_turn | tokens~15249",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0000/2026-07-03T16-47-49-197Z-context-d6d0cad7cb.json"
+    },
+    {
+      "id": "2026-07-03T16-47-48-888Z-task_complete-8a0179fa84",
+      "kind": "tool_result",
+      "timestamp": "2026-07-03T16:47:48.888Z",
+      "turn": 39,
+      "toolName": "task_complete",
+      "success": true,
+      "summary": "task_complete success | diagnoses=focus-supervisor-active",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0039/2026-07-03T16-47-48-888Z-task_complete-8a0179fa84.json"
+    },
+    {
+      "id": "2026-07-03T16-46-18-825Z-context-754059ae9f",
+      "kind": "context_window_dump",
+      "timestamp": "2026-07-03T16:46:18.825Z",
+      "turn": 0,
+      "summary": "context dump agent_turn | tokens~15249",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0000/2026-07-03T16-46-18-825Z-context-754059ae9f.json"
+    },
+    {
+      "id": "2026-07-03T16-46-18-597Z-context-688df11a45",
+      "kind": "context_window_dump",
+      "timestamp": "2026-07-03T16:46:18.597Z",
+      "turn": 40,
+      "summary": "context dump agent_turn | tokens~75114 | required=report_incomplete | diagnoses=focus-supervisor-active",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0040/2026-07-03T16-46-18-597Z-context-688df11a45.json"
+    },
+    {
+      "id": "2026-07-03T16-46-18-528Z-file_write-4e7bd73ade",
+      "kind": "tool_result",
+      "timestamp": "2026-07-03T16:46:18.528Z",
+      "turn": 38,
+      "toolName": "file_write",
+      "success": false,
+      "summary": "file_write failure | diagnoses=focus-supervisor-active,focus-supervisor-block,tool-failure",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0038/2026-07-03T16-46-18-528Z-file_write-4e7bd73ade.json"
+    },
+    {
+      "id": "2026-07-03T16-44-45-337Z-context-62b3bc0258",
+      "kind": "context_window_dump",
+      "timestamp": "2026-07-03T16:44:45.337Z",
+      "turn": 0,
+      "summary": "context dump agent_turn | tokens~15249",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0000/2026-07-03T16-44-45-337Z-context-62b3bc0258.json"
+    },
+    {
+      "id": "2026-07-03T16-44-45-122Z-context-0ba5894b10",
+      "kind": "context_window_dump",
+      "timestamp": "2026-07-03T16:44:45.122Z",
+      "turn": 39,
+      "summary": "context dump agent_turn | tokens~73855 | required=report_incomplete | diagnoses=focus-supervisor-active",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0039/2026-07-03T16-44-45-122Z-context-0ba5894b10.json"
+    },
+    {
+      "id": "2026-07-03T16-44-45-108Z-agent-c5ee41046d",
+      "kind": "tool_result",
+      "timestamp": "2026-07-03T16:44:45.108Z",
+      "turn": 37,
+      "toolName": "agent",
+      "success": false,
+      "summary": "agent failure | diagnoses=focus-supervisor-active,focus-supervisor-block,tool-failure",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0037/2026-07-03T16-44-45-108Z-agent-c5ee41046d.json"
+    },
+    {
+      "id": "2026-07-03T16-43-08-798Z-context-834be6eea3",
+      "kind": "context_window_dump",
+      "timestamp": "2026-07-03T16:43:08.798Z",
+      "turn": 0,
+      "summary": "context dump agent_turn | tokens~15249",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0000/2026-07-03T16-43-08-798Z-context-834be6eea3.json"
+    },
+    {
+      "id": "2026-07-03T16-43-08-527Z-context-35da139461",
+      "kind": "context_window_dump",
+      "timestamp": "2026-07-03T16:43:08.527Z",
+      "turn": 38,
+      "summary": "context dump agent_turn | tokens~72685 | required=report_incomplete | diagnoses=focus-supervisor-active",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0038/2026-07-03T16-43-08-527Z-context-35da139461.json"
+    },
+    {
+      "id": "2026-07-03T16-43-08-511Z-file_read-a6edc00188",
+      "kind": "tool_result",
+      "timestamp": "2026-07-03T16:43:08.511Z",
+      "turn": 36,
+      "toolName": "file_read",
+      "success": false,
+      "summary": "file_read failure | diagnoses=focus-supervisor-active,focus-supervisor-block,tool-failure",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0036/2026-07-03T16-43-08-511Z-file_read-a6edc00188.json"
+    },
+    {
+      "id": "2026-07-03T16-40-38-578Z-context-ad82150a96",
+      "kind": "context_window_dump",
+      "timestamp": "2026-07-03T16:40:38.578Z",
+      "turn": 0,
+      "summary": "context dump agent_turn | tokens~15249",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0000/2026-07-03T16-40-38-578Z-context-ad82150a96.json"
+    },
+    {
+      "id": "2026-07-03T16-40-38-337Z-context-8c5786977b",
+      "kind": "context_window_dump",
+      "timestamp": "2026-07-03T16:40:38.337Z",
+      "turn": 37,
+      "summary": "context dump agent_turn | tokens~71148 | required=report_incomplete | diagnoses=focus-supervisor-active",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0037/2026-07-03T16-40-38-337Z-context-8c5786977b.json"
+    },
+    {
+      "id": "2026-07-03T16-40-38-324Z-shell-ca6d15c9fe",
+      "kind": "tool_result",
+      "timestamp": "2026-07-03T16:40:38.324Z",
+      "turn": 35,
+      "toolName": "shell",
+      "success": false,
+      "summary": "shell failure | diagnoses=focus-supervisor-active,focus-supervisor-block,tool-failure | command=cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && sed -i '/-DPROTOCOL_CAN/d; /-DPROTOCOL_RS485/d; /-DPROTOCOL_ETHERCAT/d; /-DMOTOR_RMD_X/d; /-DMOTOR_RH/d; /-DMOTOR_CEM/\n[truncated 221 chars]",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0035/2026-07-03T16-40-38-324Z-shell-ca6d15c9fe.json"
+    },
+    {
+      "id": "2026-07-03T16-39-00-999Z-context-f3be8c0f04",
+      "kind": "context_window_dump",
+      "timestamp": "2026-07-03T16:39:00.999Z",
+      "turn": 0,
+      "summary": "context dump agent_turn | tokens~15240",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0000/2026-07-03T16-39-00-999Z-context-f3be8c0f04.json"
+    },
+    {
+      "id": "2026-07-03T16-39-00-697Z-context-0eff29df45",
+      "kind": "context_window_dump",
+      "timestamp": "2026-07-03T16:39:00.697Z",
+      "turn": 36,
+      "summary": "context dump agent_turn | tokens~68799 | required=report_incomplete | diagnoses=focus-supervisor-active",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0036/2026-07-03T16-39-00-697Z-context-0eff29df45.json"
+    },
+    {
+      "id": "2026-07-03T16-39-00-682Z-file_edit-4004fb422a",
+      "kind": "tool_result",
+      "timestamp": "2026-07-03T16:39:00.682Z",
+      "turn": 34,
+      "toolName": "file_edit",
+      "success": false,
+      "summary": "file_edit failure | diagnoses=focus-supervisor-active,focus-supervisor-block,tool-failure",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0034/2026-07-03T16-39-00-682Z-file_edit-4004fb422a.json"
+    },
+    {
+      "id": "2026-07-03T16-37-29-596Z-context-24bfef1438",
+      "kind": "context_window_dump",
+      "timestamp": "2026-07-03T16:37:29.596Z",
+      "turn": 0,
+      "summary": "context dump agent_turn | tokens~15240",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0000/2026-07-03T16-37-29-596Z-context-24bfef1438.json"
+    },
+    {
+      "id": "2026-07-03T16-37-29-405Z-context-9e27d2f97e",
+      "kind": "context_window_dump",
+      "timestamp": "2026-07-03T16:37:29.405Z",
+      "turn": 35,
+      "summary": "context dump agent_turn | tokens~66938 | required=report_incomplete | diagnoses=focus-supervisor-active",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0035/2026-07-03T16-37-29-405Z-context-9e27d2f97e.json"
+    },
+    {
+      "id": "2026-07-03T16-37-29-395Z-file_read-2b5f63fdb2",
+      "kind": "tool_result",
+      "timestamp": "2026-07-03T16:37:29.395Z",
+      "turn": 33,
+      "toolName": "file_read",
+      "success": true,
+      "summary": "file_read success | diagnoses=focus-supervisor-active,focus-supervisor-block",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0033/2026-07-03T16-37-29-395Z-file_read-2b5f63fdb2.json"
+    },
+    {
+      "id": "2026-07-03T16-37-29-280Z-file_read-c9e23462f9",
+      "kind": "tool_result",
+      "timestamp": "2026-07-03T16:37:29.280Z",
+      "turn": 33,
+      "toolName": "file_read",
+      "success": true,
+      "summary": "file_read success | diagnoses=focus-supervisor-active,focus-supervisor-block",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0033/2026-07-03T16-37-29-280Z-file_read-c9e23462f9.json"
+    },
+    {
+      "id": "2026-07-03T16-36-12-370Z-context-3a6e0a8ee7",
+      "kind": "context_window_dump",
+      "timestamp": "2026-07-03T16:36:12.370Z",
+      "turn": 34,
+      "summary": "context dump agent_turn | tokens~65127 | required=use_cached_evidence | diagnoses=focus-supervisor-active",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0034/2026-07-03T16-36-12-370Z-context-3a6e0a8ee7.json"
+    },
+    {
+      "id": "2026-07-03T16-36-12-360Z-file_read-1fb2c3600c",
+      "kind": "tool_result",
+      "timestamp": "2026-07-03T16:36:12.360Z",
+      "turn": 32,
+      "toolName": "file_read",
+      "success": true,
+      "summary": "file_read success | diagnoses=focus-supervisor-active,focus-supervisor-block",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0032/2026-07-03T16-36-12-360Z-file_read-1fb2c3600c.json"
+    },
+    {
+      "id": "2026-07-03T16-36-12-237Z-file_read-2b5f63fdb2",
+      "kind": "tool_result",
+      "timestamp": "2026-07-03T16:36:12.237Z",
+      "turn": 32,
+      "toolName": "file_read",
+      "success": true,
+      "summary": "file_read success | diagnoses=focus-supervisor-active,focus-supervisor-block",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0032/2026-07-03T16-36-12-237Z-file_read-2b5f63fdb2.json"
+    },
+    {
+      "id": "2026-07-03T16-36-11-869Z-context-91644a0536",
+      "kind": "context_window_dump",
+      "timestamp": "2026-07-03T16:36:11.869Z",
+      "turn": 0,
+      "summary": "context dump agent_turn | tokens~15240",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0000/2026-07-03T16-36-11-869Z-context-91644a0536.json"
+    },
+    {
+      "id": "2026-07-03T16-36-11-705Z-file_read-c9e23462f9",
+      "kind": "tool_result",
+      "timestamp": "2026-07-03T16:36:11.705Z",
+      "turn": 32,
+      "toolName": "file_read",
+      "success": true,
+      "summary": "file_read success | diagnoses=focus-supervisor-active,focus-supervisor-block",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0032/2026-07-03T16-36-11-705Z-file_read-c9e23462f9.json"
+    },
+    {
+      "id": "2026-07-03T16-34-51-736Z-context-f12a3c59f0",
+      "kind": "context_window_dump",
+      "timestamp": "2026-07-03T16:34:51.736Z",
+      "turn": 0,
+      "summary": "context dump agent_turn | tokens~15249",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0000/2026-07-03T16-34-51-736Z-context-f12a3c59f0.json"
+    },
+    {
+      "id": "2026-07-03T16-34-51-533Z-context-807f54a6be",
+      "kind": "context_window_dump",
+      "timestamp": "2026-07-03T16:34:51.533Z",
+      "turn": 33,
+      "summary": "context dump agent_turn | tokens~65130 | required=use_cached_evidence | diagnoses=focus-supervisor-active",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0033/2026-07-03T16-34-51-533Z-context-807f54a6be.json"
+    },
+    {
+      "id": "2026-07-03T16-33-41-531Z-context-42acb8737a",
+      "kind": "context_window_dump",
+      "timestamp": "2026-07-03T16:33:41.531Z",
+      "turn": 0,
+      "summary": "context dump agent_turn | tokens~15240",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0000/2026-07-03T16-33-41-531Z-context-42acb8737a.json"
+    },
+    {
+      "id": "2026-07-03T16-33-41-324Z-context-ee60234d86",
+      "kind": "context_window_dump",
+      "timestamp": "2026-07-03T16:33:41.324Z",
+      "turn": 32,
+      "summary": "context dump agent_turn | tokens~64968 | required=use_cached_evidence | diagnoses=focus-supervisor-active",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0032/2026-07-03T16-33-41-324Z-context-ee60234d86.json"
+    },
+    {
+      "id": "2026-07-03T16-32-19-758Z-context-9d94987c6e",
+      "kind": "context_window_dump",
+      "timestamp": "2026-07-03T16:32:19.758Z",
+      "turn": 0,
+      "summary": "context dump agent_turn | tokens~15240",
+      "eventPath": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783095123826-r2p6do/events/turn-0000/2026-07-03T16-32-19-758Z-context-9d94987c6e.json"
+    }
+  ]
+}

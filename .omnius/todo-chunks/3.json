@@ -1,0 +1,49 @@
+{
+  "todoId": "3",
+  "todoContent": "Add motor driver implementations",
+  "status": "blocked",
+  "functionalSummary": "Work recorded: Add motor driver implementations (heuristic summary — use memex_retrieve(expand=true) for full context)",
+  "detailSummary": "Heuristic summary of work on: Add motor driver implementations.\nFiles touched: /home/roko/Documents/Projects/myactuator/firmware/esp32/platformio.ini, /home/roko/Documents/Projects/myactuator/firmware/esp32, /home/roko/Documents/Projects/myactuator, /home/roko/Documents/Projects/myactuator/firmware/esp32/src, /home/roko/Documents/Projects/myactuator/contracts/PROTOCOLS_CONTRACT.md, /home/roko/Documents/Projects/myactuator/contracts/MOTOR_RMD_X_CONTRACT.md, /home/roko/Documents/Projects/myactuator/contracts/MOTOR_RH_CONTRACT.md, /home/roko/Documents/Projects/myactuator/contracts/MOTOR_CEM_CONTRACT.md, /home/roko/Documents/Projects/myactuator/contracts/MOTOR_RMD_H_CONTRACT.md, /home/roko/Documents/Projects/myactuator/firmware/esp32/README.md, /home/roko/Documents/Projects/myactuator/firmware/esp32/src/main.cpp, /home/roko/Documents/Projects/myactuator/firmware/esp32/include, /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/can_bus.h, /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/encoder.h, /home/roko/Documents/Projects/myactuator/firmware/esp32/src/protocols/pal.h, /home/roko/Documents/Projects/myactuator/firmware/esp32/src/utils/config.h, /home/roko/Documents/Projects/myactuator/firmware/esp32/src/utils/logger.h.\nKey symbols: (none detected).\nTool calls: file_read path=/home/roko/Documents/Projects/myactuator/firmware/esp32/platformio.ini [OK]; list_directory path=/home/roko/Documents/Projects/myactuator/firmware/esp32 [OK]; list_directory path=/home/roko/Documents/Projects/myactuator [OK]; file_read path=/home/roko/Documents/Projects/myactuator/firmware/esp32/platformio.ini [OK]; list_directory path=/home/roko/Documents/Projects/myactuator/firmware/esp32 [OK]; list_directory path=/home/roko/Documents/Projects/myactuator/firmware/esp32 [OK]; list_directory path=/home/roko/Documents/Projects/myactuator/firmware/esp32 [OK]; web_fetch max_length=#number:10000,url=https://www.myactuator.com/prod [FAIL]; list_directory path=/home/roko/Documents/Projects/myactuator/firmware/esp32/src [OK]; shell command=find /home/roko/Documents/Projects/myactuator -maxdepth 4 -type f -not -path \"*/.omnius/*\" -not -path \"*/node_modules/*\" -not -path \"*/.git/*\" | sort [OK].\nUse memex_retrieve(id=\"3\", expand=true) for full transcript.",
+  "keyFiles": [
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/platformio.ini",
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32",
+    "/home/roko/Documents/Projects/myactuator",
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/src",
+    "/home/roko/Documents/Projects/myactuator/contracts/PROTOCOLS_CONTRACT.md",
+    "/home/roko/Documents/Projects/myactuator/contracts/MOTOR_RMD_X_CONTRACT.md",
+    "/home/roko/Documents/Projects/myactuator/contracts/MOTOR_RH_CONTRACT.md",
+    "/home/roko/Documents/Projects/myactuator/contracts/MOTOR_CEM_CONTRACT.md",
+    "/home/roko/Documents/Projects/myactuator/contracts/MOTOR_RMD_H_CONTRACT.md",
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/README.md",
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/main.cpp",
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/include",
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/can_bus.h",
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/encoder.h",
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/protocols/pal.h",
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/utils/config.h",
+    "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/utils/logger.h"
+  ],
+  "criticalSymbols": {
+    "defined": [],
+    "modified": []
+  },
+  "keyPatterns": [
+    "(no patterns detected in heuristic scan)"
+  ],
+  "verification": "Shell succeeded: command=find /home/roko/Documents/Projects/myactuator/firmware/esp32 -type f | sort",
+  "unresolved": [
+    "web_fetch: HTTP 404 Not Found",
+    "web_fetch: Error: [FOCUS SUPERVISOR BLOCK] The previous directive was ignored: same web_fetch failure family re",
+    "web_search: Error: [FOCUS SUPERVISOR BLOCK] The previous directive was ignored: same web_fetch failure family re",
+    "file_read: Error: [FOCUS SUPERVISOR BLOCK] The previous directive was ignored: model ignored prior directive fo"
+  ],
+  "turnRange": [
+    0,
+    21
+  ],
+  "messageCount": 71,
+  "estimatedTokens": 1716,
+  "memexId": "todo-ctx-3",
+  "createdAt": "2026-07-03T04:24:48.416Z",
+  "chunkVersion": 1
+}

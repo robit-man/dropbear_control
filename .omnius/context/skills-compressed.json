@@ -1,0 +1,279 @@
+{
+  "schema": "omnius.skills-compressed.v1",
+  "generatedAt": "2026-07-05T07:18:56.557Z",
+  "totalSkills": 488,
+  "sourceCounts": {
+    "addon:agent-loop": 19,
+    "addon:agentic-installer": 3,
+    "addon:aiwg-dev": 13,
+    "addon:aiwg-evals": 3,
+    "addon:aiwg-utils": 8,
+    "addon:browser-control": 3,
+    "addon:color-palette": 3,
+    "addon:daemon": 1,
+    "addon:doc-intelligence": 5,
+    "addon:guided-implementation": 1,
+    "addon:nlp-prod": 7,
+    "addon:prose-integration": 7,
+    "addon:rlm": 8,
+    "addon:semantic-memory": 5,
+    "addon:skill-factory": 4,
+    "addon:star-prompt": 1,
+    "addon:testing-quality": 6,
+    "addon:uat-mcp": 4,
+    "addon:verbalized-sampling": 1,
+    "bundled-addon:omnius-docs": 5,
+    "bundled-addon:omnius-rest-docs": 1,
+    "framework:media-curator": 1,
+    "framework:ops-complete": 2,
+    "framework:research-complete": 18,
+    "framework:sdlc-complete": 8,
+    "framework:security-engineering": 19,
+    "plugin:forensics": 20,
+    "plugin:knowledge-base": 3,
+    "plugin:marketing": 33,
+    "plugin:media-curator": 19,
+    "plugin:ops": 1,
+    "plugin:research": 20,
+    "plugin:sdlc": 107,
+    "plugin:security-engineering": 8,
+    "plugin:utils": 116,
+    "plugin:voice": 4,
+    "plugin:writing": 1
+  },
+  "defaultLimit": 30,
+  "skills": [
+    {
+      "name": "cloud-forensics",
+      "source": "plugin:forensics",
+      "description": "Investigates cloud environments for signs of compromise, data exfiltration, privilege escalation, and persistence. Parameterized by cloud provider. Adapts collection procedures to AWS CloudTrail, Azur",
+      "triggers": [
+        "CloudTrail\" → AWS audit log analysis",
+        "Activity Log\" → Azure audit log analysis",
+        "Cloud Audit Logs\" → GCP audit log analysis",
+        "IAM review\" → cloud identity forensics"
+      ]
+    },
+    {
+      "name": "container-forensics",
+      "source": "plugin:forensics",
+      "description": "Investigates containerized environments for signs of compromise, misconfiguration, or container escape. Covers standalone Docker hosts and Kubernetes clusters. Produces a structured findings document ",
+      "triggers": [
+        "Falco\" / \"Tetragon\" / \"Tracee\" → eBPF runtime monitoring tools",
+        "dive\" → Docker image layer analysis",
+        "crictl\" → containerd/CRI-O environment forensics",
+        "escape\" → container escape investigation"
+      ]
+    },
+    {
+      "name": "evidence-preservation",
+      "source": "plugin:forensics",
+      "description": "Implements evidence preservation procedures aligned with RFC 3227 (Guidelines for Evidence Collection and Archiving) and NIST SP 800-86. Guides examiners through volatile-first collection ordering, cr",
+      "triggers": [
+        "chain of custody\" → forensic evidence handling",
+        "bag and tag\" → evidence collection shorthand",
+        "SHA-256 verify\" → evidence hash verification"
+      ]
+    },
+    {
+      "name": "forensics-acquire",
+      "source": "plugin:forensics",
+      "description": "Collect and preserve forensic evidence from the target system with complete chain of custody documentation and SHA-256 hash verification. Supports selective acquisition of logs, configuration files, m",
+      "triggers": []
+    },
+    {
+      "name": "forensics-hunt",
+      "source": "plugin:forensics",
+      "description": "Perform structured threat hunting by executing Sigma detection rules against collected log sources. Supports targeted rule selection or full rule set execution. Outputs matched detections with evidenc",
+      "triggers": []
+    },
+    {
+      "name": "forensics-investigate",
+      "source": "plugin:forensics",
+      "description": "Orchestrate a complete digital forensics investigation by coordinating all specialized agents through the full workflow: reconnaissance, triage, acquisition, multi-domain analysis, timeline building, ",
+      "triggers": []
+    },
+    {
+      "name": "forensics-ioc",
+      "source": "plugin:forensics",
+      "description": "Extract indicators of compromise (IOCs) from forensic findings, enrich them with threat intelligence lookups, and map them to STIX 2.1 observables. Produces a structured IOC register suitable for dete",
+      "triggers": []
+    },
+    {
+      "name": "forensics-profile",
+      "source": "plugin:forensics",
+      "description": "Build a comprehensive system profile of the target by enumerating OS details, running services, user accounts, installed packages, network configuration, and security controls. The profile establishes",
+      "triggers": []
+    },
+    {
+      "name": "forensics-quickref",
+      "source": "plugin:forensics",
+      "description": "This is your always-loaded directory for the AIWG **forensics-complete** framework. It does **not** list every skill. Instead, it teaches the framework's mental model and gives you **curated search ph",
+      "triggers": []
+    },
+    {
+      "name": "forensics-report",
+      "source": "plugin:forensics",
+      "description": "Compile all forensic findings, analysis outputs, timelines, and IOC registers into a structured investigation report. Supports three report formats: triage summary for immediate response, full technic",
+      "triggers": []
+    },
+    {
+      "name": "forensics-status",
+      "source": "plugin:forensics",
+      "description": "Display the current status of active or recent forensic investigations. Shows phase completion, finding counts by severity, artifact inventory, and pending work. Provides a quick situational awareness",
+      "triggers": []
+    },
+    {
+      "name": "forensics-timeline",
+      "source": "plugin:forensics",
+      "description": "Correlate events from multiple forensic sources into a unified chronological timeline. Normalizes timestamps across log files, network captures, process events, and file system artifacts. Reconstructs",
+      "triggers": []
+    },
+    {
+      "name": "forensics-triage",
+      "source": "plugin:forensics",
+      "description": "Perform rapid triage of a potentially compromised system by capturing volatile data in order of volatility per RFC 3227. Identifies active threats, running malicious processes, suspicious network conn",
+      "triggers": []
+    },
+    {
+      "name": "ioc-extraction",
+      "source": "plugin:forensics",
+      "description": "Scans investigation artifacts — log files, memory analysis output, findings documents, and raw captures — to extract indicators of compromise. Classifies each indicator by type, deduplicates, and prod",
+      "triggers": [
+        "IOCs\" / \"indicators\" → Indicator of Compromise extraction",
+        "STIX\" / \"STIX 2.1\" → structured threat intelligence output",
+        "pull indicators\" → IOC extraction shorthand"
+      ]
+    },
+    {
+      "name": "linux-forensics",
+      "source": "plugin:forensics",
+      "description": "Performs structured forensic analysis on Linux systems, adapting collection and verification procedures to the detected distribution family. Covers Debian/Ubuntu (apt/debsums), RHEL/CentOS/Rocky (rpm)",
+      "triggers": [
+        "ir\" / \"incident response\" for Linux → generalized Linux forensics",
+        "DFIR\" → Digital Forensics and Incident Response",
+        "triage [host]\" → host-level forensic triage"
+      ]
+    },
+    {
+      "name": "log-analysis",
+      "source": "plugin:forensics",
+      "description": "Correlates log data from multiple sources to identify attacker activity patterns including brute force login attempts, credential stuffing, privilege escalation, lateral movement, and data exfiltratio",
+      "triggers": [
+        "auth.log\" / \"syslog\" → specific log file analysis",
+        "lateral movement\" → log-based lateral movement detection",
+        "brute force\" → authentication attack detection in logs"
+      ]
+    },
+    {
+      "name": "memory-forensics",
+      "source": "plugin:forensics",
+      "description": "Guides memory acquisition and analysis for both Linux and Windows targets. Acquisition uses LiME (Linux) or WinPmem (Windows). Analysis uses Volatility 3 with a structured plugin sequence covering pro",
+      "triggers": [
+        "vol3\" / \"volatility\" → Volatility 3 memory analysis",
+        "LSASS\" → credential extraction analysis",
+        "memory dump\" → volatile memory analysis"
+      ]
+    },
+    {
+      "name": "sigma-hunting",
+      "source": "plugin:forensics",
+      "description": "Applies Sigma detection rules against collected log sources to identify threat activity. Supports the bundled forensics-complete Sigma rule library and custom rules. Converts Sigma rules to backend-sp",
+      "triggers": [
+        "ATT&CK [technique]\" / \"MITRE [TID]\" → technique-specific threat hunt",
+        "T1059\" / \"T1053\" (etc.) → ATT&CK technique ID lookups",
+        "Sigma rules\" → rule-based threat hunting"
+      ]
+    },
+    {
+      "name": "supply-chain-forensics",
+      "source": "plugin:forensics",
+      "description": "Investigates software supply chain compromise across three vectors: dependency integrity (packages and libraries), build pipeline tampering (CI/CD systems and build scripts), and SBOM-based compositio",
+      "triggers": [
+        "SBOM\" → Software Bill of Materials analysis",
+        "build pipeline audit\" → supply chain security review",
+        "dependency confusion\" → supply chain attack vector"
+      ]
+    },
+    {
+      "name": "target-profiling",
+      "source": "plugin:forensics",
+      "description": "Connects to a target system over SSH and constructs a structured baseline profile covering operating system details, running services, user accounts, network configuration, and installed security tool",
+      "triggers": [
+        "OSINT [target]\" → open-source intelligence gathering",
+        "footprint [domain]\" → attack surface mapping",
+        "recon [system]\" → system reconnaissance"
+      ]
+    },
+    {
+      "name": "kb-health",
+      "source": "plugin:knowledge-base",
+      "description": "Audit the knowledge base for structural and content issues. Reports problems and, with `--fix`, repairs what can be fixed automatically (broken links, missing index entries). Human review is required ",
+      "triggers": [
+        "check KB health\" → full audit",
+        "find orphan pages\" → orphan check only",
+        "regenerate KB index\" → `--index-only`",
+        "`/kb-health` → direct invocation"
+      ]
+    },
+    {
+      "name": "kb-ingest",
+      "source": "plugin:knowledge-base",
+      "description": "Ingest any source — a URL, local file, or freeform note — into the knowledge base. Produces a source summary, then creates or updates entity and concept pages with new information.",
+      "triggers": [
+        "ingest this article\" → fetch URL and ingest",
+        "add to KB: ...\" → treat the text as a freeform note",
+        "summarize this book and add it to my KB\" → ingest file or freeform content",
+        "`/kb-ingest <source>` → direct invocation"
+      ]
+    },
+    {
+      "name": "knowledge-base-quickref",
+      "source": "plugin:knowledge-base",
+      "description": "This is your always-loaded directory for the AIWG **knowledge-base** framework. It does **not** list every skill. Most heavy lifting comes from the **semantic-memory kernel** in `aiwg-utils` (`memory-",
+      "triggers": []
+    },
+    {
+      "name": "acquire",
+      "source": "plugin:media-curator",
+      "description": "Download media from discovered sources with intelligent format selection, parallel execution, and comprehensive progress tracking.",
+      "triggers": []
+    },
+    {
+      "name": "analyze-artist",
+      "source": "plugin:media-curator",
+      "description": "## Purpose",
+      "triggers": []
+    },
+    {
+      "name": "archive-acquisition",
+      "source": "plugin:media-curator",
+      "description": "Specialized patterns and techniques for acquiring media content from Internet Archive (archive.org) and other archival sources. Focuses on bulk downloads, quality selection, format filtering, and coll",
+      "triggers": []
+    },
+    {
+      "name": "assemble",
+      "source": "plugin:media-curator",
+      "description": "Assemble collected media into cohesive experiences — narrative compilations, concert films, era playlists, audio documentaries, and thematic collections.",
+      "triggers": []
+    },
+    {
+      "name": "audio-extraction",
+      "source": "plugin:media-curator",
+      "description": "Patterns for extracting audio tracks from video files and transcoding between audio formats using ffmpeg.",
+      "triggers": []
+    },
+    {
+      "name": "check-completeness",
+      "source": "plugin:media-curator",
+      "description": "Analyze collection completeness by comparing actual inventory against canonical discography, identify gaps, score coverage, and generate prioritized acquisition plans.",
+      "triggers": []
+    },
+    {
+      "name": "cover-art-embedding",
+      "source": "plugin:media-curator",
+      "description": "Concrete patterns for finding high-quality cover artwork, processing it for optimal size and format, and embedding it into audio and video files.",
+      "triggers": []
+    }
+  ]
+}

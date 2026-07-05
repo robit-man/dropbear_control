@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "id": "2026-07-03T06-53-32-199Z-shell-73415aeba7",
+  "kind": "tool_result",
+  "timestamp": "2026-07-03T06:53:32.199Z",
+  "runId": "1783061014702-rgaw36",
+  "sessionId": "1783061014702-rgaw36",
+  "cwd": "/home/roko/Documents/Projects/myactuator",
+  "turn": 15,
+  "toolCallId": "091f0b97-e04e-4499-8fbf-a87c23f0ff8e",
+  "toolName": "shell",
+  "toolFingerprint": "shell:command=cd firmware/esp32 && pio run -t build 2>&1 | head -100",
+  "argsHash": "73415aeba7",
+  "argsPreview": "{\"command\":\"cd firmware/esp32 && pio run -t build 2>&1 | head -100\"}",
+  "success": false,
+  "durationMs": 10273,
+  "outputChars": 6419,
+  "errorChars": 11,
+  "outputPreview": "Processing esp32 (platform: espressif32; board: esp32dev; framework: arduino)\n--------------------------------------------------------------------------------\nVerbose mode can be enabled via `-v, --verbose` option\nCONFIGURATION: https://docs.platformio.org/page/boards/espressif32/esp32dev.html\nPLATFORM: Espressif 32 (7.0.1) > Espressif ESP32 Dev Module\nHARDWARE: ESP32 240MHz, 320KB RAM, 4MB Flash\nDEBUG: Current (cmsis-dap) External (cmsis-dap, esp-bridge, esp-prog, iot-bus-jtag, jlink, minimodule, olimex-arm-usb-ocd, olimex-arm-usb-ocd-h, olimex-arm-usb-tiny-h, olimex-jtag-tiny, tumpa)\nPACKAGES: \n - framework-arduinoespressif32 @ 3.20017.241212+sha.dcc1105b \n - tool-esptoolpy @ 2.41100.0 (4.11.0) \n - toolchain-xtensa-esp32 @ 8.4.0+2021r2-patch5\nLDF: Library Dependency Finder -> https://bit.ly/configure-pio-ldf\nLDF Modes: Finder ~ chain, Compatibility ~ soft\nFound 33 compatible libraries\nScanning dependencies...\nNo dependencies\nBuilding in release mode\n*** Do not know how to make File target `build' (/home/roko/Documents/Projects/myactuator/firmware/esp32/build).  Stop.\n========================== [FAILED] Took 0.42 seconds ==========================\n\nProcessing esp32s3 (platform: espressif32; board: esp32-s3-devkitc-1; framework: arduino)\n--------------------------------------------------------------------------------\nVerbose mode can be enabled via `-v, --verbose` option\nCONFIGURATION: https://docs.platformio.org/page/boards/espressif32/esp32-s3-devkitc-1.html\nPLATFORM: Espressif 32 (7.0.1) > Espressif ESP32-S3-DevKitC-1-N8 (8 MB QD, No PSRAM)\nHARDWARE: ESP32S3 240MHz, 320KB RAM, 8MB Flash\nDEBUG: Current (esp-builtin) On-board (esp-builtin) External (cmsis-dap, esp-bridge, esp-prog, iot-bus-jtag, jlink, minimodule, olimex-arm-usb-ocd, olimex-arm-usb-ocd-h, olimex-arm-usb-tiny-h, olimex-jtag-tiny, tumpa)\nPACKAGES: \n - framework-arduinoespressif32 @ 3.20017.241212+sha.dcc1105b \n - tool-esptoolpy @ 2.41100.0 (4.11.0) \n - toolchain-riscv32-esp @ 8.4.0+2021r2-patch5 \n - toolchain-xtensa-esp32s3 @ 8.4.0+2021r2-patch5\nLDF: Library Dependency Finder -> https://bit.ly/configure-pio-ldf\nLDF Modes: Finder ~ chain, Compatibility ~ soft\nFound 33 compatible libraries\nScanning dependencies...\nNo dependencies\nBuilding in release mode\n*** Do not know how to make File target `build' (/home/roko/Documents/Projects/myactuator/firmware/esp32/build).  Stop.\n========================== [FAILED] Took 0.43 seconds ==========================\n\nProcessing esp32c3 (platform: espressif32; board: esp32-c3-devkitm-1; framework: arduino)\n--------------------------------------------------------------------------------\nVerbose mode can be enabled via `-v, --verbose` option\nCONFIGURATION: https://docs.platformio.org/page/boards/espressif32/esp32-c3-devkitm-1.html\nPLATFORM: Espressif 32 (7.0.1) > Espressif ESP32-C3-DevKitM-1\nHARDWARE: ESP32C3 160MHz, 320KB RAM, 4MB Flash\nDEBUG: Current (cmsis-dap) External (cmsis-dap, esp-bridge, esp-builtin, esp-prog, iot-bus-jtag, jlink, minimodule, olimex-arm-usb-ocd, olimex-arm-usb-ocd-h, olimex-arm-usb-tiny-h, olimex-jtag-tiny, tumpa)\nPACKAGES: \n - framework-arduinoespressif32 @ 3.20017.241212+sha.dcc1105b \n - tool-esptoolpy @ 2.41100.0 (4.11.0) \n - toolchain-riscv32-esp @ 8.4.0+2021r2-patch5\nLDF: Library Dependency Finder -> https://bit.ly/configure-pio-ldf\nLDF Modes: Finder ~ chain, Compatibility ~ soft\nFound 33 compatible libraries\nScanning dependencies...\nNo dependencies\nBuilding in release mode\n*** Do not know how to make File target `build' (/home/roko/Documents/Projects/myactuator/firmware/esp32/build).  Stop.\n========================== [FAILED] Took 0.41 seconds ==========================\n\nProcessing esp32s3dev (platform: espressif32; board: esp32-s3-devkitc-1; framework: arduino)\n--------------------------------------------------------------------------------\nVerbose mode can be enabled via `-v, --verbose` option\nCONFIGURATION: https://docs.platformio.org/page/boards/espressif32/esp32-s3-devkitc-1.html\nPLATFORM: Espr\n[truncated 2419 chars]",
+  "errorPreview": "Exit code 1",
+  "mutation": {
+    "realFileMutation": false,
+    "shellFilesystemMutation": false,
+    "paths": []
+  },
+  "focusSupervisor": {
+    "mode": "auto",
+    "enabled": true,
+    "state": "observe",
+    "directive": null,
+    "lastDecision": "pass",
+    "lastReason": "",
+    "context": {
+      "pressureRatio": 1,
+      "estimatedTokens": 1705,
+      "rawDiscoveryChars": 0,
+      "activeEvidenceChars": 14927,
+      "activeFrameChars": 13000,
+      "signalToNoiseRatio": null,
+      "droppedSignals": 2,
+      "truncatedSignals": 4
+    }
+  },
+  "repeatShortCircuit": false,
+  "runtimeAuthored": false,
+  "diagnoses": [
+    "tool-failure"
+  ],
+  "summary": "shell failure | diagnoses=tool-failure | command=cd firmware/esp32 && pio run -t build 2>&1 | head -100",
+  "anchors": [
+    {
+      "label": "debug_contract",
+      "kind": "contract",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/CONTRACT.md",
+      "note": "Schema and semantics for this debug library.",
+      "relativePath": ".omnius/debug-library/CONTRACT.md",
+      "exists": true
+    },
+    {
+      "label": "run_readme",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783061014702-rgaw36/README.md",
+      "note": "Human summary for this run.",
+      "relativePath": ".omnius/debug-library/runs/1783061014702-rgaw36/README.md",
+      "exists": true
+    },
+    {
+      "label": "run_index",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783061014702-rgaw36/index.json",
+      "note": "Machine-readable run summary.",
+      "relativePath": ".omnius/debug-library/runs/1783061014702-rgaw36/index.json",
+      "exists": true
+    },
+    {
+      "label": "run_events_jsonl",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783061014702-rgaw36/events.jsonl",
+      "note": "Append-only normalized event stream.",
+      "relativePath": ".omnius/debug-library/runs/1783061014702-rgaw36/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "workboard_active",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783061014702-rgaw36/active.json",
+      "note": "Durable workboard snapshot, when present.",
+      "relativePath": ".omnius/workboards/1783061014702-rgaw36/active.json",
+      "exists": true
+    },
+    {
+      "label": "workboard_events",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783061014702-rgaw36/events.jsonl",
+      "note": "Durable workboard event log, when present.",
+      "relativePath": ".omnius/workboards/1783061014702-rgaw36/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "context_dump_latest",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/latest.json",
+      "note": "Latest outbound model request dump.",
+      "relativePath": ".omnius/context-window-dumps/latest.json",
+      "exists": true
+    },
+    {
+      "label": "context_dump_index",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/index.jsonl",
+      "note": "Append-only context-window dump summaries.",
+      "relativePath": ".omnius/context-window-dumps/index.jsonl",
+      "exists": true
+    },
+    {
+      "label": "trajectory_log",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/trajectories/trajectories.jsonl",
+      "note": "Completed run trajectory records.",
+      "relativePath": ".omnius/trajectories/trajectories.jsonl",
+      "exists": true
+    },
+    {
+      "label": "checkpoints_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/checkpoints",
+      "note": "Turn-boundary checkpoints.",
+      "relativePath": ".omnius/checkpoints",
+      "exists": true
+    },
+    {
+      "label": "phases_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/phases",
+      "note": "Phase transcript summaries.",
+      "relativePath": ".omnius/phases",
+      "exists": true
+    },
+    {
+      "label": "completion_ledgers_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/completion-ledgers",
+      "note": "Completion evidence ledgers.",
+      "relativePath": ".omnius/completion-ledgers",
+      "exists": true
+    },
+    {
+      "label": "event_json",
+      "kind": "event",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783061014702-rgaw36/events/turn-0015/2026-07-03T06-53-32-199Z-shell-73415aeba7.json",
+      "note": "This normalized debug event.",
+      "relativePath": ".omnius/debug-library/runs/1783061014702-rgaw36/events/turn-0015/2026-07-03T06-53-32-199Z-shell-73415aeba7.json",
+      "exists": true
+    }
+  ]
+}

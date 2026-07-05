@@ -1,0 +1,9 @@
+{
+  "timestamp": "2026-07-05T07:23:55.539Z",
+  "model": "omnius-robit-ornith-vision-35b",
+  "stage": "emotion_label_direct",
+  "status": "ok",
+  "elapsedMs": 3560,
+  "outputPreview": "",
+  "promptChars": 695
+}

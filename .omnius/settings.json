@@ -1,0 +1,5 @@
+{
+  "backendUrl": "http://localhost:11434",
+  "backendType": "ollama",
+  "model": "omnius-robit-ornith-vision-35b"
+}

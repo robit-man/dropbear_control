@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "id": "2026-07-03T17-34-29-364Z-shell-ebc52cf54a",
+  "kind": "tool_result",
+  "timestamp": "2026-07-03T17:34:29.364Z",
+  "runId": "1783098484662-k0bt4g",
+  "sessionId": "1783098484662-k0bt4g",
+  "cwd": "/home/roko/Documents/Projects/myactuator",
+  "turn": 38,
+  "toolCallId": "06760bdd-c0e4-4859-8013-9c07a9e92a8d",
+  "toolName": "shell",
+  "toolFingerprint": "shell:command=cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio run 2>&1 | tail -50",
+  "argsHash": "ebc52cf54a",
+  "argsPreview": "{\"command\":\"cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio run 2>&1 | tail -50\"}",
+  "success": false,
+  "durationMs": 76,
+  "outputChars": 555,
+  "errorChars": 555,
+  "outputPreview": "[FOCUS SUPERVISOR BLOCK] The previous directive was ignored: model ignored prior directive focus_15; same file_edit failure family repeated 2 times: old_string not found in /home/roko/Documents/Projects/myactuator/firmware/esp32/include/types.h. Current file content (closest match, 100% similarity, lines 54–64 of 256): 54 | COM\nRequired next action: read_authoritative_target.\nBlocked action family: shell:cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio run 2>&1 | tail -50.\nTake the required next action before trying another variant.",
+  "errorPreview": "[FOCUS SUPERVISOR BLOCK] The previous directive was ignored: model ignored prior directive focus_15; same file_edit failure family repeated 2 times: old_string not found in /home/roko/Documents/Projects/myactuator/firmware/esp32/include/types.h. Current file content (closest match, 100% similarity, lines 54–64 of 256): 54 | COM\nRequired next action: read_authoritative_target.\nBlocked action family: shell:cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio run 2>&1 | tail -50.\nTake the required next action before trying another variant.",
+  "mutation": {
+    "realFileMutation": false,
+    "shellFilesystemMutation": false,
+    "paths": []
+  },
+  "focusSupervisor": {
+    "mode": "auto",
+    "enabled": true,
+    "state": "single_next_action",
+    "directive": {
+      "id": "focus_17",
+      "state": "single_next_action",
+      "reason": "model ignored prior directive focus_16; model ignored prior directive focus_15; same file_edit failure family repeated 2 times: old_string not found in /home/roko/Documents/Projects/myactuator/firmware/esp32/include/types.h. Current file content (closest match, 100% similarity, lines 54–64 of 256): 54 | COM",
+      "requiredNextAction": "read_authoritative_target",
+      "forbiddenActionFamilies": [
+        "file_edit:/home/roko/Documents/Projects/myactuator/firmware/esp32/include/types.h:old_string=// Gearbox type typedef enum { GEARBOX_PLANETARY = 0, GEARBOX_HARMONIC, GEARBOX_DIRECT, GEA#ffa46b3e",
+        "file_edit",
+        "shell:cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio run 2>&1 | tail -50"
+      ],
+      "createdTurn": 38,
+      "ignoredCount": 0
+    },
+    "lastDecision": "runtime_authored_not_satisfied",
+    "lastReason": "runtime-authored control result did not execute the requested tool",
+    "context": {
+      "pressureRatio": 1,
+      "estimatedTokens": 1884,
+      "rawDiscoveryChars": 0,
+      "activeEvidenceChars": 15142,
+      "activeFrameChars": 13000,
+      "signalToNoiseRatio": null,
+      "droppedSignals": 2,
+      "truncatedSignals": 3
+    }
+  },
+  "focusDecision": {
+    "kind": "block_tool_call",
+    "state": "single_next_action",
+    "reason": "model ignored prior directive focus_16; model ignored prior directive focus_15; same file_edit failure family repeated 2 times: old_string not found in /home/roko/Documents/Projects/myactuator/firmware/esp32/include/types.h. Current file content (closest match, 100% similarity, lines 54–64 of 256): 54 | COM",
+    "requiredNextAction": "read_authoritative_target"
+  },
+  "repeatShortCircuit": true,
+  "runtimeAuthored": true,
+  "diagnoses": [
+    "focus-supervisor-active",
+    "focus-supervisor-block",
+    "tool-failure"
+  ],
+  "summary": "shell failure | diagnoses=focus-supervisor-active,focus-supervisor-block,tool-failure | command=cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio run 2>&1 | tail -50",
+  "anchors": [
+    {
+      "label": "debug_contract",
+      "kind": "contract",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/CONTRACT.md",
+      "note": "Schema and semantics for this debug library.",
+      "relativePath": ".omnius/debug-library/CONTRACT.md",
+      "exists": true
+    },
+    {
+      "label": "run_readme",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783098484662-k0bt4g/README.md",
+      "note": "Human summary for this run.",
+      "relativePath": ".omnius/debug-library/runs/1783098484662-k0bt4g/README.md",
+      "exists": true
+    },
+    {
+      "label": "run_index",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783098484662-k0bt4g/index.json",
+      "note": "Machine-readable run summary.",
+      "relativePath": ".omnius/debug-library/runs/1783098484662-k0bt4g/index.json",
+      "exists": true
+    },
+    {
+      "label": "run_events_jsonl",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783098484662-k0bt4g/events.jsonl",
+      "note": "Append-only normalized event stream.",
+      "relativePath": ".omnius/debug-library/runs/1783098484662-k0bt4g/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "workboard_active",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783098484662-k0bt4g/active.json",
+      "note": "Durable workboard snapshot, when present.",
+      "relativePath": ".omnius/workboards/1783098484662-k0bt4g/active.json",
+      "exists": true
+    },
+    {
+      "label": "workboard_events",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783098484662-k0bt4g/events.jsonl",
+      "note": "Durable workboard event log, when present.",
+      "relativePath": ".omnius/workboards/1783098484662-k0bt4g/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "context_dump_latest",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/latest.json",
+      "note": "Latest outbound model request dump.",
+      "relativePath": ".omnius/context-window-dumps/latest.json",
+      "exists": true
+    },
+    {
+      "label": "context_dump_index",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/index.jsonl",
+      "note": "Append-only context-window dump summaries.",
+      "relativePath": ".omnius/context-window-dumps/index.jsonl",
+      "exists": true
+    },
+    {
+      "label": "trajectory_log",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/trajectories/trajectories.jsonl",
+      "note": "Completed run trajectory records.",
+      "relativePath": ".omnius/trajectories/trajectories.jsonl",
+      "exists": true
+    },
+    {
+      "label": "checkpoints_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/checkpoints",
+      "note": "Turn-boundary checkpoints.",
+      "relativePath": ".omnius/checkpoints",
+      "exists": true
+    },
+    {
+      "label": "phases_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/phases",
+      "note": "Phase transcript summaries.",
+      "relativePath": ".omnius/phases",
+      "exists": true
+    },
+    {
+      "label": "completion_ledgers_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/completion-ledgers",
+      "note": "Completion evidence ledgers.",
+      "relativePath": ".omnius/completion-ledgers",
+      "exists": true
+    },
+    {
+      "label": "event_json",
+      "kind": "event",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783098484662-k0bt4g/events/turn-0038/2026-07-03T17-34-29-364Z-shell-ebc52cf54a.json",
+      "note": "This normalized debug event.",
+      "relativePath": ".omnius/debug-library/runs/1783098484662-k0bt4g/events/turn-0038/2026-07-03T17-34-29-364Z-shell-ebc52cf54a.json",
+      "exists": true
+    }
+  ]
+}

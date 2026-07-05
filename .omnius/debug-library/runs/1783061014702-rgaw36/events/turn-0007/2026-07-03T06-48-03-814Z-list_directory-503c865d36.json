@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "id": "2026-07-03T06-48-03-814Z-list_directory-503c865d36",
+  "kind": "tool_result",
+  "timestamp": "2026-07-03T06:48:03.814Z",
+  "runId": "1783061014702-rgaw36",
+  "sessionId": "1783061014702-rgaw36",
+  "cwd": "/home/roko/Documents/Projects/myactuator",
+  "turn": 7,
+  "toolCallId": "1504a1e1-5ed9-4ff2-971e-cdbc186da0fe",
+  "toolName": "list_directory",
+  "toolFingerprint": "list_directory:path=/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers",
+  "argsHash": "503c865d36",
+  "argsPreview": "{\"path\":\"/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers\"}",
+  "success": true,
+  "durationMs": 51,
+  "outputChars": 2682,
+  "errorChars": 0,
+  "outputPreview": "f  /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/can_bus.cpp  502\nf  /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/can_bus.h  482\nf  /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/ce_m_driver.cpp  458\nf  /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/ce_m_driver.h  306\nf  /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/cem_driver.cpp  2524\nf  /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/cem_driver.h  1126\nf  /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/encoder.cpp  792\nf  /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/encoder.h  505\nf  /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/ethercat.cpp  673\nf  /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/ethercat.h  579\nf  /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/fl_driver.cpp  2541\nf  /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/fl_driver.h  1111\nf  /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/motor_driver.h  1105\nf  /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/rh_driver.cpp  2460\nf  /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/rh_driver.h  1072\nf  /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/rmd_h_driver.cpp  2567\nf  /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/rmd_h_driver.h  1144\nf  /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/rmd_l_driver.h  1074\nf  /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/rmd_x_driver.cpp  3069\nf  /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/rmd_x_driver.h  310\nf  /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/rs485.cpp  522\nf  /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/rs485.h  451\n\nDiscovered child paths (data only):\n  files: /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/can_bus.cpp, /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/can_bus.h, /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/ce_m_driver.cpp, /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/ce_m_driver.h, /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/cem_driver.cpp, /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/cem_driver.h, /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/encoder.cpp, /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/encoder.h (+14 more)",
+  "mutation": {
+    "realFileMutation": false,
+    "shellFilesystemMutation": false,
+    "paths": []
+  },
+  "focusSupervisor": {
+    "mode": "auto",
+    "enabled": true,
+    "state": "warn",
+    "directive": {
+      "id": "focus_29",
+      "state": "warn",
+      "reason": "duplicate file_read call has cached evidence",
+      "requiredNextAction": "use_cached_evidence",
+      "forbiddenActionFamilies": [
+        "file_read:/home/roko/Documents/Projects/myactuator/contracts/MOTOR_RMD_X_CONTRACT.md"
+      ],
+      "createdTurn": 7,
+      "ignoredCount": 0
+    },
+    "lastDecision": "pass",
+    "lastReason": "",
+    "context": {
+      "pressureRatio": 1,
+      "estimatedTokens": 2295,
+      "rawDiscoveryChars": 0,
+      "activeEvidenceChars": 12391,
+      "activeFrameChars": 11437,
+      "signalToNoiseRatio": null,
+      "droppedSignals": 1,
+      "truncatedSignals": 1
+    }
+  },
+  "repeatShortCircuit": false,
+  "runtimeAuthored": false,
+  "diagnoses": [
+    "focus-supervisor-active"
+  ],
+  "summary": "list_directory success | diagnoses=focus-supervisor-active",
+  "anchors": [
+    {
+      "label": "debug_contract",
+      "kind": "contract",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/CONTRACT.md",
+      "note": "Schema and semantics for this debug library.",
+      "relativePath": ".omnius/debug-library/CONTRACT.md",
+      "exists": true
+    },
+    {
+      "label": "run_readme",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783061014702-rgaw36/README.md",
+      "note": "Human summary for this run.",
+      "relativePath": ".omnius/debug-library/runs/1783061014702-rgaw36/README.md",
+      "exists": true
+    },
+    {
+      "label": "run_index",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783061014702-rgaw36/index.json",
+      "note": "Machine-readable run summary.",
+      "relativePath": ".omnius/debug-library/runs/1783061014702-rgaw36/index.json",
+      "exists": true
+    },
+    {
+      "label": "run_events_jsonl",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783061014702-rgaw36/events.jsonl",
+      "note": "Append-only normalized event stream.",
+      "relativePath": ".omnius/debug-library/runs/1783061014702-rgaw36/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "workboard_active",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783061014702-rgaw36/active.json",
+      "note": "Durable workboard snapshot, when present.",
+      "relativePath": ".omnius/workboards/1783061014702-rgaw36/active.json",
+      "exists": true
+    },
+    {
+      "label": "workboard_events",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783061014702-rgaw36/events.jsonl",
+      "note": "Durable workboard event log, when present.",
+      "relativePath": ".omnius/workboards/1783061014702-rgaw36/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "context_dump_latest",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/latest.json",
+      "note": "Latest outbound model request dump.",
+      "relativePath": ".omnius/context-window-dumps/latest.json",
+      "exists": true
+    },
+    {
+      "label": "context_dump_index",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/index.jsonl",
+      "note": "Append-only context-window dump summaries.",
+      "relativePath": ".omnius/context-window-dumps/index.jsonl",
+      "exists": true
+    },
+    {
+      "label": "trajectory_log",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/trajectories/trajectories.jsonl",
+      "note": "Completed run trajectory records.",
+      "relativePath": ".omnius/trajectories/trajectories.jsonl",
+      "exists": true
+    },
+    {
+      "label": "checkpoints_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/checkpoints",
+      "note": "Turn-boundary checkpoints.",
+      "relativePath": ".omnius/checkpoints",
+      "exists": true
+    },
+    {
+      "label": "phases_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/phases",
+      "note": "Phase transcript summaries.",
+      "relativePath": ".omnius/phases",
+      "exists": true
+    },
+    {
+      "label": "completion_ledgers_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/completion-ledgers",
+      "note": "Completion evidence ledgers.",
+      "relativePath": ".omnius/completion-ledgers",
+      "exists": true
+    },
+    {
+      "label": "event_json",
+      "kind": "event",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783061014702-rgaw36/events/turn-0007/2026-07-03T06-48-03-814Z-list_directory-503c865d36.json",
+      "note": "This normalized debug event.",
+      "relativePath": ".omnius/debug-library/runs/1783061014702-rgaw36/events/turn-0007/2026-07-03T06-48-03-814Z-list_directory-503c865d36.json",
+      "exists": true
+    }
+  ]
+}

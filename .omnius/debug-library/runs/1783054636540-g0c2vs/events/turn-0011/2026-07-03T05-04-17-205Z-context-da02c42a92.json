@@ -1,0 +1,182 @@
+{
+  "schemaVersion": 1,
+  "id": "2026-07-03T05-04-17-205Z-context-da02c42a92",
+  "kind": "context_window_dump",
+  "timestamp": "2026-07-03T05:04:17.205Z",
+  "runId": "1783054636540-g0c2vs",
+  "sessionId": "1783054636540-g0c2vs",
+  "cwd": "/home/roko/Documents/Projects/myactuator",
+  "turn": 11,
+  "contextDump": {
+    "id": "2026-07-03T05-04-17-200Z-main-4d46e5aa7a",
+    "stage": "agent_turn",
+    "agentType": "main",
+    "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/2026-07-03T05-04-17-200Z-main-4d46e5aa7a.json",
+    "metrics": {
+      "messageCount": 113,
+      "estimatedTokens": 56989,
+      "totalChars": 202870,
+      "imageCount": 0,
+      "toolSchemaCount": 23,
+      "toolSchemaChars": 25085,
+      "roleCounts": {
+        "system": 63,
+        "user": 1,
+        "assistant": 17,
+        "tool": 32
+      },
+      "roleChars": {
+        "system": 129322,
+        "user": 4607,
+        "assistant": 16394,
+        "tool": 52547
+      },
+      "activeEvidenceChars": 13473,
+      "activeContextFrameChars": 12999,
+      "compactedDiscoveryChars": 5105,
+      "rawDiscoveryToolChars": 582,
+      "toolResultChars": 52547,
+      "systemChars": 129322,
+      "userChars": 4607,
+      "assistantChars": 16394,
+      "signalToNoise": {
+        "structuralSignalChars": 52578,
+        "structuralNoiseCandidateChars": 582,
+        "ratio": 90.34
+      }
+    }
+  },
+  "focusSupervisor": {
+    "mode": "auto",
+    "enabled": true,
+    "state": "observe",
+    "lastDecision": "pass",
+    "directive": null,
+    "context": {
+      "pressureRatio": 1,
+      "estimatedTokens": 2647,
+      "rawDiscoveryChars": 582,
+      "activeEvidenceChars": 13474,
+      "activeFrameChars": 13000,
+      "signalToNoiseRatio": 88.558,
+      "droppedSignals": 2,
+      "truncatedSignals": 3
+    }
+  },
+  "diagnoses": [],
+  "summary": "context dump agent_turn | tokens~56989",
+  "anchors": [
+    {
+      "label": "debug_contract",
+      "kind": "contract",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/CONTRACT.md",
+      "note": "Schema and semantics for this debug library.",
+      "relativePath": ".omnius/debug-library/CONTRACT.md",
+      "exists": true
+    },
+    {
+      "label": "run_readme",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783054636540-g0c2vs/README.md",
+      "note": "Human summary for this run.",
+      "relativePath": ".omnius/debug-library/runs/1783054636540-g0c2vs/README.md",
+      "exists": true
+    },
+    {
+      "label": "run_index",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783054636540-g0c2vs/index.json",
+      "note": "Machine-readable run summary.",
+      "relativePath": ".omnius/debug-library/runs/1783054636540-g0c2vs/index.json",
+      "exists": true
+    },
+    {
+      "label": "run_events_jsonl",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783054636540-g0c2vs/events.jsonl",
+      "note": "Append-only normalized event stream.",
+      "relativePath": ".omnius/debug-library/runs/1783054636540-g0c2vs/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "workboard_active",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783054636540-g0c2vs/active.json",
+      "note": "Durable workboard snapshot, when present.",
+      "relativePath": ".omnius/workboards/1783054636540-g0c2vs/active.json",
+      "exists": true
+    },
+    {
+      "label": "workboard_events",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783054636540-g0c2vs/events.jsonl",
+      "note": "Durable workboard event log, when present.",
+      "relativePath": ".omnius/workboards/1783054636540-g0c2vs/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "context_dump_latest",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/latest.json",
+      "note": "Latest outbound model request dump.",
+      "relativePath": ".omnius/context-window-dumps/latest.json",
+      "exists": true
+    },
+    {
+      "label": "context_dump_index",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/index.jsonl",
+      "note": "Append-only context-window dump summaries.",
+      "relativePath": ".omnius/context-window-dumps/index.jsonl",
+      "exists": true
+    },
+    {
+      "label": "trajectory_log",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/trajectories/trajectories.jsonl",
+      "note": "Completed run trajectory records.",
+      "relativePath": ".omnius/trajectories/trajectories.jsonl",
+      "exists": true
+    },
+    {
+      "label": "checkpoints_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/checkpoints",
+      "note": "Turn-boundary checkpoints.",
+      "relativePath": ".omnius/checkpoints",
+      "exists": true
+    },
+    {
+      "label": "phases_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/phases",
+      "note": "Phase transcript summaries.",
+      "relativePath": ".omnius/phases",
+      "exists": true
+    },
+    {
+      "label": "completion_ledgers_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/completion-ledgers",
+      "note": "Completion evidence ledgers.",
+      "relativePath": ".omnius/completion-ledgers",
+      "exists": true
+    },
+    {
+      "label": "context_window_dump",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/2026-07-03T05-04-17-200Z-main-4d46e5aa7a.json",
+      "note": "Full outbound model request for this turn.",
+      "relativePath": ".omnius/context-window-dumps/2026-07-03T05-04-17-200Z-main-4d46e5aa7a.json",
+      "exists": true
+    },
+    {
+      "label": "event_json",
+      "kind": "event",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783054636540-g0c2vs/events/turn-0011/2026-07-03T05-04-17-205Z-context-da02c42a92.json",
+      "note": "This normalized debug event.",
+      "relativePath": ".omnius/debug-library/runs/1783054636540-g0c2vs/events/turn-0011/2026-07-03T05-04-17-205Z-context-da02c42a92.json",
+      "exists": true
+    }
+  ]
+}

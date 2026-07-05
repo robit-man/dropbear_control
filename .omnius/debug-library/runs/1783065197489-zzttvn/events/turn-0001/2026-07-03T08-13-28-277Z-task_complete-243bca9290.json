@@ -1,0 +1,174 @@
+{
+  "schemaVersion": 1,
+  "id": "2026-07-03T08-13-28-277Z-task_complete-243bca9290",
+  "kind": "tool_result",
+  "timestamp": "2026-07-03T08:13:28.277Z",
+  "runId": "1783065197489-zzttvn",
+  "sessionId": "1783065197489-zzttvn",
+  "cwd": "/home/roko/Documents/Projects/myactuator",
+  "turn": 1,
+  "toolCallId": "call_o9pjf3p2",
+  "toolName": "task_complete",
+  "toolFingerprint": "task_complete:summary=[\\\\n  {\"index\": 0\\, \"noise_score\": 0.8\\, \"reason\": \"21 entries all conveying the same 'stop re-reading\\, do the actual task' lesson — highly redundant repeated_acti...tdated\\, same issue as totalFailures\"}\\\\n]#sha256:ed513698fc6f022c77cf",
+  "argsHash": "243bca9290",
+  "argsPreview": "{\"summary\":\"[\\n  {\\\"index\\\": 0, \\\"noise_score\\\": 0.8, \\\"reason\\\": \\\"21 entries all conveying the same 'stop re-reading, do the actual task' lesson — highly redundant repeated_action verdicts from the same failure pattern\\\"},\\n  {\\\"index\\\": 1, \\\"noise_score\\\": 0.1, \\\"reason\\\": \\\"5 unique reflection entries from different sessions, each documenting distinct failure types (incomplete, search_fail, repetition) — valuable signal\\\"},\\n  {\\\"index\\\": 2, \\\"noise_score\\\": 0.3, \\\"reason\\\": \\\"Simple config value (maxReflections=5) — low informational content, but not actively interfering\\\"},\\n  {\\\"index\\\": 3, \\\"noise_score\\\": 0.6, \\\"reason\\\": \\\"Stale counter (totalFailures=5) — likely outdated as more failures accumulate, low signal-to-noise\\\"},\\n  {\\\"index\\\": 4, \\\"noise_score\\\": 0.6, \\\"reason\\\": \\\"Stale counter (totalConsumed=11) — likely outdated, same issue as totalFailures\\\"}\\n]\"}",
+  "success": false,
+  "durationMs": 71,
+  "outputChars": 283,
+  "errorChars": 283,
+  "outputPreview": "[FOCUS SUPERVISOR BLOCK]\nqueued tool call was emitted in the same turn that created directive focus_12; it could not have observed the directive.\nRequired next action: update_todos.\nBlocked action family: task_complete:no-target.\nThis block is not counted as a new ignored directive.",
+  "errorPreview": "[FOCUS SUPERVISOR BLOCK]\nqueued tool call was emitted in the same turn that created directive focus_12; it could not have observed the directive.\nRequired next action: update_todos.\nBlocked action family: task_complete:no-target.\nThis block is not counted as a new ignored directive.",
+  "mutation": {
+    "realFileMutation": false,
+    "shellFilesystemMutation": false,
+    "paths": []
+  },
+  "focusSupervisor": {
+    "mode": "auto",
+    "enabled": true,
+    "state": "verify_or_block",
+    "directive": {
+      "id": "focus_12",
+      "state": "verify_or_block",
+      "reason": "discovery happened but no deliverable or explicit blocker is recorded",
+      "requiredNextAction": "update_todos",
+      "forbiddenActionFamilies": [
+        "task_complete"
+      ],
+      "createdTurn": 1,
+      "ignoredCount": 0
+    },
+    "lastDecision": "runtime_authored_not_satisfied",
+    "lastReason": "runtime-authored control result did not execute the requested tool",
+    "context": {
+      "pressureRatio": 1,
+      "estimatedTokens": 1149,
+      "rawDiscoveryChars": 0,
+      "activeEvidenceChars": 0,
+      "activeFrameChars": 4856,
+      "signalToNoiseRatio": null,
+      "droppedSignals": 0,
+      "truncatedSignals": 1
+    }
+  },
+  "focusDecision": {
+    "kind": "block_tool_call",
+    "state": "verify_or_block",
+    "reason": "discovery happened but no deliverable or explicit blocker is recorded",
+    "requiredNextAction": "update_todos"
+  },
+  "repeatShortCircuit": true,
+  "runtimeAuthored": true,
+  "diagnoses": [
+    "focus-supervisor-active",
+    "focus-supervisor-block",
+    "tool-failure"
+  ],
+  "summary": "task_complete failure | diagnoses=focus-supervisor-active,focus-supervisor-block,tool-failure",
+  "anchors": [
+    {
+      "label": "debug_contract",
+      "kind": "contract",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/CONTRACT.md",
+      "note": "Schema and semantics for this debug library.",
+      "relativePath": ".omnius/debug-library/CONTRACT.md",
+      "exists": true
+    },
+    {
+      "label": "run_readme",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783065197489-zzttvn/README.md",
+      "note": "Human summary for this run.",
+      "relativePath": ".omnius/debug-library/runs/1783065197489-zzttvn/README.md",
+      "exists": true
+    },
+    {
+      "label": "run_index",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783065197489-zzttvn/index.json",
+      "note": "Machine-readable run summary.",
+      "relativePath": ".omnius/debug-library/runs/1783065197489-zzttvn/index.json",
+      "exists": true
+    },
+    {
+      "label": "run_events_jsonl",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783065197489-zzttvn/events.jsonl",
+      "note": "Append-only normalized event stream.",
+      "relativePath": ".omnius/debug-library/runs/1783065197489-zzttvn/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "workboard_active",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783065197489-zzttvn/active.json",
+      "note": "Durable workboard snapshot, when present.",
+      "relativePath": ".omnius/workboards/1783065197489-zzttvn/active.json",
+      "exists": true
+    },
+    {
+      "label": "workboard_events",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783065197489-zzttvn/events.jsonl",
+      "note": "Durable workboard event log, when present.",
+      "relativePath": ".omnius/workboards/1783065197489-zzttvn/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "context_dump_latest",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/latest.json",
+      "note": "Latest outbound model request dump.",
+      "relativePath": ".omnius/context-window-dumps/latest.json",
+      "exists": true
+    },
+    {
+      "label": "context_dump_index",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/index.jsonl",
+      "note": "Append-only context-window dump summaries.",
+      "relativePath": ".omnius/context-window-dumps/index.jsonl",
+      "exists": true
+    },
+    {
+      "label": "trajectory_log",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/trajectories/trajectories.jsonl",
+      "note": "Completed run trajectory records.",
+      "relativePath": ".omnius/trajectories/trajectories.jsonl",
+      "exists": true
+    },
+    {
+      "label": "checkpoints_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/checkpoints",
+      "note": "Turn-boundary checkpoints.",
+      "relativePath": ".omnius/checkpoints",
+      "exists": true
+    },
+    {
+      "label": "phases_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/phases",
+      "note": "Phase transcript summaries.",
+      "relativePath": ".omnius/phases",
+      "exists": true
+    },
+    {
+      "label": "completion_ledgers_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/completion-ledgers",
+      "note": "Completion evidence ledgers.",
+      "relativePath": ".omnius/completion-ledgers",
+      "exists": true
+    },
+    {
+      "label": "event_json",
+      "kind": "event",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783065197489-zzttvn/events/turn-0001/2026-07-03T08-13-28-277Z-task_complete-243bca9290.json",
+      "note": "This normalized debug event.",
+      "relativePath": ".omnius/debug-library/runs/1783065197489-zzttvn/events/turn-0001/2026-07-03T08-13-28-277Z-task_complete-243bca9290.json",
+      "exists": true
+    }
+  ]
+}

@@ -1,0 +1,157 @@
+{
+  "schemaVersion": 1,
+  "id": "2026-07-03T18-06-02-813Z-file_edit-5855a38506",
+  "kind": "tool_result",
+  "timestamp": "2026-07-03T18:06:02.813Z",
+  "runId": "1783100539534-ttnzaw",
+  "sessionId": "1783100539534-ttnzaw",
+  "cwd": "/home/roko/Documents/Projects/myactuator",
+  "turn": 29,
+  "toolCallId": "call_cimkyt11",
+  "toolName": "file_edit",
+  "toolFingerprint": "file_edit:new_string=    MOTOR_STATE_IDLE = 0\\,\\\\n    MOTOR_STATE_INITIALIZING\\,\\\\n    MOTOR_STATE_READY\\,\\\\n    MOTOR_STATE_RUNNING\\,\\\\n    MOTOR_STATE_FAULT\\,\\\\n    MOTOR_STATE_DISABLED\\,\\\\n ...CONTROL\\,\\\\n    MOTOR_STATE_TORQUE_CONTROL#sha256:d6db2af40ae3f865c3e8,old_string=    MOTOR_STATE_IDLE = 0\\,\\\\n    MOTOR_STATE_INITIALIZING\\,\\\\n    MOTOR_STATE_READY\\,\\\\n    MOTOR_STATE_RUNNING\\,\\\\n    MOTOR_STATE_FAULT\\,\\\\n    MOTOR_STATE_DISABLED,path=/home/roko/Documents/Projects/myactuator/firmware/esp32/include/types.h",
+  "argsHash": "5855a38506",
+  "argsPreview": "{\"path\":\"/home/roko/Documents/Projects/myactuator/firmware/esp32/include/types.h\",\"old_string\":\"    MOTOR_STATE_IDLE = 0,\\n    MOTOR_STATE_INITIALIZING,\\n    MOTOR_STATE_READY,\\n    MOTOR_STATE_RUNNING,\\n    MOTOR_STATE_FAULT,\\n    MOTOR_STATE_DISABLED\",\"new_string\":\"    MOTOR_STATE_IDLE = 0,\\n    MOTOR_STATE_INITIALIZING,\\n    MOTOR_STATE_READY,\\n    MOTOR_STATE_RUNNING,\\n    MOTOR_STATE_FAULT,\\n    MOTOR_STATE_DISABLED,\\n    MOTOR_STATE_POSITION_CONTROL,\\n    MOTOR_STATE_VELOCITY_CONTROL,\\n    MOTOR_STATE_TORQUE_CONTROL\"}",
+  "success": true,
+  "durationMs": 164,
+  "outputChars": 740,
+  "errorChars": 0,
+  "outputPreview": "Edited /home/roko/Documents/Projects/myactuator/firmware/esp32/include/types.h at line 217 (sha256 28d952fe4e7d84552b64f927c6d5954bc5c4ed9c6af4bb64e990e2ff0ac12cb5 → 1922265306a09f1bae8589cda238a312804e666b79aa6db0592146b2ce132e1f)\n 217 -     MOTOR_STATE_IDLE = 0,\n 218 -     MOTOR_STATE_INITIALIZING,\n 219 -     MOTOR_STATE_READY,\n 220 -     MOTOR_STATE_RUNNING,\n 221 -     MOTOR_STATE_FAULT,\n 222 -     MOTOR_STATE_DISABLED\n 217 +     MOTOR_STATE_IDLE = 0,\n 218 +     MOTOR_STATE_INITIALIZING,\n 219 +     MOTOR_STATE_READY,\n 220 +     MOTOR_STATE_RUNNING,\n 221 +     MOTOR_STATE_FAULT,\n 222 +     MOTOR_STATE_DISABLED,\n 223 +     MOTOR_STATE_POSITION_CONTROL,\n 224 +     MOTOR_STATE_VELOCITY_CONTROL,\n 225 +     MOTOR_STATE_TORQUE_CONTROL",
+  "mutation": {
+    "realFileMutation": true,
+    "shellFilesystemMutation": false,
+    "paths": [
+      "/home/roko/Documents/Projects/myactuator/firmware/esp32/include/types.h"
+    ]
+  },
+  "focusSupervisor": {
+    "mode": "auto",
+    "enabled": true,
+    "state": "observe",
+    "directive": null,
+    "lastDecision": "pass",
+    "lastReason": "",
+    "context": {
+      "pressureRatio": 1,
+      "estimatedTokens": 1583,
+      "rawDiscoveryChars": 0,
+      "activeEvidenceChars": 21722,
+      "activeFrameChars": 12095,
+      "signalToNoiseRatio": null,
+      "droppedSignals": 0,
+      "truncatedSignals": 2
+    }
+  },
+  "repeatShortCircuit": false,
+  "runtimeAuthored": false,
+  "diagnoses": [
+    "project-file-mutation"
+  ],
+  "summary": "file_edit success | diagnoses=project-file-mutation",
+  "anchors": [
+    {
+      "label": "debug_contract",
+      "kind": "contract",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/CONTRACT.md",
+      "note": "Schema and semantics for this debug library.",
+      "relativePath": ".omnius/debug-library/CONTRACT.md",
+      "exists": true
+    },
+    {
+      "label": "run_readme",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783100539534-ttnzaw/README.md",
+      "note": "Human summary for this run.",
+      "relativePath": ".omnius/debug-library/runs/1783100539534-ttnzaw/README.md",
+      "exists": true
+    },
+    {
+      "label": "run_index",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783100539534-ttnzaw/index.json",
+      "note": "Machine-readable run summary.",
+      "relativePath": ".omnius/debug-library/runs/1783100539534-ttnzaw/index.json",
+      "exists": true
+    },
+    {
+      "label": "run_events_jsonl",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783100539534-ttnzaw/events.jsonl",
+      "note": "Append-only normalized event stream.",
+      "relativePath": ".omnius/debug-library/runs/1783100539534-ttnzaw/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "workboard_active",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783100539534-ttnzaw/active.json",
+      "note": "Durable workboard snapshot, when present.",
+      "relativePath": ".omnius/workboards/1783100539534-ttnzaw/active.json",
+      "exists": true
+    },
+    {
+      "label": "workboard_events",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783100539534-ttnzaw/events.jsonl",
+      "note": "Durable workboard event log, when present.",
+      "relativePath": ".omnius/workboards/1783100539534-ttnzaw/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "context_dump_latest",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/latest.json",
+      "note": "Latest outbound model request dump.",
+      "relativePath": ".omnius/context-window-dumps/latest.json",
+      "exists": true
+    },
+    {
+      "label": "context_dump_index",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/index.jsonl",
+      "note": "Append-only context-window dump summaries.",
+      "relativePath": ".omnius/context-window-dumps/index.jsonl",
+      "exists": true
+    },
+    {
+      "label": "trajectory_log",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/trajectories/trajectories.jsonl",
+      "note": "Completed run trajectory records.",
+      "relativePath": ".omnius/trajectories/trajectories.jsonl",
+      "exists": true
+    },
+    {
+      "label": "checkpoints_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/checkpoints",
+      "note": "Turn-boundary checkpoints.",
+      "relativePath": ".omnius/checkpoints",
+      "exists": true
+    },
+    {
+      "label": "phases_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/phases",
+      "note": "Phase transcript summaries.",
+      "relativePath": ".omnius/phases",
+      "exists": true
+    },
+    {
+      "label": "completion_ledgers_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/completion-ledgers",
+      "note": "Completion evidence ledgers.",
+      "relativePath": ".omnius/completion-ledgers",
+      "exists": true
+    },
+    {
+      "label": "event_json",
+      "kind": "event",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783100539534-ttnzaw/events/turn-0029/2026-07-03T18-06-02-813Z-file_edit-5855a38506.json",
+      "note": "This normalized debug event.",
+      "relativePath": ".omnius/debug-library/runs/1783100539534-ttnzaw/events/turn-0029/2026-07-03T18-06-02-813Z-file_edit-5855a38506.json",
+      "exists": true
+    }
+  ]
+}

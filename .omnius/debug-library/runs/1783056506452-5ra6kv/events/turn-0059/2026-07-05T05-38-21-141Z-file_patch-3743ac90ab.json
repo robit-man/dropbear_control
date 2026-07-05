@@ -1,0 +1,164 @@
+{
+  "schemaVersion": 1,
+  "id": "2026-07-05T05-38-21-141Z-file_patch-3743ac90ab",
+  "kind": "tool_result",
+  "timestamp": "2026-07-05T05:38:21.141Z",
+  "runId": "1783056506452-5ra6kv",
+  "sessionId": "1783056506452-5ra6kv",
+  "cwd": "/home/roko/Documents/Projects/myactuator",
+  "turn": 59,
+  "toolCallId": "call_anu3rtgp",
+  "toolName": "file_patch",
+  "toolFingerprint": "file_patch:end_line=95,expected_hash=70919b071bf97863e732b34dcc91014bd353d07068f0437200da2003d4e81395,mode=delete,path=firmware/esp32/include/types.h,start_line=81",
+  "argsHash": "3743ac90ab",
+  "argsPreview": "{\"path\":\"firmware/esp32/include/types.h\",\"mode\":\"delete\",\"start_line\":81,\"end_line\":95,\"expected_hash\":\"70919b071bf97863e732b34dcc91014bd353d07068f0437200da2003d4e81395\"}",
+  "success": true,
+  "durationMs": 419,
+  "outputChars": 931,
+  "errorChars": 0,
+  "outputPreview": "firmware/esp32/include/types.h: Deleted lines 81-95 (15 lines removed) (172 → 157 total lines, sha256 70919b071bf97863e732b34dcc91014bd353d07068f0437200da2003d4e81395 → 7a4209138e7471ed6f3ab8b2116000846273797f23b311bb230f5f74f2c7e4d8)\n\nDeleted lines 81-95 (15 lines removed)\n\nBefore:\n  79 - // Motor configuration\n  80 - typedef struct {\n  81 -     uint8_t motor_id;\n  82 -     float rated_voltage;\n  83 -     float rated_current;\n  84 -     float rated_torque;\n  85 -     float max_velocity;\n  86 -     float max_torque;\n  87 -     float gearbox_ratio;\n  88 -     uint16_t encoder_resolution;\n  89 -     float kp, ki, kd;\n  90 -     uint8_t protocol;\n  91 -     uint32_t can_id;\n  92 -     uint32_t baudrate;\n  93 - } MotorConfig;\n  94 - \n  95 - // Status report\n  96 - typedef struct {\n  97 -     uint8_t motor_id;\n\nAfter:\n  79 + // Motor configuration\n  80 + typedef struct {\n  81 + typedef struct {\n  82 +     uint8_t motor_id;",
+  "mutation": {
+    "realFileMutation": true,
+    "shellFilesystemMutation": false,
+    "paths": [
+      "firmware/esp32/include/types.h"
+    ]
+  },
+  "focusSupervisor": {
+    "mode": "auto",
+    "enabled": true,
+    "state": "observe",
+    "directive": null,
+    "lastDecision": "directive_satisfied",
+    "lastReason": "mutation landed",
+    "context": {
+      "estimatedTokens": 79692,
+      "rawDiscoveryChars": 0,
+      "activeEvidenceChars": 13666,
+      "activeFrameChars": 13000,
+      "signalToNoiseRatio": null,
+      "pressureRatio": 1,
+      "droppedSignals": 2,
+      "truncatedSignals": 5
+    }
+  },
+  "actionReason": {
+    "task_anchor": "Fix MotorConfig conflicting declaration",
+    "intent": "Fix MotorConfig conflicting declaration by removing it from types.h",
+    "evidence": "Error cluster: 'conflicting declaration typedef struct MotorConfig MotorConfig' occurred 8 times. types.h defines MotorConfig (lines 81-95) but motor_driver.h likely also defines it, causing conflict.",
+    "expected_result": "Remove MotorConfig from types.h to fix conflicting declaration",
+    "scope": "targeted_patch"
+  },
+  "repeatShortCircuit": false,
+  "runtimeAuthored": false,
+  "diagnoses": [
+    "project-file-mutation"
+  ],
+  "summary": "file_patch success | diagnoses=project-file-mutation",
+  "anchors": [
+    {
+      "label": "debug_contract",
+      "kind": "contract",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/CONTRACT.md",
+      "note": "Schema and semantics for this debug library.",
+      "relativePath": ".omnius/debug-library/CONTRACT.md",
+      "exists": true
+    },
+    {
+      "label": "run_readme",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783056506452-5ra6kv/README.md",
+      "note": "Human summary for this run.",
+      "relativePath": ".omnius/debug-library/runs/1783056506452-5ra6kv/README.md",
+      "exists": true
+    },
+    {
+      "label": "run_index",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783056506452-5ra6kv/index.json",
+      "note": "Machine-readable run summary.",
+      "relativePath": ".omnius/debug-library/runs/1783056506452-5ra6kv/index.json",
+      "exists": true
+    },
+    {
+      "label": "run_events_jsonl",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783056506452-5ra6kv/events.jsonl",
+      "note": "Append-only normalized event stream.",
+      "relativePath": ".omnius/debug-library/runs/1783056506452-5ra6kv/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "workboard_active",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783056506452-5ra6kv/active.json",
+      "note": "Durable workboard snapshot, when present.",
+      "relativePath": ".omnius/workboards/1783056506452-5ra6kv/active.json",
+      "exists": true
+    },
+    {
+      "label": "workboard_events",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783056506452-5ra6kv/events.jsonl",
+      "note": "Durable workboard event log, when present.",
+      "relativePath": ".omnius/workboards/1783056506452-5ra6kv/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "context_dump_latest",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/latest.json",
+      "note": "Latest outbound model request dump.",
+      "relativePath": ".omnius/context-window-dumps/latest.json",
+      "exists": true
+    },
+    {
+      "label": "context_dump_index",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/index.jsonl",
+      "note": "Append-only context-window dump summaries.",
+      "relativePath": ".omnius/context-window-dumps/index.jsonl",
+      "exists": true
+    },
+    {
+      "label": "trajectory_log",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/trajectories/trajectories.jsonl",
+      "note": "Completed run trajectory records.",
+      "relativePath": ".omnius/trajectories/trajectories.jsonl",
+      "exists": true
+    },
+    {
+      "label": "checkpoints_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/checkpoints",
+      "note": "Turn-boundary checkpoints.",
+      "relativePath": ".omnius/checkpoints",
+      "exists": true
+    },
+    {
+      "label": "phases_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/phases",
+      "note": "Phase transcript summaries.",
+      "relativePath": ".omnius/phases",
+      "exists": true
+    },
+    {
+      "label": "completion_ledgers_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/completion-ledgers",
+      "note": "Completion evidence ledgers.",
+      "relativePath": ".omnius/completion-ledgers",
+      "exists": true
+    },
+    {
+      "label": "event_json",
+      "kind": "event",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783056506452-5ra6kv/events/turn-0059/2026-07-05T05-38-21-141Z-file_patch-3743ac90ab.json",
+      "note": "This normalized debug event.",
+      "relativePath": ".omnius/debug-library/runs/1783056506452-5ra6kv/events/turn-0059/2026-07-05T05-38-21-141Z-file_patch-3743ac90ab.json",
+      "exists": true
+    }
+  ]
+}

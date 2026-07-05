@@ -1,0 +1,34 @@
+{
+  "todoId": "2",
+  "todoContent": "Update motor_controller.h to remove ce_m_driver include",
+  "status": "partial",
+  "functionalSummary": "Updated motor_controller.h to replace the non-existent ce_m_driver.h include with the correct cem_driver.h include.",
+  "detailSummary": "The motor_controller.h file contained an include directive for 'drivers/ce_m_driver.h' which does not exist in the codebase. The file was edited to change this include to 'drivers/cem_driver.h', which is the correct driver header. This change was made to fix a broken include that would cause compilation failures. The MOTOR_CEM preprocessor define is used as a guard for this include. The ce_m_driver.h file was never created in the repository, suggesting it was a typo or naming error. The cem_driver.h file exists and is the intended driver for motor control functionality. This fix ensures the build system can locate the correct driver header file when MOTOR_CEM is defined.",
+  "keyFiles": [
+    "firmware/esp32/src/motor_controller.h"
+  ],
+  "criticalSymbols": {
+    "defined": [],
+    "modified": [
+      "MOTOR_CEM",
+      "drivers/ce_m_driver.h (removed)",
+      "drivers/cem_driver.h (added)"
+    ]
+  },
+  "keyPatterns": [
+    "Include guards use #if defined() pattern",
+    "Driver headers located in src/drivers/ directory",
+    "Use correct driver naming convention (cem_driver.h not ce_m_driver.h)"
+  ],
+  "verification": "Shell command 'ls src/drivers/ce_m_driver.*' returns exit code 2 (file does not exist), confirming ce_m_driver.h was never present",
+  "unresolved": [],
+  "turnRange": [
+    27,
+    30
+  ],
+  "messageCount": 9,
+  "estimatedTokens": 303,
+  "memexId": "todo-ctx-2",
+  "createdAt": "2026-07-03T08:51:35.981Z",
+  "chunkVersion": 1
+}

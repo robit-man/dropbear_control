@@ -1,0 +1,11 @@
+{
+  "totalCalls": 777,
+  "categories": {
+    "search": 79,
+    "shell": 112,
+    "file": 569,
+    "web": 2,
+    "default": 15
+  },
+  "updatedAt": "2026-07-05T07:05:20.683Z"
+}

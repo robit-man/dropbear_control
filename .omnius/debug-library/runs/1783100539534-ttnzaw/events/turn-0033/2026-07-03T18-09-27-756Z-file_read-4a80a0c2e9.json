@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "id": "2026-07-03T18-09-27-756Z-file_read-4a80a0c2e9",
+  "kind": "tool_result",
+  "timestamp": "2026-07-03T18:09:27.756Z",
+  "runId": "1783100539534-ttnzaw",
+  "sessionId": "1783100539534-ttnzaw",
+  "cwd": "/home/roko/Documents/Projects/myactuator",
+  "turn": 33,
+  "toolCallId": "00c4679c-30e8-4fc6-bbf2-220d1ce46710",
+  "toolName": "file_read",
+  "toolFingerprint": "file_read:limit=#number:200,offset=#number:1,path=/home/roko/Documents/Projects/myactuator/.omnius/tool-results/1783102125767-shell-573392-fc2f805d108a.txt",
+  "argsHash": "4a80a0c2e9",
+  "argsPreview": "{\"path\":\"/home/roko/Documents/Projects/myactuator/.omnius/tool-results/1783102125767-shell-573392-fc2f805d108a.txt\",\"offset\":1,\"limit\":200}",
+  "success": true,
+  "durationMs": 92,
+  "outputChars": 11813,
+  "errorChars": 0,
+  "outputPreview": "[FILE CONTEXT | /home/roko/Documents/Projects/myactuator/.omnius/tool-results/1783102125767-shell-573392-fc2f805d108a.txt | lines 1-200 of 2600 | sha256=ded28dfb7a4806b3f1d1ee4f8b789207c8488a75abafc6a44a13270de5664842]\n     1 | [SHELL TRANSCRIPT]\n     2 | command: cd firmware/esp32 && pio run 2>&1\n     3 | cwd_before: /home/roko/Documents/Projects/myactuator\n     4 | cwd_after: /home/roko/Documents/Projects/myactuator/firmware/esp32\n     5 | cwd_note: cd changes are command-local; next shell call starts at /home/roko/Documents/Projects/myactuator\n     6 | status: failure\n     7 | exit_code: 1\n     8 | error: Exit code 1\n     9 | stdout:\n    10 | Processing esp32 (platform: espressif32; board: esp32dev; framework: arduino)\n    11 | --------------------------------------------------------------------------------\n    12 | Verbose mode can be enabled via `-v, --verbose` option\n    13 | CONFIGURATION: https://docs.platformio.org/page/boards/espressif32/esp32dev.html\n    14 | PLATFORM: Espressif 32 (7.0.1) > Espressif ESP32 Dev Module\n    15 | HARDWARE: ESP32 240MHz, 320KB RAM, 4MB Flash\n    16 | DEBUG: Current (cmsis-dap) External (cmsis-dap, esp-bridge, esp-prog, iot-bus-jtag, jlink, minimodule, olimex-arm-usb-ocd, olimex-arm-usb-ocd-h, olimex-arm-usb-tiny-h, olimex-jtag-tiny, tumpa)\n    17 | PACKAGES: \n    18 |  - framework-arduinoespressif32 @ 3.20017.241212+sha.dcc1105b \n    19 |  - tool-esptoolpy @ 2.41100.0 (4.11.0) \n    20 |  - toolchain-xtensa-esp32 @ 8.4.0+2021r2-patch5\n    21 | LDF: Library Dependency Finder -> https://bit.ly/configure-pio-ldf\n    22 | LDF Modes: Finder ~ chain, Compatibility ~ soft\n    23 | Found 35 compatible libraries\n    24 | Scanning dependencies...\n    25 | Dependency Graph\n    26 | |-- ArduinoJson @ 6.21.6\n    27 | |-- CAN @ 0.3.1\n    28 | Building in release mode\n    29 | Compiling .pio/build/esp32/src/drivers/cem_driver.cpp.o\n    30 | Compiling .pio/build/esp32/src/drivers/rmd_l_driver.cpp.o\n    31 | Compiling .pio/build/esp32/src/drivers/rmd_x_driver.cpp.o\n    32 | Compiling .pio/build/esp32/src/main.cpp.o\n    33 | Compiling .pio/build/esp32/src/motor_controller.cpp.o\n    34 | Archiving .pio/build/esp32/lib0fe/libCAN.a\n    35 | Indexing .pio/build/esp32/lib0fe/libCAN.a\n    36 | Compiling .pio/build/esp32/FrameworkArduino/FirmwareMSC.cpp.o\n    37 | Compiling .pio/build/esp32/FrameworkArduino/FunctionalInterrupt.cpp.o\n    38 | Compiling .pio/build/esp32/FrameworkArduino/HWCDC.cpp.o\n    39 | Compiling .pio/build/esp32/FrameworkArduino/HardwareSerial.cpp.o\n    40 | Compiling .pio/build/esp32/FrameworkArduino/IPAddress.cpp.o\n    41 | Compiling .pio/build/esp32/FrameworkArduino/IPv6Address.cpp.o\n    42 | Compiling .pio/build/esp32/FrameworkArduino/MD5Builder.cpp.o\n    43 | Compiling .pio/build/esp32/FrameworkArduino/Print.cpp.o\n    44 | Compiling .pio/build/esp32/FrameworkArduino/Stream.cpp.o\n    45 | Compiling .pio/build/esp32/FrameworkArduino/StreamString.cpp.o\n    46 | Compiling .pio/build/esp32/FrameworkArduino/Tone.cpp.o\n    47 | Compiling .pio/build/esp32/FrameworkArduino/USB.cpp.o\n    48 | Compiling .pio/build/esp32/FrameworkArduino/USBCDC.cpp.o\n    49 | Compiling .pio/build/esp32/FrameworkArduino/USBMSC.cpp.o\n    50 | Compiling .pio/build/esp32/FrameworkArduino/WMath.cpp.o\n    51 | Compiling .pio/build/esp32/FrameworkArduino/WString.cpp.o\n    52 | Compiling .pio/build/esp32/FrameworkArduino/base64.cpp.o\n    53 | Compiling .pio/build/esp32/FrameworkArduino/cbuf.cpp.o\n    54 | Compiling .pio/build/esp32/FrameworkArduino/esp32-hal-adc.c.o\n    55 | Compiling .pio/build/esp32/FrameworkArduino/esp32-hal-bt.c.o\n    56 | Compiling .pio/build/esp32/FrameworkArduino/esp32-hal-cpu.c.o\n    57 | Compiling .pio/build/esp32/FrameworkArduino/esp32-hal-dac.c.o\n    58 | Compiling .pio/build/esp32/FrameworkArduino/esp32-hal-gpio.c.o\n    59 | In file included from src/drivers/cem_driver.cpp:128:\n    60 | include/../include/types.h:92:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'\n    6\n[truncated 7813 chars]",
+  "mutation": {
+    "realFileMutation": false,
+    "shellFilesystemMutation": false,
+    "paths": []
+  },
+  "focusSupervisor": {
+    "mode": "auto",
+    "enabled": true,
+    "state": "cached_evidence",
+    "directive": {
+      "id": "focus_15",
+      "state": "cached_evidence",
+      "reason": "first shell failure (tool_failed): Exit code 1",
+      "requiredNextAction": "use_cached_evidence",
+      "forbiddenActionFamilies": [
+        "shell:cd firmware/esp32 && pio run 2>&1"
+      ],
+      "createdTurn": 32,
+      "ignoredCount": 0
+    },
+    "lastDecision": "pass",
+    "lastReason": "",
+    "context": {
+      "pressureRatio": 1,
+      "estimatedTokens": 1720,
+      "rawDiscoveryChars": 271,
+      "activeEvidenceChars": 23953,
+      "activeFrameChars": 13000,
+      "signalToNoiseRatio": 342.133,
+      "droppedSignals": 1,
+      "truncatedSignals": 4
+    }
+  },
+  "repeatShortCircuit": false,
+  "runtimeAuthored": false,
+  "diagnoses": [
+    "focus-supervisor-active"
+  ],
+  "summary": "file_read success | diagnoses=focus-supervisor-active",
+  "anchors": [
+    {
+      "label": "debug_contract",
+      "kind": "contract",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/CONTRACT.md",
+      "note": "Schema and semantics for this debug library.",
+      "relativePath": ".omnius/debug-library/CONTRACT.md",
+      "exists": true
+    },
+    {
+      "label": "run_readme",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783100539534-ttnzaw/README.md",
+      "note": "Human summary for this run.",
+      "relativePath": ".omnius/debug-library/runs/1783100539534-ttnzaw/README.md",
+      "exists": true
+    },
+    {
+      "label": "run_index",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783100539534-ttnzaw/index.json",
+      "note": "Machine-readable run summary.",
+      "relativePath": ".omnius/debug-library/runs/1783100539534-ttnzaw/index.json",
+      "exists": true
+    },
+    {
+      "label": "run_events_jsonl",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783100539534-ttnzaw/events.jsonl",
+      "note": "Append-only normalized event stream.",
+      "relativePath": ".omnius/debug-library/runs/1783100539534-ttnzaw/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "workboard_active",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783100539534-ttnzaw/active.json",
+      "note": "Durable workboard snapshot, when present.",
+      "relativePath": ".omnius/workboards/1783100539534-ttnzaw/active.json",
+      "exists": true
+    },
+    {
+      "label": "workboard_events",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783100539534-ttnzaw/events.jsonl",
+      "note": "Durable workboard event log, when present.",
+      "relativePath": ".omnius/workboards/1783100539534-ttnzaw/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "context_dump_latest",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/latest.json",
+      "note": "Latest outbound model request dump.",
+      "relativePath": ".omnius/context-window-dumps/latest.json",
+      "exists": true
+    },
+    {
+      "label": "context_dump_index",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/index.jsonl",
+      "note": "Append-only context-window dump summaries.",
+      "relativePath": ".omnius/context-window-dumps/index.jsonl",
+      "exists": true
+    },
+    {
+      "label": "trajectory_log",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/trajectories/trajectories.jsonl",
+      "note": "Completed run trajectory records.",
+      "relativePath": ".omnius/trajectories/trajectories.jsonl",
+      "exists": true
+    },
+    {
+      "label": "checkpoints_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/checkpoints",
+      "note": "Turn-boundary checkpoints.",
+      "relativePath": ".omnius/checkpoints",
+      "exists": true
+    },
+    {
+      "label": "phases_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/phases",
+      "note": "Phase transcript summaries.",
+      "relativePath": ".omnius/phases",
+      "exists": true
+    },
+    {
+      "label": "completion_ledgers_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/completion-ledgers",
+      "note": "Completion evidence ledgers.",
+      "relativePath": ".omnius/completion-ledgers",
+      "exists": true
+    },
+    {
+      "label": "event_json",
+      "kind": "event",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783100539534-ttnzaw/events/turn-0033/2026-07-03T18-09-27-756Z-file_read-4a80a0c2e9.json",
+      "note": "This normalized debug event.",
+      "relativePath": ".omnius/debug-library/runs/1783100539534-ttnzaw/events/turn-0033/2026-07-03T18-09-27-756Z-file_read-4a80a0c2e9.json",
+      "exists": true
+    }
+  ]
+}

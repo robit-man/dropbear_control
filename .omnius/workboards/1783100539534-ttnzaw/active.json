@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "runId": "1783100539534-ttnzaw",
+  "owner": "agent",
+  "status": "active",
+  "goal": "lets continue",
+  "title": "lets continue",
+  "createdAt": "2026-07-03T17:42:36.248Z",
+  "updatedAt": "2026-07-03T17:42:36.248Z",
+  "eventCount": 1,
+  "cards": [],
+  "decisions": [],
+  "diagnostics": []
+}

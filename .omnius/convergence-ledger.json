@@ -1,0 +1,143 @@
+{
+  "shell:cd firmware/esp32 && pio run 2>&1 | tail -100:tool_failed": {
+    "family": "shell:cd firmware/esp32 && pio run 2>&1 | tail -100:tool_failed",
+    "rounds": 1,
+    "lastSample": "Exit code 1",
+    "updatedAtMs": 1783223260876
+  },
+  "shell:cd firmware/esp32 && pio run 2>&1:tool_failed": {
+    "family": "shell:cd firmware/esp32 && pio run 2>&1:tool_failed",
+    "rounds": 1,
+    "lastSample": "Exit code 1",
+    "updatedAtMs": 1783223394014
+  },
+  "shell:cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio run 2>&1 | tail -100:tool_failed": {
+    "family": "shell:cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio run 2>&1 | tail -100:tool_failed",
+    "rounds": 1,
+    "lastSample": "Exit code 1",
+    "updatedAtMs": 1783223625886
+  },
+  "shell:cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio run 2>&1 | grep -E \"error:|warning:\" | head -50:timeout": {
+    "family": "shell:cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio run 2>&1 | grep -E \"error:|warning:\" | head -50:timeout",
+    "rounds": 1,
+    "lastSample": "Command timed out after 120000ms. To run longer, retry with a higher timeout parameter (e.g. timeout: 600000 for 600s). Or use background_run to run in the background and check wit",
+    "updatedAtMs": 1783224113305
+  },
+  "shell:cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio run 2>&1:tool_failed": {
+    "family": "shell:cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio run 2>&1:tool_failed",
+    "rounds": 1,
+    "lastSample": "Exit code 1",
+    "updatedAtMs": 1783224211818
+  },
+  "shell:cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio run 2>&1 | grep -E \"error:\" | head -30:timeout": {
+    "family": "shell:cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && pio run 2>&1 | grep -E \"error:\" | head -30:timeout",
+    "rounds": 1,
+    "lastSample": "Command timed out after 600000ms. To run longer, retry with a higher timeout parameter (e.g. timeout: 600000 for 600s). Or use background_run to run in the background and check wit",
+    "updatedAtMs": 1783224958775
+  },
+  "shell:cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && timeout 30 pio run 2>&1 | head -50:tool_failed": {
+    "family": "shell:cd /home/roko/Documents/Projects/myactuator/firmware/esp32 && timeout 30 pio run 2>&1 | head -50:tool_failed",
+    "rounds": 1,
+    "lastSample": "Exit code 124",
+    "updatedAtMs": 1783225071762
+  },
+  "shell:cd firmware/esp32 && pio run": {
+    "family": "shell:cd firmware/esp32 && pio run",
+    "rounds": 3,
+    "lastSample": "Exit code 1",
+    "updatedAtMs": 1783233980875
+  },
+  "file_edit:firmware/esp32/src/protocols/pal.h:old_string= void initCAN(); void initRS485(); void processCommands(); expected_hash=cbb8db2e03e68e767a#a07cde4d": {
+    "family": "file_edit:firmware/esp32/src/protocols/pal.h:old_string= void initCAN(); void initRS485(); void processCommands(); expected_hash=cbb8db2e03e68e767a#a07cde4d",
+    "rounds": 1,
+    "lastSample": "old_string not found in firmware/esp32/src/protocols/pal.h. Attempted old_string spans 3 line(s), 69 chars. The diagnostic below is the closest anchor-line match, not proof that th",
+    "updatedAtMs": 1783226505922
+  },
+  "shell:cd firmware/esp32 && pio run | grep -E \"error:|warning:\"": {
+    "family": "shell:cd firmware/esp32 && pio run | grep -E \"error:|warning:\"",
+    "rounds": 2,
+    "lastSample": "Compile error: _driver.cpp:89:26: error: 'getInstance' is not a member of 'Encoder'",
+    "updatedAtMs": 1783229733537
+  },
+  "shell:cd firmware/esp32 && pio pkg install --library z212/MCP2515@^1.6.0": {
+    "family": "shell:cd firmware/esp32 && pio pkg install --library z212/MCP2515@^1.6.0",
+    "rounds": 1,
+    "lastSample": "Exit code 1",
+    "updatedAtMs": 1783227564652
+  },
+  "shell:cd firmware/esp32 && pio run | grep -E \"error:\"": {
+    "family": "shell:cd firmware/esp32 && pio run | grep -E \"error:\"",
+    "rounds": 1,
+    "lastSample": "Compile error: src/motor_controller.h:125:3: error: 'FaultCode' does not name a type",
+    "updatedAtMs": 1783229787666
+  },
+  "file_patch:firmware/esp32/include/types.h:expected_hash=59562c761ccd4855 mode=insert_after start_line=155": {
+    "family": "file_patch:firmware/esp32/include/types.h:expected_hash=59562c761ccd4855 mode=insert_after start_line=155",
+    "rounds": 1,
+    "lastSample": "file_patch insert_after requires expected_hash from the most recent file_read so line numbers are versioned.",
+    "updatedAtMs": 1783230184952
+  },
+  "shell:cat firmware/esp32/include/types.h": {
+    "family": "shell:cat firmware/esp32/include/types.h",
+    "rounds": 0,
+    "updatedAtMs": 1783232195249
+  },
+  "shell:cat firmware/esp32/src/protocols/pal.cpp": {
+    "family": "shell:cat firmware/esp32/src/protocols/pal.cpp",
+    "rounds": 0,
+    "updatedAtMs": 1783232196799
+  },
+  "shell:cat firmware/esp32/include/constants.h": {
+    "family": "shell:cat firmware/esp32/include/constants.h",
+    "rounds": 0,
+    "updatedAtMs": 1783232197033
+  },
+  "shell:tail -30 firmware/esp32/include/types.h": {
+    "family": "shell:tail -30 firmware/esp32/include/types.h",
+    "rounds": 0,
+    "updatedAtMs": 1783232259305
+  },
+  "shell:tail -5 firmware/esp32/include/types.h": {
+    "family": "shell:tail -5 firmware/esp32/include/types.h",
+    "rounds": 0,
+    "updatedAtMs": 1783232290577
+  },
+  "file_patch:firmware/esp32/include/types.h:expected_hash=ab4d47 mode=insert_after start_line=119": {
+    "family": "file_patch:firmware/esp32/include/types.h:expected_hash=ab4d47 mode=insert_after start_line=119",
+    "rounds": 1,
+    "lastSample": "file_patch insert_after requires expected_hash from the most recent file_read so line numbers are versioned.",
+    "updatedAtMs": 1783232439857
+  },
+  "shell:ls -la firmware/esp32/.pio/build/esp32/": {
+    "family": "shell:ls -la firmware/esp32/.pio/build/esp32/",
+    "rounds": 0,
+    "updatedAtMs": 1783233014464
+  },
+  "shell:cd firmware/esp32 && pio run | grep -E \"error:|warning:|Error|FAILED\"": {
+    "family": "shell:cd firmware/esp32 && pio run | grep -E \"error:|warning:|Error|FAILED\"",
+    "rounds": 2,
+    "lastSample": "Compile error: src/drivers/cem_driver.cpp:176:24: error: cannot define member function 'CEMDriver::enable' within '<unnamed struct>'",
+    "updatedAtMs": 1783234575831
+  },
+  "shell:tail -50 /tmp/build.log": {
+    "family": "shell:tail -50 /tmp/build.log",
+    "rounds": 0,
+    "updatedAtMs": 1783233545306
+  },
+  "shell:tail -20 /tmp/build.log": {
+    "family": "shell:tail -20 /tmp/build.log",
+    "rounds": 0,
+    "updatedAtMs": 1783233657334
+  },
+  "shell:git status": {
+    "family": "shell:git status",
+    "rounds": 0,
+    "updatedAtMs": 1783236009689
+  },
+  "shell:git log --oneline -20": {
+    "family": "shell:git log --oneline -20",
+    "rounds": 1,
+    "lastSample": "fatal: your current branch 'master' does not have any commits yet",
+    "updatedAtMs": 1783236009874
+  }
+}

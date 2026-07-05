@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 1,
+  "id": "2026-07-03T17-01-43-310Z-context-69d842b043",
+  "kind": "context_window_dump",
+  "timestamp": "2026-07-03T17:01:43.310Z",
+  "runId": "1783097556372-khio3d",
+  "sessionId": "1783097556372-khio3d",
+  "cwd": "/home/roko/Documents/Projects/myactuator",
+  "turn": 15,
+  "contextDump": {
+    "id": "2026-07-03T17-01-43-306Z-main-24f34e20dc",
+    "stage": "agent_turn",
+    "agentType": "main",
+    "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/2026-07-03T17-01-43-306Z-main-24f34e20dc.json",
+    "metrics": {
+      "messageCount": 119,
+      "estimatedTokens": 55628,
+      "totalChars": 197045,
+      "imageCount": 0,
+      "toolSchemaCount": 23,
+      "toolSchemaChars": 25464,
+      "roleCounts": {
+        "system": 60,
+        "user": 1,
+        "assistant": 30,
+        "tool": 28
+      },
+      "roleChars": {
+        "system": 131440,
+        "user": 4885,
+        "assistant": 9549,
+        "tool": 51171
+      },
+      "activeEvidenceChars": 15412,
+      "activeContextFrameChars": 13000,
+      "compactedDiscoveryChars": 10104,
+      "rawDiscoveryToolChars": 0,
+      "toolResultChars": 51171,
+      "systemChars": 131440,
+      "userChars": 4885,
+      "assistantChars": 9549,
+      "signalToNoise": {
+        "structuralSignalChars": 52950,
+        "structuralNoiseCandidateChars": 0,
+        "ratio": null
+      }
+    }
+  },
+  "focusSupervisor": {
+    "mode": "auto",
+    "enabled": true,
+    "state": "single_next_action",
+    "lastDecision": "runtime_authored_not_satisfied",
+    "lastReason": "runtime-authored control result did not execute the requested tool",
+    "directive": {
+      "id": "focus_6",
+      "state": "single_next_action",
+      "reason": "model ignored prior directive focus_5; model ignored prior directive focus_4; same file_edit failure family repeated 2 times: old_string not found in /home/roko/Documents/Projects/myactuator/firmware/esp32/platformio.ini. Current file content (closest match, 93% similarity, lines 9–19 of 126): 9 | upload_",
+      "requiredNextAction": "read_authoritative_target",
+      "forbiddenActionFamilies": [
+        "file_edit:/home/roko/Documents/Projects/myactuator/firmware/esp32/platformio.ini:old_string= | -DPROTOCOL_CAN",
+        "file_edit",
+        "file_edit:/home/roko/Documents/Projects/myactuator/firmware/esp32/platformio.ini:old_string= -DPROTOCOL_CAN"
+      ],
+      "createdTurn": 13,
+      "ignoredCount": 0
+    },
+    "context": {
+      "pressureRatio": 1,
+      "estimatedTokens": 2069,
+      "rawDiscoveryChars": 0,
+      "activeEvidenceChars": 15411,
+      "activeFrameChars": 12999,
+      "signalToNoiseRatio": null,
+      "droppedSignals": 1,
+      "truncatedSignals": 3
+    }
+  },
+  "diagnoses": [
+    "focus-supervisor-active"
+  ],
+  "summary": "context dump agent_turn | tokens~55628 | required=read_authoritative_target | diagnoses=focus-supervisor-active",
+  "anchors": [
+    {
+      "label": "debug_contract",
+      "kind": "contract",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/CONTRACT.md",
+      "note": "Schema and semantics for this debug library.",
+      "relativePath": ".omnius/debug-library/CONTRACT.md",
+      "exists": true
+    },
+    {
+      "label": "run_readme",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783097556372-khio3d/README.md",
+      "note": "Human summary for this run.",
+      "relativePath": ".omnius/debug-library/runs/1783097556372-khio3d/README.md",
+      "exists": true
+    },
+    {
+      "label": "run_index",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783097556372-khio3d/index.json",
+      "note": "Machine-readable run summary.",
+      "relativePath": ".omnius/debug-library/runs/1783097556372-khio3d/index.json",
+      "exists": true
+    },
+    {
+      "label": "run_events_jsonl",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783097556372-khio3d/events.jsonl",
+      "note": "Append-only normalized event stream.",
+      "relativePath": ".omnius/debug-library/runs/1783097556372-khio3d/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "workboard_active",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783097556372-khio3d/active.json",
+      "note": "Durable workboard snapshot, when present.",
+      "relativePath": ".omnius/workboards/1783097556372-khio3d/active.json",
+      "exists": true
+    },
+    {
+      "label": "workboard_events",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783097556372-khio3d/events.jsonl",
+      "note": "Durable workboard event log, when present.",
+      "relativePath": ".omnius/workboards/1783097556372-khio3d/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "context_dump_latest",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/latest.json",
+      "note": "Latest outbound model request dump.",
+      "relativePath": ".omnius/context-window-dumps/latest.json",
+      "exists": true
+    },
+    {
+      "label": "context_dump_index",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/index.jsonl",
+      "note": "Append-only context-window dump summaries.",
+      "relativePath": ".omnius/context-window-dumps/index.jsonl",
+      "exists": true
+    },
+    {
+      "label": "trajectory_log",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/trajectories/trajectories.jsonl",
+      "note": "Completed run trajectory records.",
+      "relativePath": ".omnius/trajectories/trajectories.jsonl",
+      "exists": true
+    },
+    {
+      "label": "checkpoints_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/checkpoints",
+      "note": "Turn-boundary checkpoints.",
+      "relativePath": ".omnius/checkpoints",
+      "exists": true
+    },
+    {
+      "label": "phases_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/phases",
+      "note": "Phase transcript summaries.",
+      "relativePath": ".omnius/phases",
+      "exists": true
+    },
+    {
+      "label": "completion_ledgers_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/completion-ledgers",
+      "note": "Completion evidence ledgers.",
+      "relativePath": ".omnius/completion-ledgers",
+      "exists": true
+    },
+    {
+      "label": "context_window_dump",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/2026-07-03T17-01-43-306Z-main-24f34e20dc.json",
+      "note": "Full outbound model request for this turn.",
+      "relativePath": ".omnius/context-window-dumps/2026-07-03T17-01-43-306Z-main-24f34e20dc.json",
+      "exists": true
+    },
+    {
+      "label": "event_json",
+      "kind": "event",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783097556372-khio3d/events/turn-0015/2026-07-03T17-01-43-310Z-context-69d842b043.json",
+      "note": "This normalized debug event.",
+      "relativePath": ".omnius/debug-library/runs/1783097556372-khio3d/events/turn-0015/2026-07-03T17-01-43-310Z-context-69d842b043.json",
+      "exists": true
+    }
+  ]
+}

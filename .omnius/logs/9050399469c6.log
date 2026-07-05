@@ -1,0 +1,2589 @@
+Processing esp32 (platform: espressif32; board: esp32dev; framework: arduino)
+--------------------------------------------------------------------------------
+Verbose mode can be enabled via `-v, --verbose` option
+CONFIGURATION: https://docs.platformio.org/page/boards/espressif32/esp32dev.html
+PLATFORM: Espressif 32 (7.0.1) > Espressif ESP32 Dev Module
+HARDWARE: ESP32 240MHz, 320KB RAM, 4MB Flash
+DEBUG: Current (cmsis-dap) External (cmsis-dap, esp-bridge, esp-prog, iot-bus-jtag, jlink, minimodule, olimex-arm-usb-ocd, olimex-arm-usb-ocd-h, olimex-arm-usb-tiny-h, olimex-jtag-tiny, tumpa)
+PACKAGES: 
+ - framework-arduinoespressif32 @ 3.20017.241212+sha.dcc1105b 
+ - tool-esptoolpy @ 2.41100.0 (4.11.0) 
+ - toolchain-xtensa-esp32 @ 8.4.0+2021r2-patch5
+LDF: Library Dependency Finder -> https://bit.ly/configure-pio-ldf
+LDF Modes: Finder ~ chain, Compatibility ~ soft
+Found 35 compatible libraries
+Scanning dependencies...
+Dependency Graph
+|-- ArduinoJson @ 6.21.6
+|-- CAN @ 0.3.1
+Building in release mode
+Compiling .pio/build/esp32/src/drivers/cem_driver.cpp.o
+Compiling .pio/build/esp32/src/drivers/rmd_l_driver.cpp.o
+Compiling .pio/build/esp32/src/drivers/rmd_x_driver.cpp.o
+Compiling .pio/build/esp32/src/main.cpp.o
+Compiling .pio/build/esp32/src/motor_controller.cpp.o
+Archiving .pio/build/esp32/lib0fe/libCAN.a
+Indexing .pio/build/esp32/lib0fe/libCAN.a
+Compiling .pio/build/esp32/FrameworkArduino/FirmwareMSC.cpp.o
+Compiling .pio/build/esp32/FrameworkArduino/FunctionalInterrupt.cpp.o
+Compiling .pio/build/esp32/FrameworkArduino/HWCDC.cpp.o
+Compiling .pio/build/esp32/FrameworkArduino/HardwareSerial.cpp.o
+Compiling .pio/build/esp32/FrameworkArduino/IPAddress.cpp.o
+Compiling .pio/build/esp32/FrameworkArduino/IPv6Address.cpp.o
+Compiling .pio/build/esp32/FrameworkArduino/MD5Builder.cpp.o
+Compiling .pio/build/esp32/FrameworkArduino/Print.cpp.o
+Compiling .pio/build/esp32/FrameworkArduino/Stream.cpp.o
+Compiling .pio/build/esp32/FrameworkArduino/StreamString.cpp.o
+Compiling .pio/build/esp32/FrameworkArduino/Tone.cpp.o
+Compiling .pio/build/esp32/FrameworkArduino/USB.cpp.o
+Compiling .pio/build/esp32/FrameworkArduino/USBCDC.cpp.o
+Compiling .pio/build/esp32/FrameworkArduino/USBMSC.cpp.o
+Compiling .pio/build/esp32/FrameworkArduino/WMath.cpp.o
+Compiling .pio/build/esp32/FrameworkArduino/WString.cpp.o
+Compiling .pio/build/esp32/FrameworkArduino/base64.cpp.o
+Compiling .pio/build/esp32/FrameworkArduino/cbuf.cpp.o
+Compiling .pio/build/esp32/FrameworkArduino/esp32-hal-adc.c.o
+Compiling .pio/build/esp32/FrameworkArduino/esp32-hal-bt.c.o
+Compiling .pio/build/esp32/FrameworkArduino/esp32-hal-cpu.c.o
+Compiling .pio/build/esp32/FrameworkArduino/esp32-hal-dac.c.o
+Compiling .pio/build/esp32/FrameworkArduino/esp32-hal-gpio.c.o
+In file included from src/drivers/cem_driver.cpp:128:
+include/../include/types.h:92:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/cem_driver.h:3,
+                 from src/drivers/cem_driver.cpp:127:
+src/drivers/motor_driver.h:14:8: note: previous declaration as 'struct MotorConfig'
+ struct MotorConfig {
+        ^~~~~~~~~~~
+In file included from src/drivers/cem_driver.cpp:128:
+include/../include/types.h:112:25: error: 'GEARBOX_PLANETARY' conflicts with a previous declaration
+     GEARBOX_PLANETARY = 0,
+                         ^
+include/../include/types.h:34:5: note: previous declaration 'GearboxType GEARBOX_PLANETARY'
+     GEARBOX_PLANETARY = 0,
+     ^~~~~~~~~~~~~~~~~
+include/../include/types.h:113:5: error: 'GEARBOX_HARMONIC' conflicts with a previous declaration
+     GEARBOX_HARMONIC,
+     ^~~~~~~~~~~~~~~~
+include/../include/types.h:35:5: note: previous declaration 'GearboxType GEARBOX_HARMONIC'
+     GEARBOX_HARMONIC,
+     ^~~~~~~~~~~~~~~~
+include/../include/types.h:114:5: error: 'GEARBOX_DIRECT' conflicts with a previous declaration
+     GEARBOX_DIRECT,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:36:5: note: previous declaration 'GearboxType GEARBOX_DIRECT'
+     GEARBOX_DIRECT,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:115:5: error: 'GEARBOX_CYCLOID' conflicts with a previous declaration
+     GEARBOX_CYCLOID,
+     ^~~~~~~~~~~~~~~
+include/../include/types.h:37:5: note: previous declaration 'GearboxType GEARBOX_CYCLOID'
+     GEARBOX_CYCLOID,
+     ^~~~~~~~~~~~~~~
+include/../include/types.h:116:5: error: 'GEARBOX_LINEAR' conflicts with a previous declaration
+     GEARBOX_LINEAR,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:38:5: note: previous declaration 'GearboxType GEARBOX_LINEAR'
+     GEARBOX_LINEAR,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:118:3: error: conflicting declaration 'typedef enum GearboxType GearboxType'
+ } GearboxType;
+   ^~~~~~~~~~~
+include/../include/types.h:40:3: note: previous declaration as 'typedef enum GearboxType GearboxType'
+ } GearboxType;
+   ^~~~~~~~~~~
+include/../include/types.h:122:22: error: 'DRIVE_STANDARD' conflicts with a previous declaration
+     DRIVE_STANDARD = 0,
+                      ^
+include/../include/types.h:44:5: note: previous declaration 'DriveType DRIVE_STANDARD'
+     DRIVE_STANDARD = 0,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:125:3: error: conflicting declaration 'typedef enum DriveType DriveType'
+ } DriveType;
+   ^~~~~~~~~
+include/../include/types.h:47:3: note: previous declaration as 'typedef enum DriveType DriveType'
+ } DriveType;
+   ^~~~~~~~~
+include/../include/types.h:129:25: error: 'COMMUNICATION_CAN' conflicts with a previous declaration
+     COMMUNICATION_CAN = 0,
+                         ^
+include/../include/types.h:51:5: note: previous declaration 'Communication COMMUNICATION_CAN'
+     COMMUNICATION_CAN = 0,
+     ^~~~~~~~~~~~~~~~~
+include/../include/types.h:130:5: error: 'COMMUNICATION_RS485' conflicts with a previous declaration
+     COMMUNICATION_RS485,
+     ^~~~~~~~~~~~~~~~~~~
+include/../include/types.h:52:5: note: previous declaration 'Communication COMMUNICATION_RS485'
+     COMMUNICATION_RS485,
+     ^~~~~~~~~~~~~~~~~~~
+include/../include/types.h:131:5: error: 'COMMUNICATION_ETHERCAT' conflicts with a previous declaration
+     COMMUNICATION_ETHERCAT,
+     ^~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:53:5: note: previous declaration 'Communication COMMUNICATION_ETHERCAT'
+     COMMUNICATION_ETHERCAT,
+     ^~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:155:3: error: conflicting declaration 'typedef enum FrameType FrameType'
+ } FrameType;
+   ^~~~~~~~~
+include/../include/types.h:66:3: note: previous declaration as 'typedef enum FrameType FrameType'
+ } FrameType;
+   ^~~~~~~~~
+include/../include/types.h:191:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/cem_driver.h:3,
+                 from src/drivers/cem_driver.cpp:127:
+src/drivers/motor_driver.h:14:8: note: previous declaration as 'struct MotorConfig'
+ struct MotorConfig {
+        ^~~~~~~~~~~
+In file included from src/drivers/cem_driver.cpp:128:
+include/../include/types.h:226:5: error: redefinition of 'MOTOR_STATE_POSITION_CONTROL'
+     MOTOR_STATE_POSITION_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:223:5: note: 'MOTOR_STATE_POSITION_CONTROL' previously defined here
+     MOTOR_STATE_POSITION_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:227:5: error: redefinition of 'MOTOR_STATE_VELOCITY_CONTROL'
+     MOTOR_STATE_VELOCITY_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:224:5: note: 'MOTOR_STATE_VELOCITY_CONTROL' previously defined here
+     MOTOR_STATE_VELOCITY_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:228:5: error: redefinition of 'MOTOR_STATE_TORQUE_CONTROL'
+     MOTOR_STATE_TORQUE_CONTROL
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:225:5: note: 'MOTOR_STATE_TORQUE_CONTROL' previously defined here
+     MOTOR_STATE_TORQUE_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:240:3: error: conflicting declaration 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+include/../include/types.h:100:3: note: previous declaration as 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+Compiling .pio/build/esp32/FrameworkArduino/esp32-hal-i2c-slave.c.o
+*** [.pio/build/esp32/src/drivers/cem_driver.cpp.o] Error 1
+In file included from src/motor_controller.h:5,
+                 from src/motor_controller.cpp:1:
+include/types.h:112:25: error: 'GEARBOX_PLANETARY' conflicts with a previous declaration
+     GEARBOX_PLANETARY = 0,
+                         ^
+include/types.h:34:5: note: previous declaration 'GearboxType GEARBOX_PLANETARY'
+     GEARBOX_PLANETARY = 0,
+     ^~~~~~~~~~~~~~~~~
+include/types.h:113:5: error: 'GEARBOX_HARMONIC' conflicts with a previous declaration
+     GEARBOX_HARMONIC,
+     ^~~~~~~~~~~~~~~~
+include/types.h:35:5: note: previous declaration 'GearboxType GEARBOX_HARMONIC'
+     GEARBOX_HARMONIC,
+     ^~~~~~~~~~~~~~~~
+include/types.h:114:5: error: 'GEARBOX_DIRECT' conflicts with a previous declaration
+     GEARBOX_DIRECT,
+     ^~~~~~~~~~~~~~
+include/types.h:36:5: note: previous declaration 'GearboxType GEARBOX_DIRECT'
+     GEARBOX_DIRECT,
+     ^~~~~~~~~~~~~~
+include/types.h:115:5: error: 'GEARBOX_CYCLOID' conflicts with a previous declaration
+     GEARBOX_CYCLOID,
+     ^~~~~~~~~~~~~~~
+include/types.h:37:5: note: previous declaration 'GearboxType GEARBOX_CYCLOID'
+     GEARBOX_CYCLOID,
+     ^~~~~~~~~~~~~~~
+include/types.h:116:5: error: 'GEARBOX_LINEAR' conflicts with a previous declaration
+     GEARBOX_LINEAR,
+     ^~~~~~~~~~~~~~
+include/types.h:38:5: note: previous declaration 'GearboxType GEARBOX_LINEAR'
+     GEARBOX_LINEAR,
+     ^~~~~~~~~~~~~~
+include/types.h:118:3: error: conflicting declaration 'typedef enum GearboxType GearboxType'
+ } GearboxType;
+   ^~~~~~~~~~~
+include/types.h:40:3: note: previous declaration as 'typedef enum GearboxType GearboxType'
+ } GearboxType;
+   ^~~~~~~~~~~
+include/types.h:122:22: error: 'DRIVE_STANDARD' conflicts with a previous declaration
+     DRIVE_STANDARD = 0,
+                      ^
+include/types.h:44:5: note: previous declaration 'DriveType DRIVE_STANDARD'
+     DRIVE_STANDARD = 0,
+     ^~~~~~~~~~~~~~
+include/types.h:125:3: error: conflicting declaration 'typedef enum DriveType DriveType'
+ } DriveType;
+   ^~~~~~~~~
+include/types.h:47:3: note: previous declaration as 'typedef enum DriveType DriveType'
+ } DriveType;
+   ^~~~~~~~~
+include/types.h:129:25: error: 'COMMUNICATION_CAN' conflicts with a previous declaration
+     COMMUNICATION_CAN = 0,
+                         ^
+include/types.h:51:5: note: previous declaration 'Communication COMMUNICATION_CAN'
+     COMMUNICATION_CAN = 0,
+     ^~~~~~~~~~~~~~~~~
+include/types.h:130:5: error: 'COMMUNICATION_RS485' conflicts with a previous declaration
+     COMMUNICATION_RS485,
+     ^~~~~~~~~~~~~~~~~~~
+include/types.h:52:5: note: previous declaration 'Communication COMMUNICATION_RS485'
+     COMMUNICATION_RS485,
+     ^~~~~~~~~~~~~~~~~~~
+include/types.h:131:5: error: 'COMMUNICATION_ETHERCAT' conflicts with a previous declaration
+     COMMUNICATION_ETHERCAT,
+     ^~~~~~~~~~~~~~~~~~~~~~
+include/types.h:53:5: note: previous declaration 'Communication COMMUNICATION_ETHERCAT'
+     COMMUNICATION_ETHERCAT,
+     ^~~~~~~~~~~~~~~~~~~~~~
+include/types.h:155:3: error: conflicting declaration 'typedef enum FrameType FrameType'
+ } FrameType;
+   ^~~~~~~~~
+include/types.h:66:3: note: previous declaration as 'typedef enum FrameType FrameType'
+ } FrameType;
+   ^~~~~~~~~
+include/types.h:191:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+include/types.h:92:3: note: previous declaration as 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+include/types.h:226:5: error: redefinition of 'MOTOR_STATE_POSITION_CONTROL'
+     MOTOR_STATE_POSITION_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/types.h:223:5: note: 'MOTOR_STATE_POSITION_CONTROL' previously defined here
+     MOTOR_STATE_POSITION_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/types.h:227:5: error: redefinition of 'MOTOR_STATE_VELOCITY_CONTROL'
+     MOTOR_STATE_VELOCITY_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/types.h:224:5: note: 'MOTOR_STATE_VELOCITY_CONTROL' previously defined here
+     MOTOR_STATE_VELOCITY_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/types.h:228:5: error: redefinition of 'MOTOR_STATE_TORQUE_CONTROL'
+     MOTOR_STATE_TORQUE_CONTROL
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/types.h:225:5: note: 'MOTOR_STATE_TORQUE_CONTROL' previously defined here
+     MOTOR_STATE_TORQUE_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/types.h:240:3: error: conflicting declaration 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+include/types.h:100:3: note: previous declaration as 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.h:3,
+                 from src/motor_controller.h:10,
+                 from src/motor_controller.cpp:1:
+src/drivers/motor_driver.h:14:8: error: using typedef-name 'MotorConfig' after 'struct'
+ struct MotorConfig {
+        ^~~~~~~~~~~
+In file included from src/motor_controller.h:5,
+                 from src/motor_controller.cpp:1:
+include/types.h:92:3: note: 'MotorConfig' has a previous declaration here
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:22:
+include/../include/types.h:92:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.h:3,
+                 from src/drivers/rmd_l_driver.cpp:21:
+src/drivers/motor_driver.h:14:8: note: previous declaration as 'struct MotorConfig'
+ struct MotorConfig {
+        ^~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:22:
+include/../include/types.h:112:25: error: 'GEARBOX_PLANETARY' conflicts with a previous declaration
+     GEARBOX_PLANETARY = 0,
+                         ^
+include/../include/types.h:34:5: note: previous declaration 'GearboxType GEARBOX_PLANETARY'
+     GEARBOX_PLANETARY = 0,
+     ^~~~~~~~~~~~~~~~~
+include/../include/types.h:113:5: error: 'GEARBOX_HARMONIC' conflicts with a previous declaration
+     GEARBOX_HARMONIC,
+     ^~~~~~~~~~~~~~~~
+include/../include/types.h:35:5: note: previous declaration 'GearboxType GEARBOX_HARMONIC'
+     GEARBOX_HARMONIC,
+     ^~~~~~~~~~~~~~~~
+include/../include/types.h:114:5: error: 'GEARBOX_DIRECT' conflicts with a previous declaration
+     GEARBOX_DIRECT,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:36:5: note: previous declaration 'GearboxType GEARBOX_DIRECT'
+     GEARBOX_DIRECT,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:115:5: error: 'GEARBOX_CYCLOID' conflicts with a previous declaration
+     GEARBOX_CYCLOID,
+     ^~~~~~~~~~~~~~~
+include/../include/types.h:37:5: note: previous declaration 'GearboxType GEARBOX_CYCLOID'
+     GEARBOX_CYCLOID,
+     ^~~~~~~~~~~~~~~
+include/../include/types.h:116:5: error: 'GEARBOX_LINEAR' conflicts with a previous declaration
+     GEARBOX_LINEAR,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:38:5: note: previous declaration 'GearboxType GEARBOX_LINEAR'
+     GEARBOX_LINEAR,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:118:3: error: conflicting declaration 'typedef enum GearboxType GearboxType'
+ } GearboxType;
+   ^~~~~~~~~~~
+include/../include/types.h:40:3: note: previous declaration as 'typedef enum GearboxType GearboxType'
+ } GearboxType;
+   ^~~~~~~~~~~
+include/../include/types.h:122:22: error: 'DRIVE_STANDARD' conflicts with a previous declaration
+     DRIVE_STANDARD = 0,
+                      ^
+include/../include/types.h:44:5: note: previous declaration 'DriveType DRIVE_STANDARD'
+     DRIVE_STANDARD = 0,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:125:3: error: conflicting declaration 'typedef enum DriveType DriveType'
+ } DriveType;
+   ^~~~~~~~~
+include/../include/types.h:47:3: note: previous declaration as 'typedef enum DriveType DriveType'
+ } DriveType;
+   ^~~~~~~~~
+include/../include/types.h:129:25: error: 'COMMUNICATION_CAN' conflicts with a previous declaration
+     COMMUNICATION_CAN = 0,
+                         ^
+include/../include/types.h:51:5: note: previous declaration 'Communication COMMUNICATION_CAN'
+     COMMUNICATION_CAN = 0,
+     ^~~~~~~~~~~~~~~~~
+include/../include/types.h:130:5: error: 'COMMUNICATION_RS485' conflicts with a previous declaration
+     COMMUNICATION_RS485,
+     ^~~~~~~~~~~~~~~~~~~
+include/../include/types.h:52:5: note: previous declaration 'Communication COMMUNICATION_RS485'
+     COMMUNICATION_RS485,
+     ^~~~~~~~~~~~~~~~~~~
+include/../include/types.h:131:5: error: 'COMMUNICATION_ETHERCAT' conflicts with a previous declaration
+     COMMUNICATION_ETHERCAT,
+     ^~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:53:5: note: previous declaration 'Communication COMMUNICATION_ETHERCAT'
+     COMMUNICATION_ETHERCAT,
+     ^~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:155:3: error: conflicting declaration 'typedef enum FrameType FrameType'
+ } FrameType;
+   ^~~~~~~~~
+include/../include/types.h:66:3: note: previous declaration as 'typedef enum FrameType FrameType'
+ } FrameType;
+   ^~~~~~~~~
+include/../include/types.h:191:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.h:3,
+                 from src/drivers/rmd_l_driver.cpp:21:
+src/drivers/motor_driver.h:14:8: note: previous declaration as 'struct MotorConfig'
+ struct MotorConfig {
+        ^~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:22:
+include/../include/types.h:226:5: error: redefinition of 'MOTOR_STATE_POSITION_CONTROL'
+     MOTOR_STATE_POSITION_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:223:5: note: 'MOTOR_STATE_POSITION_CONTROL' previously defined here
+     MOTOR_STATE_POSITION_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:227:5: error: redefinition of 'MOTOR_STATE_VELOCITY_CONTROL'
+     MOTOR_STATE_VELOCITY_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:224:5: note: 'MOTOR_STATE_VELOCITY_CONTROL' previously defined here
+     MOTOR_STATE_VELOCITY_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:228:5: error: redefinition of 'MOTOR_STATE_TORQUE_CONTROL'
+     MOTOR_STATE_TORQUE_CONTROL
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:225:5: note: 'MOTOR_STATE_TORQUE_CONTROL' previously defined here
+     MOTOR_STATE_TORQUE_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:240:3: error: conflicting declaration 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+include/../include/types.h:100:3: note: previous declaration as 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:2:
+include/../include/types.h:92:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.h:3,
+                 from src/drivers/rmd_x_driver.cpp:1:
+src/drivers/motor_driver.h:14:8: note: previous declaration as 'struct MotorConfig'
+ struct MotorConfig {
+        ^~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:2:
+include/../include/types.h:112:25: error: 'GEARBOX_PLANETARY' conflicts with a previous declaration
+     GEARBOX_PLANETARY = 0,
+                         ^
+include/../include/types.h:34:5: note: previous declaration 'GearboxType GEARBOX_PLANETARY'
+     GEARBOX_PLANETARY = 0,
+     ^~~~~~~~~~~~~~~~~
+include/../include/types.h:113:5: error: 'GEARBOX_HARMONIC' conflicts with a previous declaration
+     GEARBOX_HARMONIC,
+     ^~~~~~~~~~~~~~~~
+include/../include/types.h:35:5: note: previous declaration 'GearboxType GEARBOX_HARMONIC'
+     GEARBOX_HARMONIC,
+     ^~~~~~~~~~~~~~~~
+include/../include/types.h:114:5: error: 'GEARBOX_DIRECT' conflicts with a previous declaration
+     GEARBOX_DIRECT,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:36:5: note: previous declaration 'GearboxType GEARBOX_DIRECT'
+     GEARBOX_DIRECT,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:115:5: error: 'GEARBOX_CYCLOID' conflicts with a previous declaration
+     GEARBOX_CYCLOID,
+     ^~~~~~~~~~~~~~~
+include/../include/types.h:37:5: note: previous declaration 'GearboxType GEARBOX_CYCLOID'
+     GEARBOX_CYCLOID,
+     ^~~~~~~~~~~~~~~
+include/../include/types.h:116:5: error: 'GEARBOX_LINEAR' conflicts with a previous declaration
+     GEARBOX_LINEAR,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:38:5: note: previous declaration 'GearboxType GEARBOX_LINEAR'
+     GEARBOX_LINEAR,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:118:3: error: conflicting declaration 'typedef enum GearboxType GearboxType'
+ } GearboxType;
+   ^~~~~~~~~~~
+include/../include/types.h:40:3: note: previous declaration as 'typedef enum GearboxType GearboxType'
+ } GearboxType;
+   ^~~~~~~~~~~
+include/../include/types.h:122:22: error: 'DRIVE_STANDARD' conflicts with a previous declaration
+     DRIVE_STANDARD = 0,
+                      ^
+include/../include/types.h:44:5: note: previous declaration 'DriveType DRIVE_STANDARD'
+     DRIVE_STANDARD = 0,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:125:3: error: conflicting declaration 'typedef enum DriveType DriveType'
+ } DriveType;
+   ^~~~~~~~~
+include/../include/types.h:47:3: note: previous declaration as 'typedef enum DriveType DriveType'
+ } DriveType;
+   ^~~~~~~~~
+include/../include/types.h:129:25: error: 'COMMUNICATION_CAN' conflicts with a previous declaration
+     COMMUNICATION_CAN = 0,
+                         ^
+include/../include/types.h:51:5: note: previous declaration 'Communication COMMUNICATION_CAN'
+     COMMUNICATION_CAN = 0,
+     ^~~~~~~~~~~~~~~~~
+include/../include/types.h:130:5: error: 'COMMUNICATION_RS485' conflicts with a previous declaration
+     COMMUNICATION_RS485,
+     ^~~~~~~~~~~~~~~~~~~
+include/../include/types.h:52:5: note: previous declaration 'Communication COMMUNICATION_RS485'
+     COMMUNICATION_RS485,
+     ^~~~~~~~~~~~~~~~~~~
+include/../include/types.h:131:5: error: 'COMMUNICATION_ETHERCAT' conflicts with a previous declaration
+     COMMUNICATION_ETHERCAT,
+     ^~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:53:5: note: previous declaration 'Communication COMMUNICATION_ETHERCAT'
+     COMMUNICATION_ETHERCAT,
+     ^~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:155:3: error: conflicting declaration 'typedef enum FrameType FrameType'
+ } FrameType;
+   ^~~~~~~~~
+include/../include/types.h:66:3: note: previous declaration as 'typedef enum FrameType FrameType'
+ } FrameType;
+   ^~~~~~~~~
+include/../include/types.h:191:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.h:3,
+                 from src/drivers/rmd_x_driver.cpp:1:
+src/drivers/motor_driver.h:14:8: note: previous declaration as 'struct MotorConfig'
+ struct MotorConfig {
+        ^~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:2:
+include/../include/types.h:226:5: error: redefinition of 'MOTOR_STATE_POSITION_CONTROL'
+     MOTOR_STATE_POSITION_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:223:5: note: 'MOTOR_STATE_POSITION_CONTROL' previously defined here
+     MOTOR_STATE_POSITION_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:227:5: error: redefinition of 'MOTOR_STATE_VELOCITY_CONTROL'
+     MOTOR_STATE_VELOCITY_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:224:5: note: 'MOTOR_STATE_VELOCITY_CONTROL' previously defined here
+     MOTOR_STATE_VELOCITY_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:228:5: error: redefinition of 'MOTOR_STATE_TORQUE_CONTROL'
+     MOTOR_STATE_TORQUE_CONTROL
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:225:5: note: 'MOTOR_STATE_TORQUE_CONTROL' previously defined here
+     MOTOR_STATE_TORQUE_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:240:3: error: conflicting declaration 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+include/../include/types.h:100:3: note: previous declaration as 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:31:
+src/protocols/pal.h:15:24: error: using typedef-name 'FrameType' after 'enum'
+ enum class FrameType : uint8_t {
+                        ^~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:22:
+include/../include/types.h:66:3: note: 'FrameType' has a previous declaration here
+ } FrameType;
+   ^~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:31:
+src/protocols/pal.h:29:26: error: using typedef-name 'MotorSeries' after 'enum'
+ enum class MotorSeries : uint8_t {
+                          ^~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:22:
+include/../include/types.h:30:3: note: 'MotorSeries' has a previous declaration here
+ } MotorSeries;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:31:
+src/protocols/pal.h:46:24: error: using typedef-name 'DriveType' after 'enum'
+ enum class DriveType : uint8_t {
+                        ^~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:22:
+include/../include/types.h:47:3: note: 'DriveType' has a previous declaration here
+ } DriveType;
+   ^~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:31:
+src/protocols/pal.h:52:26: error: using typedef-name 'GearboxType' after 'enum'
+ enum class GearboxType : uint8_t {
+                          ^~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:22:
+include/../include/types.h:40:3: note: 'GearboxType' has a previous declaration here
+ } GearboxType;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:31:
+src/protocols/pal.h:60:28: error: using typedef-name 'Communication' after 'enum'
+ enum class Communication : uint8_t {
+                            ^~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:22:
+include/../include/types.h:55:3: note: 'Communication' has a previous declaration here
+ } Communication;
+   ^~~~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:31:
+src/protocols/pal.h:67:8: error: redefinition of 'struct MotorConfig'
+ struct MotorConfig {
+        ^~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.h:3,
+                 from src/drivers/rmd_l_driver.cpp:21:
+src/drivers/motor_driver.h:14:8: note: previous definition of 'struct MotorConfig'
+ struct MotorConfig {
+        ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:46:1: error: definition of explicitly-defaulted 'RMDLDriver::~RMDLDriver()'
+ RMDLDriver::~RMDLDriver() = default;
+ ^~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:21:
+src/drivers/rmd_l_driver.h:8:5: note: 'virtual RMDLDriver::~RMDLDriver()' explicitly defaulted here
+     ~RMDLDriver() override = default;
+     ^
+src/drivers/rmd_l_driver.cpp: In member function 'virtual bool RMDLDriver::init()':
+src/drivers/rmd_l_driver.cpp:50:17: error: 'struct MotorConfig' has no member named 'communication'
+     if (_config.communication == COMMUNICATION_CAN) {
+                 ^~~~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:51:22: error: 'getInstance' is not a member of 'CANBus'
+         if (!CANBus::getInstance().begin(_config.canBusSpeed)) {
+                      ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:51:50: error: 'struct MotorConfig' has no member named 'canBusSpeed'
+         if (!CANBus::getInstance().begin(_config.canBusSpeed)) {
+                                                  ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:58:17: error: 'struct MotorConfig' has no member named 'communication'
+     if (_config.communication == COMMUNICATION_RS485) {
+                 ^~~~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:59:21: error: 'getInstance' is not a member of 'RS485'
+         if (!RS485::getInstance().begin(_config.rs485BaudRate)) {
+                     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:59:49: error: 'struct MotorConfig' has no member named 'rs485BaudRate'
+         if (!RS485::getInstance().begin(_config.rs485BaudRate)) {
+                                                 ^~~~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:66:19: error: 'getInstance' is not a member of 'Encoder'
+     if (!Encoder::getInstance().begin(_config.encoderPinA, _config.encoderPinB, _config.encoderPinZ)) {
+                   ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:66:47: error: 'struct MotorConfig' has no member named 'encoderPinA'; did you mean 'encoderBits'?
+     if (!Encoder::getInstance().begin(_config.encoderPinA, _config.encoderPinB, _config.encoderPinZ)) {
+                                               ^~~~~~~~~~~
+                                               encoderBits
+src/drivers/rmd_l_driver.cpp:66:68: error: 'struct MotorConfig' has no member named 'encoderPinB'; did you mean 'encoderBits'?
+     if (!Encoder::getInstance().begin(_config.encoderPinA, _config.encoderPinB, _config.encoderPinZ)) {
+                                                                    ^~~~~~~~~~~
+                                                                    encoderBits
+src/drivers/rmd_l_driver.cpp:66:89: error: 'struct MotorConfig' has no member named 'encoderPinZ'; did you mean 'encoderBits'?
+     if (!Encoder::getInstance().begin(_config.encoderPinA, _config.encoderPinB, _config.encoderPinZ)) {
+                                                                                         ^~~~~~~~~~~
+                                                                                         encoderBits
+src/drivers/rmd_l_driver.cpp:72:10: error: 'MotorDriver' has not been declared
+     if (!MotorDriver::getInstance().begin(_config.motorPinPWM, _config.motorPinDir)) {
+          ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:72:51: error: 'struct MotorConfig' has no member named 'motorPinPWM'
+     if (!MotorDriver::getInstance().begin(_config.motorPinPWM, _config.motorPinDir)) {
+                                                   ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:72:72: error: 'struct MotorConfig' has no member named 'motorPinDir'; did you mean 'MotorConfig'?
+     if (!MotorDriver::getInstance().begin(_config.motorPinPWM, _config.motorPinDir)) {
+                                                                        ^~~~~~~~~~~
+                                                                        MotorConfig
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::deinit()':
+src/drivers/rmd_l_driver.cpp:88:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().end();
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:89:14: error: 'getInstance' is not a member of 'Encoder'
+     Encoder::getInstance().end();
+              ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual MotorStatus RMDLDriver::getStatus()':
+src/drivers/rmd_l_driver.cpp:95:26: error: 'getInstance' is not a member of 'Encoder'
+     _position = Encoder::getInstance().getPosition();
+                          ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:96:26: error: 'getInstance' is not a member of 'Encoder'
+     _velocity = Encoder::getInstance().getVelocity();
+                          ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:99:16: error: 'MotorDriver' has not been declared
+     _current = MotorDriver::getInstance().getCurrent();
+                ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:102:20: error: 'MotorDriver' has not been declared
+     _temperature = MotorDriver::getInstance().getTemperature();
+                    ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:105:13: error: request for member 'position' in '((RMDLDriver*)this)->RMDLDriver::_status', which is of non-class type 'MotorStatus'
+     _status.position = _position;
+             ^~~~~~~~
+src/drivers/rmd_l_driver.cpp:106:13: error: request for member 'velocity' in '((RMDLDriver*)this)->RMDLDriver::_status', which is of non-class type 'MotorStatus'
+     _status.velocity = _velocity;
+             ^~~~~~~~
+src/drivers/rmd_l_driver.cpp:107:13: error: request for member 'current' in '((RMDLDriver*)this)->RMDLDriver::_status', which is of non-class type 'MotorStatus'
+     _status.current = _current;
+             ^~~~~~~
+src/drivers/rmd_l_driver.cpp:108:13: error: request for member 'temperature' in '((RMDLDriver*)this)->RMDLDriver::_status', which is of non-class type 'MotorStatus'
+     _status.temperature = _temperature;
+             ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:109:13: error: request for member 'enabled' in '((RMDLDriver*)this)->RMDLDriver::_status', which is of non-class type 'MotorStatus'
+     _status.enabled = MotorDriver::getInstance().isEnabled();
+             ^~~~~~~
+src/drivers/rmd_l_driver.cpp:109:23: error: 'MotorDriver' has not been declared
+     _status.enabled = MotorDriver::getInstance().isEnabled();
+                       ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::setPosition(float)':
+src/drivers/rmd_l_driver.cpp:135:26: error: 'struct MotorConfig' has no member named 'maxPosition'
+     if (target > _config.maxPosition) {
+                          ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:136:26: error: 'struct MotorConfig' has no member named 'maxPosition'
+         target = _config.maxPosition;
+                          ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:137:34: error: 'struct MotorConfig' has no member named 'maxPosition'
+     } else if (target < -_config.maxPosition) {
+                                  ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:138:27: error: 'struct MotorConfig' has no member named 'maxPosition'
+         target = -_config.maxPosition;
+                           ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:141:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().setPosition(target);
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::setVelocity(float)':
+src/drivers/rmd_l_driver.cpp:152:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().setVelocity(target);
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::setTorque(float)':
+src/drivers/rmd_l_driver.cpp:163:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().setTorque(target);
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::enable()':
+src/drivers/rmd_l_driver.cpp:167:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().enable();
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::disable()':
+src/drivers/rmd_l_driver.cpp:172:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().disable();
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::faultReset()':
+src/drivers/rmd_l_driver.cpp:177:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().faultReset();
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::setLimits(float, float)':
+src/drivers/rmd_l_driver.cpp:184:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().setLimits(maxVelocity, maxTorque);
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::setGains(float, float, float)':
+src/drivers/rmd_l_driver.cpp:191:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().setGains(kp, ki, kd);
+     ^~~~~~~~~~~
+In file included from src/motor_controller.cpp:2:
+src/protocols/pal.h:15:24: error: using typedef-name 'FrameType' after 'enum'
+ enum class FrameType : uint8_t {
+                        ^~~~~~~
+In file included from src/motor_controller.h:5,
+                 from src/motor_controller.cpp:1:
+include/types.h:66:3: note: 'FrameType' has a previous declaration here
+ } FrameType;
+   ^~~~~~~~~
+In file included from src/motor_controller.cpp:2:
+src/protocols/pal.h:29:26: error: using typedef-name 'MotorSeries' after 'enum'
+ enum class MotorSeries : uint8_t {
+                          ^~~~~~~
+In file included from src/motor_controller.h:5,
+                 from src/motor_controller.cpp:1:
+include/types.h:30:3: note: 'MotorSeries' has a previous declaration here
+ } MotorSeries;
+   ^~~~~~~~~~~
+In file included from src/motor_controller.cpp:2:
+src/protocols/pal.h:46:24: error: using typedef-name 'DriveType' after 'enum'
+ enum class DriveType : uint8_t {
+                        ^~~~~~~
+In file included from src/motor_controller.h:5,
+                 from src/motor_controller.cpp:1:
+include/types.h:47:3: note: 'DriveType' has a previous declaration here
+ } DriveType;
+   ^~~~~~~~~
+In file included from src/motor_controller.cpp:2:
+src/protocols/pal.h:52:26: error: using typedef-name 'GearboxType' after 'enum'
+ enum class GearboxType : uint8_t {
+                          ^~~~~~~
+In file included from src/motor_controller.h:5,
+                 from src/motor_controller.cpp:1:
+include/types.h:40:3: note: 'GearboxType' has a previous declaration here
+ } GearboxType;
+   ^~~~~~~~~~~
+In file included from src/motor_controller.cpp:2:
+src/protocols/pal.h:60:28: error: using typedef-name 'Communication' after 'enum'
+ enum class Communication : uint8_t {
+                            ^~~~~~~
+In file included from src/motor_controller.h:5,
+                 from src/motor_controller.cpp:1:
+include/types.h:55:3: note: 'Communication' has a previous declaration here
+ } Communication;
+   ^~~~~~~~~~~~~
+In file included from src/motor_controller.cpp:2:
+src/protocols/pal.h:67:8: error: using typedef-name 'MotorConfig' after 'struct'
+ struct MotorConfig {
+        ^~~~~~~~~~~
+In file included from src/motor_controller.h:5,
+                 from src/motor_controller.cpp:1:
+include/types.h:92:3: note: 'MotorConfig' has a previous declaration here
+ } MotorConfig;
+   ^~~~~~~~~~~
+src/motor_controller.cpp: In member function 'bool MotorController::initialize()':
+src/motor_controller.cpp:15:16: error: 'struct EncoderInterface' has no member named 'initialize'; did you mean 'initialized'?
+   if (!encoder.initialize()) {
+                ^~~~~~~~~~
+                initialized
+src/motor_controller.cpp:21:13: error: 'struct CommunicationInterface' has no member named 'initialize'; did you mean 'initialized'?
+   if (!comm.initialize()) {
+             ^~~~~~~~~~
+             initialized
+src/motor_controller.cpp:28:10: error: 'rmd_x_driver' was not declared in this scope
+     if (!rmd_x_driver.initialize()) {
+          ^~~~~~~~~~~~
+src/motor_controller.cpp:28:10: note: suggested alternative: 'motorDriver'
+     if (!rmd_x_driver.initialize()) {
+          ^~~~~~~~~~~~
+          motorDriver
+src/motor_controller.cpp:29:19: error: 'FAULT_MOTOR_DRIVER' was not declared in this scope
+       faultCode = FAULT_MOTOR_DRIVER;
+                   ^~~~~~~~~~~~~~~~~~
+src/motor_controller.cpp:29:19: note: suggested alternative: 'FAULT_MOTOR'
+       faultCode = FAULT_MOTOR_DRIVER;
+                   ^~~~~~~~~~~~~~~~~~
+                   FAULT_MOTOR
+src/motor_controller.cpp: In member function 'void MotorController::update()':
+src/motor_controller.cpp:69:11: error: 'struct EncoderInterface' has no member named 'read'
+   encoder.read();
+           ^~~~
+In file included from src/drivers/rmd_x_driver.cpp:11:
+src/protocols/pal.h:15:24: error: using typedef-name 'FrameType' after 'enum'
+ enum class FrameType : uint8_t {
+                        ^~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:2:
+include/../include/types.h:66:3: note: 'FrameType' has a previous declaration here
+ } FrameType;
+   ^~~~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:11:
+src/protocols/pal.h:29:26: error: using typedef-name 'MotorSeries' after 'enum'
+ enum class MotorSeries : uint8_t {
+                          ^~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:2:
+include/../include/types.h:30:3: note: 'MotorSeries' has a previous declaration here
+ } MotorSeries;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:11:
+src/protocols/pal.h:46:24: error: using typedef-name 'DriveType' after 'enum'
+ enum class DriveType : uint8_t {
+                        ^~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:2:
+include/../include/types.h:47:3: note: 'DriveType' has a previous declaration here
+ } DriveType;
+   ^~~~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:11:
+src/protocols/pal.h:52:26: error: using typedef-name 'GearboxType' after 'enum'
+ enum class GearboxType : uint8_t {
+                          ^~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:2:
+include/../include/types.h:40:3: note: 'GearboxType' has a previous declaration here
+ } GearboxType;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:11:
+src/protocols/pal.h:60:28: error: using typedef-name 'Communication' after 'enum'
+ enum class Communication : uint8_t {
+                            ^~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:2:
+include/../include/types.h:55:3: note: 'Communication' has a previous declaration here
+ } Communication;
+   ^~~~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:11:
+src/protocols/pal.h:67:8: error: redefinition of 'struct MotorConfig'
+ struct MotorConfig {
+        ^~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.h:3,
+                 from src/drivers/rmd_x_driver.cpp:1:
+src/drivers/motor_driver.h:14:8: note: previous definition of 'struct MotorConfig'
+ struct MotorConfig {
+        ^~~~~~~~~~~
+src/drivers/rmd_x_driver.cpp: In constructor 'RMDXDriver::RMDXDriver(uint8_t, const MotorConfig&)':
+src/drivers/rmd_x_driver.cpp:17:7: error: class 'RMDXDriver' does not have any field named '_motorId'
+     : _motorId(motorId), _config(config), _status(MOTOR_STATUS_IDLE),
+       ^~~~~~~~
+src/drivers/rmd_x_driver.cpp:17:26: error: class 'RMDXDriver' does not have any field named '_config'
+     : _motorId(motorId), _config(config), _status(MOTOR_STATUS_IDLE),
+                          ^~~~~~~
+src/drivers/rmd_x_driver.cpp:17:43: error: class 'RMDXDriver' does not have any field named '_status'
+     : _motorId(motorId), _config(config), _status(MOTOR_STATUS_IDLE),
+                                           ^~~~~~~
+src/drivers/rmd_x_driver.cpp:18:7: error: class 'RMDXDriver' does not have any field named '_temperature'
+       _temperature(0), _position(0), _velocity(0), _current(0),
+       ^~~~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:18:24: error: class 'RMDXDriver' does not have any field named '_position'
+       _temperature(0), _position(0), _velocity(0), _current(0),
+                        ^~~~~~~~~
+src/drivers/rmd_x_driver.cpp:18:38: error: class 'RMDXDriver' does not have any field named '_velocity'
+       _temperature(0), _position(0), _velocity(0), _current(0),
+                                      ^~~~~~~~~
+src/drivers/rmd_x_driver.cpp:18:52: error: class 'RMDXDriver' does not have any field named '_current'
+       _temperature(0), _position(0), _velocity(0), _current(0),
+                                                    ^~~~~~~~
+src/drivers/rmd_x_driver.cpp:19:7: error: class 'RMDXDriver' does not have any field named '_gearboxRatio'
+       _gearboxRatio(1.0f), _backlashCompensation(0.0f) {}
+       ^~~~~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:19:28: error: class 'RMDXDriver' does not have any field named '_backlashCompensation'
+       _gearboxRatio(1.0f), _backlashCompensation(0.0f) {}
+                            ^~~~~~~~~~~~~~~~~~~~~
+src/drivers/rmd_x_driver.cpp: In member function 'virtual bool RMDXDriver::init()':
+src/drivers/rmd_x_driver.cpp:35:5: error: '_status' was not declared in this scope
+     _status = MOTOR_STATUS_IDLE;
+     ^~~~~~~
+src/drivers/rmd_x_driver.cpp:35:5: note: suggested alternative: '_stat_r'
+     _status = MOTOR_STATUS_IDLE;
+     ^~~~~~~
+     _stat_r
+src/drivers/rmd_x_driver.cpp: In member function 'virtual void RMDXDriver::deinit()':
+src/drivers/rmd_x_driver.cpp:42:5: error: '_status' was not declared in this scope
+     _status = MOTOR_STATUS_DISABLED;
+     ^~~~~~~
+src/drivers/rmd_x_driver.cpp:42:5: note: suggested alternative: '_stat_r'
+     _status = MOTOR_STATUS_DISABLED;
+     ^~~~~~~
+     _stat_r
+src/drivers/rmd_x_driver.cpp: In member function 'virtual MotorStatus RMDXDriver::getStatus()':
+src/drivers/rmd_x_driver.cpp:46:12: error: '_status' was not declared in this scope
+     return _status;
+            ^~~~~~~
+src/drivers/rmd_x_driver.cpp:46:12: note: suggested alternative: '_stat_r'
+     return _status;
+            ^~~~~~~
+            _stat_r
+src/drivers/rmd_x_driver.cpp: In member function 'virtual float RMDXDriver::getTemperature()':
+src/drivers/rmd_x_driver.cpp:53:5: error: '_temperature' was not declared in this scope
+     _temperature = (voltage - 0.5f) * 100.0f;
+     ^~~~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:53:5: note: suggested alternative: 'getTemperature'
+     _temperature = (voltage - 0.5f) * 100.0f;
+     ^~~~~~~~~~~~
+     getTemperature
+src/drivers/rmd_x_driver.cpp: In member function 'virtual int32_t RMDXDriver::getPosition()':
+src/drivers/rmd_x_driver.cpp:59:5: error: '_position' was not declared in this scope
+     _position = 0;
+     ^~~~~~~~~
+src/drivers/rmd_x_driver.cpp:59:5: note: suggested alternative: 'getPosition'
+     _position = 0;
+     ^~~~~~~~~
+     getPosition
+src/drivers/rmd_x_driver.cpp: In member function 'virtual float RMDXDriver::getVelocity()':
+src/drivers/rmd_x_driver.cpp:65:5: error: '_velocity' was not declared in this scope
+     _velocity = 0.0f;
+     ^~~~~~~~~
+src/main.cpp: In function 'void setup()':
+<command-line>: error: 'PROTOCOL_CAN' was not declared in this scope
+src/main.cpp:37:49: note: in expansion of macro 'PROTOCOL'
+     Logger::info("Protocol: " + String((uint8_t)PROTOCOL));
+                                                 ^~~~~~~~
+src/drivers/rmd_x_driver.cpp:65:5: note: suggested alternative: 'getVelocity'
+     _velocity = 0.0f;
+     ^~~~~~~~~
+     getVelocity
+src/drivers/rmd_x_driver.cpp: In member function 'virtual float RMDXDriver::getCurrent()':
+src/drivers/rmd_x_driver.cpp:72:5: error: '_current' was not declared in this scope
+     _current = (voltage - 1.65f) * 10.0f; // Simplified conversion
+     ^~~~~~~~
+src/drivers/rmd_x_driver.cpp:72:5: note: suggested alternative: '_reent'
+     _current = (voltage - 1.65f) * 10.0f; // Simplified conversion
+     ^~~~~~~~
+     _reent
+src/drivers/rmd_x_driver.cpp: In member function 'virtual void RMDXDriver::setPosition(float)':
+src/drivers/rmd_x_driver.cpp:78:37: error: '_gearboxRatio' was not declared in this scope
+     float adjustedTarget = target * _gearboxRatio + _backlashCompensation;
+                                     ^~~~~~~~~~~~~
+<command-line>: note: suggested alternative: 'PROTOCOL_NAME'
+src/main.cpp:37:49: note: in expansion of macro 'PROTOCOL'
+     Logger::info("Protocol: " + String((uint8_t)PROTOCOL));
+                                                 ^~~~~~~~
+<command-line>: error: 'MOTOR_SERIES_RMD_X' was not declared in this scope
+src/main.cpp:40:56: note: in expansion of macro 'MOTOR_SERIES'
+     motorConfig.motorSeries = static_cast<MotorSeries>(MOTOR_SERIES);
+                                                        ^~~~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:78:53: error: '_backlashCompensation' was not declared in this scope
+     float adjustedTarget = target * _gearboxRatio + _backlashCompensation;
+                                                     ^~~~~~~~~~~~~~~~~~~~~
+<command-line>: note: suggested alternative: 'MOTOR_SERIES_NAME'
+src/main.cpp:40:56: note: in expansion of macro 'MOTOR_SERIES'
+     motorConfig.motorSeries = static_cast<MotorSeries>(MOTOR_SERIES);
+                                                        ^~~~~~~~~~~~
+<command-line>: error: 'PLANETARY' was not declared in this scope
+src/main.cpp:44:56: note: in expansion of macro 'GEARBOX_TYPE'
+     motorConfig.gearboxType = static_cast<GearboxType>(GEARBOX_TYPE);
+                                                        ^~~~~~~~~~~~
+<command-line>: note: suggested alternative: 'LC_MONETARY'
+src/main.cpp:44:56: note: in expansion of macro 'GEARBOX_TYPE'
+     motorConfig.gearboxType = static_cast<GearboxType>(GEARBOX_TYPE);
+                                                        ^~~~~~~~~~~~
+<command-line>: error: 'STANDARD' was not declared in this scope
+src/main.cpp:46:52: note: in expansion of macro 'DRIVE_TYPE'
+     motorConfig.driveType = static_cast<DriveType>(DRIVE_TYPE);
+                                                    ^~~~~~~~~~
+<command-line>: error: 'COMMUNICATION_CAN' was not declared in this scope
+src/main.cpp:47:60: note: in expansion of macro 'COMMUNICATION'
+     motorConfig.communication = static_cast<Communication>(COMMUNICATION);
+                                                            ^~~~~~~~~~~~~
+src/drivers/rmd_x_driver.cpp: In member function 'virtual void RMDXDriver::setVelocity(float)':
+src/drivers/rmd_x_driver.cpp:85:37: error: '_gearboxRatio' was not declared in this scope
+     float adjustedTarget = target * _gearboxRatio;
+                                     ^~~~~~~~~~~~~
+<command-line>: note: suggested alternative: 'COMMUNICATION'
+src/main.cpp:47:60: note: in expansion of macro 'COMMUNICATION'
+     motorConfig.communication = static_cast<Communication>(COMMUNICATION);
+                                                            ^~~~~~~~~~~~~
+src/main.cpp: In function 'void loop()':
+src/main.cpp:92:21: error: 'motorController' was not declared in this scope
+                     motorController.getState(),
+                     ^~~~~~~~~~~~~~~
+In file included from src/drivers/motor_driver.h:3,
+                 from src/drivers/rmd_x_driver.h:3,
+                 from src/drivers/rmd_x_driver.cpp:1:
+src/drivers/rmd_x_driver.cpp: In member function 'virtual void RMDXDriver::setTorque(float)':
+src/drivers/rmd_x_driver.cpp:91:33: error: '_config' was not declared in this scope
+     target = constrain(target, -_config.max_torque, _config.max_torque);
+                                 ^~~~~~~
+/home/roko/.platformio/packages/framework-arduinoespressif32/cores/esp32/Arduino.h:76:41: note: in definition of macro 'constrain'
+ #define constrain(amt,low,high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))
+                                         ^~~
+src/drivers/rmd_x_driver.cpp:91:33: note: suggested alternative: 'CANConfig'
+     target = constrain(target, -_config.max_torque, _config.max_torque);
+                                 ^~~~~~~
+/home/roko/.platformio/packages/framework-arduinoespressif32/cores/esp32/Arduino.h:76:41: note: in definition of macro 'constrain'
+ #define constrain(amt,low,high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))
+                                         ^~~
+src/drivers/rmd_x_driver.cpp: In member function 'virtual void RMDXDriver::enable()':
+src/drivers/rmd_x_driver.cpp:96:5: error: '_status' was not declared in this scope
+     _status = MOTOR_STATUS_ENABLED;
+     ^~~~~~~
+src/main.cpp:92:21: note: suggested alternative: 'motorConfig'
+                     motorController.getState(),
+                     ^~~~~~~~~~~~~~~
+                     motorConfig
+src/drivers/rmd_x_driver.cpp:96:5: note: suggested alternative: '_stat_r'
+     _status = MOTOR_STATUS_ENABLED;
+     ^~~~~~~
+     _stat_r
+src/drivers/rmd_x_driver.cpp: In member function 'virtual void RMDXDriver::disable()':
+src/drivers/rmd_x_driver.cpp:100:5: error: '_status' was not declared in this scope
+     _status = MOTOR_STATUS_DISABLED;
+     ^~~~~~~
+src/drivers/rmd_x_driver.cpp:100:5: note: suggested alternative: '_stat_r'
+     _status = MOTOR_STATUS_DISABLED;
+     ^~~~~~~
+     _stat_r
+src/drivers/rmd_x_driver.cpp: In member function 'virtual void RMDXDriver::faultReset()':
+src/drivers/rmd_x_driver.cpp:106:5: error: '_status' was not declared in this scope
+     _status = MOTOR_STATUS_IDLE;
+     ^~~~~~~
+src/drivers/rmd_x_driver.cpp:106:5: note: suggested alternative: '_stat_r'
+     _status = MOTOR_STATUS_IDLE;
+     ^~~~~~~
+     _stat_r
+src/drivers/rmd_x_driver.cpp: In member function 'virtual void RMDXDriver::setLimits(float, float)':
+src/drivers/rmd_x_driver.cpp:110:5: error: '_config' was not declared in this scope
+     _config.max_velocity_limit = maxVelocity;
+     ^~~~~~~
+src/drivers/rmd_x_driver.cpp:110:5: note: suggested alternative: 'CANConfig'
+     _config.max_velocity_limit = maxVelocity;
+     ^~~~~~~
+     CANConfig
+src/drivers/rmd_x_driver.cpp: In member function 'virtual void RMDXDriver::setGains(float, float, float)':
+src/drivers/rmd_x_driver.cpp:115:5: error: '_config' was not declared in this scope
+     _config.kp = kp;
+     ^~~~~~~
+src/drivers/rmd_x_driver.cpp:115:5: note: suggested alternative: 'CANConfig'
+     _config.kp = kp;
+     ^~~~~~~
+     CANConfig
+src/drivers/rmd_x_driver.cpp: At global scope:
+src/drivers/rmd_x_driver.cpp:120:6: error: no declaration matches 'void RMDXDriver::setGearboxRatio(float)'
+ void RMDXDriver::setGearboxRatio(float ratio) {
+      ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:120:6: note: no functions named 'void RMDXDriver::setGearboxRatio(float)'
+In file included from src/drivers/rmd_x_driver.cpp:1:
+src/drivers/rmd_x_driver.h:5:7: note: 'class RMDXDriver' defined here
+ class RMDXDriver : public IMotorDriver {
+       ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:124:6: error: no declaration matches 'void RMDXDriver::setBacklashCompensation(float)'
+ void RMDXDriver::setBacklashCompensation(float compensation) {
+      ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:124:6: note: no functions named 'void RMDXDriver::setBacklashCompensation(float)'
+In file included from src/drivers/rmd_x_driver.cpp:1:
+src/drivers/rmd_x_driver.h:5:7: note: 'class RMDXDriver' defined here
+ class RMDXDriver : public IMotorDriver {
+       ^~~~~~~~~~
+*** [.pio/build/esp32/src/drivers/rmd_l_driver.cpp.o] Error 1
+*** [.pio/build/esp32/src/motor_controller.cpp.o] Error 1
+*** [.pio/build/esp32/src/main.cpp.o] Error 1
+*** [.pio/build/esp32/src/drivers/rmd_x_driver.cpp.o] Error 1
+========================== [FAILED] Took 3.71 seconds ==========================
+
+Processing esp32s3 (platform: espressif32; board: esp32-s3-devkitc-1; framework: arduino)
+--------------------------------------------------------------------------------
+Verbose mode can be enabled via `-v, --verbose` option
+CONFIGURATION: https://docs.platformio.org/page/boards/espressif32/esp32-s3-devkitc-1.html
+PLATFORM: Espressif 32 (7.0.1) > Espressif ESP32-S3-DevKitC-1-N8 (8 MB QD, No PSRAM)
+HARDWARE: ESP32S3 240MHz, 320KB RAM, 8MB Flash
+DEBUG: Current (esp-builtin) On-board (esp-builtin) External (cmsis-dap, esp-bridge, esp-prog, iot-bus-jtag, jlink, minimodule, olimex-arm-usb-ocd, olimex-arm-usb-ocd-h, olimex-arm-usb-tiny-h, olimex-jtag-tiny, tumpa)
+PACKAGES: 
+ - framework-arduinoespressif32 @ 3.20017.241212+sha.dcc1105b 
+ - tool-esptoolpy @ 2.41100.0 (4.11.0) 
+ - toolchain-riscv32-esp @ 8.4.0+2021r2-patch5 
+ - toolchain-xtensa-esp32s3 @ 8.4.0+2021r2-patch5
+LDF: Library Dependency Finder -> https://bit.ly/configure-pio-ldf
+LDF Modes: Finder ~ chain, Compatibility ~ soft
+Found 33 compatible libraries
+Scanning dependencies...
+No dependencies
+Building in release mode
+Compiling .pio/build/esp32s3/src/drivers/cem_driver.cpp.o
+Compiling .pio/build/esp32s3/src/drivers/rmd_l_driver.cpp.o
+Compiling .pio/build/esp32s3/src/drivers/rmd_x_driver.cpp.o
+Compiling .pio/build/esp32s3/src/main.cpp.o
+Compiling .pio/build/esp32s3/src/motor_controller.cpp.o
+Compiling .pio/build/esp32s3/src/protocols/pal.cpp.o
+Compiling .pio/build/esp32s3/src/utils/config.cpp.o
+Compiling .pio/build/esp32s3/FrameworkArduino/StreamString.cpp.o
+Compiling .pio/build/esp32s3/FrameworkArduino/Tone.cpp.o
+Compiling .pio/build/esp32s3/FrameworkArduino/USB.cpp.o
+Compiling .pio/build/esp32s3/FrameworkArduino/USBCDC.cpp.o
+Compiling .pio/build/esp32s3/FrameworkArduino/USBMSC.cpp.o
+Compiling .pio/build/esp32s3/FrameworkArduino/WMath.cpp.o
+Compiling .pio/build/esp32s3/FrameworkArduino/WString.cpp.o
+Compiling .pio/build/esp32s3/FrameworkArduino/base64.cpp.o
+Compiling .pio/build/esp32s3/FrameworkArduino/cbuf.cpp.o
+Compiling .pio/build/esp32s3/FrameworkArduino/esp32-hal-adc.c.o
+Compiling .pio/build/esp32s3/FrameworkArduino/esp32-hal-bt.c.o
+Compiling .pio/build/esp32s3/FrameworkArduino/esp32-hal-cpu.c.o
+Compiling .pio/build/esp32s3/FrameworkArduino/esp32-hal-dac.c.o
+Compiling .pio/build/esp32s3/FrameworkArduino/esp32-hal-gpio.c.o
+Compiling .pio/build/esp32s3/FrameworkArduino/esp32-hal-i2c-slave.c.o
+Compiling .pio/build/esp32s3/FrameworkArduino/esp32-hal-i2c.c.o
+In file included from src/drivers/rmd_l_driver.cpp:31:
+src/protocols/pal.h:12:10: fatal error: ArduinoJson.h: No such file or directory
+
+*********************************************************************
+* Looking for ArduinoJson.h dependency? Check our library registry!
+*
+* CLI  > platformio lib search "header:ArduinoJson.h"
+* Web  > https://registry.platformio.org/search?q=header:ArduinoJson.h
+*
+*********************************************************************
+
+ #include <ArduinoJson.h>
+          ^~~~~~~~~~~~~~~
+compilation terminated.
+Compiling .pio/build/esp32s3/FrameworkArduino/esp32-hal-ledc.c.o
+In file included from src/utils/config.cpp:5:
+src/utils/config.h:11:10: fatal error: ArduinoJson.h: No such file or directory
+
+*********************************************************************
+* Looking for ArduinoJson.h dependency? Check our library registry!
+*
+* CLI  > platformio lib search "header:ArduinoJson.h"
+* Web  > https://registry.platformio.org/search?q=header:ArduinoJson.h
+*
+*********************************************************************
+
+ #include <ArduinoJson.h>
+          ^~~~~~~~~~~~~~~
+compilation terminated.
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:12:10: fatal error: ArduinoJson.h: No such file or directory
+
+*********************************************************************
+* Looking for ArduinoJson.h dependency? Check our library registry!
+*
+* CLI  > platformio lib search "header:ArduinoJson.h"
+* Web  > https://registry.platformio.org/search?q=header:ArduinoJson.h
+*
+*********************************************************************
+
+ #include <ArduinoJson.h>
+          ^~~~~~~~~~~~~~~
+compilation terminated.
+In file included from src/main.cpp:16:
+src/protocols/pal.h:12:10: fatal error: ArduinoJson.h: No such file or directory
+
+*********************************************************************
+* Looking for ArduinoJson.h dependency? Check our library registry!
+*
+* CLI  > platformio lib search "header:ArduinoJson.h"
+* Web  > https://registry.platformio.org/search?q=header:ArduinoJson.h
+*
+*********************************************************************
+
+ #include <ArduinoJson.h>
+          ^~~~~~~~~~~~~~~
+compilation terminated.
+In file included from src/drivers/rmd_x_driver.cpp:11:
+src/protocols/pal.h:12:10: fatal error: ArduinoJson.h: No such file or directory
+
+*********************************************************************
+* Looking for ArduinoJson.h dependency? Check our library registry!
+*
+* CLI  > platformio lib search "header:ArduinoJson.h"
+* Web  > https://registry.platformio.org/search?q=header:ArduinoJson.h
+*
+*********************************************************************
+
+ #include <ArduinoJson.h>
+          ^~~~~~~~~~~~~~~
+compilation terminated.
+In file included from src/motor_controller.cpp:2:
+src/protocols/pal.h:12:10: fatal error: ArduinoJson.h: No such file or directory
+
+*********************************************************************
+* Looking for ArduinoJson.h dependency? Check our library registry!
+*
+* CLI  > platformio lib search "header:ArduinoJson.h"
+* Web  > https://registry.platformio.org/search?q=header:ArduinoJson.h
+*
+*********************************************************************
+
+ #include <ArduinoJson.h>
+          ^~~~~~~~~~~~~~~
+compilation terminated.
+Compiling .pio/build/esp32s3/FrameworkArduino/esp32-hal-matrix.c.o
+*** [.pio/build/esp32s3/src/drivers/rmd_l_driver.cpp.o] Error 1
+*** [.pio/build/esp32s3/src/utils/config.cpp.o] Error 1
+*** [.pio/build/esp32s3/src/protocols/pal.cpp.o] Error 1
+*** [.pio/build/esp32s3/src/main.cpp.o] Error 1
+*** [.pio/build/esp32s3/src/drivers/rmd_x_driver.cpp.o] Error 1
+*** [.pio/build/esp32s3/src/motor_controller.cpp.o] Error 1
+In file included from src/drivers/cem_driver.cpp:128:
+include/../include/types.h:92:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/cem_driver.h:3,
+                 from src/drivers/cem_driver.cpp:127:
+src/drivers/motor_driver.h:14:8: note: previous declaration as 'struct MotorConfig'
+ struct MotorConfig {
+        ^~~~~~~~~~~
+In file included from src/drivers/cem_driver.cpp:128:
+include/../include/types.h:112:25: error: 'GEARBOX_PLANETARY' conflicts with a previous declaration
+     GEARBOX_PLANETARY = 0,
+                         ^
+include/../include/types.h:34:5: note: previous declaration 'GearboxType GEARBOX_PLANETARY'
+     GEARBOX_PLANETARY = 0,
+     ^~~~~~~~~~~~~~~~~
+include/../include/types.h:113:5: error: 'GEARBOX_HARMONIC' conflicts with a previous declaration
+     GEARBOX_HARMONIC,
+     ^~~~~~~~~~~~~~~~
+include/../include/types.h:35:5: note: previous declaration 'GearboxType GEARBOX_HARMONIC'
+     GEARBOX_HARMONIC,
+     ^~~~~~~~~~~~~~~~
+include/../include/types.h:114:5: error: 'GEARBOX_DIRECT' conflicts with a previous declaration
+     GEARBOX_DIRECT,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:36:5: note: previous declaration 'GearboxType GEARBOX_DIRECT'
+     GEARBOX_DIRECT,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:115:5: error: 'GEARBOX_CYCLOID' conflicts with a previous declaration
+     GEARBOX_CYCLOID,
+     ^~~~~~~~~~~~~~~
+include/../include/types.h:37:5: note: previous declaration 'GearboxType GEARBOX_CYCLOID'
+     GEARBOX_CYCLOID,
+     ^~~~~~~~~~~~~~~
+include/../include/types.h:116:5: error: 'GEARBOX_LINEAR' conflicts with a previous declaration
+     GEARBOX_LINEAR,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:38:5: note: previous declaration 'GearboxType GEARBOX_LINEAR'
+     GEARBOX_LINEAR,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:118:3: error: conflicting declaration 'typedef enum GearboxType GearboxType'
+ } GearboxType;
+   ^~~~~~~~~~~
+include/../include/types.h:40:3: note: previous declaration as 'typedef enum GearboxType GearboxType'
+ } GearboxType;
+   ^~~~~~~~~~~
+include/../include/types.h:122:22: error: 'DRIVE_STANDARD' conflicts with a previous declaration
+     DRIVE_STANDARD = 0,
+                      ^
+include/../include/types.h:44:5: note: previous declaration 'DriveType DRIVE_STANDARD'
+     DRIVE_STANDARD = 0,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:125:3: error: conflicting declaration 'typedef enum DriveType DriveType'
+ } DriveType;
+   ^~~~~~~~~
+include/../include/types.h:47:3: note: previous declaration as 'typedef enum DriveType DriveType'
+ } DriveType;
+   ^~~~~~~~~
+include/../include/types.h:129:25: error: 'COMMUNICATION_CAN' conflicts with a previous declaration
+     COMMUNICATION_CAN = 0,
+                         ^
+include/../include/types.h:51:5: note: previous declaration 'Communication COMMUNICATION_CAN'
+     COMMUNICATION_CAN = 0,
+     ^~~~~~~~~~~~~~~~~
+include/../include/types.h:130:5: error: 'COMMUNICATION_RS485' conflicts with a previous declaration
+     COMMUNICATION_RS485,
+     ^~~~~~~~~~~~~~~~~~~
+include/../include/types.h:52:5: note: previous declaration 'Communication COMMUNICATION_RS485'
+     COMMUNICATION_RS485,
+     ^~~~~~~~~~~~~~~~~~~
+include/../include/types.h:131:5: error: 'COMMUNICATION_ETHERCAT' conflicts with a previous declaration
+     COMMUNICATION_ETHERCAT,
+     ^~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:53:5: note: previous declaration 'Communication COMMUNICATION_ETHERCAT'
+     COMMUNICATION_ETHERCAT,
+     ^~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:155:3: error: conflicting declaration 'typedef enum FrameType FrameType'
+ } FrameType;
+   ^~~~~~~~~
+include/../include/types.h:66:3: note: previous declaration as 'typedef enum FrameType FrameType'
+ } FrameType;
+   ^~~~~~~~~
+include/../include/types.h:191:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/cem_driver.h:3,
+                 from src/drivers/cem_driver.cpp:127:
+src/drivers/motor_driver.h:14:8: note: previous declaration as 'struct MotorConfig'
+ struct MotorConfig {
+        ^~~~~~~~~~~
+In file included from src/drivers/cem_driver.cpp:128:
+include/../include/types.h:226:5: error: redefinition of 'MOTOR_STATE_POSITION_CONTROL'
+     MOTOR_STATE_POSITION_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:223:5: note: 'MOTOR_STATE_POSITION_CONTROL' previously defined here
+     MOTOR_STATE_POSITION_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:227:5: error: redefinition of 'MOTOR_STATE_VELOCITY_CONTROL'
+     MOTOR_STATE_VELOCITY_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:224:5: note: 'MOTOR_STATE_VELOCITY_CONTROL' previously defined here
+     MOTOR_STATE_VELOCITY_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:228:5: error: redefinition of 'MOTOR_STATE_TORQUE_CONTROL'
+     MOTOR_STATE_TORQUE_CONTROL
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:225:5: note: 'MOTOR_STATE_TORQUE_CONTROL' previously defined here
+     MOTOR_STATE_TORQUE_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:240:3: error: conflicting declaration 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+include/../include/types.h:100:3: note: previous declaration as 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+*** [.pio/build/esp32s3/src/drivers/cem_driver.cpp.o] Error 1
+========================== [FAILED] Took 2.36 seconds ==========================
+
+Processing esp32c3 (platform: espressif32; board: esp32-c3-devkitm-1; framework: arduino)
+--------------------------------------------------------------------------------
+Verbose mode can be enabled via `-v, --verbose` option
+CONFIGURATION: https://docs.platformio.org/page/boards/espressif32/esp32-c3-devkitm-1.html
+PLATFORM: Espressif 32 (7.0.1) > Espressif ESP32-C3-DevKitM-1
+HARDWARE: ESP32C3 160MHz, 320KB RAM, 4MB Flash
+DEBUG: Current (cmsis-dap) External (cmsis-dap, esp-bridge, esp-builtin, esp-prog, iot-bus-jtag, jlink, minimodule, olimex-arm-usb-ocd, olimex-arm-usb-ocd-h, olimex-arm-usb-tiny-h, olimex-jtag-tiny, tumpa)
+PACKAGES: 
+ - framework-arduinoespressif32 @ 3.20017.241212+sha.dcc1105b 
+ - tool-esptoolpy @ 2.41100.0 (4.11.0) 
+ - toolchain-riscv32-esp @ 8.4.0+2021r2-patch5
+LDF: Library Dependency Finder -> https://bit.ly/configure-pio-ldf
+LDF Modes: Finder ~ chain, Compatibility ~ soft
+Found 33 compatible libraries
+Scanning dependencies...
+No dependencies
+Building in release mode
+Compiling .pio/build/esp32c3/src/drivers/cem_driver.cpp.o
+Compiling .pio/build/esp32c3/src/drivers/rmd_l_driver.cpp.o
+Compiling .pio/build/esp32c3/src/drivers/rmd_x_driver.cpp.o
+Compiling .pio/build/esp32c3/src/main.cpp.o
+Compiling .pio/build/esp32c3/src/motor_controller.cpp.o
+Compiling .pio/build/esp32c3/src/protocols/pal.cpp.o
+Compiling .pio/build/esp32c3/src/utils/config.cpp.o
+Compiling .pio/build/esp32c3/FrameworkArduino/StreamString.cpp.o
+Compiling .pio/build/esp32c3/FrameworkArduino/Tone.cpp.o
+Compiling .pio/build/esp32c3/FrameworkArduino/USB.cpp.o
+Compiling .pio/build/esp32c3/FrameworkArduino/USBCDC.cpp.o
+Compiling .pio/build/esp32c3/FrameworkArduino/USBMSC.cpp.o
+Compiling .pio/build/esp32c3/FrameworkArduino/WMath.cpp.o
+Compiling .pio/build/esp32c3/FrameworkArduino/WString.cpp.o
+Compiling .pio/build/esp32c3/FrameworkArduino/base64.cpp.o
+Compiling .pio/build/esp32c3/FrameworkArduino/cbuf.cpp.o
+Compiling .pio/build/esp32c3/FrameworkArduino/esp32-hal-adc.c.o
+Compiling .pio/build/esp32c3/FrameworkArduino/esp32-hal-bt.c.o
+Compiling .pio/build/esp32c3/FrameworkArduino/esp32-hal-cpu.c.o
+Compiling .pio/build/esp32c3/FrameworkArduino/esp32-hal-dac.c.o
+Compiling .pio/build/esp32c3/FrameworkArduino/esp32-hal-gpio.c.o
+Compiling .pio/build/esp32c3/FrameworkArduino/esp32-hal-i2c-slave.c.o
+Compiling .pio/build/esp32c3/FrameworkArduino/esp32-hal-i2c.c.o
+Compiling .pio/build/esp32c3/FrameworkArduino/esp32-hal-ledc.c.o
+Compiling .pio/build/esp32c3/FrameworkArduino/esp32-hal-matrix.c.o
+Compiling .pio/build/esp32c3/FrameworkArduino/esp32-hal-misc.c.o
+Compiling .pio/build/esp32c3/FrameworkArduino/esp32-hal-psram.c.o
+Compiling .pio/build/esp32c3/FrameworkArduino/esp32-hal-rgb-led.c.o
+Compiling .pio/build/esp32c3/FrameworkArduino/esp32-hal-rmt.c.o
+Compiling .pio/build/esp32c3/FrameworkArduino/esp32-hal-sigmadelta.c.o
+Compiling .pio/build/esp32c3/FrameworkArduino/esp32-hal-spi.c.o
+Compiling .pio/build/esp32c3/FrameworkArduino/esp32-hal-time.c.o
+Compiling .pio/build/esp32c3/FrameworkArduino/esp32-hal-timer.c.o
+In file included from src/drivers/rmd_x_driver.cpp:11:
+src/protocols/pal.h:12:10: fatal error: ArduinoJson.h: No such file or directory
+
+*********************************************************************
+* Looking for ArduinoJson.h dependency? Check our library registry!
+*
+* CLI  > platformio lib search "header:ArduinoJson.h"
+* Web  > https://registry.platformio.org/search?q=header:ArduinoJson.h
+*
+*********************************************************************
+
+ #include <ArduinoJson.h>
+          ^~~~~~~~~~~~~~~
+compilation terminated.
+In file included from src/utils/config.cpp:5:
+src/utils/config.h:11:10: fatal error: ArduinoJson.h: No such file or directory
+
+*********************************************************************
+* Looking for ArduinoJson.h dependency? Check our library registry!
+*
+* CLI  > platformio lib search "header:ArduinoJson.h"
+* Web  > https://registry.platformio.org/search?q=header:ArduinoJson.h
+*
+*********************************************************************
+
+ #include <ArduinoJson.h>
+          ^~~~~~~~~~~~~~~
+compilation terminated.
+In file included from src/motor_controller.cpp:2:
+src/protocols/pal.h:12:10: fatal error: ArduinoJson.h: No such file or directory
+
+*********************************************************************
+* Looking for ArduinoJson.h dependency? Check our library registry!
+*
+* CLI  > platformio lib search "header:ArduinoJson.h"
+* Web  > https://registry.platformio.org/search?q=header:ArduinoJson.h
+*
+*********************************************************************
+
+ #include <ArduinoJson.h>
+          ^~~~~~~~~~~~~~~
+compilation terminated.
+In file included from src/main.cpp:16:
+src/protocols/pal.h:12:10: fatal error: ArduinoJson.h: No such file or directory
+
+*********************************************************************
+* Looking for ArduinoJson.h dependency? Check our library registry!
+*
+* CLI  > platformio lib search "header:ArduinoJson.h"
+* Web  > https://registry.platformio.org/search?q=header:ArduinoJson.h
+*
+*********************************************************************
+
+ #include <ArduinoJson.h>
+          ^~~~~~~~~~~~~~~
+compilation terminated.
+In file included from src/protocols/pal.cpp:7:
+src/protocols/pal.h:12:10: fatal error: ArduinoJson.h: No such file or directory
+
+*********************************************************************
+* Looking for ArduinoJson.h dependency? Check our library registry!
+*
+* CLI  > platformio lib search "header:ArduinoJson.h"
+* Web  > https://registry.platformio.org/search?q=header:ArduinoJson.h
+*
+*********************************************************************
+
+ #include <ArduinoJson.h>
+          ^~~~~~~~~~~~~~~
+compilation terminated.
+In file included from src/drivers/rmd_l_driver.cpp:31:
+src/protocols/pal.h:12:10: fatal error: ArduinoJson.h: No such file or directory
+
+*********************************************************************
+* Looking for ArduinoJson.h dependency? Check our library registry!
+*
+* CLI  > platformio lib search "header:ArduinoJson.h"
+* Web  > https://registry.platformio.org/search?q=header:ArduinoJson.h
+*
+*********************************************************************
+
+ #include <ArduinoJson.h>
+          ^~~~~~~~~~~~~~~
+compilation terminated.
+In file included from src/drivers/cem_driver.cpp:128:
+include/../include/types.h:92:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/cem_driver.h:3,
+                 from src/drivers/cem_driver.cpp:127:
+src/drivers/motor_driver.h:14:8: note: previous declaration as 'struct MotorConfig'
+ struct MotorConfig {
+        ^~~~~~~~~~~
+In file included from src/drivers/cem_driver.cpp:128:
+include/../include/types.h:112:25: error: 'GEARBOX_PLANETARY' conflicts with a previous declaration
+     GEARBOX_PLANETARY = 0,
+                         ^
+include/../include/types.h:34:5: note: previous declaration 'GearboxType GEARBOX_PLANETARY'
+     GEARBOX_PLANETARY = 0,
+     ^~~~~~~~~~~~~~~~~
+include/../include/types.h:113:5: error: 'GEARBOX_HARMONIC' conflicts with a previous declaration
+     GEARBOX_HARMONIC,
+     ^~~~~~~~~~~~~~~~
+include/../include/types.h:35:5: note: previous declaration 'GearboxType GEARBOX_HARMONIC'
+     GEARBOX_HARMONIC,
+     ^~~~~~~~~~~~~~~~
+include/../include/types.h:114:5: error: 'GEARBOX_DIRECT' conflicts with a previous declaration
+     GEARBOX_DIRECT,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:36:5: note: previous declaration 'GearboxType GEARBOX_DIRECT'
+     GEARBOX_DIRECT,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:115:5: error: 'GEARBOX_CYCLOID' conflicts with a previous declaration
+     GEARBOX_CYCLOID,
+     ^~~~~~~~~~~~~~~
+include/../include/types.h:37:5: note: previous declaration 'GearboxType GEARBOX_CYCLOID'
+     GEARBOX_CYCLOID,
+     ^~~~~~~~~~~~~~~
+include/../include/types.h:116:5: error: 'GEARBOX_LINEAR' conflicts with a previous declaration
+     GEARBOX_LINEAR,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:38:5: note: previous declaration 'GearboxType GEARBOX_LINEAR'
+     GEARBOX_LINEAR,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:118:3: error: conflicting declaration 'typedef enum GearboxType GearboxType'
+ } GearboxType;
+   ^~~~~~~~~~~
+include/../include/types.h:40:3: note: previous declaration as 'typedef enum GearboxType GearboxType'
+ } GearboxType;
+   ^~~~~~~~~~~
+include/../include/types.h:122:22: error: 'DRIVE_STANDARD' conflicts with a previous declaration
+     DRIVE_STANDARD = 0,
+                      ^
+include/../include/types.h:44:5: note: previous declaration 'DriveType DRIVE_STANDARD'
+     DRIVE_STANDARD = 0,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:125:3: error: conflicting declaration 'typedef enum DriveType DriveType'
+ } DriveType;
+   ^~~~~~~~~
+include/../include/types.h:47:3: note: previous declaration as 'typedef enum DriveType DriveType'
+ } DriveType;
+   ^~~~~~~~~
+include/../include/types.h:129:25: error: 'COMMUNICATION_CAN' conflicts with a previous declaration
+     COMMUNICATION_CAN = 0,
+                         ^
+include/../include/types.h:51:5: note: previous declaration 'Communication COMMUNICATION_CAN'
+     COMMUNICATION_CAN = 0,
+     ^~~~~~~~~~~~~~~~~
+include/../include/types.h:130:5: error: 'COMMUNICATION_RS485' conflicts with a previous declaration
+     COMMUNICATION_RS485,
+     ^~~~~~~~~~~~~~~~~~~
+include/../include/types.h:52:5: note: previous declaration 'Communication COMMUNICATION_RS485'
+     COMMUNICATION_RS485,
+     ^~~~~~~~~~~~~~~~~~~
+include/../include/types.h:131:5: error: 'COMMUNICATION_ETHERCAT' conflicts with a previous declaration
+     COMMUNICATION_ETHERCAT,
+     ^~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:53:5: note: previous declaration 'Communication COMMUNICATION_ETHERCAT'
+     COMMUNICATION_ETHERCAT,
+     ^~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:155:3: error: conflicting declaration 'typedef enum FrameType FrameType'
+ } FrameType;
+   ^~~~~~~~~
+include/../include/types.h:66:3: note: previous declaration as 'typedef enum FrameType FrameType'
+ } FrameType;
+   ^~~~~~~~~
+include/../include/types.h:191:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/cem_driver.h:3,
+                 from src/drivers/cem_driver.cpp:127:
+src/drivers/motor_driver.h:14:8: note: previous declaration as 'struct MotorConfig'
+ struct MotorConfig {
+Compiling .pio/build/esp32c3/FrameworkArduino/esp32-hal-tinyusb.c.o
+        ^~~~~~~~~~~
+In file included from src/drivers/cem_driver.cpp:128:
+include/../include/types.h:226:5: error: redefinition of 'MOTOR_STATE_POSITION_CONTROL'
+     MOTOR_STATE_POSITION_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:223:5: note: 'MOTOR_STATE_POSITION_CONTROL' previously defined here
+     MOTOR_STATE_POSITION_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:227:5: error: redefinition of 'MOTOR_STATE_VELOCITY_CONTROL'
+     MOTOR_STATE_VELOCITY_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:224:5: note: 'MOTOR_STATE_VELOCITY_CONTROL' previously defined here
+     MOTOR_STATE_VELOCITY_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:228:5: error: redefinition of 'MOTOR_STATE_TORQUE_CONTROL'
+     MOTOR_STATE_TORQUE_CONTROL
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:225:5: note: 'MOTOR_STATE_TORQUE_CONTROL' previously defined here
+     MOTOR_STATE_TORQUE_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:240:3: error: conflicting declaration 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+include/../include/types.h:100:3: note: previous declaration as 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+*** [.pio/build/esp32c3/src/utils/config.cpp.o] Error 1
+*** [.pio/build/esp32c3/src/protocols/pal.cpp.o] Error 1
+*** [.pio/build/esp32c3/src/main.cpp.o] Error 1
+*** [.pio/build/esp32c3/src/motor_controller.cpp.o] Error 1
+*** [.pio/build/esp32c3/src/drivers/rmd_l_driver.cpp.o] Error 1
+*** [.pio/build/esp32c3/src/drivers/rmd_x_driver.cpp.o] Error 1
+*** [.pio/build/esp32c3/src/drivers/cem_driver.cpp.o] Error 1
+========================== [FAILED] Took 2.84 seconds ==========================
+
+Processing esp32s3dev (platform: espressif32; board: esp32-s3-devkitc-1; framework: arduino)
+--------------------------------------------------------------------------------
+Verbose mode can be enabled via `-v, --verbose` option
+CONFIGURATION: https://docs.platformio.org/page/boards/espressif32/esp32-s3-devkitc-1.html
+PLATFORM: Espressif 32 (7.0.1) > Espressif ESP32-S3-DevKitC-1-N8 (8 MB QD, No PSRAM)
+HARDWARE: ESP32S3 240MHz, 320KB RAM, 8MB Flash
+DEBUG: Current (esp-builtin) On-board (esp-builtin) External (cmsis-dap, esp-bridge, esp-prog, iot-bus-jtag, jlink, minimodule, olimex-arm-usb-ocd, olimex-arm-usb-ocd-h, olimex-arm-usb-tiny-h, olimex-jtag-tiny, tumpa)
+PACKAGES: 
+ - framework-arduinoespressif32 @ 3.20017.241212+sha.dcc1105b 
+ - tool-esptoolpy @ 2.41100.0 (4.11.0) 
+ - toolchain-riscv32-esp @ 8.4.0+2021r2-patch5 
+ - toolchain-xtensa-esp32s3 @ 8.4.0+2021r2-patch5
+LDF: Library Dependency Finder -> https://bit.ly/configure-pio-ldf
+LDF Modes: Finder ~ chain, Compatibility ~ soft
+Library Manager: Installing can @ ^1.0.0
+Library Manager: Warning! More than one package has been found by can @ ^1.0.0 requirements:
+Library Manager:  - sandeepmistry/CAN@0.3.1
+Library Manager:  - mbed-alexliao1995/can@0.0.0+sha.094fd8dac7e5
+Library Manager:  - mbed-clemounet/CAN@0.0.0+sha.b9201bec01bf
+Library Manager: Please specify detailed REQUIREMENTS using package owner and version (shown above) to avoid name conflicts
+Warning! Could not find the package with 'can @ ^1.0.0' requirements
+Library Manager: Installing SPI @ ^1.0.0
+Warning! Could not find the package with 'SPI @ ^1.0.0' requirements
+Library Manager: Installing Wire @ ^1.0.0
+Warning! Could not find the package with 'Wire @ ^1.0.0' requirements
+Found 34 compatible libraries
+Scanning dependencies...
+Dependency Graph
+|-- ArduinoJson @ 6.21.6
+Building in release mode
+Compiling .pio/build/esp32s3dev/src/drivers/cem_driver.cpp.o
+Compiling .pio/build/esp32s3dev/src/drivers/rmd_l_driver.cpp.o
+Compiling .pio/build/esp32s3dev/src/drivers/rmd_x_driver.cpp.o
+Compiling .pio/build/esp32s3dev/src/main.cpp.o
+Compiling .pio/build/esp32s3dev/src/motor_controller.cpp.o
+Compiling .pio/build/esp32s3dev/FrameworkArduino/StreamString.cpp.o
+Compiling .pio/build/esp32s3dev/FrameworkArduino/Tone.cpp.o
+In file included from src/drivers/cem_driver.cpp:128:
+include/../include/types.h:92:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/cem_driver.h:3,
+                 from src/drivers/cem_driver.cpp:127:
+src/drivers/motor_driver.h:14:8: note: previous declaration as 'struct MotorConfig'
+ struct MotorConfig {
+        ^~~~~~~~~~~
+In file included from src/drivers/cem_driver.cpp:128:
+include/../include/types.h:112:25: error: 'GEARBOX_PLANETARY' conflicts with a previous declaration
+     GEARBOX_PLANETARY = 0,
+                         ^
+include/../include/types.h:34:5: note: previous declaration 'GearboxType GEARBOX_PLANETARY'
+     GEARBOX_PLANETARY = 0,
+     ^~~~~~~~~~~~~~~~~
+include/../include/types.h:113:5: error: 'GEARBOX_HARMONIC' conflicts with a previous declaration
+     GEARBOX_HARMONIC,
+     ^~~~~~~~~~~~~~~~
+include/../include/types.h:35:5: note: previous declaration 'GearboxType GEARBOX_HARMONIC'
+     GEARBOX_HARMONIC,
+     ^~~~~~~~~~~~~~~~
+include/../include/types.h:114:5: error: 'GEARBOX_DIRECT' conflicts with a previous declaration
+     GEARBOX_DIRECT,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:36:5: note: previous declaration 'GearboxType GEARBOX_DIRECT'
+     GEARBOX_DIRECT,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:115:5: error: 'GEARBOX_CYCLOID' conflicts with a previous declaration
+     GEARBOX_CYCLOID,
+     ^~~~~~~~~~~~~~~
+include/../include/types.h:37:5: note: previous declaration 'GearboxType GEARBOX_CYCLOID'
+     GEARBOX_CYCLOID,
+     ^~~~~~~~~~~~~~~
+include/../include/types.h:116:5: error: 'GEARBOX_LINEAR' conflicts with a previous declaration
+     GEARBOX_LINEAR,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:38:5: note: previous declaration 'GearboxType GEARBOX_LINEAR'
+     GEARBOX_LINEAR,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:118:3: error: conflicting declaration 'typedef enum GearboxType GearboxType'
+ } GearboxType;
+   ^~~~~~~~~~~
+include/../include/types.h:40:3: note: previous declaration as 'typedef enum GearboxType GearboxType'
+ } GearboxType;
+   ^~~~~~~~~~~
+include/../include/types.h:122:22: error: 'DRIVE_STANDARD' conflicts with a previous declaration
+     DRIVE_STANDARD = 0,
+                      ^
+include/../include/types.h:44:5: note: previous declaration 'DriveType DRIVE_STANDARD'
+     DRIVE_STANDARD = 0,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:125:3: error: conflicting declaration 'typedef enum DriveType DriveType'
+ } DriveType;
+   ^~~~~~~~~
+include/../include/types.h:47:3: note: previous declaration as 'typedef enum DriveType DriveType'
+ } DriveType;
+   ^~~~~~~~~
+include/../include/types.h:129:25: error: 'COMMUNICATION_CAN' conflicts with a previous declaration
+     COMMUNICATION_CAN = 0,
+                         ^
+include/../include/types.h:51:5: note: previous declaration 'Communication COMMUNICATION_CAN'
+     COMMUNICATION_CAN = 0,
+     ^~~~~~~~~~~~~~~~~
+include/../include/types.h:130:5: error: 'COMMUNICATION_RS485' conflicts with a previous declaration
+     COMMUNICATION_RS485,
+     ^~~~~~~~~~~~~~~~~~~
+include/../include/types.h:52:5: note: previous declaration 'Communication COMMUNICATION_RS485'
+     COMMUNICATION_RS485,
+     ^~~~~~~~~~~~~~~~~~~
+include/../include/types.h:131:5: error: 'COMMUNICATION_ETHERCAT' conflicts with a previous declaration
+     COMMUNICATION_ETHERCAT,
+     ^~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:53:5: note: previous declaration 'Communication COMMUNICATION_ETHERCAT'
+     COMMUNICATION_ETHERCAT,
+     ^~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:155:3: error: conflicting declaration 'typedef enum FrameType FrameType'
+ } FrameType;
+   ^~~~~~~~~
+include/../include/types.h:66:3: note: previous declaration as 'typedef enum FrameType FrameType'
+ } FrameType;
+   ^~~~~~~~~
+include/../include/types.h:191:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/cem_driver.h:3,
+                 from src/drivers/cem_driver.cpp:127:
+src/drivers/motor_driver.h:14:8: note: previous declaration as 'struct MotorConfig'
+ struct MotorConfig {
+        ^~~~~~~~~~~
+In file included from src/drivers/cem_driver.cpp:128:
+include/../include/types.h:226:5: error: redefinition of 'MOTOR_STATE_POSITION_CONTROL'
+     MOTOR_STATE_POSITION_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:223:5: note: 'MOTOR_STATE_POSITION_CONTROL' previously defined here
+     MOTOR_STATE_POSITION_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:227:5: error: redefinition of 'MOTOR_STATE_VELOCITY_CONTROL'
+     MOTOR_STATE_VELOCITY_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:224:5: note: 'MOTOR_STATE_VELOCITY_CONTROL' previously defined here
+     MOTOR_STATE_VELOCITY_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:228:5: error: redefinition of 'MOTOR_STATE_TORQUE_CONTROL'
+     MOTOR_STATE_TORQUE_CONTROL
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:225:5: note: 'MOTOR_STATE_TORQUE_CONTROL' previously defined here
+     MOTOR_STATE_TORQUE_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:240:3: error: conflicting declaration 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+include/../include/types.h:100:3: note: previous declaration as 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+Compiling .pio/build/esp32s3dev/FrameworkArduino/USB.cpp.o
+*** [.pio/build/esp32s3dev/src/drivers/cem_driver.cpp.o] Error 1
+In file included from src/motor_controller.h:5,
+                 from src/motor_controller.cpp:1:
+include/types.h:112:25: error: 'GEARBOX_PLANETARY' conflicts with a previous declaration
+     GEARBOX_PLANETARY = 0,
+                         ^
+include/types.h:34:5: note: previous declaration 'GearboxType GEARBOX_PLANETARY'
+     GEARBOX_PLANETARY = 0,
+     ^~~~~~~~~~~~~~~~~
+include/types.h:113:5: error: 'GEARBOX_HARMONIC' conflicts with a previous declaration
+     GEARBOX_HARMONIC,
+     ^~~~~~~~~~~~~~~~
+include/types.h:35:5: note: previous declaration 'GearboxType GEARBOX_HARMONIC'
+     GEARBOX_HARMONIC,
+     ^~~~~~~~~~~~~~~~
+include/types.h:114:5: error: 'GEARBOX_DIRECT' conflicts with a previous declaration
+     GEARBOX_DIRECT,
+     ^~~~~~~~~~~~~~
+include/types.h:36:5: note: previous declaration 'GearboxType GEARBOX_DIRECT'
+     GEARBOX_DIRECT,
+     ^~~~~~~~~~~~~~
+include/types.h:115:5: error: 'GEARBOX_CYCLOID' conflicts with a previous declaration
+     GEARBOX_CYCLOID,
+     ^~~~~~~~~~~~~~~
+include/types.h:37:5: note: previous declaration 'GearboxType GEARBOX_CYCLOID'
+     GEARBOX_CYCLOID,
+     ^~~~~~~~~~~~~~~
+include/types.h:116:5: error: 'GEARBOX_LINEAR' conflicts with a previous declaration
+     GEARBOX_LINEAR,
+     ^~~~~~~~~~~~~~
+include/types.h:38:5: note: previous declaration 'GearboxType GEARBOX_LINEAR'
+     GEARBOX_LINEAR,
+     ^~~~~~~~~~~~~~
+include/types.h:118:3: error: conflicting declaration 'typedef enum GearboxType GearboxType'
+ } GearboxType;
+   ^~~~~~~~~~~
+include/types.h:40:3: note: previous declaration as 'typedef enum GearboxType GearboxType'
+ } GearboxType;
+   ^~~~~~~~~~~
+include/types.h:122:22: error: 'DRIVE_STANDARD' conflicts with a previous declaration
+     DRIVE_STANDARD = 0,
+                      ^
+include/types.h:44:5: note: previous declaration 'DriveType DRIVE_STANDARD'
+     DRIVE_STANDARD = 0,
+     ^~~~~~~~~~~~~~
+include/types.h:125:3: error: conflicting declaration 'typedef enum DriveType DriveType'
+ } DriveType;
+   ^~~~~~~~~
+include/types.h:47:3: note: previous declaration as 'typedef enum DriveType DriveType'
+ } DriveType;
+   ^~~~~~~~~
+include/types.h:129:25: error: 'COMMUNICATION_CAN' conflicts with a previous declaration
+     COMMUNICATION_CAN = 0,
+                         ^
+include/types.h:51:5: note: previous declaration 'Communication COMMUNICATION_CAN'
+     COMMUNICATION_CAN = 0,
+     ^~~~~~~~~~~~~~~~~
+include/types.h:130:5: error: 'COMMUNICATION_RS485' conflicts with a previous declaration
+     COMMUNICATION_RS485,
+     ^~~~~~~~~~~~~~~~~~~
+include/types.h:52:5: note: previous declaration 'Communication COMMUNICATION_RS485'
+     COMMUNICATION_RS485,
+     ^~~~~~~~~~~~~~~~~~~
+include/types.h:131:5: error: 'COMMUNICATION_ETHERCAT' conflicts with a previous declaration
+     COMMUNICATION_ETHERCAT,
+     ^~~~~~~~~~~~~~~~~~~~~~
+include/types.h:53:5: note: previous declaration 'Communication COMMUNICATION_ETHERCAT'
+     COMMUNICATION_ETHERCAT,
+     ^~~~~~~~~~~~~~~~~~~~~~
+include/types.h:155:3: error: conflicting declaration 'typedef enum FrameType FrameType'
+ } FrameType;
+   ^~~~~~~~~
+include/types.h:66:3: note: previous declaration as 'typedef enum FrameType FrameType'
+ } FrameType;
+   ^~~~~~~~~
+include/types.h:191:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+include/types.h:92:3: note: previous declaration as 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+include/types.h:226:5: error: redefinition of 'MOTOR_STATE_POSITION_CONTROL'
+     MOTOR_STATE_POSITION_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/types.h:223:5: note: 'MOTOR_STATE_POSITION_CONTROL' previously defined here
+     MOTOR_STATE_POSITION_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/types.h:227:5: error: redefinition of 'MOTOR_STATE_VELOCITY_CONTROL'
+     MOTOR_STATE_VELOCITY_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/types.h:224:5: note: 'MOTOR_STATE_VELOCITY_CONTROL' previously defined here
+     MOTOR_STATE_VELOCITY_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/types.h:228:5: error: redefinition of 'MOTOR_STATE_TORQUE_CONTROL'
+     MOTOR_STATE_TORQUE_CONTROL
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/types.h:225:5: note: 'MOTOR_STATE_TORQUE_CONTROL' previously defined here
+     MOTOR_STATE_TORQUE_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/types.h:240:3: error: conflicting declaration 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+include/types.h:100:3: note: previous declaration as 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.h:3,
+                 from src/motor_controller.h:10,
+                 from src/motor_controller.cpp:1:
+src/drivers/motor_driver.h:14:8: error: using typedef-name 'MotorConfig' after 'struct'
+ struct MotorConfig {
+        ^~~~~~~~~~~
+In file included from src/motor_controller.h:5,
+                 from src/motor_controller.cpp:1:
+include/types.h:92:3: note: 'MotorConfig' has a previous declaration here
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:22:
+include/../include/types.h:92:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.h:3,
+                 from src/drivers/rmd_l_driver.cpp:21:
+src/drivers/motor_driver.h:14:8: note: previous declaration as 'struct MotorConfig'
+ struct MotorConfig {
+        ^~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:22:
+include/../include/types.h:112:25: error: 'GEARBOX_PLANETARY' conflicts with a previous declaration
+     GEARBOX_PLANETARY = 0,
+                         ^
+include/../include/types.h:34:5: note: previous declaration 'GearboxType GEARBOX_PLANETARY'
+     GEARBOX_PLANETARY = 0,
+     ^~~~~~~~~~~~~~~~~
+include/../include/types.h:113:5: error: 'GEARBOX_HARMONIC' conflicts with a previous declaration
+     GEARBOX_HARMONIC,
+     ^~~~~~~~~~~~~~~~
+include/../include/types.h:35:5: note: previous declaration 'GearboxType GEARBOX_HARMONIC'
+     GEARBOX_HARMONIC,
+     ^~~~~~~~~~~~~~~~
+include/../include/types.h:114:5: error: 'GEARBOX_DIRECT' conflicts with a previous declaration
+     GEARBOX_DIRECT,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:36:5: note: previous declaration 'GearboxType GEARBOX_DIRECT'
+     GEARBOX_DIRECT,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:115:5: error: 'GEARBOX_CYCLOID' conflicts with a previous declaration
+     GEARBOX_CYCLOID,
+     ^~~~~~~~~~~~~~~
+include/../include/types.h:37:5: note: previous declaration 'GearboxType GEARBOX_CYCLOID'
+     GEARBOX_CYCLOID,
+     ^~~~~~~~~~~~~~~
+include/../include/types.h:116:5: error: 'GEARBOX_LINEAR' conflicts with a previous declaration
+     GEARBOX_LINEAR,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:38:5: note: previous declaration 'GearboxType GEARBOX_LINEAR'
+     GEARBOX_LINEAR,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:118:3: error: conflicting declaration 'typedef enum GearboxType GearboxType'
+ } GearboxType;
+   ^~~~~~~~~~~
+include/../include/types.h:40:3: note: previous declaration as 'typedef enum GearboxType GearboxType'
+ } GearboxType;
+   ^~~~~~~~~~~
+include/../include/types.h:122:22: error: 'DRIVE_STANDARD' conflicts with a previous declaration
+     DRIVE_STANDARD = 0,
+                      ^
+include/../include/types.h:44:5: note: previous declaration 'DriveType DRIVE_STANDARD'
+     DRIVE_STANDARD = 0,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:125:3: error: conflicting declaration 'typedef enum DriveType DriveType'
+ } DriveType;
+   ^~~~~~~~~
+include/../include/types.h:47:3: note: previous declaration as 'typedef enum DriveType DriveType'
+ } DriveType;
+   ^~~~~~~~~
+include/../include/types.h:129:25: error: 'COMMUNICATION_CAN' conflicts with a previous declaration
+     COMMUNICATION_CAN = 0,
+                         ^
+include/../include/types.h:51:5: note: previous declaration 'Communication COMMUNICATION_CAN'
+     COMMUNICATION_CAN = 0,
+     ^~~~~~~~~~~~~~~~~
+include/../include/types.h:130:5: error: 'COMMUNICATION_RS485' conflicts with a previous declaration
+     COMMUNICATION_RS485,
+     ^~~~~~~~~~~~~~~~~~~
+include/../include/types.h:52:5: note: previous declaration 'Communication COMMUNICATION_RS485'
+     COMMUNICATION_RS485,
+     ^~~~~~~~~~~~~~~~~~~
+include/../include/types.h:131:5: error: 'COMMUNICATION_ETHERCAT' conflicts with a previous declaration
+     COMMUNICATION_ETHERCAT,
+     ^~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:53:5: note: previous declaration 'Communication COMMUNICATION_ETHERCAT'
+     COMMUNICATION_ETHERCAT,
+     ^~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:155:3: error: conflicting declaration 'typedef enum FrameType FrameType'
+ } FrameType;
+   ^~~~~~~~~
+include/../include/types.h:66:3: note: previous declaration as 'typedef enum FrameType FrameType'
+ } FrameType;
+   ^~~~~~~~~
+include/../include/types.h:191:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.h:3,
+                 from src/drivers/rmd_l_driver.cpp:21:
+src/drivers/motor_driver.h:14:8: note: previous declaration as 'struct MotorConfig'
+ struct MotorConfig {
+        ^~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:22:
+include/../include/types.h:226:5: error: redefinition of 'MOTOR_STATE_POSITION_CONTROL'
+     MOTOR_STATE_POSITION_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:223:5: note: 'MOTOR_STATE_POSITION_CONTROL' previously defined here
+     MOTOR_STATE_POSITION_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:227:5: error: redefinition of 'MOTOR_STATE_VELOCITY_CONTROL'
+     MOTOR_STATE_VELOCITY_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:224:5: note: 'MOTOR_STATE_VELOCITY_CONTROL' previously defined here
+     MOTOR_STATE_VELOCITY_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:228:5: error: redefinition of 'MOTOR_STATE_TORQUE_CONTROL'
+     MOTOR_STATE_TORQUE_CONTROL
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:225:5: note: 'MOTOR_STATE_TORQUE_CONTROL' previously defined here
+     MOTOR_STATE_TORQUE_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:240:3: error: conflicting declaration 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+include/../include/types.h:100:3: note: previous declaration as 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:2:
+include/../include/types.h:92:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.h:3,
+                 from src/drivers/rmd_x_driver.cpp:1:
+src/drivers/motor_driver.h:14:8: note: previous declaration as 'struct MotorConfig'
+ struct MotorConfig {
+        ^~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:2:
+include/../include/types.h:112:25: error: 'GEARBOX_PLANETARY' conflicts with a previous declaration
+     GEARBOX_PLANETARY = 0,
+                         ^
+include/../include/types.h:34:5: note: previous declaration 'GearboxType GEARBOX_PLANETARY'
+     GEARBOX_PLANETARY = 0,
+     ^~~~~~~~~~~~~~~~~
+include/../include/types.h:113:5: error: 'GEARBOX_HARMONIC' conflicts with a previous declaration
+     GEARBOX_HARMONIC,
+     ^~~~~~~~~~~~~~~~
+include/../include/types.h:35:5: note: previous declaration 'GearboxType GEARBOX_HARMONIC'
+     GEARBOX_HARMONIC,
+     ^~~~~~~~~~~~~~~~
+include/../include/types.h:114:5: error: 'GEARBOX_DIRECT' conflicts with a previous declaration
+     GEARBOX_DIRECT,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:36:5: note: previous declaration 'GearboxType GEARBOX_DIRECT'
+     GEARBOX_DIRECT,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:115:5: error: 'GEARBOX_CYCLOID' conflicts with a previous declaration
+     GEARBOX_CYCLOID,
+     ^~~~~~~~~~~~~~~
+include/../include/types.h:37:5: note: previous declaration 'GearboxType GEARBOX_CYCLOID'
+     GEARBOX_CYCLOID,
+     ^~~~~~~~~~~~~~~
+include/../include/types.h:116:5: error: 'GEARBOX_LINEAR' conflicts with a previous declaration
+     GEARBOX_LINEAR,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:38:5: note: previous declaration 'GearboxType GEARBOX_LINEAR'
+     GEARBOX_LINEAR,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:118:3: error: conflicting declaration 'typedef enum GearboxType GearboxType'
+ } GearboxType;
+   ^~~~~~~~~~~
+include/../include/types.h:40:3: note: previous declaration as 'typedef enum GearboxType GearboxType'
+ } GearboxType;
+   ^~~~~~~~~~~
+include/../include/types.h:122:22: error: 'DRIVE_STANDARD' conflicts with a previous declaration
+     DRIVE_STANDARD = 0,
+                      ^
+include/../include/types.h:44:5: note: previous declaration 'DriveType DRIVE_STANDARD'
+     DRIVE_STANDARD = 0,
+     ^~~~~~~~~~~~~~
+include/../include/types.h:125:3: error: conflicting declaration 'typedef enum DriveType DriveType'
+ } DriveType;
+   ^~~~~~~~~
+include/../include/types.h:47:3: note: previous declaration as 'typedef enum DriveType DriveType'
+ } DriveType;
+   ^~~~~~~~~
+include/../include/types.h:129:25: error: 'COMMUNICATION_CAN' conflicts with a previous declaration
+     COMMUNICATION_CAN = 0,
+                         ^
+include/../include/types.h:51:5: note: previous declaration 'Communication COMMUNICATION_CAN'
+     COMMUNICATION_CAN = 0,
+     ^~~~~~~~~~~~~~~~~
+include/../include/types.h:130:5: error: 'COMMUNICATION_RS485' conflicts with a previous declaration
+     COMMUNICATION_RS485,
+     ^~~~~~~~~~~~~~~~~~~
+include/../include/types.h:52:5: note: previous declaration 'Communication COMMUNICATION_RS485'
+     COMMUNICATION_RS485,
+     ^~~~~~~~~~~~~~~~~~~
+include/../include/types.h:131:5: error: 'COMMUNICATION_ETHERCAT' conflicts with a previous declaration
+     COMMUNICATION_ETHERCAT,
+     ^~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:53:5: note: previous declaration 'Communication COMMUNICATION_ETHERCAT'
+     COMMUNICATION_ETHERCAT,
+     ^~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:155:3: error: conflicting declaration 'typedef enum FrameType FrameType'
+ } FrameType;
+   ^~~~~~~~~
+include/../include/types.h:66:3: note: previous declaration as 'typedef enum FrameType FrameType'
+ } FrameType;
+   ^~~~~~~~~
+include/../include/types.h:191:3: error: conflicting declaration 'typedef struct MotorConfig MotorConfig'
+ } MotorConfig;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.h:3,
+                 from src/drivers/rmd_x_driver.cpp:1:
+src/drivers/motor_driver.h:14:8: note: previous declaration as 'struct MotorConfig'
+ struct MotorConfig {
+        ^~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:2:
+include/../include/types.h:226:5: error: redefinition of 'MOTOR_STATE_POSITION_CONTROL'
+     MOTOR_STATE_POSITION_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:223:5: note: 'MOTOR_STATE_POSITION_CONTROL' previously defined here
+     MOTOR_STATE_POSITION_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:227:5: error: redefinition of 'MOTOR_STATE_VELOCITY_CONTROL'
+     MOTOR_STATE_VELOCITY_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:224:5: note: 'MOTOR_STATE_VELOCITY_CONTROL' previously defined here
+     MOTOR_STATE_VELOCITY_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:228:5: error: redefinition of 'MOTOR_STATE_TORQUE_CONTROL'
+     MOTOR_STATE_TORQUE_CONTROL
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:225:5: note: 'MOTOR_STATE_TORQUE_CONTROL' previously defined here
+     MOTOR_STATE_TORQUE_CONTROL,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+include/../include/types.h:240:3: error: conflicting declaration 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+include/../include/types.h:100:3: note: previous declaration as 'typedef struct PIDController PIDController'
+ } PIDController;
+   ^~~~~~~~~~~~~
+In file included from src/motor_controller.cpp:2:
+src/protocols/pal.h:15:24: error: using typedef-name 'FrameType' after 'enum'
+ enum class FrameType : uint8_t {
+                        ^~~~~~~
+In file included from src/motor_controller.h:5,
+                 from src/motor_controller.cpp:1:
+include/types.h:66:3: note: 'FrameType' has a previous declaration here
+ } FrameType;
+   ^~~~~~~~~
+In file included from src/motor_controller.cpp:2:
+src/protocols/pal.h:29:26: error: using typedef-name 'MotorSeries' after 'enum'
+ enum class MotorSeries : uint8_t {
+                          ^~~~~~~
+In file included from src/motor_controller.h:5,
+                 from src/motor_controller.cpp:1:
+include/types.h:30:3: note: 'MotorSeries' has a previous declaration here
+ } MotorSeries;
+   ^~~~~~~~~~~
+In file included from src/motor_controller.cpp:2:
+src/protocols/pal.h:46:24: error: using typedef-name 'DriveType' after 'enum'
+ enum class DriveType : uint8_t {
+                        ^~~~~~~
+In file included from src/motor_controller.h:5,
+                 from src/motor_controller.cpp:1:
+include/types.h:47:3: note: 'DriveType' has a previous declaration here
+ } DriveType;
+   ^~~~~~~~~
+In file included from src/motor_controller.cpp:2:
+src/protocols/pal.h:52:26: error: using typedef-name 'GearboxType' after 'enum'
+ enum class GearboxType : uint8_t {
+                          ^~~~~~~
+In file included from src/motor_controller.h:5,
+                 from src/motor_controller.cpp:1:
+include/types.h:40:3: note: 'GearboxType' has a previous declaration here
+ } GearboxType;
+   ^~~~~~~~~~~
+In file included from src/motor_controller.cpp:2:
+src/protocols/pal.h:60:28: error: using typedef-name 'Communication' after 'enum'
+ enum class Communication : uint8_t {
+                            ^~~~~~~
+In file included from src/motor_controller.h:5,
+                 from src/motor_controller.cpp:1:
+include/types.h:55:3: note: 'Communication' has a previous declaration here
+ } Communication;
+   ^~~~~~~~~~~~~
+In file included from src/motor_controller.cpp:2:
+src/protocols/pal.h:67:8: error: using typedef-name 'MotorConfig' after 'struct'
+ struct MotorConfig {
+        ^~~~~~~~~~~
+In file included from src/motor_controller.h:5,
+                 from src/motor_controller.cpp:1:
+include/types.h:92:3: note: 'MotorConfig' has a previous declaration here
+ } MotorConfig;
+   ^~~~~~~~~~~
+src/motor_controller.cpp: In member function 'bool MotorController::initialize()':
+src/motor_controller.cpp:15:16: error: 'struct EncoderInterface' has no member named 'initialize'; did you mean 'initialized'?
+   if (!encoder.initialize()) {
+                ^~~~~~~~~~
+                initialized
+src/motor_controller.cpp:21:13: error: 'struct CommunicationInterface' has no member named 'initialize'; did you mean 'initialized'?
+   if (!comm.initialize()) {
+             ^~~~~~~~~~
+             initialized
+src/motor_controller.cpp:28:10: error: 'rmd_x_driver' was not declared in this scope
+     if (!rmd_x_driver.initialize()) {
+          ^~~~~~~~~~~~
+src/motor_controller.cpp:28:10: note: suggested alternative: 'motorDriver'
+     if (!rmd_x_driver.initialize()) {
+          ^~~~~~~~~~~~
+          motorDriver
+src/motor_controller.cpp:29:19: error: 'FAULT_MOTOR_DRIVER' was not declared in this scope
+       faultCode = FAULT_MOTOR_DRIVER;
+                   ^~~~~~~~~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:31:
+src/protocols/pal.h:15:24: error: using typedef-name 'FrameType' after 'enum'
+ enum class FrameType : uint8_t {
+                        ^~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:22:
+include/../include/types.h:66:3: note: 'FrameType' has a previous declaration here
+ } FrameType;
+   ^~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:31:
+src/protocols/pal.h:29:26: error: using typedef-name 'MotorSeries' after 'enum'
+ enum class MotorSeries : uint8_t {
+                          ^~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:22:
+include/../include/types.h:30:3: note: 'MotorSeries' has a previous declaration here
+ } MotorSeries;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:31:
+src/protocols/pal.h:46:24: error: using typedef-name 'DriveType' after 'enum'
+ enum class DriveType : uint8_t {
+                        ^~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:22:
+include/../include/types.h:47:3: note: 'DriveType' has a previous declaration here
+ } DriveType;
+   ^~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:31:
+src/protocols/pal.h:52:26: error: using typedef-name 'GearboxType' after 'enum'
+ enum class GearboxType : uint8_t {
+                          ^~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:22:
+include/../include/types.h:40:3: note: 'GearboxType' has a previous declaration here
+ } GearboxType;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:31:
+src/protocols/pal.h:60:28: error: using typedef-name 'Communication' after 'enum'
+ enum class Communication : uint8_t {
+                            ^~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:22:
+include/../include/types.h:55:3: note: 'Communication' has a previous declaration here
+ } Communication;
+   ^~~~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:31:
+src/protocols/pal.h:67:8: error: redefinition of 'struct MotorConfig'
+ struct MotorConfig {
+        ^~~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.h:3,
+                 from src/drivers/rmd_l_driver.cpp:21:
+src/drivers/motor_driver.h:14:8: note: previous definition of 'struct MotorConfig'
+ struct MotorConfig {
+        ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:46:1: error: definition of explicitly-defaulted 'RMDLDriver::~RMDLDriver()'
+ RMDLDriver::~RMDLDriver() = default;
+ ^~~~~~~~~~
+In file included from src/drivers/rmd_l_driver.cpp:21:
+src/drivers/rmd_l_driver.h:8:5: note: 'virtual RMDLDriver::~RMDLDriver()' explicitly defaulted here
+     ~RMDLDriver() override = default;
+     ^
+src/drivers/rmd_l_driver.cpp: In member function 'virtual bool RMDLDriver::init()':
+src/drivers/rmd_l_driver.cpp:50:17: error: 'struct MotorConfig' has no member named 'communication'
+     if (_config.communication == COMMUNICATION_CAN) {
+                 ^~~~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:51:22: error: 'getInstance' is not a member of 'CANBus'
+         if (!CANBus::getInstance().begin(_config.canBusSpeed)) {
+                      ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:51:50: error: 'struct MotorConfig' has no member named 'canBusSpeed'
+         if (!CANBus::getInstance().begin(_config.canBusSpeed)) {
+                                                  ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:58:17: error: 'struct MotorConfig' has no member named 'communication'
+     if (_config.communication == COMMUNICATION_RS485) {
+                 ^~~~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:59:21: error: 'getInstance' is not a member of 'RS485'
+         if (!RS485::getInstance().begin(_config.rs485BaudRate)) {
+                     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:59:49: error: 'struct MotorConfig' has no member named 'rs485BaudRate'
+         if (!RS485::getInstance().begin(_config.rs485BaudRate)) {
+                                                 ^~~~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:66:19: error: 'getInstance' is not a member of 'Encoder'
+     if (!Encoder::getInstance().begin(_config.encoderPinA, _config.encoderPinB, _config.encoderPinZ)) {
+                   ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:66:47: error: 'struct MotorConfig' has no member named 'encoderPinA'; did you mean 'encoderBits'?
+     if (!Encoder::getInstance().begin(_config.encoderPinA, _config.encoderPinB, _config.encoderPinZ)) {
+                                               ^~~~~~~~~~~
+                                               encoderBits
+src/drivers/rmd_l_driver.cpp:66:68: error: 'struct MotorConfig' has no member named 'encoderPinB'; did you mean 'encoderBits'?
+     if (!Encoder::getInstance().begin(_config.encoderPinA, _config.encoderPinB, _config.encoderPinZ)) {
+                                                                    ^~~~~~~~~~~
+                                                                    encoderBits
+src/drivers/rmd_l_driver.cpp:66:89: error: 'struct MotorConfig' has no member named 'encoderPinZ'; did you mean 'encoderBits'?
+     if (!Encoder::getInstance().begin(_config.encoderPinA, _config.encoderPinB, _config.encoderPinZ)) {
+                                                                                         ^~~~~~~~~~~
+                                                                                         encoderBits
+src/drivers/rmd_l_driver.cpp:72:10: error: 'MotorDriver' has not been declared
+     if (!MotorDriver::getInstance().begin(_config.motorPinPWM, _config.motorPinDir)) {
+          ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:72:51: error: 'struct MotorConfig' has no member named 'motorPinPWM'
+     if (!MotorDriver::getInstance().begin(_config.motorPinPWM, _config.motorPinDir)) {
+                                                   ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:72:72: error: 'struct MotorConfig' has no member named 'motorPinDir'; did you mean 'MotorConfig'?
+     if (!MotorDriver::getInstance().begin(_config.motorPinPWM, _config.motorPinDir)) {
+                                                                        ^~~~~~~~~~~
+                                                                        MotorConfig
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::deinit()':
+src/drivers/rmd_l_driver.cpp:88:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().end();
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:89:14: error: 'getInstance' is not a member of 'Encoder'
+     Encoder::getInstance().end();
+              ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual MotorStatus RMDLDriver::getStatus()':
+src/drivers/rmd_l_driver.cpp:95:26: error: 'getInstance' is not a member of 'Encoder'
+     _position = Encoder::getInstance().getPosition();
+                          ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:96:26: error: 'getInstance' is not a member of 'Encoder'
+     _velocity = Encoder::getInstance().getVelocity();
+                          ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:99:16: error: 'MotorDriver' has not been declared
+     _current = MotorDriver::getInstance().getCurrent();
+                ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:102:20: error: 'MotorDriver' has not been declared
+     _temperature = MotorDriver::getInstance().getTemperature();
+                    ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:105:13: error: request for member 'position' in '((RMDLDriver*)this)->RMDLDriver::_status', which is of non-class type 'MotorStatus'
+     _status.position = _position;
+             ^~~~~~~~
+src/drivers/rmd_l_driver.cpp:106:13: error: request for member 'velocity' in '((RMDLDriver*)this)->RMDLDriver::_status', which is of non-class type 'MotorStatus'
+     _status.velocity = _velocity;
+             ^~~~~~~~
+src/drivers/rmd_l_driver.cpp:107:13: error: request for member 'current' in '((RMDLDriver*)this)->RMDLDriver::_status', which is of non-class type 'MotorStatus'
+     _status.current = _current;
+             ^~~~~~~
+src/drivers/rmd_l_driver.cpp:108:13: error: request for member 'temperature' in '((RMDLDriver*)this)->RMDLDriver::_status', which is of non-class type 'MotorStatus'
+     _status.temperature = _temperature;
+             ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:109:13: error: request for member 'enabled' in '((RMDLDriver*)this)->RMDLDriver::_status', which is of non-class type 'MotorStatus'
+     _status.enabled = MotorDriver::getInstance().isEnabled();
+             ^~~~~~~
+src/drivers/rmd_l_driver.cpp:109:23: error: 'MotorDriver' has not been declared
+     _status.enabled = MotorDriver::getInstance().isEnabled();
+                       ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::setPosition(float)':
+src/drivers/rmd_l_driver.cpp:135:26: error: 'struct MotorConfig' has no member named 'maxPosition'
+     if (target > _config.maxPosition) {
+                          ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:136:26: error: 'struct MotorConfig' has no member named 'maxPosition'
+         target = _config.maxPosition;
+                          ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:137:34: error: 'struct MotorConfig' has no member named 'maxPosition'
+     } else if (target < -_config.maxPosition) {
+                                  ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:138:27: error: 'struct MotorConfig' has no member named 'maxPosition'
+         target = -_config.maxPosition;
+                           ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp:141:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().setPosition(target);
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::setVelocity(float)':
+src/drivers/rmd_l_driver.cpp:152:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().setVelocity(target);
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::setTorque(float)':
+src/drivers/rmd_l_driver.cpp:163:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().setTorque(target);
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::enable()':
+src/drivers/rmd_l_driver.cpp:167:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().enable();
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::disable()':
+src/drivers/rmd_l_driver.cpp:172:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().disable();
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::faultReset()':
+src/drivers/rmd_l_driver.cpp:177:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().faultReset();
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::setLimits(float, float)':
+src/drivers/rmd_l_driver.cpp:184:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().setLimits(maxVelocity, maxTorque);
+     ^~~~~~~~~~~
+src/drivers/rmd_l_driver.cpp: In member function 'virtual void RMDLDriver::setGains(float, float, float)':
+src/drivers/rmd_l_driver.cpp:191:5: error: 'MotorDriver' has not been declared
+     MotorDriver::getInstance().setGains(kp, ki, kd);
+     ^~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:11:
+src/protocols/pal.h:15:24: error: using typedef-name 'FrameType' after 'enum'
+ enum class FrameType : uint8_t {
+                        ^~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:2:
+include/../include/types.h:66:3: note: 'FrameType' has a previous declaration here
+ } FrameType;
+   ^~~~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:11:
+src/protocols/pal.h:29:26: error: using typedef-name 'MotorSeries' after 'enum'
+ enum class MotorSeries : uint8_t {
+                          ^~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:2:
+include/../include/types.h:30:3: note: 'MotorSeries' has a previous declaration here
+ } MotorSeries;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:11:
+src/protocols/pal.h:46:24: error: using typedef-name 'DriveType' after 'enum'
+ enum class DriveType : uint8_t {
+                        ^~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:2:
+include/../include/types.h:47:3: note: 'DriveType' has a previous declaration here
+ } DriveType;
+   ^~~~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:11:
+src/protocols/pal.h:52:26: error: using typedef-name 'GearboxType' after 'enum'
+ enum class GearboxType : uint8_t {
+                          ^~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:2:
+include/../include/types.h:40:3: note: 'GearboxType' has a previous declaration here
+ } GearboxType;
+   ^~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:11:
+src/protocols/pal.h:60:28: error: using typedef-name 'Communication' after 'enum'
+ enum class Communication : uint8_t {
+                            ^~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:2:
+include/../include/types.h:55:3: note: 'Communication' has a previous declaration here
+ } Communication;
+   ^~~~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.cpp:11:
+src/protocols/pal.h:67:8: error: redefinition of 'struct MotorConfig'
+ struct MotorConfig {
+        ^~~~~~~~~~~
+In file included from src/drivers/rmd_x_driver.h:3,
+                 from src/drivers/rmd_x_driver.cpp:1:
+src/drivers/motor_driver.h:14:8: note: previous definition of 'struct MotorConfig'
+ struct MotorConfig {
+        ^~~~~~~~~~~
+src/drivers/rmd_x_driver.cpp: In constructor 'RMDXDriver::RMDXDriver(uint8_t, const MotorConfig&)':
+src/drivers/rmd_x_driver.cpp:17:7: error: class 'RMDXDriver' does not have any field named '_motorId'
+     : _motorId(motorId), _config(config), _status(MOTOR_STATUS_IDLE),
+       ^~~~~~~~
+src/drivers/rmd_x_driver.cpp:17:26: error: class 'RMDXDriver' does not have any field named '_config'
+     : _motorId(motorId), _config(config), _status(MOTOR_STATUS_IDLE),
+                          ^~~~~~~
+src/drivers/rmd_x_driver.cpp:17:43: error: class 'RMDXDriver' does not have any field named '_status'
+     : _motorId(motorId), _config(config), _status(MOTOR_STATUS_IDLE),
+                                           ^~~~~~~
+src/drivers/rmd_x_driver.cpp:18:7: error: class 'RMDXDriver' does not have any field named '_temperature'
+       _temperature(0), _position(0), _velocity(0), _current(0),
+       ^~~~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:18:24: error: class 'RMDXDriver' does not have any field named '_position'
+       _temperature(0), _position(0), _velocity(0), _current(0),
+                        ^~~~~~~~~
+src/drivers/rmd_x_driver.cpp:18:38: error: class 'RMDXDriver' does not have any field named '_velocity'
+       _temperature(0), _position(0), _velocity(0), _current(0),
+                                      ^~~~~~~~~
+src/drivers/rmd_x_driver.cpp:18:52: error: class 'RMDXDriver' does not have any field named '_current'
+       _temperature(0), _position(0), _velocity(0), _current(0),
+                                                    ^~~~~~~~
+src/drivers/rmd_x_driver.cpp:19:7: error: class 'RMDXDriver' does not have any field named '_gearboxRatio'
+       _gearboxRatio(1.0f), _backlashCompensation(0.0f) {}
+       ^~~~~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:19:28: error: class 'RMDXDriver' does not have any field named '_backlashCompensation'
+       _gearboxRatio(1.0f), _backlashCompensation(0.0f) {}
+                            ^~~~~~~~~~~~~~~~~~~~~
+src/drivers/rmd_x_driver.cpp: In member function 'virtual bool RMDXDriver::init()':
+src/drivers/rmd_x_driver.cpp:35:5: error: '_status' was not declared in this scope
+     _status = MOTOR_STATUS_IDLE;
+     ^~~~~~~
+src/drivers/rmd_x_driver.cpp:35:5: note: suggested alternative: '_stat_r'
+     _status = MOTOR_STATUS_IDLE;
+     ^~~~~~~
+     _stat_r
+src/drivers/rmd_x_driver.cpp: In member function 'virtual void RMDXDriver::deinit()':
+src/drivers/rmd_x_driver.cpp:42:5: error: '_status' was not declared in this scope
+     _status = MOTOR_STATUS_DISABLED;
+     ^~~~~~~
+src/motor_controller.cpp:29:19: note: suggested alternative: 'FAULT_MOTOR'
+       faultCode = FAULT_MOTOR_DRIVER;
+                   ^~~~~~~~~~~~~~~~~~
+                   FAULT_MOTOR
+src/motor_controller.cpp: In member function 'void MotorController::update()':
+src/motor_controller.cpp:69:11: error: 'struct EncoderInterface' has no member named 'read'
+   encoder.read();
+           ^~~~
+src/drivers/rmd_x_driver.cpp:42:5: note: suggested alternative: '_stat_r'
+     _status = MOTOR_STATUS_DISABLED;
+     ^~~~~~~
+     _stat_r
+src/drivers/rmd_x_driver.cpp: In member function 'virtual MotorStatus RMDXDriver::getStatus()':
+src/drivers/rmd_x_driver.cpp:46:12: error: '_status' was not declared in this scope
+     return _status;
+            ^~~~~~~
+src/drivers/rmd_x_driver.cpp:46:12: note: suggested alternative: '_stat_r'
+     return _status;
+            ^~~~~~~
+            _stat_r
+src/drivers/rmd_x_driver.cpp: In member function 'virtual float RMDXDriver::getTemperature()':
+src/drivers/rmd_x_driver.cpp:53:5: error: '_temperature' was not declared in this scope
+     _temperature = (voltage - 0.5f) * 100.0f;
+     ^~~~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:53:5: note: suggested alternative: 'getTemperature'
+     _temperature = (voltage - 0.5f) * 100.0f;
+     ^~~~~~~~~~~~
+     getTemperature
+src/drivers/rmd_x_driver.cpp: In member function 'virtual int32_t RMDXDriver::getPosition()':
+src/drivers/rmd_x_driver.cpp:59:5: error: '_position' was not declared in this scope
+     _position = 0;
+     ^~~~~~~~~
+src/main.cpp: In function 'void setup()':
+<command-line>: error: 'PROTOCOL_CAN' was not declared in this scope
+src/main.cpp:37:49: note: in expansion of macro 'PROTOCOL'
+     Logger::info("Protocol: " + String((uint8_t)PROTOCOL));
+                                                 ^~~~~~~~
+src/drivers/rmd_x_driver.cpp:59:5: note: suggested alternative: 'getPosition'
+     _position = 0;
+     ^~~~~~~~~
+     getPosition
+src/drivers/rmd_x_driver.cpp: In member function 'virtual float RMDXDriver::getVelocity()':
+src/drivers/rmd_x_driver.cpp:65:5: error: '_velocity' was not declared in this scope
+     _velocity = 0.0f;
+     ^~~~~~~~~
+src/drivers/rmd_x_driver.cpp:65:5: note: suggested alternative: 'getVelocity'
+     _velocity = 0.0f;
+     ^~~~~~~~~
+     getVelocity
+src/drivers/rmd_x_driver.cpp: In member function 'virtual float RMDXDriver::getCurrent()':
+src/drivers/rmd_x_driver.cpp:72:5: error: '_current' was not declared in this scope
+     _current = (voltage - 1.65f) * 10.0f; // Simplified conversion
+     ^~~~~~~~
+<command-line>: note: suggested alternative: 'PROTOCOL_NAME'
+src/main.cpp:37:49: note: in expansion of macro 'PROTOCOL'
+     Logger::info("Protocol: " + String((uint8_t)PROTOCOL));
+                                                 ^~~~~~~~
+<command-line>: error: 'MOTOR_SERIES_RMD_X' was not declared in this scope
+src/main.cpp:40:56: note: in expansion of macro 'MOTOR_SERIES'
+     motorConfig.motorSeries = static_cast<MotorSeries>(MOTOR_SERIES);
+                                                        ^~~~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:72:5: note: suggested alternative: '_reent'
+     _current = (voltage - 1.65f) * 10.0f; // Simplified conversion
+     ^~~~~~~~
+     _reent
+src/drivers/rmd_x_driver.cpp: In member function 'virtual void RMDXDriver::setPosition(float)':
+src/drivers/rmd_x_driver.cpp:78:37: error: '_gearboxRatio' was not declared in this scope
+     float adjustedTarget = target * _gearboxRatio + _backlashCompensation;
+                                     ^~~~~~~~~~~~~
+<command-line>: note: suggested alternative: 'MOTOR_SERIES_NAME'
+src/main.cpp:40:56: note: in expansion of macro 'MOTOR_SERIES'
+     motorConfig.motorSeries = static_cast<MotorSeries>(MOTOR_SERIES);
+                                                        ^~~~~~~~~~~~
+<command-line>: error: 'PLANETARY' was not declared in this scope
+src/main.cpp:44:56: note: in expansion of macro 'GEARBOX_TYPE'
+     motorConfig.gearboxType = static_cast<GearboxType>(GEARBOX_TYPE);
+                                                        ^~~~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:78:53: error: '_backlashCompensation' was not declared in this scope
+     float adjustedTarget = target * _gearboxRatio + _backlashCompensation;
+                                                     ^~~~~~~~~~~~~~~~~~~~~
+<command-line>: note: suggested alternative: 'LC_MONETARY'
+src/main.cpp:44:56: note: in expansion of macro 'GEARBOX_TYPE'
+     motorConfig.gearboxType = static_cast<GearboxType>(GEARBOX_TYPE);
+                                                        ^~~~~~~~~~~~
+<command-line>: error: 'STANDARD' was not declared in this scope
+src/main.cpp:46:52: note: in expansion of macro 'DRIVE_TYPE'
+     motorConfig.driveType = static_cast<DriveType>(DRIVE_TYPE);
+                                                    ^~~~~~~~~~
+<command-line>: error: 'COMMUNICATION_CAN' was not declared in this scope
+src/main.cpp:47:60: note: in expansion of macro 'COMMUNICATION'
+     motorConfig.communication = static_cast<Communication>(COMMUNICATION);
+                                                            ^~~~~~~~~~~~~
+<command-line>: note: suggested alternative: 'COMMUNICATION'
+src/main.cpp:47:60: note: in expansion of macro 'COMMUNICATION'
+     motorConfig.communication = static_cast<Communication>(COMMUNICATION);
+                                                            ^~~~~~~~~~~~~
+src/main.cpp: In function 'void loop()':
+src/main.cpp:92:21: error: 'motorController' was not declared in this scope
+                     motorController.getState(),
+                     ^~~~~~~~~~~~~~~
+src/drivers/rmd_x_driver.cpp: In member function 'virtual void RMDXDriver::setVelocity(float)':
+src/drivers/rmd_x_driver.cpp:85:37: error: '_gearboxRatio' was not declared in this scope
+     float adjustedTarget = target * _gearboxRatio;
+                                     ^~~~~~~~~~~~~
+src/main.cpp:92:21: note: suggested alternative: 'motorConfig'
+                     motorController.getState(),
+                     ^~~~~~~~~~~~~~~
+                     motorConfig
+In file included from src/drivers/motor_driver.h:3,
+                 from src/drivers/rmd_x_driver.h:3,
+                 from src/drivers/rmd_x_driver.cpp:1:
+src/drivers/rmd_x_driver.cpp: In member function 'virtual void RMDXDriver::setTorque(float)':
+src/drivers/rmd_x_driver.cpp:91:33: error: '_config' was not declared in this scope
+     target = constrain(target, -_config.max_torque, _config.max_torque);
+                                 ^~~~~~~
+/home/roko/.platformio/packages/framework-arduinoespressif32/cores/esp32/Arduino.h:76:41: note: in definition of macro 'constrain'
+ #define constrain(amt,low,high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))
+                                         ^~~
+*** [.pio/build/esp32s3dev/src/drivers/rmd_l_driver.cpp.o] Error 1
+src/drivers/rmd_x_driver.cpp:91:33: note: suggested alternative: 'CANConfig'
+     target = constrain(target, -_config.max_torque, _config.max_torque);
+                                 ^~~~~~~
+/home/roko/.platformio/packages/framework-arduinoespressif32/cores/esp32/Arduino.h:76:41: note: in definition of macro 'constrain'
+ #define constrain(amt,low,high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))
+                                         ^~~
+src/drivers/rmd_x_driver.cpp: In member function 'virtual void RMDXDriver::enable()':
+src/drivers/rmd_x_driver.cpp:96:5: error: '_status' was not declared in this scope
+     _status = MOTOR_STATUS_ENABLED;
+     ^~~~~~~
+src/drivers/rmd_x_driver.cpp:96:5: note: suggested alternative: '_stat_r'
+     _status = MOTOR_STATUS_ENABLED;
+     ^~~~~~~
+     _stat_r
+src/drivers/rmd_x_driver.cpp: In member function 'virtual void RMDXDriver::disable()':
+src/drivers/rmd_x_driver.cpp:100:5: error: '_status' was not declared in this scope
+     _status = MOTOR_STATUS_DISABLED;
+     ^~~~~~~
+src/drivers/rmd_x_driver.cpp:100:5: note: suggested alternative: '_stat_r'
+     _status = MOTOR_STATUS_DISABLED;
+     ^~~~~~~
+     _stat_r
+src/drivers/rmd_x_driver.cpp: In member function 'virtual void RMDXDriver::faultReset()':
+src/drivers/rmd_x_driver.cpp:106:5: error: '_status' was not declared in this scope
+     _status = MOTOR_STATUS_IDLE;
+     ^~~~~~~
+src/drivers/rmd_x_driver.cpp:106:5: note: suggested alternative: '_stat_r'
+     _status = MOTOR_STATUS_IDLE;
+     ^~~~~~~
+     _stat_r
+src/drivers/rmd_x_driver.cpp: In member function 'virtual void RMDXDriver::setLimits(float, float)':
+src/drivers/rmd_x_driver.cpp:110:5: error: '_config' was not declared in this scope
+     _config.max_velocity_limit = maxVelocity;
+     ^~~~~~~
+src/drivers/rmd_x_driver.cpp:110:5: note: suggested alternative: 'CANConfig'
+     _config.max_velocity_limit = maxVelocity;
+     ^~~~~~~
+     CANConfig
+src/drivers/rmd_x_driver.cpp: In member function 'virtual void RMDXDriver::setGains(float, float, float)':
+src/drivers/rmd_x_driver.cpp:115:5: error: '_config' was not declared in this scope
+     _config.kp = kp;
+     ^~~~~~~
+src/drivers/rmd_x_driver.cpp:115:5: note: suggested alternative: 'CANConfig'
+     _config.kp = kp;
+     ^~~~~~~
+     CANConfig
+src/drivers/rmd_x_driver.cpp: At global scope:
+src/drivers/rmd_x_driver.cpp:120:6: error: no declaration matches 'void RMDXDriver::setGearboxRatio(float)'
+ void RMDXDriver::setGearboxRatio(float ratio) {
+      ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:120:6: note: no functions named 'void RMDXDriver::setGearboxRatio(float)'
+In file included from src/drivers/rmd_x_driver.cpp:1:
+src/drivers/rmd_x_driver.h:5:7: note: 'class RMDXDriver' defined here
+ class RMDXDriver : public IMotorDriver {
+       ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:124:6: error: no declaration matches 'void RMDXDriver::setBacklashCompensation(float)'
+ void RMDXDriver::setBacklashCompensation(float compensation) {
+      ^~~~~~~~~~
+src/drivers/rmd_x_driver.cpp:124:6: note: no functions named 'void RMDXDriver::setBacklashCompensation(float)'
+In file included from src/drivers/rmd_x_driver.cpp:1:
+src/drivers/rmd_x_driver.h:5:7: note: 'class RMDXDriver' defined here
+ class RMDXDriver : public IMotorDriver {
+       ^~~~~~~~~~
+*** [.pio/build/esp32s3dev/src/motor_controller.cpp.o] Error 1
+*** [.pio/build/esp32s3dev/src/main.cpp.o] Error 1
+*** [.pio/build/esp32s3dev/src/drivers/rmd_x_driver.cpp.o] Error 1
+========================== [FAILED] Took 5.95 seconds ==========================
+
+Environment    Status    Duration
+-------------  --------  ------------
+esp32          FAILED    00:00:03.708
+esp32s3        FAILED    00:00:02.360
+esp32c3        FAILED    00:00:02.840
+esp32s3dev     FAILED    00:00:05.947
+==================== 4 failed, 0 succeeded in 00:00:14.855 ====================

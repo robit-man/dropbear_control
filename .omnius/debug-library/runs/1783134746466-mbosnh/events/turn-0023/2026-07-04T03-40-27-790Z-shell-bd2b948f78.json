@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "id": "2026-07-04T03-40-27-790Z-shell-bd2b948f78",
+  "kind": "tool_result",
+  "timestamp": "2026-07-04T03:40:27.790Z",
+  "runId": "1783134746466-mbosnh",
+  "sessionId": "1783134746466-mbosnh",
+  "cwd": "/home/roko/Documents/Projects/myactuator",
+  "turn": 23,
+  "toolCallId": "call_79jwd1z0",
+  "toolName": "shell",
+  "toolFingerprint": "shell:action_reason=#object:{\"evidence\":Need correct hash to edit motor_controller.h\\,\"expected_result\":SHA-256 hash of motor_controller.h\\,\"intent\":Get hash for file editing\\,\"scope\":discovery\\,\"task_anchor\":get motor_controller.h hash},command=sha256sum firmware/esp32/src/motor_controller.h",
+  "argsHash": "bd2b948f78",
+  "argsPreview": "{\"command\":\"sha256sum firmware/esp32/src/motor_controller.h\"}",
+  "success": true,
+  "durationMs": 408,
+  "outputChars": 104,
+  "errorChars": 0,
+  "outputPreview": "364e621c50a24f4204654fe9d2ce2128d28c7b510b592f895f5b4950feedf7d0  firmware/esp32/src/motor_controller.h\n",
+  "mutation": {
+    "realFileMutation": false,
+    "shellFilesystemMutation": false,
+    "paths": []
+  },
+  "focusSupervisor": {
+    "mode": "auto",
+    "enabled": true,
+    "state": "observe",
+    "directive": null,
+    "lastDecision": "pass",
+    "lastReason": "",
+    "context": {
+      "pressureRatio": 1,
+      "estimatedTokens": 1166,
+      "rawDiscoveryChars": 0,
+      "activeEvidenceChars": 13000,
+      "activeFrameChars": 13000,
+      "signalToNoiseRatio": null,
+      "droppedSignals": 1,
+      "truncatedSignals": 2
+    }
+  },
+  "actionReason": {
+    "task_anchor": "get motor_controller.h hash",
+    "intent": "Get hash for file editing",
+    "evidence": "Need correct hash to edit motor_controller.h",
+    "expected_result": "SHA-256 hash of motor_controller.h",
+    "scope": "discovery"
+  },
+  "repeatShortCircuit": false,
+  "runtimeAuthored": false,
+  "diagnoses": [],
+  "summary": "shell success | command=sha256sum firmware/esp32/src/motor_controller.h",
+  "anchors": [
+    {
+      "label": "debug_contract",
+      "kind": "contract",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/CONTRACT.md",
+      "note": "Schema and semantics for this debug library.",
+      "relativePath": ".omnius/debug-library/CONTRACT.md",
+      "exists": true
+    },
+    {
+      "label": "run_readme",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783134746466-mbosnh/README.md",
+      "note": "Human summary for this run.",
+      "relativePath": ".omnius/debug-library/runs/1783134746466-mbosnh/README.md",
+      "exists": true
+    },
+    {
+      "label": "run_index",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783134746466-mbosnh/index.json",
+      "note": "Machine-readable run summary.",
+      "relativePath": ".omnius/debug-library/runs/1783134746466-mbosnh/index.json",
+      "exists": true
+    },
+    {
+      "label": "run_events_jsonl",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783134746466-mbosnh/events.jsonl",
+      "note": "Append-only normalized event stream.",
+      "relativePath": ".omnius/debug-library/runs/1783134746466-mbosnh/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "workboard_active",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783134746466-mbosnh/active.json",
+      "note": "Durable workboard snapshot, when present.",
+      "relativePath": ".omnius/workboards/1783134746466-mbosnh/active.json",
+      "exists": true
+    },
+    {
+      "label": "workboard_events",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783134746466-mbosnh/events.jsonl",
+      "note": "Durable workboard event log, when present.",
+      "relativePath": ".omnius/workboards/1783134746466-mbosnh/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "context_dump_latest",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/latest.json",
+      "note": "Latest outbound model request dump.",
+      "relativePath": ".omnius/context-window-dumps/latest.json",
+      "exists": true
+    },
+    {
+      "label": "context_dump_index",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/index.jsonl",
+      "note": "Append-only context-window dump summaries.",
+      "relativePath": ".omnius/context-window-dumps/index.jsonl",
+      "exists": true
+    },
+    {
+      "label": "trajectory_log",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/trajectories/trajectories.jsonl",
+      "note": "Completed run trajectory records.",
+      "relativePath": ".omnius/trajectories/trajectories.jsonl",
+      "exists": true
+    },
+    {
+      "label": "checkpoints_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/checkpoints",
+      "note": "Turn-boundary checkpoints.",
+      "relativePath": ".omnius/checkpoints",
+      "exists": true
+    },
+    {
+      "label": "phases_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/phases",
+      "note": "Phase transcript summaries.",
+      "relativePath": ".omnius/phases",
+      "exists": true
+    },
+    {
+      "label": "completion_ledgers_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/completion-ledgers",
+      "note": "Completion evidence ledgers.",
+      "relativePath": ".omnius/completion-ledgers",
+      "exists": true
+    },
+    {
+      "label": "event_json",
+      "kind": "event",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783134746466-mbosnh/events/turn-0023/2026-07-04T03-40-27-790Z-shell-bd2b948f78.json",
+      "note": "This normalized debug event.",
+      "relativePath": ".omnius/debug-library/runs/1783134746466-mbosnh/events/turn-0023/2026-07-04T03-40-27-790Z-shell-bd2b948f78.json",
+      "exists": true
+    }
+  ]
+}

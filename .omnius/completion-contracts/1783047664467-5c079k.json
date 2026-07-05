@@ -1,0 +1,86 @@
+{
+  "sessionId": "1783047664467-5c079k",
+  "createdAt": "2026-07-03T03:01:05.737Z",
+  "contract": {
+    "goalSummary": "You are creating the PROTOCOLS implementation contract for a MyActuator ESP32 motor control library. Create the file: /home/roko/Documents/Projects/myactuator/contracts/PROTOCOLS_CONTRACT.md This contract must define the unified communication protocol layer that abstracts CAN bus, RS485, and EtherCAT for all MyActuator motor series. It must be ESP32/PlatformIO compatible. Based on the product data from myactuator.com: - Communication methods: CAN, RS485, EtherCAT - Encoder support: 14-bit, 17-bi",
+    "surfaces": [],
+    "fields": [
+      {
+        "key": "claims.evidence_map",
+        "label": "Claim evidence map",
+        "fieldType": "json",
+        "elevation": "required",
+        "sourceMode": "derived",
+        "description": "A run-local mapping from each final claim to the observed result that supports it.",
+        "acceptanceCriteria": "Each material claim is either backed by observed evidence from this run or named as unverified/blocked."
+      },
+      {
+        "key": "claims.unverified",
+        "label": "Unverified claims",
+        "fieldType": "json",
+        "elevation": "required",
+        "sourceMode": "derived",
+        "description": "Claims that could not be proven from the run's observations.",
+        "acceptanceCriteria": "Unverified claims are not presented as completed work."
+      }
+    ],
+    "requirements": [],
+    "phases": [
+      {
+        "key": "execute",
+        "label": "Execute",
+        "instructions": "Do the requested work while preserving observations needed to evaluate the result.",
+        "requirementIds": [],
+        "fields": [],
+        "gate": {
+          "key": "execution_trace",
+          "instructions": "Keep enough concrete run output to distinguish facts from assumptions."
+        }
+      },
+      {
+        "key": "verify",
+        "label": "Verify",
+        "instructions": "Derive the needed evidence from the actual request and final claims, then compare those claims to observed results.",
+        "requirementIds": [],
+        "fields": [
+          {
+            "key": "claims.evidence_map",
+            "label": "Claim evidence map",
+            "fieldType": "json",
+            "elevation": "required",
+            "sourceMode": "derived",
+            "description": "A run-local mapping from each final claim to the observed result that supports it.",
+            "acceptanceCriteria": "Each material claim is either backed by observed evidence from this run or named as unverified/blocked."
+          },
+          {
+            "key": "claims.unverified",
+            "label": "Unverified claims",
+            "fieldType": "json",
+            "elevation": "required",
+            "sourceMode": "derived",
+            "description": "Claims that could not be proven from the run's observations.",
+            "acceptanceCriteria": "Unverified claims are not presented as completed work."
+          }
+        ],
+        "gate": {
+          "key": "claim_evidence_review",
+          "instructions": "Judge whether the actual claim is supported by the actual observations."
+        }
+      },
+      {
+        "key": "deliver",
+        "label": "Deliver",
+        "instructions": "Report completed, verified, unverified, and blocked items without overstating what was observed.",
+        "requirementIds": [],
+        "fields": [],
+        "gate": {
+          "key": "result_readback",
+          "instructions": "Final wording must not exceed the observed evidence."
+        }
+      }
+    ],
+    "acceptanceCriteria": [
+      "The final response distinguishes completed work from verified evidence and unverified or blocked claims."
+    ]
+  }
+}

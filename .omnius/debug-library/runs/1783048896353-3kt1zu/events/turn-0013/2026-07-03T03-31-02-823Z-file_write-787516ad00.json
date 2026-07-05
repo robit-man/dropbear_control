@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "id": "2026-07-03T03-31-02-823Z-file_write-787516ad00",
+  "kind": "tool_result",
+  "timestamp": "2026-07-03T03:31:02.823Z",
+  "runId": "1783048896353-3kt1zu",
+  "sessionId": "1783048896353-3kt1zu",
+  "cwd": "/home/roko/Documents/Projects/myactuator",
+  "turn": 13,
+  "toolCallId": "call_2kw23fgl",
+  "toolName": "file_write",
+  "toolFingerprint": "file_write:content=/**\\\\n * Encoder Driver - Header\\\\n * \\\\n * Supports 14-bit\\, 17-bit\\, and 18-bit absolute encoders via SPI\\\\n */\\\\n\\\\n#ifndef ENCODER_H\\\\n#define ENCODER_H\\\\n\\\\n#include ...ncoderBits;\\\\n};\\\\n\\\\n#endif // ENCODER_H\\\\n#sha256:1a1e19376d23279b3899,path=/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/encoder.h",
+  "argsHash": "787516ad00",
+  "argsPreview": "{\"path\":\"/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/encoder.h\",\"content\":\"/**\\n * Encoder Driver - Header\\n * \\n * Supports 14-bit, 17-bit, and 18-bit absolute encoders via SPI\\n */\\n\\n#ifndef ENCODER_H\\n#define ENCODER_H\\n\\n#include <Arduino.h>\\n\\nclass Encoder {\\npublic:\\n    static void init();\\n    static void update();\\n    static int32_t getPosition();\\n    static int32_t getVelocity();\\n    static uint16_t getTemperature();\\n\\nprivate:\\n    static int32_t _position;\\n    static int32_t _velocity;\\n    static uint16_t _temperature;\\n    static uint8_t _encoderBits;\\n};\\n\\n#endif // ENCODER_H\\n\"}",
+  "success": true,
+  "durationMs": 31,
+  "outputChars": 172,
+  "errorChars": 0,
+  "outputPreview": "Created 505 bytes at /home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/encoder.h (sha256 1a1e19376d23279b3899cfe8e7e970093a664ada932ba7350fff10a5ec401c9a)",
+  "mutation": {
+    "realFileMutation": true,
+    "shellFilesystemMutation": false,
+    "paths": [
+      "/home/roko/Documents/Projects/myactuator/firmware/esp32/src/drivers/encoder.h"
+    ]
+  },
+  "focusSupervisor": {
+    "mode": "auto",
+    "enabled": true,
+    "state": "observe",
+    "directive": null,
+    "lastDecision": "pass",
+    "lastReason": "",
+    "context": {
+      "pressureRatio": 1,
+      "estimatedTokens": 1887,
+      "rawDiscoveryChars": 0,
+      "activeEvidenceChars": 15338,
+      "activeFrameChars": 11959,
+      "signalToNoiseRatio": null,
+      "droppedSignals": 2,
+      "truncatedSignals": 2
+    }
+  },
+  "repeatShortCircuit": false,
+  "diagnoses": [
+    "project-file-mutation"
+  ],
+  "summary": "file_write success | diagnoses=project-file-mutation",
+  "anchors": [
+    {
+      "label": "debug_contract",
+      "kind": "contract",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/CONTRACT.md",
+      "note": "Schema and semantics for this debug library.",
+      "relativePath": ".omnius/debug-library/CONTRACT.md",
+      "exists": true
+    },
+    {
+      "label": "run_readme",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783048896353-3kt1zu/README.md",
+      "note": "Human summary for this run.",
+      "relativePath": ".omnius/debug-library/runs/1783048896353-3kt1zu/README.md",
+      "exists": true
+    },
+    {
+      "label": "run_index",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783048896353-3kt1zu/index.json",
+      "note": "Machine-readable run summary.",
+      "relativePath": ".omnius/debug-library/runs/1783048896353-3kt1zu/index.json",
+      "exists": true
+    },
+    {
+      "label": "run_events_jsonl",
+      "kind": "index",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783048896353-3kt1zu/events.jsonl",
+      "note": "Append-only normalized event stream.",
+      "relativePath": ".omnius/debug-library/runs/1783048896353-3kt1zu/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "workboard_active",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783048896353-3kt1zu/active.json",
+      "note": "Durable workboard snapshot, when present.",
+      "relativePath": ".omnius/workboards/1783048896353-3kt1zu/active.json",
+      "exists": true
+    },
+    {
+      "label": "workboard_events",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/workboards/1783048896353-3kt1zu/events.jsonl",
+      "note": "Durable workboard event log, when present.",
+      "relativePath": ".omnius/workboards/1783048896353-3kt1zu/events.jsonl",
+      "exists": true
+    },
+    {
+      "label": "context_dump_latest",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/latest.json",
+      "note": "Latest outbound model request dump.",
+      "relativePath": ".omnius/context-window-dumps/latest.json",
+      "exists": true
+    },
+    {
+      "label": "context_dump_index",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/context-window-dumps/index.jsonl",
+      "note": "Append-only context-window dump summaries.",
+      "relativePath": ".omnius/context-window-dumps/index.jsonl",
+      "exists": true
+    },
+    {
+      "label": "trajectory_log",
+      "kind": "file",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/trajectories/trajectories.jsonl",
+      "note": "Completed run trajectory records.",
+      "relativePath": ".omnius/trajectories/trajectories.jsonl",
+      "exists": true
+    },
+    {
+      "label": "checkpoints_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/checkpoints",
+      "note": "Turn-boundary checkpoints.",
+      "relativePath": ".omnius/checkpoints",
+      "exists": true
+    },
+    {
+      "label": "phases_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/phases",
+      "note": "Phase transcript summaries.",
+      "relativePath": ".omnius/phases",
+      "exists": true
+    },
+    {
+      "label": "completion_ledgers_dir",
+      "kind": "directory",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/completion-ledgers",
+      "note": "Completion evidence ledgers.",
+      "relativePath": ".omnius/completion-ledgers",
+      "exists": true
+    },
+    {
+      "label": "event_json",
+      "kind": "event",
+      "path": "/home/roko/Documents/Projects/myactuator/.omnius/debug-library/runs/1783048896353-3kt1zu/events/turn-0013/2026-07-03T03-31-02-823Z-file_write-787516ad00.json",
+      "note": "This normalized debug event.",
+      "relativePath": ".omnius/debug-library/runs/1783048896353-3kt1zu/events/turn-0013/2026-07-03T03-31-02-823Z-file_write-787516ad00.json",
+      "exists": true
+    }
+  ]
+}
