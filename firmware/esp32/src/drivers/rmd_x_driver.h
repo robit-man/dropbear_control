@@ -1,5 +1,6 @@
 #pragma once
 #include "motor_driver.h"
+#include "types.h"
 
 class RMDXDriver : public IMotorDriver {
 public:
@@ -20,7 +21,7 @@ public:
     void faultReset() override;
     void setLimits(float maxVelocity, float maxTorque) override;
     void setGains(float kp, float ki, float kd) override;
-    void setBacklashCompensation(float compensation) override;
+    void setBacklashCompensation(float compensation);
 
 private:
     uint8_t _motorId;

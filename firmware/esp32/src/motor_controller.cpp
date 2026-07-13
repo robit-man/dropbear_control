@@ -2,100 +2,57 @@
 #include "protocols/pal.h"
 #include "drivers/mcp2515_can.h"
 
-MotorController::MotorController(uint8_t motorId, const MotorConfig& config) 
-  : currentState(MOTOR_STATE_IDLE),
+MotorController::MotorController(uint8_t motorId, const MotorConfig& config)
+  : motorId(motorId),
+    motorSeries(config.motorSeries),
+    gearboxRatio(1.0f),
+    backlashCompensation(0.0f),
+    kp(config.kp),
+    ki(config.ki),
+    kd(config.kd),
+    maxVelocityLimit(config.maxVelocity),
+    maxTorqueLimit(config.maxTorque),
+    currentState(MOTOR_STATE_IDLE),
+    currentStatus(MOTOR_STATUS_IDLE),
     faultCode(FAULT_NONE),
+    motorDriver(nullptr),
     targetPosition(0.0f),
     targetVelocity(0.0f),
+    targetTorque(0.0f),
+    encoder(nullptr),
+    comm(nullptr),
     canBus(nullptr),
-    targetTorque(0.0f) {
-  motorDriver = nullptr;
+    safetyMonitoring(true),
+    lastHeartbeat(0),
+    temperature(0.0f),
+    position(0),
+    velocity(0.0f),
+    current(0.0f) {
+  positionPID.reset();
+  velocityPID.reset();
+  torquePID.reset();
 }
 
+MotorController::~MotorController() = default;
+
 bool MotorController::initialize() {
-  // Initialize encoder
-  if (!encoder.initialize()) {
+  if (encoder && !encoder->init()) {
     faultCode = FAULT_ENCODER;
     return false;
   }
-  
-  // Initialize communication
-  if (!comm.initialize()) {
+
+  if (comm && !comm->initialize()) {
     faultCode = FAULT_COMMUNICATION;
     return false;
-  // Initialize motor driver based on configured motor series
-  #if defined(MOTOR_RMD_X)
-    if (!rmd_x_driver.initialize()) {
-      faultCode = FAULT_MOTOR_DRIVER;
-      return false;
+  }
 
-  // Initialize safety monitoring
+  if (motorDriver && !motorDriver->init()) {
+    faultCode = FAULT_MOTOR_DRIVER;
+    return false;
+  }
+
   safetyMonitoring = true;
   lastHeartbeat = millis();
-  // Initialize safety monitoring
-  safetyMonitoring = true;
-  lastHeartbeat = millis();
-  #elif defined(MOTOR_RH)
-    if (!rh_driver.initialize()) {
-      faultCode = FAULT_MOTOR_DRIVER;
-      return false;
-    }
-  #elif defined(MOTOR_CEM)
-    if (!cem_driver.initialize()) {
-      faultCode = FAULT_MOTOR_DRIVER;
-      return false;
-    }
-  #elif defined(MOTOR_RMD_H)
-    if (!rmd_h_driver.initialize()) {
-      faultCode = FAULT_MOTOR_DRIVER;
-      return false;
-    }
-  #elif defined(MOTOR_RMD_L)
-    if (!rmd_l_driver.initialize()) {
-      faultCode = FAULT_MOTOR_DRIVER;
-      return false;
-    }
-  #elif defined(MOTOR_FL)
-    if (!fl_driver.initialize()) {
-      faultCode = FAULT_MOTOR_DRIVER;
-      return false;
-    }
-  #endif
-
-  
-  // Initialize motor driver based on configured motor series
-  #if defined(MOTOR_RMD_X)
-    if (!rmd_x_driver.initialize()) {
-      faultCode = FAULT_MOTOR_DRIVER;
-      return false;
-    }
-  #elif defined(MOTOR_RH)
-    if (!rh_driver.initialize()) {
-      faultCode = FAULT_MOTOR_DRIVER;
-      return false;
-    }
-  #elif defined(MOTOR_CEM)
-    if (!cem_driver.initialize()) {
-      faultCode = FAULT_MOTOR_DRIVER;
-      return false;
-    }
-  #elif defined(MOTOR_RMD_H)
-    if (!rmd_h_driver.initialize()) {
-      faultCode = FAULT_MOTOR_DRIVER;
-      return false;
-    }
-  #elif defined(MOTOR_RMD_L)
-    if (!rmd_l_driver.initialize()) {
-      faultCode = FAULT_MOTOR_DRIVER;
-      return false;
-    }
-  #elif defined(MOTOR_FL)
-    if (!fl_driver.initialize()) {
-      faultCode = FAULT_MOTOR_DRIVER;
-      return false;
-    }
-  #endif
-  
   currentState = MOTOR_STATE_READY;
   return true;
 }
@@ -104,51 +61,44 @@ void MotorController::update() {
   if (currentState == MOTOR_STATE_FAULT) {
     return;
   }
-  
-  // Read encoder
-  encoder.read();
-  
-  // Execute control loop
-  switch (currentState) {
-    case MOTOR_STATE_READY:
-      // Wait for commands
-      break;
-      
-    case MOTOR_STATE_POSITION_CONTROL:
-      // Position control loop
-      break;
-      
-    case MOTOR_STATE_VELOCITY_CONTROL:
-      // Velocity control loop
-      break;
-      
-    case MOTOR_STATE_TORQUE_CONTROL:
-      // Torque control loop
-      break;
-      
-    default:
-      break;
+
+  if (encoder) {
+    position = encoder->getPosition();
+    velocity = encoder->getVelocity();
   }
-  
-  // Check for faults
-  if (encoder.hasFault() || comm.hasFault()) {
-    currentState = MOTOR_STATE_FAULT;
-    faultCode = FAULT_HARDWARE;
+
+  if (motorDriver) {
+    temperature = motorDriver->getTemperature();
+    current = motorDriver->getCurrent();
+
+    switch (currentState) {
+      case MOTOR_STATE_POSITION_CONTROL:
+        motorDriver->setPosition(targetPosition);
+        break;
+      case MOTOR_STATE_VELOCITY_CONTROL:
+        motorDriver->setVelocity(targetVelocity);
+        break;
+      case MOTOR_STATE_TORQUE_CONTROL:
+        motorDriver->setTorque(targetTorque);
+        break;
+      default:
+        break;
+    }
   }
 }
 
-void MotorController::setTargetPosition(float position) {
-  targetPosition = position;
+void MotorController::setTargetPosition(float target) {
+  targetPosition = target;
   currentState = MOTOR_STATE_POSITION_CONTROL;
 }
 
-void MotorController::setTargetVelocity(float velocity) {
-  targetVelocity = velocity;
+void MotorController::setTargetVelocity(float target) {
+  targetVelocity = target;
   currentState = MOTOR_STATE_VELOCITY_CONTROL;
 }
 
-void MotorController::setTargetTorque(float torque) {
-  targetTorque = torque;
+void MotorController::setTargetTorque(float target) {
+  targetTorque = target;
   currentState = MOTOR_STATE_TORQUE_CONTROL;
 }
 
@@ -171,120 +121,4 @@ FaultCode MotorController::getFaultCode() const {
 void MotorController::clearFault() {
   faultCode = FAULT_NONE;
   currentState = MOTOR_STATE_READY;
-}
-
-MotorStatus MotorController::getMotorStatus() const {
-  MotorStatus status;
-  status.state = currentState;
-  status.faultCode = faultCode;
-  status.temperature = temperature;
-  status.position = position;
-  status.velocity = velocity;
-  status.current = current;
-  status.safetyMonitoring = safetyMonitoring;
-  return status;
-}
-
-MotorStatus MotorController::getMotorStatus() const {
-  MotorStatus status;
-  status.state = currentState;
-  status.faultCode = faultCode;
-  status.temperature = temperature;
-  status.position = position;
-  status.velocity = velocity;
-  status.current = current;
-  status.safetyMonitoring = safetyMonitoring;
-  return status;
-
-float MotorController::getTemperature() const {
-  return temperature;
-}
-
-int32_t MotorController::getPosition() const {
-  return position;
-}
-
-float MotorController::getVelocity() const {
-  return velocity;
-}
-
-float MotorController::getCurrent() const {
-  return current;
-}
-
-FaultCode MotorController::getFaultCode() const {
-  return faultCode;
-}
-
-MotorState MotorController::getState() const {
-  return currentState;
-}
-
-bool MotorController::isSafetyMonitoring() const {
-  return safetyMonitoring;
-}
-
-uint32_t MotorController::getHeartbeat() const {
-  return lastHeartbeat;
-}
-
-float MotorController::getTargetPosition() const {
-  return targetPosition;
-}
-
-float MotorController::getTargetVelocity() const {
-  return targetVelocity;
-}
-
-float MotorController::getTargetTorque() const {
-  return targetTorque;
-}
-
-uint8_t MotorController::getMotorId() const {
-  return motorId;
-}
-
-MotorSeries MotorController::getMotorSeries() const {
-  return motorSeries;
-}
-
-float MotorController::getGearboxRatio() const {
-  return gearboxRatio;
-}
-
-float MotorController::getBacklashCompensation() const {
-  return backlashCompensation;
-}
-
-float MotorController::getKp() const {
-  return kp;
-}
-
-float MotorController::getKi() const {
-  return ki;
-}
-
-float MotorController::getKd() const {
-  return kd;
-}
-
-void MotorController::getLimits(float& maxVelocity, float& maxTorque) const {
-  maxVelocity = maxVelocityLimit;
-  maxTorque = maxTorqueLimit;
-}
-
-CommunicationInterface MotorController::getCommunication() const {
-  return comm;
-}
-
-Encoder MotorController::getEncoder() const {
-  return encoder;
-}
-
-MotorDriver MotorController::getMotorDriver() const {
-  return motorDriver;
-}
-
-MCP2515_CAN* MotorController::getCanBus() const {
-  return canBus;
 }

@@ -13,16 +13,7 @@ typedef enum {
     MOTOR_STATUS_DISABLED
 } MotorStatus;
 
-// Motor config
-typedef struct {
-    uint8_t motorId;
-    uint8_t protocol;  // PROTO_CAN, PROTO_RS485, PROTO_ETHERCAT
-    float maxVelocity;
-    float maxTorque;
-    float kp;
-    float ki;
-    float kd;
-} MotorConfig;
+// MotorConfig is defined in types.h
 
 // Motor driver interface
 class IMotorDriver {

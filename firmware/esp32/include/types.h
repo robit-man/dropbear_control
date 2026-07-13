@@ -62,6 +62,7 @@ typedef enum {
     FRAME_TYPE_TORQUE_CMD = 0x04,
     FRAME_TYPE_PARAM_READ = 0x05,
     FRAME_TYPE_PARAM_WRITE = 0x06,
+    FRAME_TYPE_HEARTBEAT = 0x07,
     FRAME_TYPE_FIRMWARE_UPDATE = 0x08
 } FrameType;
 
@@ -78,6 +79,16 @@ typedef struct {
 
 // Motor configuration
 typedef struct {
+    ProtocolType protocol;
+    MotorSeries motorSeries;
+    uint8_t motorId;
+    uint32_t baudRate;
+    float maxTorque;
+    float maxVelocity;
+    float kp;
+    float ki;
+    float kd;
+} MotorConfig;
 typedef struct {
     uint8_t motor_id;
     uint8_t status;
@@ -101,6 +112,7 @@ typedef struct {
 // Motor state
 typedef enum {
     MOTOR_STATE_IDLE = 0,
+    MOTOR_STATE_READY,
     MOTOR_STATE_ENABLED,
     MOTOR_STATE_RUNNING,
     MOTOR_STATE_FAULT,
@@ -109,6 +121,16 @@ typedef enum {
     MOTOR_STATE_VELOCITY_CONTROL,
     MOTOR_STATE_TORQUE_CONTROL
 } MotorState;
+
+// Fault codes
+typedef enum {
+    FAULT_NONE = 0,
+    FAULT_ENCODER,
+    FAULT_COMMUNICATION,
+    FAULT_MOTOR_DRIVER,
+    FAULT_HARDWARE,
+    FAULT_COUNT
+} FaultCode;
 
 // PID Controller
 typedef struct {
@@ -137,16 +159,6 @@ typedef struct {
     }
 } PIDController;
 
-class CommunicationInterface {
-public:
-    virtual bool initialize() = 0;
-    virtual bool send(const uint8_t* data, uint8_t length) = 0;
-    virtual uint8_t receive(uint8_t* buffer, uint8_t max_length) = 0;
-    virtual void process() = 0;
-    virtual ~CommunicationInterface() {}
-};
-
-// Communication interface
 class CommunicationInterface {
 public:
     virtual bool initialize() = 0;

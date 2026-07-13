@@ -1,0 +1,22 @@
+# Build artifacts
+**/.pio/
+**/build/
+*.bin
+*.elf
+*.map
+
+# Python
+**/__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# Agent / tooling state (not project source)
+.omnius/
+
+# OS / editor
+.DS_Store
+*.swp
+.idea/
+.vscode/

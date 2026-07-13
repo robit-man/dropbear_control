@@ -1,6 +1,7 @@
 #pragma once
 
 #include "motor_driver.h"
+#include "types.h"
 
 class RMDHDriver : public IMotorDriver {
 public:

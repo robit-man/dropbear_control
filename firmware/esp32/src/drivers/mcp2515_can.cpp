@@ -7,72 +7,82 @@ MCP2515CAN::MCP2515CAN()
 }
 
 bool MCP2515CAN::initialize(uint32_t bitrate) {
-  // Initialize SPI
+  // Map bitrate to watterott MCP2515 baud constant
+  int baudConst;
+  switch (bitrate) {
+    case 10000:   baudConst = CAN_BAUD_10K;  break;
+    case 50000:   baudConst = CAN_BAUD_50K;  break;
+    case 100000:  baudConst = CAN_BAUD_100K; break;
+    case 125000:  baudConst = CAN_BAUD_125K; break;
+    case 250000:  baudConst = CAN_BAUD_250K; break;
+    case 500000:  baudConst = CAN_BAUD_500K; break;
+    default:      baudConst = CAN_BAUD_500K; break;
+  }
+
   SPI.begin();
-  
-  // Initialize MCP2515
-  if (!can.begin(bitrate, PIN_MCP2515_CS)) {
+
+  if (!MCP2515::initCAN(baudConst)) {
     status = 0x01; // Initialization failed
     return false;
   }
-  
-  // Set normal mode
-  can.setMode(MCP2515::NORMAL_MODE);
-  
-  // Configure filters
+
+  if (!MCP2515::setCANNormalMode(false)) {
+    status = 0x01;
+    return false;
+  }
+
   if (!configureFilters()) {
     status = 0x02; // Filter configuration failed
     return false;
   }
-  
-  // Configure interrupts
+
   if (!configureInterrupts()) {
     status = 0x03; // Interrupt configuration failed
     return false;
   }
-  
+
   status = 0x00; // Ready
   return true;
 }
 
 bool MCP2515CAN::sendCommand(uint8_t motorId, uint8_t command, const uint8_t* data, uint8_t length) {
-  if (length > 8) {
+  if (length > 7) {
     return false;
   }
-  
+
   uint32_t canId = CAN_ID_RMD_X_BASE + motorId;
-  
-  // Create CAN message
-  MCP2515::CAN_message_t msg;
-  msg.id = canId;
-  msg.len = length + 1; // Add command byte
-  msg.buf[0] = command;
-  memcpy(&msg.buf[1], data, length);
-  
-  // Send message
-  if (can.sendMsgBuf(canId, msg.len, msg.buf) != CAN_OK) {
+
+  CANMSG msg;
+  msg.isExtendedAdrs = false;
+  msg.adrsValue = canId;
+  msg.rtr = false;
+  msg.dataLength = length + 1; // Add command byte
+  msg.data[0] = command;
+  memcpy(&msg.data[1], data, length);
+
+  if (!MCP2515::transmitCANMessage(msg, 100)) {
     errorCount++;
     return false;
   }
-  
+
   return true;
 }
 
 bool MCP2515CAN::sendStatusRequest(uint8_t motorId) {
   uint32_t canId = CAN_ID_RMD_X_BASE + motorId;
-  
-  // Create status request message
-  MCP2515::CAN_message_t msg;
-  msg.id = canId;
-  msg.len = 1;
-  msg.buf[0] = CAN_MSG_TYPE_STATUS;
-  
-  // Send message
-  if (can.sendMsgBuf(canId, msg.len, msg.buf) != CAN_OK) {
+
+  CANMSG msg;
+  msg.isExtendedAdrs = false;
+  msg.adrsValue = canId;
+  msg.rtr = false;
+  msg.dataLength = 1;
+  msg.data[0] = CAN_MSG_TYPE_STATUS;
+
+  if (!MCP2515::transmitCANMessage(msg, 100)) {
     errorCount++;
     return false;
   }
-  
+
   return true;
 }
 
@@ -80,77 +90,69 @@ bool MCP2515CAN::sendConfig(uint8_t motorId, const uint8_t* configData, uint8_t 
   if (length > 7) { // 7 bytes for config data (8 total with type byte)
     return false;
   }
-  
+
   uint32_t canId = CAN_ID_RMD_X_BASE + motorId;
-  
-  // Create config message
-  MCP2515::CAN_message_t msg;
-  msg.id = canId;
-  msg.len = length + 1; // Add config type byte
-  msg.buf[0] = CAN_MSG_TYPE_CONFIG;
-  memcpy(&msg.buf[1], configData, length);
-  
-  // Send message
-  if (can.sendMsgBuf(canId, msg.len, msg.buf) != CAN_OK) {
+
+  CANMSG msg;
+  msg.isExtendedAdrs = false;
+  msg.adrsValue = canId;
+  msg.rtr = false;
+  msg.dataLength = length + 1; // Add config type byte
+  msg.data[0] = CAN_MSG_TYPE_CONFIG;
+  memcpy(&msg.data[1], configData, length);
+
+  if (!MCP2515::transmitCANMessage(msg, 100)) {
     errorCount++;
     return false;
   }
-  
+
   return true;
 }
 
 bool MCP2515CAN::receiveMessage(uint8_t* motorId, uint8_t* messageType, uint8_t* data, uint8_t* length) {
-  if (!can.checkReceive()) {
+  CANMSG msg;
+  if (!MCP2515::receiveCANMessage(&msg, 0)) {
     return false;
   }
-  
-  MCP2515::CAN_message_t msg;
-  if (can.readMsgBuf(&msg) != CAN_OK) {
-    errorCount++;
-    return false;
-  }
-  
+
   // Extract motor ID from CAN ID
-  if (msg.id >= CAN_ID_RMD_X_BASE && msg.id < CAN_ID_RMD_X_BASE + 255) {
-    *motorId = msg.id - CAN_ID_RMD_X_BASE;
+  if (msg.adrsValue >= CAN_ID_RMD_X_BASE && msg.adrsValue < CAN_ID_RMD_X_BASE + 255) {
+    *motorId = msg.adrsValue - CAN_ID_RMD_X_BASE;
   } else {
     return false;
   }
-  
+
   // Extract message type
-  if (msg.len > 0) {
-    *messageType = msg.buf[0];
-    
+  if (msg.dataLength > 0) {
+    *messageType = msg.data[0];
+
     // Extract data
-    uint8_t dataLen = msg.len - 1;
+    uint8_t dataLen = msg.dataLength - 1;
     if (dataLen > 8) {
       dataLen = 8;
     }
-    memcpy(data, &msg.buf[1], dataLen);
+    memcpy(data, &msg.data[1], dataLen);
     *length = dataLen;
-    
+
     return true;
   }
-  
+
   return false;
 }
 
 bool MCP2515CAN::hasPendingMessages() {
-  return can.checkReceive();
+  // Poll-based: receiveMessage() performs the actual non-blocking check.
+  return true;
 }
 
 void MCP2515CAN::setFilter(uint8_t motorId, uint8_t filterId) {
-  uint32_t canId = CAN_ID_RMD_X_BASE + motorId;
-  
-  // Set individual filter
-  can.setFilter(filterId, 0, canId);
+  // watterott MCP2515 library does not expose a filter API; accept and ignore.
+  (void)motorId;
+  (void)filterId;
 }
 
 void MCP2515CAN::clearFilters() {
-  // Clear all filters
-  for (int i = 0; i < 6; i++) {
-    can.setFilter(i, 0, 0);
-  }
+  // watterott MCP2515 library does not expose a filter API; accept and ignore.
 }
 
 uint32_t MCP2515CAN::getErrorCount() {
@@ -162,21 +164,14 @@ uint8_t MCP2515CAN::getStatus() {
 }
 
 bool MCP2515CAN::configureFilters() {
-  // Configure receive filters for all motor IDs
-  for (int i = 0; i < 6; i++) {
-    uint32_t canId = CAN_ID_RMD_X_BASE + i;
-    can.setFilter(i, 0, canId);
-  }
-  
+  // watterott MCP2515 library does not expose a filter API; accept and ignore.
   return true;
 }
 
 bool MCP2515CAN::configureInterrupts() {
   // Configure interrupt pin
   pinMode(PIN_MCP2515_INT, INPUT);
-  
-  // Enable interrupts in MCP2515
-  can.setInterrupt(MCP2515::INT_ENABLE);
-  
+
+  // watterott MCP2515 library does not expose an interrupt-enable API; accept and ignore.
   return true;
 }

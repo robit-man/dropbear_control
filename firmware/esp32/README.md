@@ -2,7 +2,11 @@
 
 ## Overview
 
-This firmware implements motor control for all MyActuator motor series using ESP32 microcontrollers. It provides a unified Protocol Abstraction Layer (PAL) that supports CAN bus, RS485 (Modbus RTU), and EtherCAT (CoE) communication protocols.
+This firmware implements motor control for all MyActuator motor series using
+ESP32 microcontrollers. It provides a unified Protocol Abstraction Layer (PAL)
+that supports CAN bus, RS485 (Modbus RTU), and EtherCAT (CoE) communication
+protocols, and dispatches decoded commands to per-motor drivers through a
+common `IMotorDriver` interface.
 
 ## Supported Motor Series
 
@@ -15,7 +19,7 @@ This firmware implements motor control for all MyActuator motor series using ESP
 
 ## Communication Protocols
 
-- **CAN bus**: ISO 11898-1, 500kbps, 29-bit extended IDs
+- **CAN bus**: ISO 11898-1, 500kbps, 29-bit extended IDs (MCP2515 via SPI)
 - **RS485**: Modbus RTU, 115200 baud, 8N1
 - **EtherCAT**: CoE (CANopen over EtherCAT), 1ms cycle time, DC sync
 
@@ -23,27 +27,35 @@ This firmware implements motor control for all MyActuator motor series using ESP
 
 ```
 firmware/esp32/
-├── platformio.ini          # PlatformIO configuration
+├── platformio.ini            # PlatformIO environments (esp32/esp32s3/esp32c3/esp32s3dev)
+├── include/
+│   ├── config.h              # Compile-time configuration macros
+│   ├── constants.h           # Default limits / baud / PID constants
+│   └── types.h               # Shared types (MotorConfig, FaultCode, etc.)
 ├── src/
-│   ├── main.cpp            # Main entry point
+│   ├── main.cpp              # Entry point: init PAL + selected transport
+│   ├── motor_controller.h/.cpp
 │   ├── protocols/
-│   │   ├── pal.h           # Protocol Abstraction Layer header
-│   │   └── pal.cpp         # Protocol Abstraction Layer implementation
+│   │   ├── pal.h / pal.cpp   # Protocol Abstraction Layer
+│   │   └── rs485_protocol.h  # RS485/Modbus framing helpers
 │   ├── drivers/
-│   │   ├── encoder.h       # Encoder driver header
-│   │   ├── encoder.cpp     # Encoder driver implementation
-│   │   ├── can_bus.h       # CAN bus driver header
-│   │   ├── can_bus.cpp     # CAN bus driver implementation
-│   │   ├── rs485.h         # RS485 driver header
-│   │   ├── rs485.cpp       # RS485 driver implementation
-│   │   ├── ethercat.h      # EtherCAT driver header
-│   │   └── ethercat.cpp    # EtherCAT driver implementation
+│   │   ├── encoder.h/.cpp
+│   │   ├── can_bus.h/.cpp
+│   │   ├── mcp2515_can.h/.cpp
+│   │   ├── rs485.h/.cpp
+│   │   ├── ethercat.h/.cpp
+│   │   ├── motor_driver.h    # IMotorDriver interface
+│   │   ├── rmd_x_driver.h/.cpp
+│   │   ├── rh_driver.h/.cpp
+│   │   ├── cem_driver.h/.cpp
+│   │   ├── rmd_h_driver.h/.cpp
+│   │   ├── rmd_l_driver.h/.cpp
+│   │   └── fl_driver.h/.cpp
 │   └── utils/
-│       ├── config.h        # Configuration utilities header
-│       ├── config.cpp      # Configuration utilities implementation
-│       ├── logger.h        # Logger utilities header
-│       └── logger.cpp      # Logger utilities implementation
-└── lib/                    # External libraries
+│       ├── config.h/.cpp
+│       ├── logger.h/.cpp
+│       └── pid_controller.h/.cpp
+└── README.md
 ```
 
 ## Building
@@ -51,7 +63,7 @@ firmware/esp32/
 ### Prerequisites
 
 - PlatformIO CLI (`pip install platformio`)
-- ESP32 development board (ESP32 DevKitC or ESP32-S3)
+- ESP32 development board (ESP32 DevKitC, ESP32-S3, or ESP32-C3)
 
 ### Build Commands
 
@@ -62,12 +74,14 @@ pio run -e esp32
 # Build for ESP32-S3
 pio run -e esp32s3
 
-# Upload to ESP32
+# Upload to board
 pio run -e esp32 -t upload
 
 # Monitor serial output
 pio device monitor -b 115200
 ```
+
+The `esp32` environment currently builds clean (RAM ~6.6%, Flash ~22.0%).
 
 ## Configuration
 
@@ -87,24 +101,20 @@ build_flags =
 
 ### Protocol Selection
 
-Select communication protocol:
-
 ```ini
 build_flags =
-    -DPROTOCOL_CAN
+    -DPROTOCOL_CAN_BUS
     -DPROTOCOL_RS485
     -DPROTOCOL_ETHERCAT
 ```
 
 ### Encoder Resolution
 
-Select encoder resolution:
-
 ```ini
 build_flags =
-    -DENCODER_14BIT   # 14-bit absolute (16384 counts/rev)
-    -DENCODER_17BIT   # 17-bit absolute (131072 counts/rev)
-    -DENCODER_18BIT   # 18-bit absolute (262144 counts/rev)
+    -DENCODER_BITS=14   # 14-bit absolute (16384 counts/rev)
+    -DENCODER_BITS=17   # 17-bit absolute (131072 counts/rev)
+    -DENCODER_BITS=18   # 18-bit absolute (262144 counts/rev)
 ```
 
 ## API Usage
@@ -113,43 +123,48 @@ build_flags =
 
 ```cpp
 #include "protocols/pal.h"
+#include "drivers/motor_driver.h"
 
 ProtocolAbstractionLayer pal;
-MotorConfig config;
+MotorConfig motorConfig;
 
 void setup() {
+    Serial.begin(115200);
+    Logger::init(Serial);
+
     // Configure motor
-    config.motorSeries = MotorSeries::RMD_X;
-    config.protocol = Protocol::CAN;
-    config.encoderBits = 14;
-    
-    // Initialize PAL
-    pal.init(config);
+    motorConfig.motorSeries = MOTOR_SERIES_RMD_X;
+    motorConfig.protocol    = PROTO_CAN;
+    motorConfig.motorId     = 1;
+    motorConfig.baudRate    = DEFAULT_BAUDRATE;
+    motorConfig.maxTorque   = DEFAULT_MAX_TORQUE;
+    motorConfig.maxVelocity = DEFAULT_MAX_VELOCITY;
+    motorConfig.kp = DEFAULT_KP;
+    motorConfig.ki = DEFAULT_KI;
+    motorConfig.kd = DEFAULT_KD;
+
+    // Initialize PAL and bind the selected transport
+    pal.init(motorConfig);
+    pal.initCAN();
 }
 ```
 
-### Control Commands
+### Runtime Loop
 
 ```cpp
-// Set position
-pal.setPosition(1000);
-
-// Set velocity
-pal.setVelocity(500);
-
-// Set torque
-pal.setTorque(100);
+void loop() {
+    pal.processCommands();    // decode + dispatch incoming frames to the driver
+    pal.sendStatusReport();   // periodic telemetry
+    pal.sendHeartbeat();      // liveness
+    delay(1);
+}
 ```
 
-### Status Reading
-
-```cpp
-StatusReport status = pal.getStatus();
-Serial.print("Position: ");
-Serial.println(status.position);
-Serial.print("Velocity: ");
-Serial.println(status.velocity);
-```
+The PAL exposes `init()`, `setMotorDriver()`, `setMotorId()`, `processCommands()`,
+`sendStatusReport()`, `sendHeartbeat()`, `initCAN()`, and `initEtherCAT()`.
+Decoded commands are forwarded to the active `IMotorDriver` implementation
+(`rmd_x_driver`, `rh_driver`, `cem_driver`, `rmd_h_driver`, `rmd_l_driver`,
+`fl_driver`).
 
 ## Protocol Details
 
@@ -158,20 +173,22 @@ Serial.println(status.velocity);
 - **Frame Format**: 29-bit extended IDs
 - **Baud Rate**: 500kbps
 - **Motor ID**: Configurable per motor
-- **Frame Types**: STATUS_REPORT, POSITION_CMD, VELOCITY_CMD, TORQUE_CMD, PARAM_READ, PARAM_WRITE, DIAGNOSTIC, FIRMWARE_UPDATE, HEARTBEAT
+- **Frame Types**: STATUS_REPORT, POSITION_CMD, VELOCITY_CMD, TORQUE_CMD,
+  PARAM_READ, PARAM_WRITE, DIAGNOSTIC, FIRMWARE_UPDATE, HEARTBEAT
 
 ### RS485 (Modbus RTU)
 
 - **Baud Rate**: 115200
 - **Data Format**: 8N1
-- **Function Codes**: 0x03 (Read Holding Registers), 0x06 (Write Single Register), 0x08 (Diagnostics)
+- **Function Codes**: 0x03 (Read Holding Registers), 0x06 (Write Single
+  Register), 0x08 (Diagnostics)
 
 ### EtherCAT (CoE)
 
 - **Cycle Time**: 1ms (configurable)
 - **DC Sync**: Enabled
-- **SDO Access**: 
-  - Read: `0x600 + (motor_id << 4) + 0x0A`
+- **SDO Access**:
+  - Read:  `0x600 + (motor_id << 4) + 0x0A`
   - Write: `0x600 + (motor_id << 4) + 0x0B`
   - Response: `0x580 + (motor_id << 4)`
 
@@ -179,31 +196,30 @@ Serial.println(status.velocity);
 
 ### Adding a New Motor Series
 
-1. Add motor series enum to `pal.h`
-2. Create motor-specific driver files in `src/drivers/`
-3. Update `main.cpp` to initialize new motor
-4. Add motor-specific configuration to `platformio.ini`
+1. Add a motor series enum/constant in `include/types.h` and `pal.h`.
+2. Create motor-specific driver files in `src/drivers/` implementing
+   `IMotorDriver` (see `motor_driver.h`).
+3. Register the driver in `main.cpp` / PAL dispatch.
+4. Add motor-specific configuration macros to `platformio.ini`.
 
 ### Adding a New Protocol
 
-1. Create protocol driver files in `src/drivers/`
-2. Add protocol enum to `pal.h`
-3. Implement protocol-specific methods in `pal.cpp`
-4. Update `main.cpp` to support new protocol
+1. Create a protocol driver in `src/drivers/` (e.g. `can_bus`, `rs485`,
+   `ethercat`).
+2. Add a protocol enum/constant to `pal.h`.
+3. Implement protocol-specific init/dispatch in `pal.cpp` (e.g. `initCAN()`,
+   `initEtherCAT()`).
+4. Wire it into `main.cpp`.
 
 ## Testing
 
 ### Unit Tests
-
-Run unit tests with:
 
 ```bash
 pio test -e esp32
 ```
 
 ### Integration Tests
-
-Connect motor and run integration tests:
 
 ```bash
 pio run -e esp32 -t upload

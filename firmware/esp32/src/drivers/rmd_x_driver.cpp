@@ -117,37 +117,6 @@ void RMDXDriver::setGains(float kp, float ki, float kd) {
     _config.kd = kd;
 }
 
-void RMDXDriver::setGearboxRatio(float ratio) {
-    _gearboxRatio = ratio;
-}
-
 void RMDXDriver::setBacklashCompensation(float compensation) {
     _backlashCompensation = compensation;
-}
-
-
-void RMDXDriver::deinit() {
-    digitalWrite(PIN_MOTOR_PWM_A, LOW);
-    digitalWrite(PIN_MOTOR_PWM_B, LOW);
-    _status = MOTOR_STATUS_DISABLED;
-}
-
-MotorStatus RMDXDriver::getStatus() {
-    return _status;
-}
-
-float RMDXDriver::getTemperature() {
-    return _temperature;
-}
-
-int32_t RMDXDriver::getPosition() {
-    return _position;
-}
-
-float RMDXDriver::getVelocity() {
-    return _velocity;
-}
-
-float RMDXDriver::getCurrent() {
-    return _current;
 }

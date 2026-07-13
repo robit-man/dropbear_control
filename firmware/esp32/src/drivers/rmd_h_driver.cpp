@@ -9,7 +9,7 @@
 #include "../../include/constants.h"
 #include <Arduino.h>
 #include "rmd_h_driver.h"
-#include "../motor_driver.h"
+#include "motor_driver.h"
 #include "../../include/types.h"
 
 RMDHDriver::RMDHDriver(uint8_t motorId, const MotorConfig& config)
@@ -106,31 +106,4 @@ void RMDHDriver::setInertiaCompensation(float inertia) {
 
 void RMDHDriver::enableHollowBoreAccess(bool enable) {
     _hollowBoreEnabled = enable;
-}
-
-
-void RMDHDriver::deinit() {
-    digitalWrite(PIN_MOTOR_PWM_A, LOW);
-    digitalWrite(PIN_MOTOR_PWM_B, LOW);
-    _status = MOTOR_STATUS_DISABLED;
-}
-
-MotorStatus RMDHDriver::getStatus() {
-    return _status;
-}
-
-float RMDHDriver::getTemperature() {
-    return _temperature;
-}
-
-int32_t RMDHDriver::getPosition() {
-    return _position;
-}
-
-float RMDHDriver::getVelocity() {
-    return _velocity;
-}
-
-float RMDHDriver::getCurrent() {
-    return _current;
 }

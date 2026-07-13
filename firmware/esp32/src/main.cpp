@@ -1,6 +1,6 @@
 /**
  * MyActuator ESP32 Motor Controller - Main Entry Point
- * 
+ *
  * Supports all MyActuator motor series:
  * - RMD-X (Planetary)
  * - RH (Harmonic)
@@ -8,7 +8,7 @@
  * - RMD-H (Direct Drive Hollow)
  * - RMD-L (Direct Drive)
  * - FL (Linear)
- * 
+ *
  * Protocols: CAN bus, RS485 (Modbus RTU), EtherCAT (CoE)
  */
 
@@ -21,6 +21,7 @@
 #include "drivers/mcp2515_can.h"
 #include "utils/config.h"
 #include "utils/logger.h"
+#include "constants.h"
 
 // Global protocol abstraction layer instance
 ProtocolAbstractionLayer pal;
@@ -31,71 +32,55 @@ MotorConfig motorConfig;
 void setup() {
     Serial.begin(115200);
     delay(1000);
-    
+
     Logger::init(Serial);
-    Logger::info("MyActuator ESP32 Motor Controller v1.0.0");
-    Logger::info("Motor Series: RMD_X");
-    Logger::info("Protocol: " + String((uint8_t)PROTOCOL));
-    
+    Logger::info("MAIN", "MyActuator ESP32 Motor Controller v1.0.0");
+    Logger::info("MAIN", "Motor Series: RMD_X");
+    Logger::info("MAIN", "Protocol: %u", (uint8_t)PROTO_CAN);
+
     // Initialize motor configuration
-    motorConfig.motorSeries = static_cast<MotorSeries>(MOTOR_SERIES);
-    motorConfig.protocol = static_cast<Protocol>(PROTOCOL);
-    motorConfig.encoderBits = ENCODER_BITS;
-    motorConfig.powerClass = POWER_CLASS;
-    motorConfig.gearboxType = static_cast<GearboxType>(GEARBOX_TYPE);
-    motorConfig.hasBrake = HAS_BRAKE;
-    motorConfig.driveType = static_cast<DriveType>(DRIVE_TYPE);
-    motorConfig.communication = static_cast<Communication>(COMMUNICATION);
-    
+    motorConfig.motorSeries = MOTOR_SERIES_RMD_X;
+    motorConfig.protocol = PROTO_CAN;
+    motorConfig.motorId = 1;
+    motorConfig.baudRate = DEFAULT_BAUDRATE;
+    motorConfig.maxTorque = DEFAULT_MAX_TORQUE;
+    motorConfig.maxVelocity = DEFAULT_MAX_VELOCITY;
+    motorConfig.kp = DEFAULT_KP;
+    motorConfig.ki = DEFAULT_KI;
+    motorConfig.kd = DEFAULT_KD;
+
     // Initialize Protocol Abstraction Layer
     pal.init(motorConfig);
-    
-    // Initialize encoder
-    Encoder::init();
-    
+
     // Initialize communication protocol
     switch (motorConfig.protocol) {
-        case Protocol::CAN:
+        case PROTO_CAN:
             CANBus::init();
             break;
-        case Protocol::RS485:
+        case PROTO_RS485:
             RS485::init();
             break;
-        case Protocol::ETHERCAT:
+        case PROTO_ETHERCAT:
             EtherCAT::init();
             break;
         default:
-            Logger::error("Unknown protocol");
+            Logger::error("MAIN", "Unknown protocol");
             while (1) { delay(1000); }
     }
-    
-    Logger::info("System initialized successfully");
+
+    Logger::info("MAIN", "System initialized successfully");
 }
 
 void loop() {
     // Process incoming commands
     pal.processCommands();
-    
-    // Read encoder and update motor state
-    Encoder::update();
-    
+
     // Send status reports
     pal.sendStatusReport();
-    
+
     // Heartbeat
     pal.sendHeartbeat();
-    
-    // Motor status logging (every 1000ms)
-    static uint32_t lastStatusLog = 0;
-    if (millis() - lastStatusLog >= 1000) {
-        lastStatusLog = millis();
-        Logger::info("Motor Status: State=%d, Pos=%.2f, Vel=%.2f, Torque=%.2f",
-                    motorController.getState(),
-                    motorController.getPosition(),
-                    motorController.getVelocity(),
-                    motorController.getTorque());
-    }
-    
+
     // Small delay to prevent watchdog reset
     delay(1);
 }

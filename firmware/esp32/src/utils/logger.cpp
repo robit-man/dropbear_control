@@ -2,6 +2,8 @@
 #include <Arduino.h>
 #include <stdarg.h>
 
+Stream* Logger::_stream = nullptr;
+bool Logger::_initialized = false;
 uint8_t Logger::_level = LOG_LEVEL_INFO;
 uint32_t Logger::_timestamp = 0;
 

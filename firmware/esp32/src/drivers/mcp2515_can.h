@@ -2,7 +2,7 @@
 
 #include <Arduino.h>
 #include <SPI.h>
-#include <mcp2515.h>
+#include <MCP2515.h>
 
 // MCP2515 CAN controller pin definitions for ESP32
 #ifndef PIN_MCP2515_CS
@@ -14,8 +14,7 @@
 #endif
 
 // CAN bus configuration
-#define CAN_BITRATE CAN_500KBPS
-#define CAN_FILTER_MODE STANDARD_FILTER
+#define CAN_BITRATE 500000
 
 // CAN message buffer size
 #define CAN_RX_BUFFER_SIZE 16
@@ -54,7 +53,7 @@ public:
     uint8_t getStatus();
     
 private:
-    MCP2515_CAN can;
+    MCP2515 can;
     uint32_t errorCount;
     uint8_t status;
     
