@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.org/schemas/can-adapter-intake-status.schema.json",
+  "title": "CAN adapter manifest intake status",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "authority",
+    "source",
+    "manifests",
+    "selected_listen_only_manifest_id",
+    "selected_runtime_manifest_id",
+    "summary",
+    "blockers",
+    "support_granted",
+    "physical_motion_authority",
+    "physical_factory_enabled",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": { "const": "can-adapter-intake-status/1" },
+    "artifact_id": { "const": "dropbear-can-adapter-intake-status" },
+    "authority": { "const": "reviewed_manifest_inventory_only" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonical_configuration_digest",
+        "manifest_schema_path",
+        "manifest_schema_sha256"
+      ],
+      "properties": {
+        "canonical_configuration_digest": { "$ref": "#/$defs/sha256" },
+        "manifest_schema_path": { "const": "schemas/can-adapter-manifest.schema.json" },
+        "manifest_schema_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "manifests": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/entry" }
+    },
+    "selected_listen_only_manifest_id": {
+      "type": ["string", "null"],
+      "pattern": "^canadapter-[0-9a-f]{20}$"
+    },
+    "selected_runtime_manifest_id": {
+      "type": ["string", "null"],
+      "pattern": "^canadapter-[0-9a-f]{20}$"
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reviewed_manifest_count",
+        "twai_manifest_count",
+        "mcp2515_manifest_count",
+        "listen_only_manifest_count",
+        "runtime_manifest_count",
+        "selected_listen_only_count",
+        "selected_runtime_count"
+      ],
+      "properties": {
+        "reviewed_manifest_count": { "type": "integer", "minimum": 0 },
+        "twai_manifest_count": { "type": "integer", "minimum": 0 },
+        "mcp2515_manifest_count": { "type": "integer", "minimum": 0 },
+        "listen_only_manifest_count": { "type": "integer", "minimum": 0 },
+        "runtime_manifest_count": { "type": "integer", "minimum": 0 },
+        "selected_listen_only_count": { "const": 0 },
+        "selected_runtime_count": { "const": 0 }
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "minItems": 3,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "support_granted": { "const": false },
+    "physical_motion_authority": { "const": false },
+    "physical_factory_enabled": { "const": false },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record_sha256"],
+      "properties": {
+        "record_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "manifest_id",
+        "path",
+        "sha256",
+        "purpose",
+        "controller_kind",
+        "installed_inventory_submission_id",
+        "selected"
+      ],
+      "properties": {
+        "manifest_id": {
+          "type": "string",
+          "pattern": "^canadapter-[0-9a-f]{20}$"
+        },
+        "path": { "type": "string", "minLength": 1 },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "purpose": { "enum": ["listen_only_capture", "runtime_gateway"] },
+        "controller_kind": { "enum": ["esp32_twai", "mcp2515"] },
+        "installed_inventory_submission_id": {
+          "type": "string",
+          "pattern": "^inventorysubmission-[0-9a-f]{20}$"
+        },
+        "selected": { "const": false }
+      }
+    }
+  }
+}

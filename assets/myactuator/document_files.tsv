@@ -1,0 +1,33 @@
+series	document_set	vendor_relative_path	file_sha256	bytes
+RMD-X	X-V2-protocol-manual	RMD-X/X-V2-protocol-manual/vendor/(X-V2) Protocol and manual of V2-250213/MC Series Brushless Servo Driver Manual-240611.pdf	eb5cd58cfac42877a00867c461afd5e0e2cf592a5f6dbeca141af29a6a40ab16	1258039
+RMD-X	X-V2-protocol-manual	RMD-X/X-V2-protocol-manual/vendor/(X-V2) Protocol and manual of V2-250213/Motor Motion Protocol V4.2-250208.pdf	50371859b2d026ba3929f82afbf81ab841de676af422f22c8375eb359267d49b	909116
+RMD-X	X-V2-protocol-manual	RMD-X/X-V2-protocol-manual/vendor/(X-V2) Protocol and manual of V2-250213/X Series-V2 Product Manual-241227.pdf	f97143f2c37395dbb083b289101a8ece5dca85c38347a4f0d9c24ec9fac2eb11	804969
+RMD-X	X-V3-protocol-manual	RMD-X/X-V3-protocol-manual/vendor/(X-V3) Protocol and manual of V3-250213/MC Series Brushless Servo Driver Manual-240611.pdf	eb5cd58cfac42877a00867c461afd5e0e2cf592a5f6dbeca141af29a6a40ab16	1258039
+RMD-X	X-V3-protocol-manual	RMD-X/X-V3-protocol-manual/vendor/(X-V3) Protocol and manual of V3-250213/Motor Motion Protocol V4.2-250208.pdf	50371859b2d026ba3929f82afbf81ab841de676af422f22c8375eb359267d49b	909116
+RMD-X	X-V3-protocol-manual	RMD-X/X-V3-protocol-manual/vendor/(X-V3) Protocol and manual of V3-250213/X Series-V3 Product Manual-241227.pdf	40e859e0ce465a4a23f91074a3ee02d2309dd5fb55e1cba73b41d4cbb81d6a3f	1044207
+RMD-X	X-V4-protocol-manual	RMD-X/X-V4-protocol-manual/vendor/CAN BUS Motor Motion Protocol V4.4 260425.pdf	2e0e73a994cf3b15209b9c592654af9724c03bc4c991c3744fab3c08dfd5eecd	1445944
+RMD-X	X-V4-protocol-manual	RMD-X/X-V4-protocol-manual/vendor/EtherCAT control protocol V2.0_260425.pdf	9ae3fb9cb851fc5c588b571190976a52fecbf916c903c45398ff9ca998be95dd	300363
+RMD-X	X-V4-protocol-manual	RMD-X/X-V4-protocol-manual/vendor/User Manual for X Series Products V1.1-250516.pdf	6a5fa939bf34038785c4772be7193143fb942e7651195eb450b54192f679c6f5	1987627
+RMD-X	X-V4-protocol-manual	RMD-X/X-V4-protocol-manual/vendor/X Series-V4 product manual- 260703.pdf	ac02150fb7d30f40ffc5968ebe4223b303c376d77d1f479309eafb573902559d	2426605
+RH	RH-dual-encoder-V4.4	RH/RH-dual-encoder-V4.4/vendor/CAN BUS Motor Motion Protocol V4.4 260520.pdf	15731a29c60771f0066fa0b2c7a7609de76edc53fbc8757035d2389d7a5dc3d2	1446048
+RH	RH-dual-encoder-V4.4	RH/RH-dual-encoder-V4.4/vendor/EtherCAT control protocol V2.0_260425.pdf	9ae3fb9cb851fc5c588b571190976a52fecbf916c903c45398ff9ca998be95dd	300363
+RH	RH-dual-encoder-V4.4	RH/RH-dual-encoder-V4.4/vendor/RH Series-product manual-260716.pdf	5262f2e5347d745a19d4e26ab1c0ed31b24b9e4773cb3838ba9927a6ef1fafba	102919905
+RH	RH-dual-encoder-V4.4	RH/RH-dual-encoder-V4.4/vendor/User Manual for RH Series Products V1.4.pdf	2aab4a0557c43860d55c62bcbd535f3565796607379e5373a4c96e6e9041614b	3094230
+RMD-L	L-V3-protocol-manual	RMD-L/L-V3-protocol-manual/vendor/(L)Protocol and manual of V3 -251029/L Series Product Manual 251029.pdf	f49e31f2086bfd002807321e2aa9adde8f4bba634909164ba221f8aaeb669ee7	1548842
+RMD-L	L-V3-protocol-manual	RMD-L/L-V3-protocol-manual/vendor/(L)Protocol and manual of V3 -251029/MC Series Brushless Servo Driver Manual-240611.pdf	eb5cd58cfac42877a00867c461afd5e0e2cf592a5f6dbeca141af29a6a40ab16	1258039
+RMD-L	L-V3-protocol-manual	RMD-L/L-V3-protocol-manual/vendor/(L)Protocol and manual of V3 -251029/Motor Motion Protocol V4.2-250208.pdf	50371859b2d026ba3929f82afbf81ab841de676af422f22c8375eb359267d49b	909116
+CEM	CEM-protocol-manual	CEM/CEM-protocol-manual/vendor/CAN BUS Motor Motion Protocol V4.4 260520.pdf	15731a29c60771f0066fa0b2c7a7609de76edc53fbc8757035d2389d7a5dc3d2	1446048
+CEM	CEM-protocol-manual	CEM/CEM-protocol-manual/vendor/CEM Series Product Manual 250731.pdf	0686d17edbf06efa9b54a7782c93f993fa3f6f52dfc29df5271486bb19f4e458	994571
+CEM	CEM-protocol-manual	CEM/CEM-protocol-manual/vendor/EtherCAT control protocol V2.0_260425.pdf	9ae3fb9cb851fc5c588b571190976a52fecbf916c903c45398ff9ca998be95dd	300363
+CEM	CEM-protocol-manual	CEM/CEM-protocol-manual/vendor/User Manual for CEM Series Products V1.0.pdf	df3e31177295827a96130360eebaccd4877274196d037b1482d9c1b5c7f9afbe	2185456
+RMD-H	H-S3-protocol-manual	RMD-H/H-S3-protocol-manual/vendor/CAN BUS Motor Motion Protocol V4.4 260520.pdf	15731a29c60771f0066fa0b2c7a7609de76edc53fbc8757035d2389d7a5dc3d2	1446048
+RMD-H	H-S3-protocol-manual	RMD-H/H-S3-protocol-manual/vendor/H Series Product Manual 250801.pdf	f55450784734daca9c013a5903a1065c79239d9db87d77a96280c3acf54c5956	1071893
+RMD-H	H-S3-protocol-manual	RMD-H/H-S3-protocol-manual/vendor/Setup Software InstructionManual-V3-241125.pdf	d18c7ce9bd7324176da6dfaa52de91f887d8bd218b8899d4d70a74fd57dc6ba2	4623191
+RMD-H	H-S3-protocol-manual	RMD-H/H-S3-protocol-manual/vendor/User Manual for H Series Products V1.0-241210.pdf	1ff0e372ec69f599d0ed0e9b17cc4fd88e155372acfa65d092457bb243ca05bd	2179789
+FL-FLO	FL-user-manual	FL-FLO/FL-user-manual/vendor/(FL) User Product Manual - 251119/FL Series Product Manual 251119.pdf	1eb26633ee277f0a49905f6615244f63cd3f7264ad22c1bac850728707f8fa78	1199227
+FL-FLO	FL-user-manual	FL-FLO/FL-user-manual/vendor/(FL) User Product Manual - 251119/Interface Manual for FL Frameless Motor Series(Absolute Encoder Version) V1.1.pdf	0d9cae42c80463f291c5a63493a7e1831f3484e5a7ae51a62549271aad74396d	582470
+FL-FLO	FL-user-manual	FL-FLO/FL-user-manual/vendor/(FL) User Product Manual - 251119/Interface Manual for FL Frameless Motor Series(Hall&Incremental Encoder Version) V1.0.pdf	7b20d882322756368174b03d411c759730423d36183debce71ea56f092b8c9be	540203
+FL-FLO	FL-user-manual	FL-FLO/FL-user-manual/vendor/(FL) User Product Manual - 251119/User Manual for FL Series Products V1.0-241125.pdf	634696b041fa601629cb40d1e2a3d2fbd1adb6befc0af279d5384a0fa34fed7d	1772212
+FL-FLO	FLO-user-manual	FL-FLO/FLO-user-manual/vendor/FLO Series Product Manual 241129.pdf	aaeb380702f7f7f93b623b02562c1e1cb5c3ed760d3dcc8707666bc81b1183ba	632697
+FL-FLO	FLO-user-manual	FL-FLO/FLO-user-manual/vendor/Interface Manual for FL Frameless Motor Series(Absolute Encoder Version) V1.1.pdf	0d9cae42c80463f291c5a63493a7e1831f3484e5a7ae51a62549271aad74396d	582470
+FL-FLO	FLO-user-manual	FL-FLO/FLO-user-manual/vendor/User Manual for FLO Series Products V1.0-241125.pdf	616ea962180185577f9e6b20e46aa12e6c9dbad769ca906be483dded5ef6dd91	903863

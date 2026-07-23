@@ -1,0 +1,693 @@
+{
+  "$id": "https://hyperspawn.dev/schemas/myactuator-plant-spec-candidate-registry.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "artifact_id": {
+      "const": "myactuator-plant-spec-candidate-registry"
+    },
+    "authority": {
+      "const": "page_bound_machine_extraction_and_review_navigation_only"
+    },
+    "extraction_environment": {
+      "$ref": "#/$defs/extractionEnvironment"
+    },
+    "integrity": {
+      "additionalProperties": false,
+      "properties": {
+        "record_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "required": [
+        "record_sha256"
+      ],
+      "type": "object"
+    },
+    "manuals": {
+      "items": {
+        "$ref": "#/$defs/manual"
+      },
+      "maxItems": 15,
+      "minItems": 15,
+      "type": "array"
+    },
+    "model_tables": {
+      "items": {
+        "$ref": "#/$defs/modelTable"
+      },
+      "maxItems": 44,
+      "minItems": 44,
+      "type": "array"
+    },
+    "physical_motion_authority": {
+      "const": false
+    },
+    "policy": {
+      "$ref": "#/$defs/policy"
+    },
+    "runtime_plant_admission": {
+      "const": false
+    },
+    "schema_version": {
+      "const": "myactuator-plant-spec-candidate-registry/1"
+    },
+    "sources": {
+      "$ref": "#/$defs/sources"
+    },
+    "summary": {
+      "$ref": "#/$defs/summary"
+    },
+    "support_granted": {
+      "const": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "authority",
+    "sources",
+    "extraction_environment",
+    "policy",
+    "manuals",
+    "model_tables",
+    "summary",
+    "runtime_plant_admission",
+    "support_granted",
+    "physical_motion_authority",
+    "integrity"
+  ],
+  "title": "Page-bound MYACTUATOR product specification candidate registry",
+  "type": "object",
+  "$defs": {
+    "bbox": {
+      "items": false,
+      "maxItems": 4,
+      "minItems": 4,
+      "prefixItems": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "type": "array"
+    },
+    "candidate": {
+      "additionalProperties": false,
+      "properties": {
+        "candidate_id": {
+          "pattern": "^plantspeccandidate-[0-9a-f]{20}$",
+          "type": "string"
+        },
+        "mapping": {
+          "$ref": "#/$defs/mapping"
+        },
+        "parse": {
+          "$ref": "#/$defs/parse"
+        },
+        "review": {
+          "additionalProperties": false,
+          "properties": {
+            "decision_note": {
+              "type": "null"
+            },
+            "reviewed_at_utc": {
+              "type": "null"
+            },
+            "reviewer_id": {
+              "type": "null"
+            },
+            "status": {
+              "const": "unreviewed"
+            }
+          },
+          "required": [
+            "status",
+            "reviewer_id",
+            "reviewed_at_utc",
+            "decision_note"
+          ],
+          "type": "object"
+        },
+        "source": {
+          "$ref": "#/$defs/sourceCell"
+        },
+        "source_property_id": {
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "candidate_id",
+        "source_property_id",
+        "source",
+        "parse",
+        "mapping",
+        "review"
+      ],
+      "type": "object"
+    },
+    "conversion": {
+      "additionalProperties": false,
+      "properties": {
+        "expression": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "kind": {
+          "enum": [
+            "identity",
+            "exact_linear_si",
+            "reviewed_derivation_required",
+            "not_applicable"
+          ]
+        },
+        "offset": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "scale": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "scale",
+        "offset",
+        "expression"
+      ],
+      "type": "object"
+    },
+    "exactText": {
+      "maxLength": 1024,
+      "minLength": 1,
+      "pattern": "^[^\\r\\n\\t]+$",
+      "type": "string"
+    },
+    "extractionEnvironment": {
+      "additionalProperties": false,
+      "properties": {
+        "arguments": {
+          "const": [
+            "-bbox-layout",
+            "-enc",
+            "UTF-8"
+          ]
+        },
+        "command": {
+          "const": "pdftotext"
+        },
+        "version": {
+          "const": "24.02.0"
+        }
+      },
+      "required": [
+        "command",
+        "version",
+        "arguments"
+      ],
+      "type": "object"
+    },
+    "manual": {
+      "additionalProperties": false,
+      "properties": {
+        "bytes": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "document_occurrence_id": {
+          "pattern": "^dococc-[0-9a-f]{20}$",
+          "type": "string"
+        },
+        "file_name": {
+          "$ref": "#/$defs/exactText"
+        },
+        "file_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "page_count": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "pages": {
+          "items": {
+            "$ref": "#/$defs/page"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "selected_product_spec_table": {
+          "type": "boolean"
+        },
+        "text_extraction_status": {
+          "const": "all_pages_processed"
+        },
+        "vendor_relative_path": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/exactText"
+            },
+            {
+              "not": {
+                "pattern": "^/"
+              }
+            },
+            {
+              "not": {
+                "pattern": "(^|/)\\.\\.(/|$)"
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "document_occurrence_id",
+        "file_name",
+        "vendor_relative_path",
+        "file_sha256",
+        "bytes",
+        "page_count",
+        "pages",
+        "text_extraction_status",
+        "selected_product_spec_table"
+      ],
+      "type": "object"
+    },
+    "mapping": {
+      "additionalProperties": false,
+      "properties": {
+        "blockers": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_]*$",
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "conversion": {
+          "$ref": "#/$defs/conversion"
+        },
+        "normalized_unit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "enum": [
+            "candidate_direct_label_unit_match",
+            "candidate_semantic_review_required",
+            "not_mappable_to_current_plant_contract"
+          ]
+        },
+        "target_field_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "status",
+        "target_field_id",
+        "normalized_unit",
+        "conversion",
+        "blockers"
+      ],
+      "type": "object"
+    },
+    "modelIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "model": {
+          "$ref": "#/$defs/exactText"
+        },
+        "model_key": {
+          "pattern": "^model-[0-9a-f]{20}$",
+          "type": "string"
+        },
+        "package_revision": {
+          "$ref": "#/$defs/exactText"
+        },
+        "series": {
+          "$ref": "#/$defs/exactText"
+        }
+      },
+      "required": [
+        "model_key",
+        "series",
+        "model",
+        "package_revision"
+      ],
+      "type": "object"
+    },
+    "modelTable": {
+      "additionalProperties": false,
+      "properties": {
+        "accepted_candidate_count": {
+          "const": 0
+        },
+        "applicability_blockers": {
+          "contains": {
+            "const": "independent_manual_applicability_review_missing"
+          },
+          "items": {
+            "pattern": "^[a-z][a-z0-9_]*$",
+            "type": "string"
+          },
+          "minItems": 2,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "candidates": {
+          "items": {
+            "$ref": "#/$defs/candidate"
+          },
+          "minItems": 8,
+          "type": "array"
+        },
+        "document_occurrence_id": {
+          "pattern": "^dococc-[0-9a-f]{20}$",
+          "type": "string"
+        },
+        "file_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "model_header_bbox": {
+          "$ref": "#/$defs/bbox"
+        },
+        "model_header_text": {
+          "$ref": "#/$defs/exactText"
+        },
+        "model_identity": {
+          "$ref": "#/$defs/modelIdentity"
+        },
+        "page_text_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "pdf_page_index": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "runtime_admissible": {
+          "const": false
+        },
+        "table_id": {
+          "pattern": "^plantspectable-[0-9a-f]{20}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "table_id",
+        "model_identity",
+        "document_occurrence_id",
+        "file_sha256",
+        "pdf_page_index",
+        "page_text_sha256",
+        "model_header_text",
+        "model_header_bbox",
+        "applicability_blockers",
+        "candidates",
+        "accepted_candidate_count",
+        "runtime_admissible"
+      ],
+      "type": "object"
+    },
+    "page": {
+      "additionalProperties": false,
+      "properties": {
+        "line_count": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "non_whitespace_character_count": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "pdf_page_index": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "text_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "text_status": {
+          "enum": [
+            "text_extracted",
+            "no_extractable_text"
+          ]
+        },
+        "word_count": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "pdf_page_index",
+        "text_sha256",
+        "text_status",
+        "line_count",
+        "word_count",
+        "non_whitespace_character_count"
+      ],
+      "type": "object"
+    },
+    "parse": {
+      "additionalProperties": false,
+      "properties": {
+        "annotation": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "kind": {
+          "enum": [
+            "scalar",
+            "qualified_scalar",
+            "range",
+            "alternatives",
+            "annotated_scalar",
+            "unparsed"
+          ]
+        },
+        "numbers": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 8,
+          "type": "array"
+        },
+        "qualifier": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "numbers",
+        "qualifier",
+        "annotation"
+      ],
+      "type": "object"
+    },
+    "policy": {
+      "additionalProperties": false,
+      "properties": {
+        "all_candidate_values_remain_unreviewed": {
+          "const": true
+        },
+        "all_catalog_models_required": {
+          "const": true
+        },
+        "conflicts_and_alternatives_remain_unresolved": {
+          "const": true
+        },
+        "full_manual_page_digest_required": {
+          "const": true
+        },
+        "independent_review_required": {
+          "const": true
+        },
+        "machine_extraction_cannot_accept_fact": {
+          "const": true
+        },
+        "raw_label_unit_and_value_preserved": {
+          "const": true
+        },
+        "source_hash_page_and_coordinates_required": {
+          "const": true
+        }
+      },
+      "required": [
+        "all_catalog_models_required",
+        "full_manual_page_digest_required",
+        "source_hash_page_and_coordinates_required",
+        "raw_label_unit_and_value_preserved",
+        "machine_extraction_cannot_accept_fact",
+        "all_candidate_values_remain_unreviewed",
+        "conflicts_and_alternatives_remain_unresolved",
+        "independent_review_required"
+      ],
+      "type": "object"
+    },
+    "sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "sourceCell": {
+      "additionalProperties": false,
+      "properties": {
+        "label_bbox": {
+          "$ref": "#/$defs/bbox"
+        },
+        "label_text": {
+          "$ref": "#/$defs/exactText"
+        },
+        "unit_bbox": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/bbox"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "unit_text": {
+          "type": "string"
+        },
+        "value_bbox": {
+          "$ref": "#/$defs/bbox"
+        },
+        "value_text": {
+          "$ref": "#/$defs/exactText"
+        }
+      },
+      "required": [
+        "label_text",
+        "unit_text",
+        "value_text",
+        "label_bbox",
+        "unit_bbox",
+        "value_bbox"
+      ],
+      "type": "object"
+    },
+    "sources": {
+      "additionalProperties": false,
+      "properties": {
+        "catalog_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "document_files_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "extraction_plan_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "extraction_plan_schema_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "generator_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "protocol_applicability_registry_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "poppler_environment_lock_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "required": [
+        "catalog_sha256",
+        "document_files_sha256",
+        "protocol_applicability_registry_sha256",
+        "extraction_plan_sha256",
+        "extraction_plan_schema_sha256",
+        "poppler_environment_lock_sha256",
+        "generator_sha256"
+      ],
+      "type": "object"
+    },
+    "summary": {
+      "additionalProperties": false,
+      "properties": {
+        "accepted_candidate_count": {
+          "const": 0
+        },
+        "candidate_count": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "direct_label_unit_mapping_candidate_count": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "manual_occurrence_count": {
+          "const": 15
+        },
+        "model_count": {
+          "const": 44
+        },
+        "model_with_candidate_count": {
+          "const": 44
+        },
+        "page_count": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "product_spec_manual_count": {
+          "const": 9
+        },
+        "runtime_admissible_candidate_count": {
+          "const": 0
+        },
+        "semantic_review_mapping_candidate_count": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "unmapped_candidate_count": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "unreviewed_candidate_count": {
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "manual_occurrence_count",
+        "product_spec_manual_count",
+        "page_count",
+        "model_count",
+        "model_with_candidate_count",
+        "candidate_count",
+        "direct_label_unit_mapping_candidate_count",
+        "semantic_review_mapping_candidate_count",
+        "unmapped_candidate_count",
+        "unreviewed_candidate_count",
+        "accepted_candidate_count",
+        "runtime_admissible_candidate_count"
+      ],
+      "type": "object"
+    }
+  }
+}

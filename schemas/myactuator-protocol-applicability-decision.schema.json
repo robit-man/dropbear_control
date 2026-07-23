@@ -1,0 +1,375 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.dev/schemas/myactuator-protocol-applicability-decision.schema.json",
+  "title": "Independent exact-tuple MYACTUATOR protocol applicability decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_state",
+    "record_revision",
+    "decision_id",
+    "supersedes_record_sha256",
+    "subject",
+    "evidence",
+    "review",
+    "disposition",
+    "applicability_established",
+    "support_granted",
+    "physical_motion_authority",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "myactuator-protocol-applicability-decision/1"
+    },
+    "record_state": {
+      "enum": [
+        "draft",
+        "submitted"
+      ]
+    },
+    "record_revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "decision_id": {
+      "type": "string",
+      "pattern": "^protocoldecision-[0-9a-f]{20}$"
+    },
+    "supersedes_record_sha256": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/sha256"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "subject": {
+      "$ref": "#/$defs/subject"
+    },
+    "evidence": {
+      "$ref": "#/$defs/evidence"
+    },
+    "review": {
+      "$ref": "#/$defs/review"
+    },
+    "disposition": {
+      "enum": [
+        null,
+        "accept_applicability",
+        "reject_applicability",
+        "needs_more_evidence"
+      ]
+    },
+    "applicability_established": {
+      "type": "boolean"
+    },
+    "support_granted": {
+      "const": false
+    },
+    "physical_motion_authority": {
+      "const": false
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "record_sha256"
+      ],
+      "properties": {
+        "record_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "exact": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512,
+      "pattern": "^[^\\r\\n\\t]+$"
+    },
+    "nullableExact": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/exact"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/exact"
+      }
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model_key",
+        "series",
+        "model",
+        "package_revision",
+        "protocol_occurrence_id",
+        "package_id",
+        "document_set",
+        "protocol_file_sha256",
+        "protocol_revision",
+        "transport",
+        "control_mode",
+        "hardware_revision",
+        "drive_firmware",
+        "installed_unit_id"
+      ],
+      "properties": {
+        "model_key": {
+          "type": "string",
+          "pattern": "^model-[0-9a-f]{20}$"
+        },
+        "series": {
+          "$ref": "#/$defs/exact"
+        },
+        "model": {
+          "$ref": "#/$defs/exact"
+        },
+        "package_revision": {
+          "$ref": "#/$defs/exact"
+        },
+        "protocol_occurrence_id": {
+          "type": "string",
+          "pattern": "^dococc-[0-9a-f]{20}$"
+        },
+        "package_id": {
+          "type": "string",
+          "pattern": "^docpkg-[0-9a-f]{20}$"
+        },
+        "document_set": {
+          "$ref": "#/$defs/exact"
+        },
+        "protocol_file_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "protocol_revision": {
+          "$ref": "#/$defs/exact"
+        },
+        "transport": {
+          "enum": [
+            "classic_can",
+            "ethercat",
+            "rs485"
+          ]
+        },
+        "control_mode": {
+          "$ref": "#/$defs/exact"
+        },
+        "hardware_revision": {
+          "$ref": "#/$defs/exact"
+        },
+        "drive_firmware": {
+          "$ref": "#/$defs/exact"
+        },
+        "installed_unit_id": {
+          "$ref": "#/$defs/exact"
+        }
+      }
+    },
+    "inventoryEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_ref",
+        "artifact_sha256",
+        "entry_id"
+      ],
+      "properties": {
+        "artifact_ref": {
+          "$ref": "#/$defs/nullableExact"
+        },
+        "artifact_sha256": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "entry_id": {
+          "$ref": "#/$defs/nullableExact"
+        }
+      }
+    },
+    "sourceReviewEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reviewer_id",
+        "reviewed_at_utc",
+        "locator",
+        "evidence_refs"
+      ],
+      "properties": {
+        "reviewer_id": {
+          "$ref": "#/$defs/nullableExact"
+        },
+        "reviewed_at_utc": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "locator": {
+          "$ref": "#/$defs/nullableExact"
+        },
+        "evidence_refs": {
+          "$ref": "#/$defs/evidenceRefs"
+        }
+      }
+    },
+    "captureEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "observation_class",
+        "manifest_ref",
+        "manifest_sha256",
+        "trace_sha256",
+        "observed_at_utc"
+      ],
+      "properties": {
+        "observation_class": {
+          "enum": [
+            null,
+            "listen_only",
+            "command_response",
+            "bench_confirmation"
+          ]
+        },
+        "manifest_ref": {
+          "$ref": "#/$defs/nullableExact"
+        },
+        "manifest_sha256": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "trace_sha256": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "observed_at_utc": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "submitter_id",
+        "inventory",
+        "source_review",
+        "capture",
+        "rationale",
+        "evidence_refs"
+      ],
+      "properties": {
+        "submitter_id": {
+          "$ref": "#/$defs/nullableExact"
+        },
+        "inventory": {
+          "$ref": "#/$defs/inventoryEvidence"
+        },
+        "source_review": {
+          "$ref": "#/$defs/sourceReviewEvidence"
+        },
+        "capture": {
+          "$ref": "#/$defs/captureEvidence"
+        },
+        "rationale": {
+          "$ref": "#/$defs/nullableExact"
+        },
+        "evidence_refs": {
+          "$ref": "#/$defs/evidenceRefs"
+        }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "reviewer_id",
+        "organization_or_team",
+        "independence_attested",
+        "reviewed_at_utc",
+        "decision_note",
+        "signature_evidence_refs"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "unreviewed",
+            "accepted",
+            "rejected",
+            "needs_more_evidence"
+          ]
+        },
+        "reviewer_id": {
+          "$ref": "#/$defs/nullableExact"
+        },
+        "organization_or_team": {
+          "$ref": "#/$defs/nullableExact"
+        },
+        "independence_attested": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "reviewed_at_utc": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "decision_note": {
+          "$ref": "#/$defs/nullableExact"
+        },
+        "signature_evidence_refs": {
+          "$ref": "#/$defs/evidenceRefs"
+        }
+      }
+    }
+  }
+}

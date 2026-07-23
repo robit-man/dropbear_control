@@ -1,0 +1,1 @@
+"""Coverage dashboard verification package."""

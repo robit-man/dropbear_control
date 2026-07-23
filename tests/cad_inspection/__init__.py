@@ -1,0 +1,2 @@
+"""STEP source-inspection verification."""
+

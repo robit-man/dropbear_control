@@ -1,0 +1,4 @@
+# Pinned Python dependencies for structural schema/config-view verification.
+# Runtime protocol, support, safety and emulator cores remain dependency-free.
+jsonschema==4.10.3
+PyYAML==6.0.1

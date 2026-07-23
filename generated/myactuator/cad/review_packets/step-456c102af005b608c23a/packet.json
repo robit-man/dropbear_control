@@ -1,0 +1,125 @@
+{
+  "heuristic_selects_output": false,
+  "housing_member_identified": false,
+  "images": {
+    "member_sheet": {
+      "path": "generated/myactuator/cad/review_packets/step-456c102af005b608c23a/member-sheet.png",
+      "sha256": "c46b0696282f32c42ec64403c9144db460aee87769f72d475e11d67c81796ddd"
+    },
+    "overview": {
+      "path": "generated/myactuator/cad/review_packets/step-456c102af005b608c23a/overview.png",
+      "sha256": "efd5b849f076ead4046f2a48b847b7ee0a1197ade8e4dc021b6c44124cce4f33"
+    }
+  },
+  "joint_axis_identified": false,
+  "members": [
+    {
+      "bbox_size_mm": [
+        20.65,
+        49.0,
+        49.0
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        13.598521,
+        0.002225,
+        0.0694
+      ],
+      "occurrence": "NAUO1",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#14137",
+      "related_product_name": "XM_5005DM_MC",
+      "same_product_occurrences": [
+        "NAUO1"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 5956.484486
+    },
+    {
+      "bbox_size_mm": [
+        16.0,
+        49.0,
+        49.0
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        3.209031,
+        -0.0,
+        0.0
+      ],
+      "occurrence": "NAUO2",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#11399",
+      "related_product_name": "XM_5005DM_BC",
+      "same_product_occurrences": [
+        "NAUO2"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 5103.902221
+    },
+    {
+      "bbox_size_mm": [
+        9.5,
+        49.0,
+        49.0
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        7.449177,
+        -0.0,
+        0.0
+      ],
+      "occurrence": "NAUO3",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#5262",
+      "related_product_name": "XM_5005DM_CA",
+      "same_product_occurrences": [
+        "NAUO3"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 1597.496723
+    },
+    {
+      "bbox_size_mm": [
+        4.9,
+        49.0,
+        47.708514
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        22.680977,
+        0.0,
+        -0.611116
+      ],
+      "occurrence": "NAUO4",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#2226",
+      "related_product_name": "XM_50DM_FC",
+      "same_product_occurrences": [
+        "NAUO4"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 2456.957911
+    }
+  ],
+  "model": "L-5005",
+  "output_member_identified": false,
+  "representative_product_views": 4,
+  "review_status": "candidate_visuals_only",
+  "schema_version": "myactuator-cad-review-packet/1",
+  "series": "RMD-L",
+  "simulation_supported": false,
+  "step_sha256": "900d4184fa8fbce3177934e39cf9c0ce708021eac973829693b0cc863f4236de",
+  "tool": {
+    "angular_deflection_radians": 0.12,
+    "cadquery": "2.8.0",
+    "camera": "orthographic isometric candidate-review view",
+    "linear_deflection_mm": 0.08
+  },
+  "variant_id": "step-456c102af005b608c23a",
+  "vendor_relative_path": "RMD-L/L-5005/vendor/2D3D/RMD-5005(\u5927\u5b54)\u4e09\u7ef4\u56fe/RMD-5005\uff0812.7\u5927\u5b54\uff09.STEP"
+}

@@ -1,0 +1,67 @@
+{
+  "articulation": {
+    "axis_unit": [
+      0.0,
+      0.0,
+      1.0
+    ],
+    "housing_fixed": true,
+    "origin_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "output_vertices_follow_rigid_rotation": true,
+    "output_volume_preserved": true,
+    "rotation_degrees": 37.0
+  },
+  "evidence_class": "offline-synthetic-cad",
+  "fixture": "synthetic-asymmetric-output-v1",
+  "geometry": {
+    "housing_mesh_triangles": 1008,
+    "housing_mesh_vertices": 1012,
+    "housing_volume_mm3": 9650.972631828,
+    "output_centroid_rotated_mm": [
+      0.058112082,
+      0.043790595,
+      13.770561758
+    ],
+    "output_centroid_zero_mm": [
+      0.07276421,
+      0.0,
+      13.770561758
+    ],
+    "output_mesh_triangles": 988,
+    "output_mesh_vertices": 1002,
+    "output_volume_mm3": 5863.688594903
+  },
+  "glb": {
+    "explicit_mm_to_m_scale": 0.001,
+    "housing": {
+      "coordinate_abs_max_m": 0.02,
+      "meshes": 1,
+      "nodes": 2
+    },
+    "output_rotated": {
+      "coordinate_abs_max_m": 0.024,
+      "meshes": 1,
+      "nodes": 2
+    },
+    "output_zero": {
+      "coordinate_abs_max_m": 0.024,
+      "meshes": 1,
+      "nodes": 2
+    },
+    "valid_glb_2": true
+  },
+  "motor_model_supported": false,
+  "physical_or_plant_evidence": false,
+  "schema_version": "myactuator-cad-toolchain-proof/1",
+  "source_is_vendor_geometry": false,
+  "step_round_trip": {
+    "housing_relative_volume_error": 0.0,
+    "output_relative_volume_error": 0.0,
+    "valid_breps": true
+  },
+  "toolchain_lock_sha256": "46b5e4e568fbdd31ea0cb4614add55c33d16873337d50350371b1e53a22ea0fc"
+}

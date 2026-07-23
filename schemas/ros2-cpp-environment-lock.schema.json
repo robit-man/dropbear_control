@@ -1,0 +1,271 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.dev/schemas/ros2-cpp-environment-lock.schema.json",
+  "title": "Exact ROS 2 C++ handoff build environment lock",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "lock_id",
+    "authority",
+    "platform",
+    "toolchain",
+    "debian_packages",
+    "abi_artifacts",
+    "api_headers",
+    "build_profile",
+    "claims",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "ros2-cpp-environment-lock/1"
+    },
+    "lock_id": {
+      "const": "dropbear-ros2-jazzy-cpp-linux-x86-64"
+    },
+    "authority": {
+      "const": "offline_nonphysical_build_environment_only"
+    },
+    "platform": {
+      "$ref": "#/$defs/platform"
+    },
+    "toolchain": {
+      "$ref": "#/$defs/toolchain"
+    },
+    "debian_packages": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": {
+        "$ref": "#/$defs/package"
+      }
+    },
+    "abi_artifacts": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "$ref": "#/$defs/artifact"
+      }
+    },
+    "api_headers": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "$ref": "#/$defs/artifact"
+      }
+    },
+    "build_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ros_distro",
+        "ros_prefix",
+        "cxx_standard",
+        "build_type",
+        "python_executable",
+        "physical_hardware_required"
+      ],
+      "properties": {
+        "ros_distro": {
+          "const": "jazzy"
+        },
+        "ros_prefix": {
+          "const": "/opt/ros/jazzy"
+        },
+        "cxx_standard": {
+          "const": 17
+        },
+        "build_type": {
+          "const": "RelWithDebInfo"
+        },
+        "python_executable": {
+          "const": "/usr/bin/python3"
+        },
+        "physical_hardware_required": {
+          "const": false
+        }
+      }
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cpp_handoff_build_environment",
+        "physical_adapter_present",
+        "canonical_dropbear_admitted",
+        "support_granted",
+        "physical_motion_authority",
+        "physical_io"
+      ],
+      "properties": {
+        "cpp_handoff_build_environment": {
+          "const": true
+        },
+        "physical_adapter_present": {
+          "const": false
+        },
+        "canonical_dropbear_admitted": {
+          "const": false
+        },
+        "support_granted": {
+          "const": false
+        },
+        "physical_motion_authority": {
+          "const": false
+        },
+        "physical_io": {
+          "const": false
+        }
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "record_sha256"
+      ],
+      "properties": {
+        "record_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "platform": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "system",
+        "machine",
+        "os_id",
+        "os_version_id",
+        "libc_name",
+        "libc_version"
+      ],
+      "properties": {
+        "system": {
+          "const": "Linux"
+        },
+        "machine": {
+          "const": "x86_64"
+        },
+        "os_id": {
+          "const": "ubuntu"
+        },
+        "os_version_id": {
+          "const": "24.04"
+        },
+        "libc_name": {
+          "const": "glibc"
+        },
+        "libc_version": {
+          "const": "2.39"
+        }
+      }
+    },
+    "tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "version",
+        "size_bytes",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^/"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "size_bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "toolchain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "compiler",
+        "cmake",
+        "colcon",
+        "python"
+      ],
+      "properties": {
+        "compiler": {
+          "$ref": "#/$defs/tool"
+        },
+        "cmake": {
+          "$ref": "#/$defs/tool"
+        },
+        "colcon": {
+          "$ref": "#/$defs/tool"
+        },
+        "python": {
+          "$ref": "#/$defs/tool"
+        }
+      }
+    },
+    "package": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "version"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9+.-]+$"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "path",
+        "size_bytes",
+        "sha256"
+      ],
+      "properties": {
+        "role": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]+$"
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^/opt/ros/jazzy/"
+        },
+        "size_bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  }
+}

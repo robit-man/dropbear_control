@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.org/schemas/dropbear-graph-submission-v2.schema.json",
+  "title": "Dropbear graph V2 governance submission",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "submission_id",
+    "submitted_at",
+    "submitter",
+    "supersedes_submission_id",
+    "source_registry_generation_sha256",
+    "decision_sha256",
+    "decision",
+    "submission_reason",
+    "evidence_refs",
+    "support_granted",
+    "physical_motion_authority",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": { "const": "dropbear-graph-submission/2" },
+    "submission_id": {
+      "type": "string",
+      "pattern": "^graphsubmission-[0-9a-f]{20}$"
+    },
+    "submitted_at": { "type": "string", "format": "date-time" },
+    "submitter": { "$ref": "#/$defs/submitter" },
+    "supersedes_submission_id": {
+      "type": ["string", "null"],
+      "pattern": "^graphsubmission-[0-9a-f]{20}$"
+    },
+    "source_registry_generation_sha256": { "$ref": "#/$defs/sha256" },
+    "decision_sha256": { "$ref": "#/$defs/sha256" },
+    "decision": { "type": "object" },
+    "submission_reason": { "$ref": "#/$defs/text" },
+    "evidence_refs": { "$ref": "#/$defs/refs" },
+    "support_granted": { "const": false },
+    "physical_motion_authority": { "const": false },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record_sha256"],
+      "properties": {
+        "record_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    }
+  },
+  "$defs": {
+    "text": { "type": "string", "minLength": 1, "maxLength": 2048 },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/text" }
+    },
+    "submitter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actor_id", "organization_or_team", "human_attested"],
+      "properties": {
+        "actor_id": { "$ref": "#/$defs/text" },
+        "organization_or_team": { "$ref": "#/$defs/text" },
+        "human_attested": { "const": true }
+      }
+    }
+  }
+}

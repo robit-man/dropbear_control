@@ -73,6 +73,10 @@ public:
   float getVelocity() const { return velocity; }
   float getCurrent() const { return current; }
 
+  // Scaled accessors for wire transport (encoder counts -> radians).
+  float getPositionRadians() const;
+  float getVelocityRadiansPerSec() const;
+
   // Dependency injection
   void setCanBus(MCP2515CAN* bus) { canBus = bus; }
   void setCommunication(CommunicationInterface* c) { comm = c; }

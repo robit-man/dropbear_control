@@ -1,0 +1,600 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.dev/schemas/myactuator-coverage-dashboard.schema.json",
+  "title": "MYACTUATOR and Dropbear coverage and gap dashboard",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "dashboard_id",
+    "authority",
+    "sources",
+    "verification_entry_point",
+    "latest_machine_report_path",
+    "policy",
+    "summary",
+    "objective_criteria",
+    "requirements",
+    "tests",
+    "work_packages",
+    "phase_gates",
+    "models",
+    "cad_configurations",
+    "release_authorized",
+    "support_granted",
+    "physical_motion_authority",
+    "physical_action_permitted",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "myactuator-coverage-dashboard/1"
+    },
+    "dashboard_id": {
+      "type": "string",
+      "pattern": "^coverage-[0-9a-f]{20}$"
+    },
+    "authority": {
+      "const": "coverage_and_gap_observation_only"
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 24,
+      "maxItems": 24,
+      "items": {
+        "$ref": "#/$defs/source"
+      }
+    },
+    "verification_entry_point": {
+      "const": "tools/test_all.sh"
+    },
+    "latest_machine_report_path": {
+      "const": "generated/verification/offline_gate_report.json"
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "structural_trace_is_not_verification",
+        "catalog_status_is_not_current_run_result",
+        "planned_test_is_not_passed",
+        "source_acquisition_is_not_support",
+        "generated_dashboard_is_not_review_or_approval",
+        "source_drift_invalidates_dashboard",
+        "physical_actions_require_separate_authorization",
+        "dashboard_never_grants_support_or_motion"
+      ],
+      "properties": {
+        "structural_trace_is_not_verification": {"const": true},
+        "catalog_status_is_not_current_run_result": {"const": true},
+        "planned_test_is_not_passed": {"const": true},
+        "source_acquisition_is_not_support": {"const": true},
+        "generated_dashboard_is_not_review_or_approval": {"const": true},
+        "source_drift_invalidates_dashboard": {"const": true},
+        "physical_actions_require_separate_authorization": {"const": true},
+        "dashboard_never_grants_support_or_motion": {"const": true}
+      }
+    },
+    "summary": {
+      "$ref": "#/$defs/summary"
+    },
+    "objective_criteria": {
+      "type": "array",
+      "minItems": 15,
+      "maxItems": 15,
+      "items": {
+        "$ref": "#/$defs/criterion"
+      }
+    },
+    "requirements": {
+      "type": "array",
+      "minItems": 77,
+      "maxItems": 77,
+      "items": {
+        "$ref": "#/$defs/requirement"
+      }
+    },
+    "tests": {
+      "type": "array",
+      "minItems": 140,
+      "maxItems": 140,
+      "items": {
+        "$ref": "#/$defs/test"
+      }
+    },
+    "work_packages": {
+      "type": "array",
+      "minItems": 20,
+      "maxItems": 20,
+      "items": {
+        "$ref": "#/$defs/workPackage"
+      }
+    },
+    "phase_gates": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "items": {
+        "$ref": "#/$defs/gate"
+      }
+    },
+    "models": {
+      "type": "array",
+      "minItems": 44,
+      "maxItems": 44,
+      "items": {
+        "$ref": "#/$defs/model"
+      }
+    },
+    "cad_configurations": {
+      "type": "array",
+      "minItems": 53,
+      "maxItems": 53,
+      "items": {
+        "$ref": "#/$defs/cadConfiguration"
+      }
+    },
+    "release_authorized": {"const": false},
+    "support_granted": {"const": false},
+    "physical_motion_authority": {"const": false},
+    "physical_action_permitted": {"const": false},
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record_sha256"],
+      "properties": {
+        "record_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "exact": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 8192,
+      "pattern": "^[^\\r\\n\\t]+$"
+    },
+    "nullableExact": {
+      "oneOf": [
+        {"$ref": "#/$defs/exact"},
+        {"type": "null"}
+      ]
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"$ref": "#/$defs/exact"},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "statusCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "PLANNED",
+        "EXISTS-OFFLINE",
+        "EXISTS-BASELINE",
+        "PHYSICAL-HOLD"
+      ],
+      "properties": {
+        "PLANNED": {"type": "integer", "minimum": 0},
+        "EXISTS-OFFLINE": {"type": "integer", "minimum": 0},
+        "EXISTS-BASELINE": {"type": "integer", "minimum": 0},
+        "PHYSICAL-HOLD": {"type": "integer", "minimum": 0}
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requirement_count",
+        "p0_requirement_count",
+        "p1_requirement_count",
+        "p2_requirement_count",
+        "structurally_traced_requirement_count",
+        "completion_asserted_requirement_count",
+        "catalog_test_count",
+        "test_exists_offline_count",
+        "test_exists_baseline_count",
+        "test_planned_count",
+        "test_physical_hold_count",
+        "work_package_count",
+        "active_work_package_count",
+        "done_offline_work_package_count",
+        "open_work_package_count",
+        "physical_hold_work_package_count",
+        "phase_gate_count",
+        "phase_gate_pass_asserted_count",
+        "model_count",
+        "cad_configuration_count",
+        "review_queue_item_count",
+        "evidence_intake_packet_count",
+        "objective_criterion_count",
+        "objective_criterion_met_count",
+        "objective_evidence_complete"
+      ],
+      "properties": {
+        "requirement_count": {"const": 77},
+        "p0_requirement_count": {"const": 39},
+        "p1_requirement_count": {"const": 37},
+        "p2_requirement_count": {"const": 1},
+        "structurally_traced_requirement_count": {"const": 77},
+        "completion_asserted_requirement_count": {"const": 0},
+        "catalog_test_count": {"const": 140},
+        "test_exists_offline_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 140
+        },
+        "test_exists_baseline_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 140
+        },
+        "test_planned_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 140
+        },
+        "test_physical_hold_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 140
+        },
+        "work_package_count": {"const": 20},
+        "active_work_package_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 20
+        },
+        "done_offline_work_package_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 20
+        },
+        "open_work_package_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 20
+        },
+        "physical_hold_work_package_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 20
+        },
+        "phase_gate_count": {"const": 8},
+        "phase_gate_pass_asserted_count": {"const": 0},
+        "model_count": {"const": 44},
+        "cad_configuration_count": {"const": 53},
+        "review_queue_item_count": {"const": 145},
+        "evidence_intake_packet_count": {"const": 97},
+        "objective_criterion_count": {"const": 15},
+        "objective_criterion_met_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 15
+        },
+        "objective_evidence_complete": {"type": "boolean"}
+      }
+    },
+    "criterion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "criterion_id",
+        "label",
+        "required_count",
+        "observed_count",
+        "met",
+        "evidence_ref",
+        "blocker"
+      ],
+      "properties": {
+        "criterion_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]+$"
+        },
+        "label": {"$ref": "#/$defs/exact"},
+        "required_count": {"type": "integer", "minimum": 1},
+        "observed_count": {"type": "integer", "minimum": 0},
+        "met": {"type": "boolean"},
+        "evidence_ref": {"$ref": "#/$defs/exact"},
+        "blocker": {"$ref": "#/$defs/nullableExact"}
+      }
+    },
+    "requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requirement_id",
+        "priority",
+        "statement",
+        "basis",
+        "design_refs",
+        "work_package_ids",
+        "planned_test_ids",
+        "gate_ids",
+        "evidence_now",
+        "test_status_counts",
+        "structurally_traced",
+        "completion_asserted"
+      ],
+      "properties": {
+        "requirement_id": {
+          "type": "string",
+          "pattern": "^[A-Z]{2,3}-[0-9]{3}$"
+        },
+        "priority": {"enum": ["P0", "P1", "P2"]},
+        "statement": {"$ref": "#/$defs/exact"},
+        "basis": {"$ref": "#/$defs/exact"},
+        "design_refs": {"$ref": "#/$defs/exact"},
+        "work_package_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^WP-[0-9]{3}$"
+          }
+        },
+        "planned_test_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^TST-[A-Z]+-[0-9]{3}$"
+          }
+        },
+        "gate_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^G[0-7]$"
+          }
+        },
+        "evidence_now": {"$ref": "#/$defs/exact"},
+        "test_status_counts": {"$ref": "#/$defs/statusCounts"},
+        "structurally_traced": {"const": true},
+        "completion_asserted": {"const": false}
+      }
+    },
+    "test": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "test_id",
+        "level",
+        "purpose",
+        "requirement_ids",
+        "work_package_ids",
+        "status"
+      ],
+      "properties": {
+        "test_id": {
+          "type": "string",
+          "pattern": "^TST-[A-Z]+-[0-9]{3}$"
+        },
+        "level": {
+          "enum": [
+            "OFFLINE-STATIC",
+            "OFFLINE-UNIT",
+            "OFFLINE-BUILD",
+            "OFFLINE-CAD",
+            "SIL-PROTOCOL",
+            "SIL-PLANT",
+            "SIL-ROBOT",
+            "BENCH",
+            "HIL",
+            "ROBOT"
+          ]
+        },
+        "purpose": {"$ref": "#/$defs/exact"},
+        "requirement_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z]{2,3}-[0-9]{3}$"
+          }
+        },
+        "work_package_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^WP-[0-9]{3}$"
+          }
+        },
+        "status": {
+          "enum": [
+            "PLANNED",
+            "EXISTS-OFFLINE",
+            "EXISTS-BASELINE",
+            "PHYSICAL-HOLD"
+          ]
+        }
+      }
+    },
+    "workPackage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "work_package_id",
+        "outcome",
+        "depends_on",
+        "dependency_work_package_ids",
+        "requirement_ids",
+        "exit_evidence",
+        "status",
+        "lifecycle_state"
+      ],
+      "properties": {
+        "work_package_id": {
+          "type": "string",
+          "pattern": "^WP-[0-9]{3}$"
+        },
+        "outcome": {"$ref": "#/$defs/exact"},
+        "depends_on": {"$ref": "#/$defs/exact"},
+        "dependency_work_package_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^WP-[0-9]{3}$"
+          }
+        },
+        "requirement_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z]{2,3}-[0-9]{3}$"
+          }
+        },
+        "exit_evidence": {"$ref": "#/$defs/exact"},
+        "status": {"$ref": "#/$defs/exact"},
+        "lifecycle_state": {
+          "enum": ["ACTIVE", "DONE-OFFLINE", "OPEN", "PHYSICAL-HOLD"]
+        }
+      }
+    },
+    "gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "gate_id",
+        "name",
+        "authorized_scope",
+        "required_evidence",
+        "hard_hold",
+        "pass_asserted"
+      ],
+      "properties": {
+        "gate_id": {
+          "type": "string",
+          "pattern": "^G[0-7]$"
+        },
+        "name": {"$ref": "#/$defs/exact"},
+        "authorized_scope": {"$ref": "#/$defs/exact"},
+        "required_evidence": {"$ref": "#/$defs/exact"},
+        "hard_hold": {"$ref": "#/$defs/exact"},
+        "pass_asserted": {"const": false}
+      }
+    },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model_key",
+        "series",
+        "model",
+        "source_variant_ids",
+        "configuration_ids",
+        "protocol_applicability_accepted",
+        "cad_accepted_configuration_count",
+        "plant_status",
+        "exact_model_geometry_ready",
+        "exact_model_plant_ready",
+        "exact_model_simulation_ready",
+        "physically_correlated_plant_ready",
+        "blockers"
+      ],
+      "properties": {
+        "model_key": {
+          "type": "string",
+          "pattern": "^model-[0-9a-f]{20}$"
+        },
+        "series": {"$ref": "#/$defs/exact"},
+        "model": {"$ref": "#/$defs/exact"},
+        "source_variant_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/exact"}
+        },
+        "configuration_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/exact"}
+        },
+        "protocol_applicability_accepted": {"type": "boolean"},
+        "cad_accepted_configuration_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "plant_status": {"$ref": "#/$defs/exact"},
+        "exact_model_geometry_ready": {"type": "boolean"},
+        "exact_model_plant_ready": {"type": "boolean"},
+        "exact_model_simulation_ready": {"type": "boolean"},
+        "physically_correlated_plant_ready": {"type": "boolean"},
+        "blockers": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/exact"}
+        }
+      }
+    },
+    "cadConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "configuration_id",
+        "variant_id",
+        "model_key",
+        "series",
+        "model",
+        "source_structure",
+        "selector_status",
+        "review_status",
+        "review_lane",
+        "packet_reviewable_now",
+        "current_action",
+        "unanswered_question_count",
+        "accepted_asset",
+        "browser_releasable",
+        "support_granted"
+      ],
+      "properties": {
+        "configuration_id": {
+          "type": "string",
+          "pattern": "^cadcfg-[0-9a-f]{20}$"
+        },
+        "variant_id": {"$ref": "#/$defs/exact"},
+        "model_key": {
+          "type": "string",
+          "pattern": "^model-[0-9a-f]{20}$"
+        },
+        "series": {"$ref": "#/$defs/exact"},
+        "model": {"$ref": "#/$defs/exact"},
+        "source_structure": {"$ref": "#/$defs/exact"},
+        "selector_status": {"$ref": "#/$defs/exact"},
+        "review_status": {"$ref": "#/$defs/exact"},
+        "review_lane": {"$ref": "#/$defs/exact"},
+        "packet_reviewable_now": {"type": "boolean"},
+        "current_action": {"$ref": "#/$defs/exact"},
+        "unanswered_question_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 13
+        },
+        "accepted_asset": {"type": "boolean"},
+        "browser_releasable": {"type": "boolean"},
+        "support_granted": {"type": "boolean"}
+      }
+    }
+  }
+}

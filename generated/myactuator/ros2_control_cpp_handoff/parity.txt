@@ -1,0 +1,6 @@
+descriptor_fields=hardware_name,canonical_configuration_digest,accepted_graph_decision_id,accepted_graph_sha256,source_registry_generation_sha256,graph_registry_generation_sha256,simulator_catalog_generation_sha256,joints
+joint_fields=joint_name,canonical_actuator_id,command_interfaces,state_interfaces,position_lower_rad,position_upper_rad,maximum_velocity_rad_s,maximum_output_effort_nm,maximum_current_a
+lifecycle=configure:success:inactive;activate:success:active;deactivate:success:inactive;cleanup:success:unconfigured;shutdown:success:finalized
+write=stale:stale;timeout:timeout;limit:invalid;success:success;replay:stale
+read=success;position:0.100000:stale:external_joint_sensor;velocity:0.200000:valid:reviewed_fusion;effort:null:faulted:unavailable;qaxis_current:0.300000:valid:native_drive
+revocation=stale:faulted

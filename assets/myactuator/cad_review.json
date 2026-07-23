@@ -1,0 +1,4232 @@
+{
+  "geometry_configurations": [
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-a1d2e03798f1e51ebbdb",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "X12-320",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-X",
+      "source_variant_ids": [
+        "step-e7d99e7e0d9683017c1a"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-dee54e6c5b443c65aaf8",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "X6-60",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-X",
+      "source_variant_ids": [
+        "step-fefa2b9ccb0a532dda95"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-a9ae06414847bea88e97",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "X15-450",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-X",
+      "source_variant_ids": [
+        "step-6c143229f6a28e492bf2"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-397c310529f1989a6d3a",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "X4-36",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-X",
+      "source_variant_ids": [
+        "step-a445ee72b425d35404f4"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-fa4f7788d4246eadc5a1",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "X6-7",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-X",
+      "source_variant_ids": [
+        "step-e260e80fe3f4060ea16b"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-ef0c9ea7dd862b7ff024",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "X6-7",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-X",
+      "source_variant_ids": [
+        "step-5db0c494d28d1a3065a7"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-457a05d18332d39910c2",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "X6-40",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-X",
+      "source_variant_ids": [
+        "step-d4f20f1eaa44ed21396b"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-6c7b1f7564e16914da22",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "X6-40",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-X",
+      "source_variant_ids": [
+        "step-ca4746f295c6b7e95ec1"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-a7490c0d6dbed0baf5f5",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "X8-25",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-X",
+      "source_variant_ids": [
+        "step-1a6461c26f4f47967fe2"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-e3a9d1f402cd69951366",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "X6-8",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-X",
+      "source_variant_ids": [
+        "step-2fae2b65832b5f18316d"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-23f15f07bb4ec56c753e",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "X6-8",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-X",
+      "source_variant_ids": [
+        "step-3b0b760b90937bb0bcdc"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-fa35b61c7d1cc6860c8c",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "X10-40",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-X",
+      "source_variant_ids": [
+        "step-3904f765232207374c62"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-7d5885c1e438aa4e7007",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "X10-40",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-X",
+      "source_variant_ids": [
+        "step-d19dc9fdc131c651a154"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-fec99264d04f9fe66cb7",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "X10-100",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-X",
+      "source_variant_ids": [
+        "step-db88b3a928f3c1058d94"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-0061f1ea7d1303b0c15a",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "X10-100",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-X",
+      "source_variant_ids": [
+        "step-c152c261cc1c009e60bb"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-093eb883f35d108328ab",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "X2-7",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-X",
+      "source_variant_ids": [
+        "step-6daf39ef3e1771cf40c6"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-9df7758cb82933c8f8cf",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "X4-10",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-X",
+      "source_variant_ids": [
+        "step-1dc75d76676a84fe8c1a"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-c2f77e2997129cb8fff7",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "X8-32",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-X",
+      "source_variant_ids": [
+        "step-2c9f9a8e81a091988803"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-99459400bbf061813311",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "X8-120",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-X",
+      "source_variant_ids": [
+        "step-264f5ec05fc7ce9caece"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-ebacfdbe385a0ba8c1cd",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "RH-14",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RH",
+      "source_variant_ids": [
+        "step-4054296b282f60755175"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-c8b88282a9379cdffb94",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "RH-17",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RH",
+      "source_variant_ids": [
+        "step-cc372035f6cd51c3ef24"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-aea09818e4b49b1d40f9",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "RH-17",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RH",
+      "source_variant_ids": [
+        "step-f6c14110f5116e71127f"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-d3c9a65a028775d64b5c",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "RH-20",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RH",
+      "source_variant_ids": [
+        "step-7a5330c0c93e21ab024c"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-266c148dcb864dd93aee",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "RH-20",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RH",
+      "source_variant_ids": [
+        "step-022560fdbee303dad083"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-eace0511f28897ae2fd5",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "RH-25",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RH",
+      "source_variant_ids": [
+        "step-e627f76e6cb91e0b1706"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-4020f14894dd12e6125f",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "RH-25",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RH",
+      "source_variant_ids": [
+        "step-8e396b8c7a180692041a"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-d049f4862ef5ec850dff",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "RH-32",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RH",
+      "source_variant_ids": [
+        "step-27f5a09e3dc9f3c310f1"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-d86b57640723fd997b75",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "RH-32",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RH",
+      "source_variant_ids": [
+        "step-ffcceaf535839747be7c"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-7ffe197ac81bb6f9604a",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "L-4005",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-L",
+      "source_variant_ids": [
+        "step-517e7d1e68c956d417d5"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-2e5644d8e0064d2c9408",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "L-4010",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-L",
+      "source_variant_ids": [
+        "step-38d3f4f17489f8084976"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-da53a913e441d0fff149",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "L-4015",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-L",
+      "source_variant_ids": [
+        "step-99f7bd64109f4c46c33e"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-4f20b573c3668c00fe57",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "L-5005",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-L",
+      "source_variant_ids": [
+        "step-456c102af005b608c23a"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-6ddc23ba9d73ba29deb2",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "L-5010",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-L",
+      "source_variant_ids": [
+        "step-c42154c3b5408d218867"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-00bab7777e092e1f1956",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "L-5015",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-L",
+      "source_variant_ids": [
+        "step-01e8258646417ccd06bc"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-6b22974016127ad3af9b",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "L-7015",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-L",
+      "source_variant_ids": [
+        "step-940faa35dc5a3627ba95"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-58cd0e22d5a06bff80a9",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "L-7025",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-L",
+      "source_variant_ids": [
+        "step-935c5675150f4bbe3901"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-2be069076daeb93f5e1d",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "L-9015",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-L",
+      "source_variant_ids": [
+        "step-d53cacfa382b310eec1d"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-bccac98689f149fc8ce1",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "L-9025",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-L",
+      "source_variant_ids": [
+        "step-a608afabe80cef903d06"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-6c045210955b809979e6",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "CEM-25",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "CEM",
+      "source_variant_ids": [
+        "step-9b8c5b35fa146b589a00"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-b07d7f92542db6c74d34",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "CEM-45",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "CEM",
+      "source_variant_ids": [
+        "step-016c88381bff534ed534"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-0ba7575a58c2a00a2ac3",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "H-50-15",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-H",
+      "source_variant_ids": [
+        "step-360816921ce84b5d3df9"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-19ac40f6526e2e57191d",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "H-70-15",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-H",
+      "source_variant_ids": [
+        "step-5b3a01b9a8f9a28474ab"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-967cb70a8b6fc293412b",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "H-90-15",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "RMD-H",
+      "source_variant_ids": [
+        "step-366cf26f0cefc026b98c"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-e9c45a42638e5ddd84d5",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "FL-38-08",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "FL-FLO",
+      "source_variant_ids": [
+        "step-f5f72951b3f77ce16c91"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-c1061d416d8c119f9604",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "FL-50-08",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "FL-FLO",
+      "source_variant_ids": [
+        "step-f79a0d2a8ed4022d7b25"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-66960955bdd6fa1dd307",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "FL-50-15",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "FL-FLO",
+      "source_variant_ids": [
+        "step-2c22da519db7b7083d85"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-d3ecd3dff109ab6f05e9",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "FL-70-10",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "FL-FLO",
+      "source_variant_ids": [
+        "step-059128e92a4d797f8c91"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-2cc8ecbd9ff11ee87668",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "FL-70-16",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "FL-FLO",
+      "source_variant_ids": [
+        "step-6ada01d640147a47a3f2"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-2bd4e1440d0578a9bc7a",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "FL-85-13",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "FL-FLO",
+      "source_variant_ids": [
+        "step-9e4dfc7514bcc698c10b"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-1ddca7989a9967c464c2",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "FL-85-23",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "FL-FLO",
+      "source_variant_ids": [
+        "step-ca8c0d17fec01e9e7992"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-f7052809f45c369d7337",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "FLO-50-15",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "FL-FLO",
+      "source_variant_ids": [
+        "step-bdeb039dbc7f9b26f03c"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-0db6042c01fecf93de46",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "FLO-70-15",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "FL-FLO",
+      "source_variant_ids": [
+        "step-6a3a1c46035f4affd50d"
+      ],
+      "status": "unsupported"
+    },
+    {
+      "canonical_variant_id": null,
+      "configuration_id": "cadcfg-7f559ad1f1308657cea3",
+      "denial_reason": "geometry configuration selector not reviewed",
+      "evidence_refs": [],
+      "model": "FLO-90-15",
+      "reviewed_at": null,
+      "reviewer": null,
+      "selector_dimensions": [],
+      "selector_key": null,
+      "selector_status": "unresolved",
+      "series": "FL-FLO",
+      "source_variant_ids": [
+        "step-d09d01993dfb290debdd"
+      ],
+      "status": "unsupported"
+    }
+  ],
+  "inspection_manifest_sha256": "7371bdb8f81c3955fcab88e5754240511ca683ebea7feac14a813d332586a530",
+  "inspection_schema_version": "myactuator-step-inspection/1",
+  "models": [
+    {
+      "configuration_ids": [
+        "cadcfg-6c045210955b809979e6"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "CEM-25",
+      "series": "CEM",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-b07d7f92542db6c74d34"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "CEM-45",
+      "series": "CEM",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-e9c45a42638e5ddd84d5"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "FL-38-08",
+      "series": "FL-FLO",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-c1061d416d8c119f9604"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "FL-50-08",
+      "series": "FL-FLO",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-66960955bdd6fa1dd307"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "FL-50-15",
+      "series": "FL-FLO",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-d3ecd3dff109ab6f05e9"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "FL-70-10",
+      "series": "FL-FLO",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-2cc8ecbd9ff11ee87668"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "FL-70-16",
+      "series": "FL-FLO",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-2bd4e1440d0578a9bc7a"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "FL-85-13",
+      "series": "FL-FLO",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-1ddca7989a9967c464c2"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "FL-85-23",
+      "series": "FL-FLO",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-f7052809f45c369d7337"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "FLO-50-15",
+      "series": "FL-FLO",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-0db6042c01fecf93de46"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "FLO-70-15",
+      "series": "FL-FLO",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-7f559ad1f1308657cea3"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "FLO-90-15",
+      "series": "FL-FLO",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-ebacfdbe385a0ba8c1cd"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "RH-14",
+      "series": "RH",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-c8b88282a9379cdffb94",
+        "cadcfg-aea09818e4b49b1d40f9"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "RH-17",
+      "series": "RH",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-d3c9a65a028775d64b5c",
+        "cadcfg-266c148dcb864dd93aee"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "RH-20",
+      "series": "RH",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-eace0511f28897ae2fd5",
+        "cadcfg-4020f14894dd12e6125f"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "RH-25",
+      "series": "RH",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-d049f4862ef5ec850dff",
+        "cadcfg-d86b57640723fd997b75"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "RH-32",
+      "series": "RH",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-0ba7575a58c2a00a2ac3"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "H-50-15",
+      "series": "RMD-H",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-19ac40f6526e2e57191d"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "H-70-15",
+      "series": "RMD-H",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-967cb70a8b6fc293412b"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "H-90-15",
+      "series": "RMD-H",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-7ffe197ac81bb6f9604a"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "L-4005",
+      "series": "RMD-L",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-2e5644d8e0064d2c9408"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "L-4010",
+      "series": "RMD-L",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-da53a913e441d0fff149"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "L-4015",
+      "series": "RMD-L",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-4f20b573c3668c00fe57"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "L-5005",
+      "series": "RMD-L",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-6ddc23ba9d73ba29deb2"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "L-5010",
+      "series": "RMD-L",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-00bab7777e092e1f1956"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "L-5015",
+      "series": "RMD-L",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-6b22974016127ad3af9b"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "L-7015",
+      "series": "RMD-L",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-58cd0e22d5a06bff80a9"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "L-7025",
+      "series": "RMD-L",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-2be069076daeb93f5e1d"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "L-9015",
+      "series": "RMD-L",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-bccac98689f149fc8ce1"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "L-9025",
+      "series": "RMD-L",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-fec99264d04f9fe66cb7",
+        "cadcfg-0061f1ea7d1303b0c15a"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "X10-100",
+      "series": "RMD-X",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-fa35b61c7d1cc6860c8c",
+        "cadcfg-7d5885c1e438aa4e7007"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "X10-40",
+      "series": "RMD-X",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-a1d2e03798f1e51ebbdb"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "X12-320",
+      "series": "RMD-X",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-a9ae06414847bea88e97"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "X15-450",
+      "series": "RMD-X",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-093eb883f35d108328ab"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "X2-7",
+      "series": "RMD-X",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-9df7758cb82933c8f8cf"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "X4-10",
+      "series": "RMD-X",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-397c310529f1989a6d3a"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "X4-36",
+      "series": "RMD-X",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-457a05d18332d39910c2",
+        "cadcfg-6c7b1f7564e16914da22"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "X6-40",
+      "series": "RMD-X",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-dee54e6c5b443c65aaf8"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "X6-60",
+      "series": "RMD-X",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-fa4f7788d4246eadc5a1",
+        "cadcfg-ef0c9ea7dd862b7ff024"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "X6-7",
+      "series": "RMD-X",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-e3a9d1f402cd69951366",
+        "cadcfg-23f15f07bb4ec56c753e"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "X6-8",
+      "series": "RMD-X",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-99459400bbf061813311"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "X8-120",
+      "series": "RMD-X",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-a7490c0d6dbed0baf5f5"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "X8-25",
+      "series": "RMD-X",
+      "status": "unsupported"
+    },
+    {
+      "configuration_ids": [
+        "cadcfg-c2f77e2997129cb8fff7"
+      ],
+      "denial_reason": "no accepted exact geometry configuration",
+      "model": "X8-32",
+      "series": "RMD-X",
+      "status": "unsupported"
+    }
+  ],
+  "schema_version": "myactuator-cad-review/2",
+  "variants": [
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 4339662,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "X12-320",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-X",
+      "step_sha256": "9b1710aef09916c8da02b4e6b750da6bbfe2ba44cad6ba03cd1b53e3858e5eea",
+      "step_structure": "assembly",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-e7d99e7e0d9683017c1a",
+      "vendor_relative_path": "RMD-X/X12-320/vendor/RMD-X12-P20-320 \u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 4384201,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "X6-60",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-X",
+      "step_sha256": "7aa150d5ea2d1b81136e4925dd96045c2d3d0a0b9f7d444cb3a02084c88e9cdd",
+      "step_structure": "assembly",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-fefa2b9ccb0a532dda95",
+      "vendor_relative_path": "RMD-X/X6-60/vendor/RMD-X6-P20-60 \u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 5178717,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "X15-450",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-X",
+      "step_sha256": "707843e9e9b5d3406f607c9e89d63f87bd13adde82f80d7ab55cd3ca36c40988",
+      "step_structure": "assembly",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-6c143229f6a28e492bf2",
+      "vendor_relative_path": "RMD-X/X15-450/vendor/RMD-X15-P20-450 \u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 1921263,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "X4-36",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-X",
+      "step_sha256": "c20260bf8faf780d9bdd4599f7cc973bf42951f683b1b953af6082ff7c5ef51c",
+      "step_structure": "assembly",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-a445ee72b425d35404f4",
+      "vendor_relative_path": "RMD-X/X4-36/vendor/RMD-X4-P36-36 \u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 362233,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "X6-7",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-X",
+      "step_sha256": "3054c529935d1bdf650d6e156f597701403f06039434710f3281135b7fabea3c",
+      "step_structure": "flattened",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-e260e80fe3f4060ea16b",
+      "vendor_relative_path": "RMD-X/X6-7/vendor/X6-7/(RMD-X6 1\u0433\u25516 V2) Product information 240220/2D 3D/RMD-X6 1\u0433\u25516 V2.step"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 362233,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "X6-7",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-X",
+      "step_sha256": "3054c529935d1bdf650d6e156f597701403f06039434710f3281135b7fabea3c",
+      "step_structure": "flattened",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-5db0c494d28d1a3065a7",
+      "vendor_relative_path": "RMD-X/X6-7/vendor/X6-7/X6-7 Product information 240403/2D 3D/X6-7(RMD-X6 1\u0433\u25516 V2).step"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 573375,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "X6-40",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-X",
+      "step_sha256": "41ceb872d086221b45aa0f7422a2df01944a5ab8d0a8e13766184feb977782f6",
+      "step_structure": "flattened",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-d4f20f1eaa44ed21396b",
+      "vendor_relative_path": "RMD-X/X6-40/vendor/X6-40/(RMD-X6-S2 1\u0433\u255136 V2) Product information 240220/2D 3D/RMD-X6-S2 1\u0433\u255136 V2.step"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 573375,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "X6-40",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-X",
+      "step_sha256": "41ceb872d086221b45aa0f7422a2df01944a5ab8d0a8e13766184feb977782f6",
+      "step_structure": "flattened",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-ca4746f295c6b7e95ec1",
+      "vendor_relative_path": "RMD-X/X6-40/vendor/X6-40/X6-40 Product information 240403/2D 3D/X6-40 (RMD-X6-S2 1\u0433\u255136 V2).step"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 5151412,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "X8-25",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-X",
+      "step_sha256": "751dcbccb675b6ac1ee2d745dea1e158857f459fe21ae3ca11c054c6931677c9",
+      "step_structure": "flattened",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-1a6461c26f4f47967fe2",
+      "vendor_relative_path": "RMD-X/X8-25/vendor/X8-25 Product information 240814/2D 3D/X8-25 (RMD-X8 PRO 1\uff1a9 V2).step"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 2116541,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "X6-8",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-X",
+      "step_sha256": "acc58264e35a36f8aab6f65b11db023df11c65fb6a29ea8300b56068cfc0b424",
+      "step_structure": "flattened",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-2fae2b65832b5f18316d",
+      "vendor_relative_path": "RMD-X/X6-8/vendor/X6-8/(RMD-X6 1\u0433\u25518 V3) Product information 240220/2D 3D/RMD-X6-P8 V3.step"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 2116541,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "X6-8",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-X",
+      "step_sha256": "acc58264e35a36f8aab6f65b11db023df11c65fb6a29ea8300b56068cfc0b424",
+      "step_structure": "flattened",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-3b0b760b90937bb0bcdc",
+      "vendor_relative_path": "RMD-X/X6-8/vendor/X6-8/X6-8 Product information 240403/2D 3D/X6-8(RMD-X6 1\u0433\u25518 V3).step"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 2713841,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "X10-40",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-X",
+      "step_sha256": "b6150ffd1bc9c296c18013238e7250f54034de5b6b26537060f6a76157ff30f6",
+      "step_structure": "flattened",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-3904f765232207374c62",
+      "vendor_relative_path": "RMD-X/X10-40/vendor/X10-40/(RMD-X10 1\u0433\u25517 V3)Product information 240220/2D 3D/RMD-X10 1\u0433\u25517 V3.step"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 2713841,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "X10-40",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-X",
+      "step_sha256": "b6150ffd1bc9c296c18013238e7250f54034de5b6b26537060f6a76157ff30f6",
+      "step_structure": "flattened",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-d19dc9fdc131c651a154",
+      "vendor_relative_path": "RMD-X/X10-40/vendor/X10-40/X10-40 Product information 240403/2D 3D/X10-40(RMD-X10 1\u0433\u25517 V3).step"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 2516211,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "X10-100",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-X",
+      "step_sha256": "81304836d486734067048fb8130e1cfd7043c1a70496f2d180ce768ed2618ade",
+      "step_structure": "flattened",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-db88b3a928f3c1058d94",
+      "vendor_relative_path": "RMD-X/X10-100/vendor/X10-100/(RMD-X10-S2 V3)Product information 240220/2D 3D/RMD-X10-S2 V3.step"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 2516211,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "X10-100",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-X",
+      "step_sha256": "81304836d486734067048fb8130e1cfd7043c1a70496f2d180ce768ed2618ade",
+      "step_structure": "flattened",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-c152c261cc1c009e60bb",
+      "vendor_relative_path": "RMD-X/X10-100/vendor/X10-100/X10-100 Product information 240403/2D 3D/X10-100(RMD-X10-S2 V3).step"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 1648091,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "X2-7",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-X",
+      "step_sha256": "b46d560ca3ea90fc05f4a52341cd0b5cc703100e9808b44dbf5ef33e7ae0c7b2",
+      "step_structure": "assembly",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-6daf39ef3e1771cf40c6",
+      "vendor_relative_path": "RMD-X/X2-7/vendor/RMD-X2-P28-7 \u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 1506392,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "X4-10",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-X",
+      "step_sha256": "c549a02aa8293449685ca41413cd6fdd69314fa5c67698b76235de5d2cd5b321",
+      "step_structure": "assembly",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-1dc75d76676a84fe8c1a",
+      "vendor_relative_path": "RMD-X/X4-10/vendor/RMD-X4-P12.5-10 \u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 2496890,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "X8-32",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-X",
+      "step_sha256": "9798fab437ec5d6799c80834a2d5b21cc016b71c9b2f520ee56ddc0655735f1b",
+      "step_structure": "assembly",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-2c9f9a8e81a091988803",
+      "vendor_relative_path": "RMD-X/X8-32/vendor/RMD-X8-P9-32-R-\u7535\u673a\u7ec4\u5408\u56fe-B.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 3289212,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "X8-120",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-X",
+      "step_sha256": "8b1c56cbd29f4c8d9710e351636064991d982d8823158b668fdda4f69aa536aa",
+      "step_structure": "assembly",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-264f5ec05fc7ce9caece",
+      "vendor_relative_path": "RMD-X/X8-120/vendor/RMD-X8-P20-120 \u7535\u673a\u7ec4\u5408\u56fe -A0.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 1990492,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "RH-14",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RH",
+      "step_sha256": "6b0acdb82140b487be079b5515718157d16d512f3a584ac5439fe55380e7b595",
+      "step_structure": "assembly",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-4054296b282f60755175",
+      "vendor_relative_path": "RH/RH-14/vendor/RH-14-N/RH-14-100-E-N-D-\u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 4824391,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "RH-17",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RH",
+      "step_sha256": "02424efbc162b8832f1bf4d73cf9af45d0c45d8385cadb8685e1670e2b07ae33",
+      "step_structure": "assembly",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-cc372035f6cd51c3ef24",
+      "vendor_relative_path": "RH/RH-17/vendor/RH-17-B/RH-17-100-E-B-D-\u7535\u673a\u7ec4\u5408\u56fe-A.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 4144407,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "RH-17",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RH",
+      "step_sha256": "7e5494085f6091c5db928ab52a7cc143b6458ddfd35a27ca5b1af37bdaafb8b5",
+      "step_structure": "assembly",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-f6c14110f5116e71127f",
+      "vendor_relative_path": "RH/RH-17/vendor/RH-17-N/RH-17-100-E-N-D-\u7535\u673a\u7ec4\u5408\u56fe-A.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 14513402,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "RH-20",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RH",
+      "step_sha256": "7ad6339aed87f0aee08e39f91d3c52c0f25b5b5745defb0b43b12c2e9d63b1e0",
+      "step_structure": "assembly",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-7a5330c0c93e21ab024c",
+      "vendor_relative_path": "RH/RH-20/vendor/RH-20-B/RH-20-100-E-B-D-\u7535\u673a\u7ec4\u5408\u56fe A.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 14116862,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "RH-20",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RH",
+      "step_sha256": "db9b18ff801ee812c031000ba19f434161247dbac12309b46a9e25a5fa59159a",
+      "step_structure": "assembly",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-022560fdbee303dad083",
+      "vendor_relative_path": "RH/RH-20/vendor/RH-20-N/RH-20-100-E-N-D-\u7535\u673a\u7ec4\u5408\u56fe A.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 2836196,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "RH-25",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RH",
+      "step_sha256": "d844bc7dfe5c398b0447ea0d93eef77b7cb1bdaa0dbabd603031482c1909f07e",
+      "step_structure": "assembly",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-e627f76e6cb91e0b1706",
+      "vendor_relative_path": "RH/RH-25/vendor/RH-25-B/RH-25-100-E-B-D-\u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 2651233,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "RH-25",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RH",
+      "step_sha256": "1aa25ae2e93009a6b72239d8b08acdd91dde3e1b3e902b2c28b221bffb973312",
+      "step_structure": "assembly",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-8e396b8c7a180692041a",
+      "vendor_relative_path": "RH/RH-25/vendor/RH-25-N/RH-25-100-E-N-D-\u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 2158134,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "RH-32",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RH",
+      "step_sha256": "d4108f26134abe3de0a80bb50d1872ea308305be0b33dae09682fa737723fa3d",
+      "step_structure": "assembly",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-27f5a09e3dc9f3c310f1",
+      "vendor_relative_path": "RH/RH-32/vendor/RH-32-B/RH-32-100-E-B-D-\u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 1886382,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "RH-32",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RH",
+      "step_sha256": "242bd9c29aaefe6841aeb23be7ce837e5880df1f303e158d93d7501997d12234",
+      "step_structure": "assembly",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-ffcceaf535839747be7c",
+      "vendor_relative_path": "RH/RH-32/vendor/RH-32-N/RH-32-100-E-N-D-\u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 561496,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "L-4005",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-L",
+      "step_sha256": "627c4ba70869a262aadd4d598e57b8e682741e1f8316575401e3b9514f2335d0",
+      "step_structure": "flattened",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-517e7d1e68c956d417d5",
+      "vendor_relative_path": "RMD-L/L-4005/vendor/L-4005-251029/2D3D/RMD-4005\u4e09\u7ef4\u56fe/RMD-4005.step"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 706830,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "L-4010",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-L",
+      "step_sha256": "053ec7291db3b1254344d2e7de474955d05c722396e7fcf373f7a6596dc5dbb1",
+      "step_structure": "flattened",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-38d3f4f17489f8084976",
+      "vendor_relative_path": "RMD-L/L-4010/vendor/L-4010-251029/2D3D/RMD-4010\u4e09\u7ef4\u56fe/RMD-4010.step"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 719047,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "L-4015",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-L",
+      "step_sha256": "56cd81678baf8e6e7bf3214e528d1b384dcd7debb5257556b86e73d7f227d793",
+      "step_structure": "flattened",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-99f7bd64109f4c46c33e",
+      "vendor_relative_path": "RMD-L/L-4015/vendor/L-4015-251029/2D3D/RMD-4015\u4e09\u7ef4\u56fe/RMD-4015.step"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 1290638,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "L-5005",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-L",
+      "step_sha256": "900d4184fa8fbce3177934e39cf9c0ce708021eac973829693b0cc863f4236de",
+      "step_structure": "assembly",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-456c102af005b608c23a",
+      "vendor_relative_path": "RMD-L/L-5005/vendor/2D3D/RMD-5005(\u5927\u5b54)\u4e09\u7ef4\u56fe/RMD-5005\uff0812.7\u5927\u5b54\uff09.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 1397412,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "L-5010",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-L",
+      "step_sha256": "e48765ea6bc1ad6741bd067442b1a5c2194ec55082f18d9d5493a5b0196ba4c2",
+      "step_structure": "assembly",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-c42154c3b5408d218867",
+      "vendor_relative_path": "RMD-L/L-5010/vendor/2D3D/RMD-5010(\u5927\u5b54)\u4e09\u7ef4\u56fe/RMD-5010\uff0812.7\u5927\u5b54\uff09.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 1287252,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "L-5015",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-L",
+      "step_sha256": "c8635267daf0112668d4ab806fbd6dc0765cd5927b249c73897887d31ed472a3",
+      "step_structure": "assembly",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-01e8258646417ccd06bc",
+      "vendor_relative_path": "RMD-L/L-5015/vendor/2D3D/RMD-5015(\u5927\u5b54)\u4e09\u7ef4\u56fe/RMD-5015\uff0812.7\u5927\u5b54\uff09.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 781788,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "L-7015",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-L",
+      "step_sha256": "5aebf7958263085b3d8038ebf91326a3d9c3c0e56158e3e81c1eff8726e09772",
+      "step_structure": "flattened",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-940faa35dc5a3627ba95",
+      "vendor_relative_path": "RMD-L/L-7015/vendor/L-7015-251029/2D3D/RMD-7015\u4e09\u7ef4\u56fe/RMD-7015.step"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 1346203,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "L-7025",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-L",
+      "step_sha256": "204d0ec9a6ddf6a6b15bfc6aba954f378a7db14e054b73e32df82da1ccbfb5b1",
+      "step_structure": "flattened",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-935c5675150f4bbe3901",
+      "vendor_relative_path": "RMD-L/L-7025/vendor/L-7025-251029/2D3D/RMD-7025\u4e09\u7ef4\u56fe/RMD-7025.step"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 1125003,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "L-9015",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-L",
+      "step_sha256": "b9f2810be98ff13bbbbf46eb63d17e1c1c955ab49926d74cb3c64dffb71f1a1d",
+      "step_structure": "flattened",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-d53cacfa382b310eec1d",
+      "vendor_relative_path": "RMD-L/L-9015/vendor/L-9015-251029/2D3D/RMD-9015\u4e09\u7ef4\u56fe/RMD-9015.step"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 1143199,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "L-9025",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-L",
+      "step_sha256": "9509f74b2d2621d3e6a8fcf5117789d399a4e6cd238f306c3d807cb7d7a523cc",
+      "step_structure": "flattened",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-a608afabe80cef903d06",
+      "vendor_relative_path": "RMD-L/L-9025/vendor/L-9025-251029/2D3D/RMD-9025\u4e09\u7ef4\u56fe/RMD-9025.step"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 2563214,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "CEM-25",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "CEM",
+      "step_sha256": "7cc8ae9050419bc90f1638bb4c2ab926859f5714c6217c4cd82473c2001b653d",
+      "step_structure": "flattened",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-9b8c5b35fa146b589a00",
+      "vendor_relative_path": "CEM/CEM-25/vendor/CEM-25-251014/2D3D/CEM25-3D.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 2558082,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "CEM-45",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "CEM",
+      "step_sha256": "50a4db623d01704793c55c5ad57baab1108b705e989eaa5ee59c65acdb0a585d",
+      "step_structure": "flattened",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-016c88381bff534ed534",
+      "vendor_relative_path": "CEM/CEM-45/vendor/CEM-45-251014/2D3D/CEM-45-3D.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 1533011,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "H-50-15",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-H",
+      "step_sha256": "564785527811bc6942ae513b9f3255b28f9b6e3def440be8724e5b4fb323b967",
+      "step_structure": "assembly",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-360816921ce84b5d3df9",
+      "vendor_relative_path": "RMD-H/H-50-15/vendor/H-50-15-241210/RMD-H-50-15.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 7630063,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "H-70-15",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-H",
+      "step_sha256": "e13345f07b191bdd935e028753d09d17f0e6ca57a7231832eeda9b64b58193bf",
+      "step_structure": "assembly",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-5b3a01b9a8f9a28474ab",
+      "vendor_relative_path": "RMD-H/H-70-15/vendor/H-70-15-241210/RMD-H-70-15.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 1069120,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "H-90-15",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "RMD-H",
+      "step_sha256": "139c8d63a6021976f748c559b9744858a1ce09b8b5212777a153cedd272f698e",
+      "step_structure": "assembly",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-366cf26f0cefc026b98c",
+      "vendor_relative_path": "RMD-H/H-90-15/vendor/H-90-15-241210/RMD-H-90-15.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 3369935,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "FL-38-08",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "FL-FLO",
+      "step_sha256": "f1abae74d6bf7cbb9a336c03066cd10bd1369019b78643384a2855b67fd82ea1",
+      "step_structure": "flattened",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-f5f72951b3f77ce16c91",
+      "vendor_relative_path": "FL-FLO/FL-38-08/vendor/FL-38-08-250403/FL-38-08.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 12764764,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "FL-50-08",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "FL-FLO",
+      "step_sha256": "a3378d08a0191ce92db66b7958ea1128c0ec68b9f25e3c9490efac55fab54919",
+      "step_structure": "flattened",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-f79a0d2a8ed4022d7b25",
+      "vendor_relative_path": "FL-FLO/FL-50-08/vendor/FL-50-08-\u970d\u5c14-250403/FL-50-08-\u970d\u5c14.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 13369674,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "FL-50-15",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "FL-FLO",
+      "step_sha256": "94ca843a36a43bca2e2a90e68d20639b5a935ca035df0bf9d7834cf8b75f0f71",
+      "step_structure": "flattened",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-2c22da519db7b7083d85",
+      "vendor_relative_path": "FL-FLO/FL-50-15/vendor/FL-50-15-\u970d\u5c14-250403/FL-50-15-\u970d\u5c14.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 22948116,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "FL-70-10",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "FL-FLO",
+      "step_sha256": "0402f5c7cd56b931ea3fd58f773c98c69feb10765eda11e89f77c7557700a343",
+      "step_structure": "flattened",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-059128e92a4d797f8c91",
+      "vendor_relative_path": "FL-FLO/FL-70-10/vendor/FL-70-10-\u970d\u5c14-250403/FL-70-10-\u970d\u5c14.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 75219363,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "FL-70-16",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "FL-FLO",
+      "step_sha256": "9aa432e36490f82916b2611d9dbc0866f1e7c1d989254029b314e8aa1a9190cc",
+      "step_structure": "flattened",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-6ada01d640147a47a3f2",
+      "vendor_relative_path": "FL-FLO/FL-70-16/vendor/FL-70-16-\u970d\u5c14-250403/FL-70-16-\u970d\u5c14.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 20504352,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "FL-85-13",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "FL-FLO",
+      "step_sha256": "079127720258cf123b37b6c501c134af1a9b5accc46b582a652680f8fea54f85",
+      "step_structure": "flattened",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-9e4dfc7514bcc698c10b",
+      "vendor_relative_path": "FL-FLO/FL-85-13/vendor/FL-85-13-\u970d\u5c14-250403/FL-85-13-\u970d\u5c14.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 2881866,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "FL-85-23",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "FL-FLO",
+      "step_sha256": "33725d57b8e3f86c7783a08eb8c29e5a850fd942e0afd61cd5c49ed40318beab",
+      "step_structure": "flattened",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-ca8c0d17fec01e9e7992",
+      "vendor_relative_path": "FL-FLO/FL-85-23/vendor/FL-85-23-251119/FL-85-23-.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 4159960,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "FLO-50-15",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "FL-FLO",
+      "step_sha256": "14a717df6f4dda27fafabcd579e1b69b02a892a5f4caddfbfff29fe61ac4078c",
+      "step_structure": "assembly",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-bdeb039dbc7f9b26f03c",
+      "vendor_relative_path": "FL-FLO/FLO-50-15/vendor/FLO-50-15-20241122/FLO-50-15.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 3923319,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "FLO-70-15",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "FL-FLO",
+      "step_sha256": "ea166d71408d90f6d9b61f2c6925913c3074724a971929f1e0d264d42aaa405f",
+      "step_structure": "assembly",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-6a3a1c46035f4affd50d",
+      "vendor_relative_path": "FL-FLO/FLO-70-15/vendor/FLO-70-15-20241122/FLO-70-15.STEP"
+    },
+    {
+      "artifacts": {
+        "collision_glb": null,
+        "housing_glb": null,
+        "housing_step": null,
+        "output_glb": null,
+        "output_step": null,
+        "source_variant_sha256": null,
+        "status": "unreviewed",
+        "toolchain_lock_sha256": null,
+        "visual_evidence_refs": []
+      },
+      "bytes": 4367530,
+      "denial_reason": "semantic housing/output/axis review not performed",
+      "frame": {
+        "evidence_refs": [],
+        "source_to_canonical": null,
+        "status": "unreviewed"
+      },
+      "joint": {
+        "axis_unit": null,
+        "evidence_refs": [],
+        "joint_type": null,
+        "origin_m": null,
+        "positive_direction": null,
+        "status": "unreviewed",
+        "zero_definition": null
+      },
+      "members": {
+        "evidence_refs": [],
+        "housing_refs": [],
+        "method": null,
+        "output_refs": [],
+        "status": "unreviewed"
+      },
+      "model": "FLO-90-15",
+      "redistribution_evidence_refs": [],
+      "redistribution_status": "license_review_required",
+      "review_evidence_refs": [],
+      "review_status": "unreviewed",
+      "reviewed_at": null,
+      "reviewer": null,
+      "series": "FL-FLO",
+      "step_sha256": "cba893975b9be1a20c1a273d4f1194b9124f5b09b8e04d2dccf8222e6bcfc211",
+      "step_structure": "assembly",
+      "unit": {
+        "evidence_refs": [],
+        "override_rationale": null,
+        "scale_to_m": null,
+        "source_length_unit": null,
+        "status": "unreviewed"
+      },
+      "variant_id": "step-d09d01993dfb290debdd",
+      "vendor_relative_path": "FL-FLO/FLO-90-15/vendor/FLO-90-15-20241122/FLO-90-15.STEP"
+    }
+  ]
+}

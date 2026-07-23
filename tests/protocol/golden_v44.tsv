@@ -1,0 +1,35 @@
+name	direction	arbitration_id	data_hex	manual_anchor
+shutdown_request	request	0x141	8000000000000000	V4.4-260520 section 2.16 pages 58-59
+shutdown_response	response	0x241	8000000000000000	V4.4-260520 section 2.16 pages 58-59
+stop_request	request	0x141	8100000000000000	V4.4-260520 section 2.17 page 59
+stop_response	response	0x241	8100000000000000	V4.4-260520 section 2.17 page 59
+read_multi_turn_request	request	0x141	9200000000000000	V4.4-260520 section 2.11 pages 38-40
+read_multi_turn_360_response	response	0x241	92000000A08C0000	V4.4-260520 section 2.11 pages 38-40
+read_single_turn_request	request	0x141	9400000000000000	V4.4-260520 section 2.12 pages 41-43
+read_single_turn_75_response	response	0x241	940000004C1D0000	V4.4-260520 section 2.12 pages 41-43
+status1_request	request	0x141	9A00000000000000	V4.4-260520 section 2.13 pages 44-50
+status1_response	response	0x241	9A320001E5010400	V4.4-260520 section 2.13 pages 44-50
+status2_request	request	0x141	9C00000000000000	V4.4-260520 section 2.14 pages 51-54
+status2_positive_response	response	0x241	9C326400F4012D00	V4.4-260520 section 2.14 pages 51-54
+status3_request	request	0x141	9D00000000000000	V4.4-260520 section 2.15 pages 55-57
+status3_response	response	0x241	9D32C20B10FAC0F9	V4.4-260520 section 2.15 pages 55-57
+iq_positive_request	request	0x141	A100000064000000	V4.4-260520 section 2.18 pages 60-65
+iq_positive_response	response	0x241	A1326400F4012D00	V4.4-260520 section 2.18 pages 60-65
+iq_negative_request	request	0x141	A10000009CFF0000	V4.4-260520 section 2.18 pages 60-65
+iq_negative_response	response	0x241	A1329CFF0CFED3FF	V4.4-260520 section 2.18 pages 60-65
+speed_positive_request	request	0x141	A200000010270000	V4.4-260520 section 2.19 pages 66-72
+speed_positive_response	response	0x241	A2326400F4012D00	V4.4-260520 section 2.19 pages 66-72
+speed_negative_request	request	0x141	A2000000F0D8FFFF	V4.4-260520 section 2.19 pages 66-72
+speed_negative_response	response	0x241	A2329CFF0CFED3FF	V4.4-260520 section 2.19 pages 66-72
+absolute_positive_request	request	0x141	A400F401A08C0000	V4.4-260520 section 2.20 pages 73-80
+absolute_positive_response	response	0x241	A4326400F4012D00	V4.4-260520 section 2.20 pages 73-80
+absolute_negative_request	request	0x141	A400F4016073FFFF	V4.4-260520 section 2.20 pages 73-80
+absolute_negative_response	response	0x241	A4329CFF0CFED3FF	V4.4-260520 section 2.20 pages 73-80
+operating_mode_request	request	0x141	7000000000000000	V4.4-260520 section 2.26 pages 119-121
+operating_mode_position_response	response	0x241	7000000000000003	V4.4-260520 section 2.26 pages 119-121
+brake_release_request	request	0x141	7700000000000000	V4.4-260520 section 2.28 page 123
+brake_release_response	response	0x241	7700000000000000	V4.4-260520 section 2.28 page 123
+brake_lock_request	request	0x141	7800000000000000	V4.4-260520 section 2.29 page 124
+brake_lock_response	response	0x241	7800000000000000	V4.4-260520 section 2.29 page 124
+id32_shutdown_request	request	0x160	8000000000000000	V4.4-260520 section 1.1 page 1 and section 2.16
+id32_shutdown_response	response	0x260	8000000000000000	V4.4-260520 section 1.1 page 1 and section 2.16

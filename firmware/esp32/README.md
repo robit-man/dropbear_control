@@ -2,26 +2,34 @@
 
 ## Overview
 
-This firmware implements motor control for all MyActuator motor series using
-ESP32 microcontrollers. It provides a unified Protocol Abstraction Layer (PAL)
-that supports CAN bus, RS485 (Modbus RTU), and EtherCAT (CoE) communication
-protocols, and dispatches decoded commands to per-motor drivers through a
-common `IMotorDriver` interface.
+This directory contains prototype ESP32 scaffolding plus two production-path,
+hardware-free cores: an official-source RMD classic-CAN V4.4 codec and a
+deterministic command-lease safety supervisor. The current PAL, transports and
+family drivers do not yet provide verified physical motor control. A successful
+compile is not evidence that any actuator is supported.
 
-## Supported Motor Series
+## Cataloged Motor Series
 
 - **RMD-X**: Planetary motor (10W - 2kW)
 - **RH**: Harmonic motor (50W - 1.5kW)
 - **CEM**: Cycloid actuator (100W - 1.2kW)
 - **RMD-H**: Direct drive hollow motor (200W - 2kW)
 - **RMD-L**: Direct drive motor
-- **FL**: Linear actuator
+- **FL/FLO**
 
-## Communication Protocols
+These labels describe repository/catalog coverage, not implemented or
+hardware-verified support. Support must be recorded for an exact `(model,
+hardware revision, drive firmware, protocol version, transport, control
+mode)` tuple.
 
-- **CAN bus**: ISO 11898-1, 500kbps, 29-bit extended IDs (MCP2515 via SPI)
-- **RS485**: Modbus RTU, 115200 baud, 8N1
-- **EtherCAT**: CoE (CANopen over EtherCAT), 1ms cycle time, DC sync
+## Communication Scaffolding
+
+- **Official RMD native CAN V4.4 offline core**: classic CAN, 1 Mbit/s,
+  standard 11-bit IDs, DLC 8, request `0x140 + motor ID`, response
+  `0x240 + motor ID`, logical IDs 1–32. Applicability to installed hardware is
+  unverified.
+- **Legacy MCP2515, RS485 and EtherCAT adapters**: incomplete prototype code;
+  their current constants and mappings are not authoritative.
 
 ## Project Structure
 
@@ -81,13 +89,17 @@ pio run -e esp32 -t upload
 pio device monitor -b 115200
 ```
 
-The `esp32` environment currently builds clean (RAM ~6.6%, Flash ~22.0%).
+The `esp32` environment currently compiles (RAM ~6.8%, Flash ~22.8%); this is a
+compile-only result.
 
 ## Configuration
 
 ### Motor Series Selection
 
-Select motor series by defining preprocessor macros in `platformio.ini`:
+The current environments define several family macros simultaneously and then
+select RMD-X through `MOTOR_SERIES`; this is a known prototype defect, not a
+family compile matrix. Future environments must select exactly one evidenced
+model/transport tuple. The legacy flags are:
 
 ```ini
 build_flags =
@@ -166,31 +178,45 @@ Decoded commands are forwarded to the active `IMotorDriver` implementation
 (`rmd_x_driver`, `rh_driver`, `cem_driver`, `rmd_h_driver`, `rmd_l_driver`,
 `fl_driver`).
 
+### WebSerial Two-Way Control
+
+In addition to the PAL transports (CAN/RS485/EtherCAT), `main.cpp` binds a
+`SerialBridge` to the USB CDC `Serial` port. The bridge parses the 64-byte
+unified protocol frames (contracts/PROTOCOLS_CONTRACT.md section 3) arriving
+over WebSerial and dispatches them to the `MotorController`:
+
+- `src/serial_frame.h` — pure-C++ frame pack/unpack + CRC-16/CCITT-FALSE
+  (matches `web/js/protocol.js` and `host/myactuator_lib/protocol/frame.py`).
+- `src/serial_bridge.h/.cpp` — 64-byte frame parser, command dispatch
+  (position/velocity/torque), and periodic `STATUS_REPORT` emission.
+
+The web dashboard (`web/`) can exercise this synthetic frame path and render
+toy `STATUS_REPORT` telemetry. That path is not integrated with the official
+V4.4 codec/safety boundary and must not be used to command powered hardware.
+
+> Note: `Logger` also writes text to the same `Serial` stream. The dashboard
+> resyncs on 64-byte boundaries and ignores non-frame bytes, so interleaved log
+> lines are tolerated. For a clean machine-only link, route frames to a
+> separate UART (`Serial1`/`Serial2`) and point the dashboard there.
+
 ## Protocol Details
 
 ### CAN Bus
 
-- **Frame Format**: 29-bit extended IDs
-- **Baud Rate**: 500kbps
-- **Motor ID**: Configurable per motor
-- **Frame Types**: STATUS_REPORT, POSITION_CMD, VELOCITY_CMD, TORQUE_CMD,
-  PARAM_READ, PARAM_WRITE, DIAGNOSTIC, FIRMWARE_UPDATE, HEARTBEAT
+- **Canonical offline V4.4 core**: standard 11-bit classic-CAN data frames,
+  DLC 8, 1 Mbit/s, logical IDs 1–32.
+- **Legacy MCP2515 adapter**: still uses conflicting 500 kbit/s/base-ID
+  assumptions and is not connected to the canonical core.
 
-### RS485 (Modbus RTU)
+### RS485
 
-- **Baud Rate**: 115200
-- **Data Format**: 8N1
-- **Function Codes**: 0x03 (Read Holding Registers), 0x06 (Write Single
-  Register), 0x08 (Diagnostics)
+- The existing Modbus-like mapping is a draft without sufficient vendor
+  evidence and is not supported.
 
-### EtherCAT (CoE)
+### EtherCAT
 
-- **Cycle Time**: 1ms (configurable)
-- **DC Sync**: Enabled
-- **SDO Access**:
-  - Read:  `0x600 + (motor_id << 4) + 0x0A`
-  - Write: `0x600 + (motor_id << 4) + 0x0B`
-  - Response: `0x580 + (motor_id << 4)`
+- The current CoE object/ID mapping is unverified scaffolding and is not
+  supported.
 
 ## Development
 
@@ -213,26 +239,30 @@ Decoded commands are forwarded to the active `IMotorDriver` implementation
 
 ## Testing
 
-### Unit Tests
+### Complete offline gate
 
 ```bash
-pio test -e esp32
+tools/test_all.sh
 ```
 
-### Integration Tests
+### Protocol and safety cores only
 
 ```bash
-pio run -e esp32 -t upload
-pio device monitor -b 115200
+tests/protocol/run_tests.sh
+tests/safety/run_tests.sh
 ```
+
+Hardware upload/monitor steps are intentionally excluded from the offline
+gate. Bench and HIL procedures require an exact hardware inventory, independent
+power-removal path, current limits, verified stop semantics and supervision.
 
 ## Documentation
 
-- [PROTOCOLS_CONTRACT.md](../../contracts/PROTOCOLS_CONTRACT.md) - Protocol specifications
-- [MOTOR_RMD_X_CONTRACT.md](../../contracts/MOTOR_RMD_X_CONTRACT.md) - RMD-X specifications
-- [MOTOR_RH_CONTRACT.md](../../contracts/MOTOR_RH_CONTRACT.md) - RH specifications
-- [MOTOR_CEM_CONTRACT.md](../../contracts/MOTOR_CEM_CONTRACT.md) - CEM specifications
-- [MOTOR_RMD_H_CONTRACT.md](../../contracts/MOTOR_RMD_H_CONTRACT.md) - RMD-H specifications
+- [PROTOCOLS_CONTRACT.md](../../contracts/PROTOCOLS_CONTRACT.md) - legacy draft
+- [MOTOR_RMD_X_CONTRACT.md](../../contracts/MOTOR_RMD_X_CONTRACT.md) - legacy draft
+- [MOTOR_RH_CONTRACT.md](../../contracts/MOTOR_RH_CONTRACT.md) - legacy draft
+- [MOTOR_CEM_CONTRACT.md](../../contracts/MOTOR_CEM_CONTRACT.md) - legacy draft
+- [MOTOR_RMD_H_CONTRACT.md](../../contracts/MOTOR_RMD_H_CONTRACT.md) - legacy draft
 
 ## License
 

@@ -1,0 +1,574 @@
+{
+  "assembly_variant_count": 26,
+  "inspection_sha256": "f898802c65256c33836358af826e27462660e41975422c272b9f85a2f4acc3f9",
+  "packets": [
+    {
+      "candidate_visuals_only": true,
+      "member_count": 4,
+      "member_sheet_sha256": "e01067816188fa8b336a84a7c683bfc6b0d88ef2cd4410718d6d9ed5f28dacdd",
+      "model": "L-5015",
+      "overview_sha256": "1acad0d61204f5e4d5b23410e537379c533ed99cf06f70a04c218fb7edcff540",
+      "packet_json_sha256": "c291ea4de942eaf9bb53dfcf7c6c6247961014559f0391f8eefc8026b626dd1c",
+      "positive_name_candidates": [],
+      "representative_product_views": 4,
+      "series": "RMD-L",
+      "step_sha256": "c8635267daf0112668d4ab806fbd6dc0765cd5927b249c73897887d31ed472a3",
+      "support_granted": false,
+      "variant_id": "step-01e8258646417ccd06bc",
+      "vendor_relative_path": "RMD-L/L-5015/vendor/2D3D/RMD-5015(\u5927\u5b54)\u4e09\u7ef4\u56fe/RMD-5015\uff0812.7\u5927\u5b54\uff09.STEP"
+    },
+    {
+      "candidate_visuals_only": true,
+      "member_count": 20,
+      "member_sheet_sha256": "4a2499c31c5f990959eb6e94216851dba938497aacce87a6be2662dd896c96d1",
+      "model": "RH-20",
+      "overview_sha256": "4a516e7f417c7c336c033accf674f8dbaf2708aa6a8fb346ad3e2140b7fc302a",
+      "packet_json_sha256": "80a353473a8acf77a894ee33df816972f30da47949a692ad228e41e74dee065e",
+      "positive_name_candidates": [
+        {
+          "candidate_terms": [
+            "\u7aef\u76d6"
+          ],
+          "occurrence": "NAUO2",
+          "output_candidate_score": 1,
+          "product_entity_ref": "#83677",
+          "related_product_name": "8MT.013.009-\u7aef\u76d6 D",
+          "visual_available": true
+        }
+      ],
+      "representative_product_views": 9,
+      "series": "RH",
+      "step_sha256": "db9b18ff801ee812c031000ba19f434161247dbac12309b46a9e25a5fa59159a",
+      "support_granted": false,
+      "variant_id": "step-022560fdbee303dad083",
+      "vendor_relative_path": "RH/RH-20/vendor/RH-20-N/RH-20-100-E-N-D-\u7535\u673a\u7ec4\u5408\u56fe A.STEP"
+    },
+    {
+      "candidate_visuals_only": true,
+      "member_count": 20,
+      "member_sheet_sha256": "24dc46ea277f5570186fa8df26380677203c01da69f917ed24d4d67af57b9d62",
+      "model": "X4-10",
+      "overview_sha256": "28976beb4ebdece6c78d5fc10d325b0520a827a0587a7c92c62b6b7b67b34183",
+      "packet_json_sha256": "e95551c0331c7bdb6550571b5101139b4dd2c5b83913ccfe329c78fb0267c40e",
+      "positive_name_candidates": [],
+      "representative_product_views": 12,
+      "series": "RMD-X",
+      "step_sha256": "c549a02aa8293449685ca41413cd6fdd69314fa5c67698b76235de5d2cd5b321",
+      "support_granted": false,
+      "variant_id": "step-1dc75d76676a84fe8c1a",
+      "vendor_relative_path": "RMD-X/X4-10/vendor/RMD-X4-P12.5-10 \u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "candidate_visuals_only": true,
+      "member_count": 20,
+      "member_sheet_sha256": "131a38f863cdf9d0e723bb21436521d0e71a4da5f736a9f1c19659549a219a65",
+      "model": "X8-120",
+      "overview_sha256": "bb9bbff73a1741ef625c2b0a2e12e7fa98e947102558d9bf8edebe71bdc6a272",
+      "packet_json_sha256": "ee384680ae9abac087b2d851d486e9219d83c9847030edc80b9c95796b8d8fc4",
+      "positive_name_candidates": [],
+      "representative_product_views": 12,
+      "series": "RMD-X",
+      "step_sha256": "8b1c56cbd29f4c8d9710e351636064991d982d8823158b668fdda4f69aa536aa",
+      "support_granted": false,
+      "variant_id": "step-264f5ec05fc7ce9caece",
+      "vendor_relative_path": "RMD-X/X8-120/vendor/RMD-X8-P20-120 \u7535\u673a\u7ec4\u5408\u56fe -A0.STEP"
+    },
+    {
+      "candidate_visuals_only": true,
+      "member_count": 17,
+      "member_sheet_sha256": "c46322fbad5f58405782f422c67f2592a066a8e3b105ead225cba3d637215d64",
+      "model": "RH-32",
+      "overview_sha256": "5fdfd7da165c314ed597385078ed5b2969e5c01a49d4d942ad89b9435f15b99a",
+      "packet_json_sha256": "70f5de782baf9603e4591d26fb1f959d8ac468cc1d55563223aeab72aabcb6fb",
+      "positive_name_candidates": [
+        {
+          "candidate_terms": [
+            "\u7aef\u76d6"
+          ],
+          "occurrence": "NAUO4",
+          "output_candidate_score": 1,
+          "product_entity_ref": "#16569",
+          "related_product_name": "8MT.013.017-\u7aef\u76d6 A0",
+          "visual_available": true
+        }
+      ],
+      "representative_product_views": 10,
+      "series": "RH",
+      "step_sha256": "d4108f26134abe3de0a80bb50d1872ea308305be0b33dae09682fa737723fa3d",
+      "support_granted": false,
+      "variant_id": "step-27f5a09e3dc9f3c310f1",
+      "vendor_relative_path": "RH/RH-32/vendor/RH-32-B/RH-32-100-E-B-D-\u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "candidate_visuals_only": true,
+      "member_count": 12,
+      "member_sheet_sha256": "ae0268a1eb64fa335cf0d675f428416047422135203a86c1e20c0a2105a6e8f1",
+      "model": "X8-32",
+      "overview_sha256": "1e515110a83522b88bc3ef31e30e01d4693798c4d191bb0e33cb47a2411a786f",
+      "packet_json_sha256": "dcb26621d59c25361cff5428934187c488d92c4aa974a84fe1b30e72b15c956c",
+      "positive_name_candidates": [],
+      "representative_product_views": 7,
+      "series": "RMD-X",
+      "step_sha256": "9798fab437ec5d6799c80834a2d5b21cc016b71c9b2f520ee56ddc0655735f1b",
+      "support_granted": false,
+      "variant_id": "step-2c9f9a8e81a091988803",
+      "vendor_relative_path": "RMD-X/X8-32/vendor/RMD-X8-P9-32-R-\u7535\u673a\u7ec4\u5408\u56fe-B.STEP"
+    },
+    {
+      "candidate_visuals_only": true,
+      "member_count": 17,
+      "member_sheet_sha256": "ebb0c8172d678d98157248cfc29a52322a1f3b12f9b21fe8b5d56da03053a0a4",
+      "model": "H-50-15",
+      "overview_sha256": "27ca41fcd565c5f411bd14cb42ddf5e0a2925666e6d8cbf84524089a1d322c31",
+      "packet_json_sha256": "61bba294ae0f38bc8b4f7aef2a1a21e7b8ad7d50ab9fb598aa9900d0b4a79e54",
+      "positive_name_candidates": [
+        {
+          "candidate_terms": [
+            "\u8f6c\u5b50"
+          ],
+          "occurrence": "NAUO1",
+          "output_candidate_score": 5,
+          "product_entity_ref": "#3770",
+          "related_product_name": "\u8f6c\u5b50\u7ec4\u4ef6",
+          "visual_available": false
+        },
+        {
+          "candidate_terms": [
+            "\u8f6c\u5b50"
+          ],
+          "occurrence": "NAUO9",
+          "output_candidate_score": 5,
+          "product_entity_ref": "#11027",
+          "related_product_name": "5015\u8f6c\u5b50",
+          "visual_available": false
+        }
+      ],
+      "representative_product_views": 10,
+      "series": "RMD-H",
+      "step_sha256": "564785527811bc6942ae513b9f3255b28f9b6e3def440be8724e5b4fb323b967",
+      "support_granted": false,
+      "variant_id": "step-360816921ce84b5d3df9",
+      "vendor_relative_path": "RMD-H/H-50-15/vendor/H-50-15-241210/RMD-H-50-15.STEP"
+    },
+    {
+      "candidate_visuals_only": true,
+      "member_count": 7,
+      "member_sheet_sha256": "ee022a0f39e83946e0048033015d1493ff265a7f4147551d9e8e165fbbffbadc",
+      "model": "H-90-15",
+      "overview_sha256": "72e256a7d9471f5dbd1a2a548029a90bffc98182b1baabb041fb56327644342f",
+      "packet_json_sha256": "53a84bf28c8e51a590be8226d006418e0bb5273862c2c53f21b7da613e89d176",
+      "positive_name_candidates": [],
+      "representative_product_views": 7,
+      "series": "RMD-H",
+      "step_sha256": "139c8d63a6021976f748c559b9744858a1ce09b8b5212777a153cedd272f698e",
+      "support_granted": false,
+      "variant_id": "step-366cf26f0cefc026b98c",
+      "vendor_relative_path": "RMD-H/H-90-15/vendor/H-90-15-241210/RMD-H-90-15.STEP"
+    },
+    {
+      "candidate_visuals_only": true,
+      "member_count": 14,
+      "member_sheet_sha256": "59be83e8a026fa0aeacb6a0c7292625c0f72aff5c8e16b45772740209c0f6a9e",
+      "model": "RH-14",
+      "overview_sha256": "146c702b9d5d25f42b9884e74078e0ff1e8a1aba335256c014d7a7da41a54f45",
+      "packet_json_sha256": "427b4fbc61aee775e3fc61f6e3f0438807d64945e70904f8e40b526c17444b3f",
+      "positive_name_candidates": [
+        {
+          "candidate_terms": [
+            "\u7aef\u76d6"
+          ],
+          "occurrence": "NAUO3",
+          "output_candidate_score": 1,
+          "product_entity_ref": "#23035",
+          "related_product_name": "8MT.013.001\uff08RH-14 \u7aef\u76d6\uff09",
+          "visual_available": true
+        }
+      ],
+      "representative_product_views": 8,
+      "series": "RH",
+      "step_sha256": "6b0acdb82140b487be079b5515718157d16d512f3a584ac5439fe55380e7b595",
+      "support_granted": false,
+      "variant_id": "step-4054296b282f60755175",
+      "vendor_relative_path": "RH/RH-14/vendor/RH-14-N/RH-14-100-E-N-D-\u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "candidate_visuals_only": true,
+      "member_count": 4,
+      "member_sheet_sha256": "c46b0696282f32c42ec64403c9144db460aee87769f72d475e11d67c81796ddd",
+      "model": "L-5005",
+      "overview_sha256": "efd5b849f076ead4046f2a48b847b7ee0a1197ade8e4dc021b6c44124cce4f33",
+      "packet_json_sha256": "5de665ff61edee65273f8ee4380adcc142bf0dd71b374db06a6c8834a54a436e",
+      "positive_name_candidates": [],
+      "representative_product_views": 4,
+      "series": "RMD-L",
+      "step_sha256": "900d4184fa8fbce3177934e39cf9c0ce708021eac973829693b0cc863f4236de",
+      "support_granted": false,
+      "variant_id": "step-456c102af005b608c23a",
+      "vendor_relative_path": "RMD-L/L-5005/vendor/2D3D/RMD-5005(\u5927\u5b54)\u4e09\u7ef4\u56fe/RMD-5005\uff0812.7\u5927\u5b54\uff09.STEP"
+    },
+    {
+      "candidate_visuals_only": true,
+      "member_count": 9,
+      "member_sheet_sha256": "84e20f6bddf50689fc3646196aeec0669ba5b8426112ba60c121f7e0f2304709",
+      "model": "H-70-15",
+      "overview_sha256": "a96d0d1bba74585139522e99f9532adfe2dda0edef2244b517cbea39a562fde3",
+      "packet_json_sha256": "7d041a9a42a6504cfd381fd5bcee9cfc033455b4f8a4ea5e4a7f0de26310b937",
+      "positive_name_candidates": [],
+      "representative_product_views": 9,
+      "series": "RMD-H",
+      "step_sha256": "e13345f07b191bdd935e028753d09d17f0e6ca57a7231832eeda9b64b58193bf",
+      "support_granted": false,
+      "variant_id": "step-5b3a01b9a8f9a28474ab",
+      "vendor_relative_path": "RMD-H/H-70-15/vendor/H-70-15-241210/RMD-H-70-15.STEP"
+    },
+    {
+      "candidate_visuals_only": true,
+      "member_count": 34,
+      "member_sheet_sha256": "13caaca99b53d7c5236d766953a3eb6a9be85b1ad76f470809006adc803dbc76",
+      "model": "FLO-70-15",
+      "overview_sha256": "53da18bdd8af2372c3ee388b40a6782c7298179d25aa3a9b9637acf57a9456ca",
+      "packet_json_sha256": "5d79d13c50e67d10aa7d3e2509e32546ba964fb53e6f85e526c5a4aa3c0a6ad3",
+      "positive_name_candidates": [],
+      "representative_product_views": 8,
+      "series": "FL-FLO",
+      "step_sha256": "ea166d71408d90f6d9b61f2c6925913c3074724a971929f1e0d264d42aaa405f",
+      "support_granted": false,
+      "variant_id": "step-6a3a1c46035f4affd50d",
+      "vendor_relative_path": "FL-FLO/FLO-70-15/vendor/FLO-70-15-20241122/FLO-70-15.STEP"
+    },
+    {
+      "candidate_visuals_only": true,
+      "member_count": 29,
+      "member_sheet_sha256": "762ee4c58216b9632944f9d719aad7aae02f9547d18f3e1d6b09d52096d89877",
+      "model": "X15-450",
+      "overview_sha256": "deff1d2832da25d3585545942c0bb10e23dbef251baeb428204d7338c8365316",
+      "packet_json_sha256": "fae1846a993e95509ea2421f0c29f38c8356078a6ce45c489b010c8f12d221e2",
+      "positive_name_candidates": [
+        {
+          "candidate_terms": [
+            "\u7aef\u76d6"
+          ],
+          "occurrence": "NAUO29",
+          "output_candidate_score": 1,
+          "product_entity_ref": "#6404",
+          "related_product_name": "8MT.013.043-\u7aef\u76d6 E",
+          "visual_available": true
+        }
+      ],
+      "representative_product_views": 10,
+      "series": "RMD-X",
+      "step_sha256": "707843e9e9b5d3406f607c9e89d63f87bd13adde82f80d7ab55cd3ca36c40988",
+      "support_granted": false,
+      "variant_id": "step-6c143229f6a28e492bf2",
+      "vendor_relative_path": "RMD-X/X15-450/vendor/RMD-X15-P20-450 \u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "candidate_visuals_only": true,
+      "member_count": 18,
+      "member_sheet_sha256": "b3992ff1264e5b000579b9c11584414da8bf5d7b215685a07058a5ca5cc77406",
+      "model": "X2-7",
+      "overview_sha256": "2c86f8fdd3d3f81e482ef43e701cce324718278a638e0f45ac475f829be6e99d",
+      "packet_json_sha256": "05ebcdcc2e46119b1c71bdb308418e743edbc1d6eb78ff25dbd04bce9a085646",
+      "positive_name_candidates": [],
+      "representative_product_views": 9,
+      "series": "RMD-X",
+      "step_sha256": "b46d560ca3ea90fc05f4a52341cd0b5cc703100e9808b44dbf5ef33e7ae0c7b2",
+      "support_granted": false,
+      "variant_id": "step-6daf39ef3e1771cf40c6",
+      "vendor_relative_path": "RMD-X/X2-7/vendor/RMD-X2-P28-7 \u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "candidate_visuals_only": true,
+      "member_count": 29,
+      "member_sheet_sha256": "56e33d5278c0249ffd59533cb12ba20d020d442ee5e39020a2eebef20121f5fc",
+      "model": "RH-20",
+      "overview_sha256": "6811116352fc9937ccff11b7fa72eb71d676a04aa07707c88b24b8b6ad657b27",
+      "packet_json_sha256": "5eb4ea600462b7f8a892befc20bdc84f0b677bf954f9398504fed7013a2656b6",
+      "positive_name_candidates": [
+        {
+          "candidate_terms": [
+            "\u7aef\u76d6"
+          ],
+          "occurrence": "NAUO3",
+          "output_candidate_score": 1,
+          "product_entity_ref": "#114393",
+          "related_product_name": "8MT.013.152-\u7aef\u76d6 B",
+          "visual_available": true
+        }
+      ],
+      "representative_product_views": 13,
+      "series": "RH",
+      "step_sha256": "7ad6339aed87f0aee08e39f91d3c52c0f25b5b5745defb0b43b12c2e9d63b1e0",
+      "support_granted": false,
+      "variant_id": "step-7a5330c0c93e21ab024c",
+      "vendor_relative_path": "RH/RH-20/vendor/RH-20-B/RH-20-100-E-B-D-\u7535\u673a\u7ec4\u5408\u56fe A.STEP"
+    },
+    {
+      "candidate_visuals_only": true,
+      "member_count": 20,
+      "member_sheet_sha256": "edafea392a645c9a86caa5e33c3711cd5dd23e772184ec74ac5d8227037d3825",
+      "model": "RH-25",
+      "overview_sha256": "942e45ccf6aa1ee3b9d562dd9492763f045e5d1ad889a1e70562c8f284373e7c",
+      "packet_json_sha256": "731757a0f2440de49e0563cb2759b60d0ada323e89125591f9b3fc3df366b312",
+      "positive_name_candidates": [
+        {
+          "candidate_terms": [
+            "\u7aef\u76d6"
+          ],
+          "occurrence": "NAUO1",
+          "output_candidate_score": 1,
+          "product_entity_ref": "#26124",
+          "related_product_name": "8MT.013.013\uff08RH-25 \u7aef\u76d6\uff09",
+          "visual_available": true
+        }
+      ],
+      "representative_product_views": 9,
+      "series": "RH",
+      "step_sha256": "1aa25ae2e93009a6b72239d8b08acdd91dde3e1b3e902b2c28b221bffb973312",
+      "support_granted": false,
+      "variant_id": "step-8e396b8c7a180692041a",
+      "vendor_relative_path": "RH/RH-25/vendor/RH-25-N/RH-25-100-E-N-D-\u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "candidate_visuals_only": true,
+      "member_count": 20,
+      "member_sheet_sha256": "7bfebd1b9f5070f1358e12e73ce1b0c3e0a02a9ce90ef871defff8e2861a4867",
+      "model": "X4-36",
+      "overview_sha256": "17da4ddef75b3ed9d4e42273797c89c8bc68118c803349267352ef6656b7e708",
+      "packet_json_sha256": "193fd93deb3c7aa63e96a9c82a2b16d2f07738b5c230b616aec055821ccd6c5e",
+      "positive_name_candidates": [],
+      "representative_product_views": 9,
+      "series": "RMD-X",
+      "step_sha256": "c20260bf8faf780d9bdd4599f7cc973bf42951f683b1b953af6082ff7c5ef51c",
+      "support_granted": false,
+      "variant_id": "step-a445ee72b425d35404f4",
+      "vendor_relative_path": "RMD-X/X4-36/vendor/RMD-X4-P36-36 \u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "candidate_visuals_only": true,
+      "member_count": 34,
+      "member_sheet_sha256": "1ac0d673301544406dcd325092352cc1f87cea877925058f1b7384a5030aaf72",
+      "model": "FLO-50-15",
+      "overview_sha256": "b83d8bc2d9e73cbdbbca696a3e25d3973333f8df2e756ac0f275a9fe5acbda6d",
+      "packet_json_sha256": "fc66dd9ea86917ac293e6c474deb9876c013b10b19b7d91bcba5ee217246e679",
+      "positive_name_candidates": [],
+      "representative_product_views": 8,
+      "series": "FL-FLO",
+      "step_sha256": "14a717df6f4dda27fafabcd579e1b69b02a892a5f4caddfbfff29fe61ac4078c",
+      "support_granted": false,
+      "variant_id": "step-bdeb039dbc7f9b26f03c",
+      "vendor_relative_path": "FL-FLO/FLO-50-15/vendor/FLO-50-15-20241122/FLO-50-15.STEP"
+    },
+    {
+      "candidate_visuals_only": true,
+      "member_count": 6,
+      "member_sheet_sha256": "03913295b65ad89178de36fb0277743daf3dbc7b3716786fdea54bdbfc8a823e",
+      "model": "L-5010",
+      "overview_sha256": "60864049e77d551c0f82a1542824d5c456da48d8b12c2897818622353b3ad3a4",
+      "packet_json_sha256": "e46c6b34d4022751147ca2285e54d99a223bfd18a297d5c527cc6ea8bbe7b971",
+      "positive_name_candidates": [],
+      "representative_product_views": 5,
+      "series": "RMD-L",
+      "step_sha256": "e48765ea6bc1ad6741bd067442b1a5c2194ec55082f18d9d5493a5b0196ba4c2",
+      "support_granted": false,
+      "variant_id": "step-c42154c3b5408d218867",
+      "vendor_relative_path": "RMD-L/L-5010/vendor/2D3D/RMD-5010(\u5927\u5b54)\u4e09\u7ef4\u56fe/RMD-5010\uff0812.7\u5927\u5b54\uff09.STEP"
+    },
+    {
+      "candidate_visuals_only": true,
+      "member_count": 17,
+      "member_sheet_sha256": "292e09d683c5d12dd3f1a28ce9e54c621464316595ec4d98e0f845e95cea4349",
+      "model": "RH-17",
+      "overview_sha256": "875411febbda3328d0f11bacf77ddfee5a388e277590fb76a6fbfecc983c0c14",
+      "packet_json_sha256": "7c13d4f1d25d657d4800b3d9229f46382e851c8da7df5ed0e9435eefbe87f41c",
+      "positive_name_candidates": [
+        {
+          "candidate_terms": [
+            "\u7aef\u76d6"
+          ],
+          "occurrence": "NAUO2",
+          "output_candidate_score": 1,
+          "product_entity_ref": "#24393",
+          "related_product_name": "8MT.013.151-\u7aef\u76d6 A1",
+          "visual_available": true
+        }
+      ],
+      "representative_product_views": 11,
+      "series": "RH",
+      "step_sha256": "02424efbc162b8832f1bf4d73cf9af45d0c45d8385cadb8685e1670e2b07ae33",
+      "support_granted": false,
+      "variant_id": "step-cc372035f6cd51c3ef24",
+      "vendor_relative_path": "RH/RH-17/vendor/RH-17-B/RH-17-100-E-B-D-\u7535\u673a\u7ec4\u5408\u56fe-A.STEP"
+    },
+    {
+      "candidate_visuals_only": true,
+      "member_count": 40,
+      "member_sheet_sha256": "de37e5ac274b105a1288e4448bdd88e3effe755d97f23ce7cc6c246ee9a6b6ec",
+      "model": "FLO-90-15",
+      "overview_sha256": "445a93b6d702c8f9cff419ddefd3a3d50a7f7516f9d3b03a2dca6eaedcf02c21",
+      "packet_json_sha256": "4f5655fda29b4fa2c085dcd8d2e2a12138b8be1dece34414648df33fa98b6fda",
+      "positive_name_candidates": [],
+      "representative_product_views": 8,
+      "series": "FL-FLO",
+      "step_sha256": "cba893975b9be1a20c1a273d4f1194b9124f5b09b8e04d2dccf8222e6bcfc211",
+      "support_granted": false,
+      "variant_id": "step-d09d01993dfb290debdd",
+      "vendor_relative_path": "FL-FLO/FLO-90-15/vendor/FLO-90-15-20241122/FLO-90-15.STEP"
+    },
+    {
+      "candidate_visuals_only": true,
+      "member_count": 16,
+      "member_sheet_sha256": "50355c50ac53001c58b9adfdb80837611bcb9c4445c8cd404a6864551a17e150",
+      "model": "RH-25",
+      "overview_sha256": "506fd7538c5f44336d6937b1c0cb41a1f31035c5357949a3b3768982ff9cfa07",
+      "packet_json_sha256": "011e235d2854e024bad9eca30debad8aee90edb24dfb8201d9e815bbdd46f020",
+      "positive_name_candidates": [
+        {
+          "candidate_terms": [
+            "\u7aef\u76d6"
+          ],
+          "occurrence": "NAUO1",
+          "output_candidate_score": 1,
+          "product_entity_ref": "#11756",
+          "related_product_name": "8MT.013.013\uff08RH-25 \u7aef\u76d6\uff09",
+          "visual_available": true
+        }
+      ],
+      "representative_product_views": 10,
+      "series": "RH",
+      "step_sha256": "d844bc7dfe5c398b0447ea0d93eef77b7cb1bdaa0dbabd603031482c1909f07e",
+      "support_granted": false,
+      "variant_id": "step-e627f76e6cb91e0b1706",
+      "vendor_relative_path": "RH/RH-25/vendor/RH-25-B/RH-25-100-E-B-D-\u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "candidate_visuals_only": true,
+      "member_count": 18,
+      "member_sheet_sha256": "d8cee92cda304f1a0fc06da7c433011442eba7569ce1897f64c1260fe778c5ad",
+      "model": "X12-320",
+      "overview_sha256": "01b777f3bc156fd4e79e32a8fc7c096521e7054bca5acc0e55b4b60298c05677",
+      "packet_json_sha256": "d4f47914094f8ac8d312123073624c17bc277fff7a290ffd3991f376a4e129fc",
+      "positive_name_candidates": [
+        {
+          "candidate_terms": [
+            "\u7aef\u76d6"
+          ],
+          "occurrence": "NAUO2",
+          "output_candidate_score": 1,
+          "product_entity_ref": "#19315",
+          "related_product_name": "8MT.013.042-\u7aef\u76d6-C_Default<\u6309\u52a0\u5de5>",
+          "visual_available": true
+        },
+        {
+          "candidate_terms": [
+            "\u8f93\u51fa",
+            "\u6cd5\u5170"
+          ],
+          "occurrence": "NAUO3",
+          "output_candidate_score": 20,
+          "product_entity_ref": "#49069",
+          "related_product_name": "XMT.109.007-\u8f93\u51fa\u6cd5\u5170 D_Default<\u6309\u52a0\u5de5>",
+          "visual_available": true
+        },
+        {
+          "candidate_terms": [
+            "\u8f93\u51fa",
+            "\u6cd5\u5170"
+          ],
+          "occurrence": "NAUO4",
+          "output_candidate_score": 20,
+          "product_entity_ref": "#15320",
+          "related_product_name": "XMT.110.007-\u8f93\u51fa\u6cd5\u5170\u76d6\u677f-B_Default<\u6309\u52a0\u5de5>",
+          "visual_available": true
+        },
+        {
+          "candidate_terms": [
+            "\u8f74"
+          ],
+          "occurrence": "NAUO5",
+          "output_candidate_score": 3,
+          "product_entity_ref": "#20674",
+          "related_product_name": "XMT.112.006-\u4e8c\u7f16\u8f74-B_Default<\u6309\u52a0\u5de5>",
+          "visual_available": true
+        }
+      ],
+      "representative_product_views": 8,
+      "series": "RMD-X",
+      "step_sha256": "9b1710aef09916c8da02b4e6b750da6bbfe2ba44cad6ba03cd1b53e3858e5eea",
+      "support_granted": false,
+      "variant_id": "step-e7d99e7e0d9683017c1a",
+      "vendor_relative_path": "RMD-X/X12-320/vendor/RMD-X12-P20-320 \u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "candidate_visuals_only": true,
+      "member_count": 15,
+      "member_sheet_sha256": "3d0957aaf3bdf87c35b7e2ffce86dbc4561bebccd831023cbc287d97aa9bb6c0",
+      "model": "RH-17",
+      "overview_sha256": "2f3875f47de9ec0bea85d3d3bc2e9c99fac6d49f2ac12d3c401e9f1ee7066b69",
+      "packet_json_sha256": "4105b1e3a8972965d2b803788beba03bde678aad03a4872b451d2d73ecc61ae0",
+      "positive_name_candidates": [
+        {
+          "candidate_terms": [
+            "\u7aef\u76d6"
+          ],
+          "occurrence": "NAUO3",
+          "output_candidate_score": 1,
+          "product_entity_ref": "#39590",
+          "related_product_name": "8MT.013.005-\u7aef\u76d6 C",
+          "visual_available": true
+        }
+      ],
+      "representative_product_views": 9,
+      "series": "RH",
+      "step_sha256": "7e5494085f6091c5db928ab52a7cc143b6458ddfd35a27ca5b1af37bdaafb8b5",
+      "support_granted": false,
+      "variant_id": "step-f6c14110f5116e71127f",
+      "vendor_relative_path": "RH/RH-17/vendor/RH-17-N/RH-17-100-E-N-D-\u7535\u673a\u7ec4\u5408\u56fe-A.STEP"
+    },
+    {
+      "candidate_visuals_only": true,
+      "member_count": 24,
+      "member_sheet_sha256": "7277b34f5b1b9a83396720c53df4a3d2ba522043ccf26cac8d3b7429a8dd4231",
+      "model": "X6-60",
+      "overview_sha256": "ef01d8aee97d1297e982c91cd8c53e853effa799563c76ecc00373805ba5d685",
+      "packet_json_sha256": "ccfe7289c3e8487c66e0e0185124ddf0fe5f514d0925e4600836e01db614fc80",
+      "positive_name_candidates": [],
+      "representative_product_views": 15,
+      "series": "RMD-X",
+      "step_sha256": "7aa150d5ea2d1b81136e4925dd96045c2d3d0a0b9f7d444cb3a02084c88e9cdd",
+      "support_granted": false,
+      "variant_id": "step-fefa2b9ccb0a532dda95",
+      "vendor_relative_path": "RMD-X/X6-60/vendor/RMD-X6-P20-60 \u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "candidate_visuals_only": true,
+      "member_count": 15,
+      "member_sheet_sha256": "aa8f9fe7081db55914e3a256e3f22f753b624d6969163346d8d5805cfa25cf5f",
+      "model": "RH-32",
+      "overview_sha256": "b708f8397f5213aad8b1f93d4f744ef4f156b277cb7e3a5adb148782bc01e91e",
+      "packet_json_sha256": "7fa7a9d93e0cdf2db3c1b1730f0d961a0b379db7fce664a3ae939d68946a8c43",
+      "positive_name_candidates": [
+        {
+          "candidate_terms": [
+            "\u7aef\u76d6"
+          ],
+          "occurrence": "NAUO2",
+          "output_candidate_score": 1,
+          "product_entity_ref": "#22933",
+          "related_product_name": "8MT.013.017\uff08RH-32 \u7aef\u76d6\uff09",
+          "visual_available": true
+        }
+      ],
+      "representative_product_views": 8,
+      "series": "RH",
+      "step_sha256": "242bd9c29aaefe6841aeb23be7ce837e5880df1f303e158d93d7501997d12234",
+      "support_granted": false,
+      "variant_id": "step-ffcceaf535839747be7c",
+      "vendor_relative_path": "RH/RH-32/vendor/RH-32-N/RH-32-100-E-N-D-\u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    }
+  ],
+  "schema_version": "myactuator-cad-review-packet-manifest/1",
+  "scope": "local candidate visuals only; no CAD semantic or simulation support authority",
+  "support_granted_count": 0,
+  "toolchain_lock_sha256": "46b5e4e568fbdd31ea0cb4614add55c33d16873337d50350371b1e53a22ea0fc"
+}

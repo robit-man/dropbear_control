@@ -1,0 +1,327 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.org/schemas/can-adapter-manifest.schema.json",
+  "title": "Exact ESP32 CAN controller adapter manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "manifest_id",
+    "record_state",
+    "purpose",
+    "subject",
+    "hardware",
+    "firmware",
+    "timing",
+    "tx_disable",
+    "queues_and_time",
+    "error_state_policy",
+    "review",
+    "evidence_refs",
+    "support_granted",
+    "physical_motion_authority",
+    "physical_io_enabled",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": { "const": "can-adapter-manifest/1" },
+    "manifest_id": {
+      "type": "string",
+      "pattern": "^canadapter-[0-9a-f]{20}$"
+    },
+    "record_state": { "const": "reviewed" },
+    "purpose": { "enum": ["listen_only_capture", "runtime_gateway"] },
+    "subject": { "$ref": "#/$defs/subject" },
+    "hardware": { "$ref": "#/$defs/hardware" },
+    "firmware": { "$ref": "#/$defs/firmware" },
+    "timing": { "$ref": "#/$defs/timing" },
+    "tx_disable": { "$ref": "#/$defs/txDisable" },
+    "queues_and_time": { "$ref": "#/$defs/queues" },
+    "error_state_policy": { "$ref": "#/$defs/errorPolicy" },
+    "review": { "$ref": "#/$defs/review" },
+    "evidence_refs": { "$ref": "#/$defs/refs" },
+    "support_granted": { "const": false },
+    "physical_motion_authority": { "const": false },
+    "physical_io_enabled": { "const": false },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record_sha256"],
+      "properties": {
+        "record_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    }
+  },
+  "$defs": {
+    "text": { "type": "string", "minLength": 1, "maxLength": 2048 },
+    "nullableText": { "type": ["string", "null"], "minLength": 1 },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/text" }
+    },
+    "pin": { "type": ["integer", "null"], "minimum": 0, "maximum": 48 },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonical_configuration_digest",
+        "installed_inventory_submission_id",
+        "robot_asset_id",
+        "controller_location"
+      ],
+      "properties": {
+        "canonical_configuration_digest": { "$ref": "#/$defs/sha256" },
+        "installed_inventory_submission_id": {
+          "type": "string",
+          "pattern": "^inventorysubmission-[0-9a-f]{20}$"
+        },
+        "robot_asset_id": { "$ref": "#/$defs/text" },
+        "controller_location": { "$ref": "#/$defs/text" }
+      }
+    },
+    "pins": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "can_tx_gpio",
+        "can_rx_gpio",
+        "spi_sck_gpio",
+        "spi_mosi_gpio",
+        "spi_miso_gpio",
+        "spi_chip_select_gpio",
+        "interrupt_gpio",
+        "transceiver_standby_gpio"
+      ],
+      "properties": {
+        "can_tx_gpio": { "$ref": "#/$defs/pin" },
+        "can_rx_gpio": { "$ref": "#/$defs/pin" },
+        "spi_sck_gpio": { "$ref": "#/$defs/pin" },
+        "spi_mosi_gpio": { "$ref": "#/$defs/pin" },
+        "spi_miso_gpio": { "$ref": "#/$defs/pin" },
+        "spi_chip_select_gpio": { "$ref": "#/$defs/pin" },
+        "interrupt_gpio": { "$ref": "#/$defs/pin" },
+        "transceiver_standby_gpio": { "$ref": "#/$defs/pin" }
+      }
+    },
+    "hardware": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "controller_kind",
+        "controller_part_number",
+        "controller_silicon_revision",
+        "connection_kind",
+        "board_model",
+        "board_revision",
+        "transceiver_part_number",
+        "transceiver_revision",
+        "controller_clock_hz",
+        "clock_source",
+        "logic_voltage_v",
+        "bus_voltage_v",
+        "termination_ohm",
+        "pins"
+      ],
+      "properties": {
+        "controller_kind": { "enum": ["esp32_twai", "mcp2515"] },
+        "controller_part_number": { "$ref": "#/$defs/text" },
+        "controller_silicon_revision": { "$ref": "#/$defs/text" },
+        "connection_kind": { "enum": ["integrated_peripheral", "spi"] },
+        "board_model": { "$ref": "#/$defs/text" },
+        "board_revision": { "$ref": "#/$defs/text" },
+        "transceiver_part_number": { "$ref": "#/$defs/text" },
+        "transceiver_revision": { "$ref": "#/$defs/text" },
+        "controller_clock_hz": {
+          "type": "integer",
+          "minimum": 1000000,
+          "maximum": 160000000
+        },
+        "clock_source": { "$ref": "#/$defs/text" },
+        "logic_voltage_v": { "type": "number", "exclusiveMinimum": 0 },
+        "bus_voltage_v": { "type": "number", "exclusiveMinimum": 0 },
+        "termination_ohm": {
+          "type": ["number", "null"],
+          "exclusiveMinimum": 0
+        },
+        "pins": { "$ref": "#/$defs/pins" }
+      }
+    },
+    "firmware": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "build_system",
+        "environment",
+        "framework",
+        "driver_id",
+        "driver_version",
+        "driver_source_sha256",
+        "binary_sha256",
+        "configuration_sha256",
+        "compile_flag_evidence_refs"
+      ],
+      "properties": {
+        "build_system": { "const": "platformio" },
+        "environment": { "$ref": "#/$defs/text" },
+        "framework": { "enum": ["arduino", "espidf"] },
+        "driver_id": { "$ref": "#/$defs/text" },
+        "driver_version": { "$ref": "#/$defs/text" },
+        "driver_source_sha256": { "$ref": "#/$defs/sha256" },
+        "binary_sha256": { "$ref": "#/$defs/sha256" },
+        "configuration_sha256": { "$ref": "#/$defs/sha256" },
+        "compile_flag_evidence_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "timing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target_bitrate_hz",
+        "controller_clock_hz",
+        "clock_divider",
+        "sync_segment_tq",
+        "time_segment_1_tq",
+        "time_segment_2_tq",
+        "sjw_tq",
+        "total_time_quanta",
+        "calculated_bitrate_hz",
+        "sample_point_percent",
+        "bitrate_error_ppm",
+        "triple_sampling",
+        "calculation_evidence_refs"
+      ],
+      "properties": {
+        "target_bitrate_hz": { "const": 1000000 },
+        "controller_clock_hz": {
+          "type": "integer",
+          "minimum": 1000000,
+          "maximum": 160000000
+        },
+        "clock_divider": { "type": "integer", "minimum": 1, "maximum": 1024 },
+        "sync_segment_tq": { "const": 1 },
+        "time_segment_1_tq": { "type": "integer", "minimum": 1, "maximum": 32 },
+        "time_segment_2_tq": { "type": "integer", "minimum": 1, "maximum": 16 },
+        "sjw_tq": { "type": "integer", "minimum": 1, "maximum": 16 },
+        "total_time_quanta": { "type": "integer", "minimum": 4, "maximum": 64 },
+        "calculated_bitrate_hz": { "type": "number", "exclusiveMinimum": 0 },
+        "sample_point_percent": {
+          "type": "number",
+          "minimum": 50,
+          "maximum": 95
+        },
+        "bitrate_error_ppm": { "type": "number", "minimum": 0, "maximum": 5000 },
+        "triple_sampling": { "type": "boolean" },
+        "calculation_evidence_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "txDisable": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "controller_operating_mode",
+        "controller_enforced_listen_only",
+        "independent_disable_mechanism",
+        "independent_disable_default_state",
+        "independent_disable_control_gpio",
+        "independent_disable_observed",
+        "measurement_method",
+        "measurement_evidence_refs"
+      ],
+      "properties": {
+        "controller_operating_mode": { "enum": ["listen_only", "normal"] },
+        "controller_enforced_listen_only": { "type": "boolean" },
+        "independent_disable_mechanism": {
+          "enum": ["transceiver_standby", "bus_isolator", "power_removed"]
+        },
+        "independent_disable_default_state": { "const": "tx_disabled" },
+        "independent_disable_control_gpio": { "$ref": "#/$defs/pin" },
+        "independent_disable_observed": { "const": true },
+        "measurement_method": { "$ref": "#/$defs/text" },
+        "measurement_evidence_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "queues": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rx_queue_depth",
+        "tx_queue_depth",
+        "overflow_policy",
+        "rx_loss_counter_bits",
+        "tx_loss_counter_bits",
+        "timestamp_clock",
+        "timestamp_resolution_ns",
+        "timestamp_counter_bits",
+        "timestamp_wrap_policy",
+        "monotonic_timestamp_confirmed",
+        "evidence_refs"
+      ],
+      "properties": {
+        "rx_queue_depth": { "type": "integer", "minimum": 1, "maximum": 4096 },
+        "tx_queue_depth": { "type": "integer", "minimum": 0, "maximum": 4096 },
+        "overflow_policy": { "enum": ["reject_new_and_count", "drop_oldest_and_count"] },
+        "rx_loss_counter_bits": { "enum": [32, 64] },
+        "tx_loss_counter_bits": { "enum": [32, 64] },
+        "timestamp_clock": { "$ref": "#/$defs/text" },
+        "timestamp_resolution_ns": { "type": "integer", "minimum": 1 },
+        "timestamp_counter_bits": { "enum": [32, 64] },
+        "timestamp_wrap_policy": { "enum": ["checked_modular", "u64_no_expected_wrap"] },
+        "monotonic_timestamp_confirmed": { "const": true },
+        "evidence_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "errorPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "warning_threshold",
+        "passive_threshold",
+        "bus_off_threshold",
+        "warning_action",
+        "passive_action",
+        "bus_off_action",
+        "recovery_mode",
+        "recovery_requires_fresh_session",
+        "max_recovery_attempts",
+        "evidence_refs"
+      ],
+      "properties": {
+        "warning_threshold": { "type": "integer", "minimum": 1, "maximum": 255 },
+        "passive_threshold": { "type": "integer", "minimum": 1, "maximum": 255 },
+        "bus_off_threshold": { "type": "integer", "minimum": 1, "maximum": 512 },
+        "warning_action": { "enum": ["report", "fault"] },
+        "passive_action": { "const": "fault_and_tx_disable" },
+        "bus_off_action": { "const": "latch_fault_cancel_pending" },
+        "recovery_mode": { "const": "manual_reviewed_reinitialize" },
+        "recovery_requires_fresh_session": { "const": true },
+        "max_recovery_attempts": { "type": "integer", "minimum": 0, "maximum": 3 },
+        "evidence_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reviewer_id",
+        "organization_or_team",
+        "hardware_competence_attested",
+        "independence_attested",
+        "reviewed_at",
+        "review_assertion",
+        "signature_evidence_refs"
+      ],
+      "properties": {
+        "reviewer_id": { "$ref": "#/$defs/text" },
+        "organization_or_team": { "$ref": "#/$defs/text" },
+        "hardware_competence_attested": { "const": true },
+        "independence_attested": { "const": true },
+        "reviewed_at": { "type": "string", "format": "date-time" },
+        "review_assertion": { "$ref": "#/$defs/text" },
+        "signature_evidence_refs": { "$ref": "#/$defs/refs" }
+      }
+    }
+  }
+}

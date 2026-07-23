@@ -16,7 +16,8 @@ public:
     bool getHome();
 
     void resetPosition();
-    void setResolution(uint16_t resolution);
+    void setResolution(uint32_t resolution);
+    uint32_t getResolution() const { return _resolution; }
 
 private:
     static void IRAM_ATTR onInterruptA();
@@ -29,7 +30,7 @@ private:
     int32_t _position;
     uint32_t _lastTime;
     int32_t _lastPosition;
-    uint16_t _resolution;
+    uint32_t _resolution;
     bool _homeDetected;
     volatile uint8_t _state;
 

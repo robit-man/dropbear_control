@@ -1,0 +1,400 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.org/schemas/security-platform-profile.schema.json",
+  "title": "Exact ESP32 security platform capability profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "profile_id",
+    "record_state",
+    "purpose",
+    "project",
+    "toolchain",
+    "target",
+    "capabilities",
+    "partition_layout",
+    "trust_anchors",
+    "key_assignments",
+    "adapter_bindings",
+    "selection",
+    "blockers",
+    "source_refs",
+    "support_granted",
+    "physical_motion_authority",
+    "physical_io_enabled",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": { "const": "security-platform-profile/1" },
+    "profile_id": {
+      "type": "string",
+      "pattern": "^securityprofile-[0-9a-f]{20}$"
+    },
+    "record_state": {
+      "enum": ["observed_offline", "reviewed_target"]
+    },
+    "purpose": {
+      "const": "authentication_artifact_trust_and_persistence"
+    },
+    "project": { "$ref": "#/$defs/project" },
+    "toolchain": { "$ref": "#/$defs/toolchain" },
+    "target": { "$ref": "#/$defs/target" },
+    "capabilities": { "$ref": "#/$defs/capabilities" },
+    "partition_layout": { "$ref": "#/$defs/partitionLayout" },
+    "trust_anchors": {
+      "type": "array",
+      "maxItems": 16,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/trustAnchor" }
+    },
+    "key_assignments": {
+      "type": "array",
+      "maxItems": 16,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/keyAssignment" }
+    },
+    "adapter_bindings": { "$ref": "#/$defs/adapters" },
+    "selection": { "$ref": "#/$defs/selection" },
+    "blockers": {
+      "type": "array",
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/text" }
+    },
+    "source_refs": { "$ref": "#/$defs/refs" },
+    "support_granted": { "const": false },
+    "physical_motion_authority": { "const": false },
+    "physical_io_enabled": { "const": false },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record_sha256"],
+      "properties": {
+        "record_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    }
+  },
+  "$defs": {
+    "text": { "type": "string", "minLength": 1, "maxLength": 2048 },
+    "nullableText": { "type": ["string", "null"], "minLength": 1, "maxLength": 2048 },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "nullableSha256": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "refs": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/text" }
+    },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "platformio_environment",
+        "platformio_project_path",
+        "platformio_project_sha256",
+        "board_id",
+        "platform_target",
+        "framework"
+      ],
+      "properties": {
+        "platformio_environment": { "const": "esp32" },
+        "platformio_project_path": { "const": "firmware/esp32/platformio.ini" },
+        "platformio_project_sha256": { "$ref": "#/$defs/sha256" },
+        "board_id": { "const": "esp32dev" },
+        "platform_target": { "const": "esp32" },
+        "framework": { "const": "arduino" }
+      }
+    },
+    "component": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component_id",
+        "platformio_home_relative_path",
+        "version",
+        "sha256"
+      ],
+      "properties": {
+        "component_id": {
+          "enum": [
+            "platform_espressif32",
+            "framework_arduinoespressif32",
+            "esp_idf_version_header",
+            "esp32_sdkconfig",
+            "default_partition_table"
+          ]
+        },
+        "platformio_home_relative_path": {
+          "type": "string",
+          "pattern": "^(platforms|packages)/[A-Za-z0-9._/+\\-]+$"
+        },
+        "version": { "$ref": "#/$defs/text" },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "toolchain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["components"],
+      "properties": {
+        "components": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": { "$ref": "#/$defs/component" }
+        }
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target_family",
+        "installed_asset_id",
+        "chip_model",
+        "chip_revision",
+        "secure_boot_revision_compatible",
+        "efuse_summary_sha256",
+        "flash_encryption_mode",
+        "secure_element_part_number",
+        "secure_element_provisioning_id",
+        "physical_observation_evidence_refs"
+      ],
+      "properties": {
+        "target_family": { "const": "classic_esp32" },
+        "installed_asset_id": { "$ref": "#/$defs/nullableText" },
+        "chip_model": { "$ref": "#/$defs/nullableText" },
+        "chip_revision": { "$ref": "#/$defs/nullableText" },
+        "secure_boot_revision_compatible": { "type": ["boolean", "null"] },
+        "efuse_summary_sha256": { "$ref": "#/$defs/nullableSha256" },
+        "flash_encryption_mode": {
+          "enum": [null, "development", "release"]
+        },
+        "secure_element_part_number": { "$ref": "#/$defs/nullableText" },
+        "secure_element_provisioning_id": { "$ref": "#/$defs/nullableText" },
+        "physical_observation_evidence_refs": {
+          "type": "array",
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/text" }
+        }
+      }
+    },
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "secure_boot_enabled",
+        "flash_encryption_enabled",
+        "bootloader_anti_rollback_enabled",
+        "application_rollback_enabled",
+        "nvs_encryption_enabled",
+        "esp_tls_mbedtls_enabled",
+        "esp_tls_secure_element_enabled",
+        "mbedtls_certificate_bundle_enabled",
+        "tls_1_0_enabled",
+        "tls_1_1_enabled",
+        "tls_1_2_enabled",
+        "tls_1_3_enabled",
+        "ota_ab_slots_present",
+        "coredump_partition_present",
+        "persistent_security_state_partition_present"
+      ],
+      "properties": {
+        "secure_boot_enabled": { "type": "boolean" },
+        "flash_encryption_enabled": { "type": "boolean" },
+        "bootloader_anti_rollback_enabled": { "type": "boolean" },
+        "application_rollback_enabled": { "type": "boolean" },
+        "nvs_encryption_enabled": { "type": "boolean" },
+        "esp_tls_mbedtls_enabled": { "type": "boolean" },
+        "esp_tls_secure_element_enabled": { "type": "boolean" },
+        "mbedtls_certificate_bundle_enabled": { "type": "boolean" },
+        "tls_1_0_enabled": { "type": "boolean" },
+        "tls_1_1_enabled": { "type": "boolean" },
+        "tls_1_2_enabled": { "type": "boolean" },
+        "tls_1_3_enabled": { "type": "boolean" },
+        "ota_ab_slots_present": { "type": "boolean" },
+        "coredump_partition_present": { "type": "boolean" },
+        "persistent_security_state_partition_present": { "type": "boolean" }
+      }
+    },
+    "partition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "type", "subtype", "offset", "size", "encrypted"],
+      "properties": {
+        "name": { "$ref": "#/$defs/text" },
+        "type": { "$ref": "#/$defs/text" },
+        "subtype": { "$ref": "#/$defs/text" },
+        "offset": { "type": "integer", "minimum": 0 },
+        "size": { "type": "integer", "minimum": 1 },
+        "encrypted": { "type": "boolean" }
+      }
+    },
+    "partitionLayout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_component_id", "partitions"],
+      "properties": {
+        "source_component_id": { "const": "default_partition_table" },
+        "partitions": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "items": { "$ref": "#/$defs/partition" }
+        }
+      }
+    },
+    "trustAnchor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "anchor_id",
+        "purpose",
+        "termination_kind",
+        "algorithm",
+        "public_fingerprint_sha256",
+        "custodian",
+        "rotation_policy_ref",
+        "revocation_policy_ref",
+        "evidence_refs"
+      ],
+      "properties": {
+        "anchor_id": {
+          "type": "string",
+          "pattern": "^anchor-[a-z0-9][a-z0-9._-]{2,63}$"
+        },
+        "purpose": {
+          "enum": [
+            "firmware_release",
+            "config_release",
+            "calibration_release",
+            "evidence_release",
+            "device_tls_identity",
+            "operator_identity_ca",
+            "audit_seal"
+          ]
+        },
+        "termination_kind": {
+          "enum": [
+            "hardware_efuse",
+            "secure_element",
+            "offline_release_root",
+            "external_operator_ca"
+          ]
+        },
+        "algorithm": {
+          "enum": [
+            "rsa_pss_3072_sha256",
+            "ecdsa_p256_sha256",
+            "ed25519",
+            "x509_platform_profile"
+          ]
+        },
+        "public_fingerprint_sha256": { "$ref": "#/$defs/sha256" },
+        "custodian": { "$ref": "#/$defs/text" },
+        "rotation_policy_ref": { "$ref": "#/$defs/text" },
+        "revocation_policy_ref": { "$ref": "#/$defs/text" },
+        "evidence_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "keyAssignment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "key_id",
+        "purpose",
+        "anchor_id",
+        "public_fingerprint_sha256",
+        "private_key_location_class",
+        "provisioning_state",
+        "evidence_refs"
+      ],
+      "properties": {
+        "key_id": {
+          "type": "string",
+          "pattern": "^key-[a-z0-9][a-z0-9._-]{2,63}$"
+        },
+        "purpose": {
+          "enum": [
+            "firmware_release",
+            "config_release",
+            "calibration_release",
+            "evidence_release",
+            "device_tls_identity",
+            "operator_identity_ca",
+            "audit_seal"
+          ]
+        },
+        "anchor_id": {
+          "type": "string",
+          "pattern": "^anchor-[a-z0-9][a-z0-9._-]{2,63}$"
+        },
+        "public_fingerprint_sha256": { "$ref": "#/$defs/sha256" },
+        "private_key_location_class": {
+          "enum": [
+            "offline_hsm_or_signing_service",
+            "device_efuse_nonexportable",
+            "secure_element_nonexportable",
+            "external_identity_provider"
+          ]
+        },
+        "provisioning_state": {
+          "enum": ["planned", "provisioned_and_reviewed"]
+        },
+        "evidence_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "adapters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authenticated_transport_adapter_id",
+        "signed_artifact_verifier_adapter_id",
+        "persistent_replay_store_adapter_id",
+        "durable_audit_sink_adapter_id",
+        "ota_installer_adapter_id"
+      ],
+      "properties": {
+        "authenticated_transport_adapter_id": { "$ref": "#/$defs/nullableText" },
+        "signed_artifact_verifier_adapter_id": { "$ref": "#/$defs/nullableText" },
+        "persistent_replay_store_adapter_id": { "$ref": "#/$defs/nullableText" },
+        "durable_audit_sink_adapter_id": { "$ref": "#/$defs/nullableText" },
+        "ota_installer_adapter_id": { "$ref": "#/$defs/nullableText" }
+      }
+    },
+    "selection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requested",
+        "reviewer_id",
+        "organization_or_team",
+        "independence_attested",
+        "reviewed_at",
+        "review_evidence_refs"
+      ],
+      "properties": {
+        "requested": { "type": "boolean" },
+        "reviewer_id": { "$ref": "#/$defs/nullableText" },
+        "organization_or_team": { "$ref": "#/$defs/nullableText" },
+        "independence_attested": { "type": "boolean" },
+        "reviewed_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+        "review_evidence_refs": {
+          "type": "array",
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/text" }
+        }
+      }
+    }
+  }
+}

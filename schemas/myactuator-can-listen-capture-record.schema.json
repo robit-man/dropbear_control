@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.dev/schemas/myactuator-can-listen-capture-record.schema.json",
+  "title": "MYACTUATOR append-only listen-only CAN capture record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "capture_id",
+    "sequence",
+    "timestamp",
+    "controller",
+    "frame",
+    "counters",
+    "provenance",
+    "evidence_boundary"
+  ],
+  "properties": {
+    "schema_version": {"const": "myactuator-can-listen-capture/1"},
+    "capture_id": {"$ref": "#/$defs/id"},
+    "sequence": {"type": "integer", "minimum": 1},
+    "timestamp": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "monotonic_ns",
+        "clock_id",
+        "clock_source",
+        "resolution_ns",
+        "capture_started_utc"
+      ],
+      "properties": {
+        "monotonic_ns": {"type": "integer", "minimum": 0},
+        "clock_id": {"$ref": "#/$defs/exactText"},
+        "clock_source": {
+          "enum": [
+            "esp_timer",
+            "timer_group",
+            "irq_host_timestamp",
+            "synthetic_fake"
+          ]
+        },
+        "resolution_ns": {"type": "integer", "minimum": 1},
+        "capture_started_utc": {"type": "string", "format": "date-time"}
+      }
+    },
+    "controller": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bus_id",
+        "instance_id",
+        "controller_type",
+        "mode",
+        "state",
+        "bitrate",
+        "oscillator_hz",
+        "transceiver_id"
+      ],
+      "properties": {
+        "bus_id": {"type": "integer", "minimum": 1, "maximum": 255},
+        "instance_id": {"$ref": "#/$defs/id"},
+        "controller_type": {"enum": ["esp32-twai", "mcp2515", "synthetic-fake"]},
+        "mode": {"const": "listen_only"},
+        "state": {
+          "enum": [
+            "active",
+            "error_warning",
+            "error_passive",
+            "bus_off",
+            "recovering",
+            "stopped"
+          ]
+        },
+        "bitrate": {"const": 1000000},
+        "oscillator_hz": {"type": "integer", "minimum": 1},
+        "transceiver_id": {"$ref": "#/$defs/exactText"}
+      }
+    },
+    "frame": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "direction",
+        "arbitration_id",
+        "is_extended",
+        "is_remote",
+        "dlc",
+        "data_hex"
+      ],
+      "properties": {
+        "direction": {"const": "rx"},
+        "arbitration_id": {"type": "integer", "minimum": 0, "maximum": 2047},
+        "is_extended": {"const": false},
+        "is_remote": {"const": false},
+        "dlc": {"type": "integer", "minimum": 0, "maximum": 8},
+        "data_hex": {"type": "string", "pattern": "^(?:[0-9a-f]{2}){0,8}$"}
+      }
+    },
+    "counters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rx_frames_total", "rx_dropped_total", "driver_overflow_total"],
+      "properties": {
+        "rx_frames_total": {"type": "integer", "minimum": 1},
+        "rx_dropped_total": {"type": "integer", "minimum": 0},
+        "driver_overflow_total": {"type": "integer", "minimum": 0}
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "firmware_revision",
+        "firmware_binary_sha256",
+        "adapter_config_sha256",
+        "hardware_setup_id",
+        "operator_id"
+      ],
+      "properties": {
+        "firmware_revision": {"$ref": "#/$defs/exactText"},
+        "firmware_binary_sha256": {"$ref": "#/$defs/sha256"},
+        "adapter_config_sha256": {"$ref": "#/$defs/sha256"},
+        "hardware_setup_id": {"$ref": "#/$defs/id"},
+        "operator_id": {"$ref": "#/$defs/exactText"}
+      }
+    },
+    "evidence_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "capture_class",
+        "frame_interpretation",
+        "protocol_applicability",
+        "motion_authorized",
+        "support_granted"
+      ],
+      "properties": {
+        "capture_class": {"const": "listen_only_observation"},
+        "frame_interpretation": {"const": "uninterpreted_can_frame"},
+        "protocol_applicability": {"const": "unverified"},
+        "motion_authorized": {"const": false},
+        "support_granted": {"const": false}
+      }
+    }
+  },
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "exactText": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!.*[?*\\[\\]{}]).+$"
+    }
+  }
+}

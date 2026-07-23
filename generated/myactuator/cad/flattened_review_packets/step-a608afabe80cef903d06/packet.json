@@ -1,0 +1,355 @@
+{
+  "component_count": 9,
+  "component_kind": "solid",
+  "components": [
+    {
+      "bbox_max_mm": [
+        -41.8,
+        32.094932,
+        -26.594931
+      ],
+      "bbox_min_mm": [
+        -52.8,
+        26.594931,
+        -32.094932
+      ],
+      "bbox_size_mm": [
+        11.0,
+        5.5,
+        5.5
+      ],
+      "center_mm": [
+        -48.634898,
+        29.344931,
+        -29.344931
+      ],
+      "component_id": "solid-0001-0ff272ccac40",
+      "fingerprint_sha256": "0ff272ccac40184f0bdd3f447a7b1f290368174bcd66ef3be35f1910eb4a71f5",
+      "kind": "solid",
+      "surface_area_mm2": 183.363071,
+      "topology": {
+        "edges": 54,
+        "faces": 25,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 33
+      },
+      "valid": true,
+      "volume_mm3": 119.056952
+    },
+    {
+      "bbox_max_mm": [
+        -48.4,
+        29.128906,
+        28.530685
+      ],
+      "bbox_min_mm": [
+        -50.0,
+        -29.128906,
+        -33.5
+      ],
+      "bbox_size_mm": [
+        1.6,
+        58.257813,
+        62.030685
+      ],
+      "center_mm": [
+        -49.2,
+        0.0,
+        -1.023192
+      ],
+      "component_id": "solid-0002-16756008bb3a",
+      "fingerprint_sha256": "16756008bb3a38dd944a2bf9d6c827ec0236f70819d4ca5326553122a62c2eff",
+      "kind": "solid",
+      "surface_area_mm2": 5664.889801,
+      "topology": {
+        "edges": 105,
+        "faces": 37,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 70
+      },
+      "valid": true,
+      "volume_mm3": 4118.269663
+    },
+    {
+      "bbox_max_mm": [
+        -41.8,
+        -26.594931,
+        32.094932
+      ],
+      "bbox_min_mm": [
+        -52.8,
+        -32.094932,
+        26.594931
+      ],
+      "bbox_size_mm": [
+        11.0,
+        5.5,
+        5.5
+      ],
+      "center_mm": [
+        -48.63475,
+        -29.344931,
+        29.344931
+      ],
+      "component_id": "solid-0003-43c92181a10b",
+      "fingerprint_sha256": "43c92181a10b57310ad01199130e49b289a4f89806ef593687b9a84ca3473ea1",
+      "kind": "solid",
+      "surface_area_mm2": 183.357079,
+      "topology": {
+        "edges": 58,
+        "faces": 25,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 37
+      },
+      "valid": true,
+      "volume_mm3": 119.05196
+    },
+    {
+      "bbox_max_mm": [
+        -6.0,
+        44.5,
+        44.5
+      ],
+      "bbox_min_mm": [
+        -38.5,
+        -44.5,
+        -44.5
+      ],
+      "bbox_size_mm": [
+        32.5,
+        89.0,
+        89.0
+      ],
+      "center_mm": [
+        -21.868336,
+        0.0,
+        -0.0
+      ],
+      "component_id": "solid-0004-73319e9b06f4",
+      "fingerprint_sha256": "73319e9b06f468890b809882357ac0313534d410b7066e19a092f201040078fa",
+      "kind": "solid",
+      "surface_area_mm2": 18868.782469,
+      "topology": {
+        "edges": 18,
+        "faces": 9,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 12
+      },
+      "valid": true,
+      "volume_mm3": 17342.76012
+    },
+    {
+      "bbox_max_mm": [
+        -1.6,
+        18.705952,
+        -3.505618
+      ],
+      "bbox_min_mm": [
+        -6.0,
+        12.705952,
+        -9.505618
+      ],
+      "bbox_size_mm": [
+        4.4,
+        6.0,
+        6.0
+      ],
+      "center_mm": [
+        -3.850102,
+        15.705952,
+        -6.505618
+      ],
+      "component_id": "solid-0005-8baec20ad301",
+      "fingerprint_sha256": "8baec20ad301e4b0a13b5b75f82f4439b29a6f2fa2fcf2674fbb50487d234035",
+      "kind": "solid",
+      "surface_area_mm2": 140.872043,
+      "topology": {
+        "edges": 52,
+        "faces": 24,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 31
+      },
+      "valid": true,
+      "volume_mm3": 94.545078
+    },
+    {
+      "bbox_max_mm": [
+        -41.8,
+        -26.594931,
+        -26.594931
+      ],
+      "bbox_min_mm": [
+        -52.8,
+        -32.094932,
+        -32.094932
+      ],
+      "bbox_size_mm": [
+        11.0,
+        5.5,
+        5.5
+      ],
+      "center_mm": [
+        -48.634756,
+        -29.344931,
+        -29.344931
+      ],
+      "component_id": "solid-0006-a42c2a7ccddd",
+      "fingerprint_sha256": "a42c2a7ccddd1060969ae3a0fe493565f878be579cf17163af83b50c47b2d6e0",
+      "kind": "solid",
+      "surface_area_mm2": 183.357079,
+      "topology": {
+        "edges": 54,
+        "faces": 25,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 33
+      },
+      "valid": true,
+      "volume_mm3": 119.052216
+    },
+    {
+      "bbox_max_mm": [
+        -41.8,
+        32.094932,
+        32.094932
+      ],
+      "bbox_min_mm": [
+        -52.8,
+        26.594931,
+        26.594931
+      ],
+      "bbox_size_mm": [
+        11.0,
+        5.5,
+        5.5
+      ],
+      "center_mm": [
+        -48.634898,
+        29.344931,
+        29.344931
+      ],
+      "component_id": "solid-0007-b80342d482ea",
+      "fingerprint_sha256": "b80342d482eaa18e2d78f9a1e0b3e7f60ac220986147a213bff332e8a2f4aba9",
+      "kind": "solid",
+      "surface_area_mm2": 183.363071,
+      "topology": {
+        "edges": 54,
+        "faces": 25,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 33
+      },
+      "valid": true,
+      "volume_mm3": 119.056952
+    },
+    {
+      "bbox_max_mm": [
+        0.0,
+        44.5,
+        44.5
+      ],
+      "bbox_min_mm": [
+        -10.5,
+        -44.5,
+        -44.5
+      ],
+      "bbox_size_mm": [
+        10.5,
+        89.0,
+        89.0
+      ],
+      "center_mm": [
+        -2.948183,
+        -0.072908,
+        0.030199
+      ],
+      "component_id": "solid-0008-ee2a9ccc9a70",
+      "fingerprint_sha256": "ee2a9ccc9a707023865c20a5a296e0de3ec7d4f551cc080e3cede64b534ccd8d",
+      "kind": "solid",
+      "surface_area_mm2": 18118.895441,
+      "topology": {
+        "edges": 100,
+        "faces": 41,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 64
+      },
+      "valid": true,
+      "volume_mm3": 25378.827417
+    },
+    {
+      "bbox_max_mm": [
+        -35.5,
+        44.5,
+        44.5
+      ],
+      "bbox_min_mm": [
+        -53.0,
+        -44.5,
+        -44.5
+      ],
+      "bbox_size_mm": [
+        17.5,
+        89.0,
+        89.0
+      ],
+      "center_mm": [
+        -44.228336,
+        -0.109431,
+        0.293443
+      ],
+      "component_id": "solid-0009-f9ff8a949c6f",
+      "fingerprint_sha256": "f9ff8a949c6f44b34aaf51317445ee0c557a5b0feb8e79aa2ef4dc9a57ba45fd",
+      "kind": "solid",
+      "surface_area_mm2": 32097.473188,
+      "topology": {
+        "edges": 705,
+        "faces": 258,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 464
+      },
+      "valid": true,
+      "volume_mm3": 34082.175598
+    }
+  ],
+  "housing_member_identified": false,
+  "images": {
+    "largest_component_sheet": {
+      "path": "generated/myactuator/cad/flattened_review_packets/step-a608afabe80cef903d06/largest-component-sheet.png",
+      "sha256": "0398f3ea92505b98f1f62069bc3b98bb7cf3ccbd57744410a9dc796d82528bbb"
+    },
+    "overview": {
+      "path": "generated/myactuator/cad/flattened_review_packets/step-a608afabe80cef903d06/overview.png",
+      "sha256": "2da2714b3d599ee75d2c3dc7c85c4f7f2ea480b1bd1689e651cc8eff55bf5043"
+    }
+  },
+  "joint_axis_identified": false,
+  "model": "L-9025",
+  "output_member_identified": false,
+  "partition_disposition": "candidate_disconnected_solids_manual_partition_required",
+  "representative_component_ids": [
+    "solid-0009-f9ff8a949c6f",
+    "solid-0008-ee2a9ccc9a70",
+    "solid-0004-73319e9b06f4",
+    "solid-0002-16756008bb3a",
+    "solid-0007-b80342d482ea",
+    "solid-0001-0ff272ccac40",
+    "solid-0006-a42c2a7ccddd",
+    "solid-0003-43c92181a10b",
+    "solid-0005-8baec20ad301"
+  ],
+  "review_status": "candidate_partition_only",
+  "schema_version": "myactuator-flattened-partition-packet/1",
+  "series": "RMD-L",
+  "simulation_supported": false,
+  "stable_component_ids_are_semantic": false,
+  "step_sha256": "9509f74b2d2621d3e6a8fcf5117789d399a4e6cd238f306c3d807cb7d7a523cc",
+  "variant_id": "step-a608afabe80cef903d06",
+  "vendor_relative_path": "RMD-L/L-9025/vendor/L-9025-251029/2D3D/RMD-9025\u4e09\u7ef4\u56fe/RMD-9025.step"
+}

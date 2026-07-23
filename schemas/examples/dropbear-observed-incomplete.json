@@ -1,0 +1,1245 @@
+{
+  "schema_version": "1.0.0",
+  "configuration_id": "dropbear-prototype-observation",
+  "configuration_revision": 1,
+  "configuration_state": "incomplete_observation",
+  "robot": {
+    "canonical_name": "dropbear",
+    "hardware_revision": "UNKNOWN",
+    "hardware_revision_status": "unknown",
+    "source_refs": [
+      "dropbear-audit"
+    ]
+  },
+  "controller_nodes": [
+    {
+      "controller_node_id": "left-gateway-role-observation",
+      "runtime_node_id": null,
+      "role": "actuator_gateway",
+      "chirality": "left",
+      "hardware_identity": "UNKNOWN",
+      "firmware_revision": "UNKNOWN",
+      "identity_status": "unverified_observation",
+      "candidate_bus_ids": [
+        "prototype-can-observation"
+      ],
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "controller_node_id": "right-gateway-role-observation",
+      "runtime_node_id": null,
+      "role": "actuator_gateway",
+      "chirality": "right",
+      "hardware_identity": "UNKNOWN",
+      "firmware_revision": "UNKNOWN",
+      "identity_status": "unverified_observation",
+      "candidate_bus_ids": [
+        "prototype-can-observation"
+      ],
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    }
+  ],
+  "buses": [
+    {
+      "bus_id": "prototype-can-observation",
+      "transport": "can_classic",
+      "physical_interface": "MCP2515 API with GPIO 5 chip-select and GPIO 17 interrupt in legacy source; physical topology UNKNOWN",
+      "bitrate_bps": 1000000,
+      "timing_status": "unverified_observation",
+      "owner_controller_node_id": null,
+      "ownership_status": "unknown",
+      "source_refs": [
+        "dropbear-prototype-ino",
+        "dropbear-audit"
+      ]
+    }
+  ],
+  "joints": [
+    {
+      "canonical_name": "left_hip_yaw",
+      "chirality": "left",
+      "semantic_joint": "hip_yaw",
+      "actuator_id": "actuator-left-hip-yaw",
+      "actuation": {
+        "motor_to_joint_sign": null,
+        "output_per_motor_ratio": null,
+        "coordinate_status": "unknown",
+        "limits": {
+          "position_lower_rad": null,
+          "position_upper_rad": null,
+          "max_velocity_rad_s": null,
+          "max_qaxis_current_a": null,
+          "max_effort_nm": null,
+          "max_temperature_c": null,
+          "status": "unknown",
+          "source_refs": []
+        }
+      },
+      "feedback": {
+        "native_drive_status": "unknown",
+        "external_sensor_id": null,
+        "external_sensor_status": "missing"
+      },
+      "cad_binding": {
+        "asset_id": null,
+        "housing_member": null,
+        "output_member": null,
+        "joint_origin_xyz_m": null,
+        "joint_axis_xyz": null,
+        "status": "unknown"
+      },
+      "calibration_id": null,
+      "calibration_status": "unknown",
+      "source_refs": [
+        "dropbear-prototype-ino",
+        "dropbear-audit"
+      ]
+    },
+    {
+      "canonical_name": "left_hip_roll",
+      "chirality": "left",
+      "semantic_joint": "hip_roll",
+      "actuator_id": "actuator-left-hip-roll",
+      "actuation": {
+        "motor_to_joint_sign": null,
+        "output_per_motor_ratio": null,
+        "coordinate_status": "unknown",
+        "limits": {
+          "position_lower_rad": null,
+          "position_upper_rad": null,
+          "max_velocity_rad_s": null,
+          "max_qaxis_current_a": null,
+          "max_effort_nm": null,
+          "max_temperature_c": null,
+          "status": "unknown",
+          "source_refs": []
+        }
+      },
+      "feedback": {
+        "native_drive_status": "unknown",
+        "external_sensor_id": "left-hip-roll-external",
+        "external_sensor_status": "unverified_observation"
+      },
+      "cad_binding": {
+        "asset_id": null,
+        "housing_member": null,
+        "output_member": null,
+        "joint_origin_xyz_m": null,
+        "joint_axis_xyz": null,
+        "status": "unknown"
+      },
+      "calibration_id": null,
+      "calibration_status": "unknown",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "canonical_name": "left_hip_pitch",
+      "chirality": "left",
+      "semantic_joint": "hip_pitch",
+      "actuator_id": "actuator-left-hip-pitch",
+      "actuation": {
+        "motor_to_joint_sign": null,
+        "output_per_motor_ratio": null,
+        "coordinate_status": "unknown",
+        "limits": {
+          "position_lower_rad": null,
+          "position_upper_rad": null,
+          "max_velocity_rad_s": null,
+          "max_qaxis_current_a": null,
+          "max_effort_nm": null,
+          "max_temperature_c": null,
+          "status": "unknown",
+          "source_refs": []
+        }
+      },
+      "feedback": {
+        "native_drive_status": "unknown",
+        "external_sensor_id": "left-hip-pitch-external",
+        "external_sensor_status": "unverified_observation"
+      },
+      "cad_binding": {
+        "asset_id": null,
+        "housing_member": null,
+        "output_member": null,
+        "joint_origin_xyz_m": null,
+        "joint_axis_xyz": null,
+        "status": "unknown"
+      },
+      "calibration_id": null,
+      "calibration_status": "unknown",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "canonical_name": "left_knee",
+      "chirality": "left",
+      "semantic_joint": "knee",
+      "actuator_id": "actuator-left-knee",
+      "actuation": {
+        "motor_to_joint_sign": null,
+        "output_per_motor_ratio": null,
+        "coordinate_status": "unknown",
+        "limits": {
+          "position_lower_rad": null,
+          "position_upper_rad": null,
+          "max_velocity_rad_s": null,
+          "max_qaxis_current_a": null,
+          "max_effort_nm": null,
+          "max_temperature_c": null,
+          "status": "unknown",
+          "source_refs": []
+        }
+      },
+      "feedback": {
+        "native_drive_status": "unknown",
+        "external_sensor_id": "left-knee-external",
+        "external_sensor_status": "unverified_observation"
+      },
+      "cad_binding": {
+        "asset_id": null,
+        "housing_member": null,
+        "output_member": null,
+        "joint_origin_xyz_m": null,
+        "joint_axis_xyz": null,
+        "status": "unknown"
+      },
+      "calibration_id": null,
+      "calibration_status": "unknown",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "canonical_name": "left_inner_calf",
+      "chirality": "left",
+      "semantic_joint": "inner_calf",
+      "actuator_id": "actuator-left-inner-calf",
+      "actuation": {
+        "motor_to_joint_sign": null,
+        "output_per_motor_ratio": null,
+        "coordinate_status": "unknown",
+        "limits": {
+          "position_lower_rad": null,
+          "position_upper_rad": null,
+          "max_velocity_rad_s": null,
+          "max_qaxis_current_a": null,
+          "max_effort_nm": null,
+          "max_temperature_c": null,
+          "status": "unknown",
+          "source_refs": []
+        }
+      },
+      "feedback": {
+        "native_drive_status": "unknown",
+        "external_sensor_id": "left-inner-calf-external",
+        "external_sensor_status": "unverified_observation"
+      },
+      "cad_binding": {
+        "asset_id": null,
+        "housing_member": null,
+        "output_member": null,
+        "joint_origin_xyz_m": null,
+        "joint_axis_xyz": null,
+        "status": "unknown"
+      },
+      "calibration_id": null,
+      "calibration_status": "unknown",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "canonical_name": "left_outer_calf",
+      "chirality": "left",
+      "semantic_joint": "outer_calf",
+      "actuator_id": "actuator-left-outer-calf",
+      "actuation": {
+        "motor_to_joint_sign": null,
+        "output_per_motor_ratio": null,
+        "coordinate_status": "unknown",
+        "limits": {
+          "position_lower_rad": null,
+          "position_upper_rad": null,
+          "max_velocity_rad_s": null,
+          "max_qaxis_current_a": null,
+          "max_effort_nm": null,
+          "max_temperature_c": null,
+          "status": "unknown",
+          "source_refs": []
+        }
+      },
+      "feedback": {
+        "native_drive_status": "unknown",
+        "external_sensor_id": "left-outer-calf-external",
+        "external_sensor_status": "unverified_observation"
+      },
+      "cad_binding": {
+        "asset_id": null,
+        "housing_member": null,
+        "output_member": null,
+        "joint_origin_xyz_m": null,
+        "joint_axis_xyz": null,
+        "status": "unknown"
+      },
+      "calibration_id": null,
+      "calibration_status": "unknown",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "canonical_name": "right_hip_yaw",
+      "chirality": "right",
+      "semantic_joint": "hip_yaw",
+      "actuator_id": "actuator-right-hip-yaw",
+      "actuation": {
+        "motor_to_joint_sign": null,
+        "output_per_motor_ratio": null,
+        "coordinate_status": "unknown",
+        "limits": {
+          "position_lower_rad": null,
+          "position_upper_rad": null,
+          "max_velocity_rad_s": null,
+          "max_qaxis_current_a": null,
+          "max_effort_nm": null,
+          "max_temperature_c": null,
+          "status": "unknown",
+          "source_refs": []
+        }
+      },
+      "feedback": {
+        "native_drive_status": "unknown",
+        "external_sensor_id": null,
+        "external_sensor_status": "missing"
+      },
+      "cad_binding": {
+        "asset_id": null,
+        "housing_member": null,
+        "output_member": null,
+        "joint_origin_xyz_m": null,
+        "joint_axis_xyz": null,
+        "status": "unknown"
+      },
+      "calibration_id": null,
+      "calibration_status": "unknown",
+      "source_refs": [
+        "dropbear-prototype-ino",
+        "dropbear-audit"
+      ]
+    },
+    {
+      "canonical_name": "right_hip_roll",
+      "chirality": "right",
+      "semantic_joint": "hip_roll",
+      "actuator_id": "actuator-right-hip-roll",
+      "actuation": {
+        "motor_to_joint_sign": null,
+        "output_per_motor_ratio": null,
+        "coordinate_status": "unknown",
+        "limits": {
+          "position_lower_rad": null,
+          "position_upper_rad": null,
+          "max_velocity_rad_s": null,
+          "max_qaxis_current_a": null,
+          "max_effort_nm": null,
+          "max_temperature_c": null,
+          "status": "unknown",
+          "source_refs": []
+        }
+      },
+      "feedback": {
+        "native_drive_status": "unknown",
+        "external_sensor_id": "right-hip-roll-external",
+        "external_sensor_status": "unverified_observation"
+      },
+      "cad_binding": {
+        "asset_id": null,
+        "housing_member": null,
+        "output_member": null,
+        "joint_origin_xyz_m": null,
+        "joint_axis_xyz": null,
+        "status": "unknown"
+      },
+      "calibration_id": null,
+      "calibration_status": "unknown",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "canonical_name": "right_hip_pitch",
+      "chirality": "right",
+      "semantic_joint": "hip_pitch",
+      "actuator_id": "actuator-right-hip-pitch",
+      "actuation": {
+        "motor_to_joint_sign": null,
+        "output_per_motor_ratio": null,
+        "coordinate_status": "unknown",
+        "limits": {
+          "position_lower_rad": null,
+          "position_upper_rad": null,
+          "max_velocity_rad_s": null,
+          "max_qaxis_current_a": null,
+          "max_effort_nm": null,
+          "max_temperature_c": null,
+          "status": "unknown",
+          "source_refs": []
+        }
+      },
+      "feedback": {
+        "native_drive_status": "unknown",
+        "external_sensor_id": "right-hip-pitch-external",
+        "external_sensor_status": "unverified_observation"
+      },
+      "cad_binding": {
+        "asset_id": null,
+        "housing_member": null,
+        "output_member": null,
+        "joint_origin_xyz_m": null,
+        "joint_axis_xyz": null,
+        "status": "unknown"
+      },
+      "calibration_id": null,
+      "calibration_status": "unknown",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "canonical_name": "right_knee",
+      "chirality": "right",
+      "semantic_joint": "knee",
+      "actuator_id": "actuator-right-knee",
+      "actuation": {
+        "motor_to_joint_sign": null,
+        "output_per_motor_ratio": null,
+        "coordinate_status": "unknown",
+        "limits": {
+          "position_lower_rad": null,
+          "position_upper_rad": null,
+          "max_velocity_rad_s": null,
+          "max_qaxis_current_a": null,
+          "max_effort_nm": null,
+          "max_temperature_c": null,
+          "status": "unknown",
+          "source_refs": []
+        }
+      },
+      "feedback": {
+        "native_drive_status": "unknown",
+        "external_sensor_id": "right-knee-external",
+        "external_sensor_status": "unverified_observation"
+      },
+      "cad_binding": {
+        "asset_id": null,
+        "housing_member": null,
+        "output_member": null,
+        "joint_origin_xyz_m": null,
+        "joint_axis_xyz": null,
+        "status": "unknown"
+      },
+      "calibration_id": null,
+      "calibration_status": "unknown",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "canonical_name": "right_inner_calf",
+      "chirality": "right",
+      "semantic_joint": "inner_calf",
+      "actuator_id": "actuator-right-inner-calf",
+      "actuation": {
+        "motor_to_joint_sign": null,
+        "output_per_motor_ratio": null,
+        "coordinate_status": "unknown",
+        "limits": {
+          "position_lower_rad": null,
+          "position_upper_rad": null,
+          "max_velocity_rad_s": null,
+          "max_qaxis_current_a": null,
+          "max_effort_nm": null,
+          "max_temperature_c": null,
+          "status": "unknown",
+          "source_refs": []
+        }
+      },
+      "feedback": {
+        "native_drive_status": "unknown",
+        "external_sensor_id": "right-inner-calf-external",
+        "external_sensor_status": "unverified_observation"
+      },
+      "cad_binding": {
+        "asset_id": null,
+        "housing_member": null,
+        "output_member": null,
+        "joint_origin_xyz_m": null,
+        "joint_axis_xyz": null,
+        "status": "unknown"
+      },
+      "calibration_id": null,
+      "calibration_status": "unknown",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "canonical_name": "right_outer_calf",
+      "chirality": "right",
+      "semantic_joint": "outer_calf",
+      "actuator_id": "actuator-right-outer-calf",
+      "actuation": {
+        "motor_to_joint_sign": null,
+        "output_per_motor_ratio": null,
+        "coordinate_status": "unknown",
+        "limits": {
+          "position_lower_rad": null,
+          "position_upper_rad": null,
+          "max_velocity_rad_s": null,
+          "max_qaxis_current_a": null,
+          "max_effort_nm": null,
+          "max_temperature_c": null,
+          "status": "unknown",
+          "source_refs": []
+        }
+      },
+      "feedback": {
+        "native_drive_status": "unknown",
+        "external_sensor_id": "right-outer-calf-external",
+        "external_sensor_status": "unverified_observation"
+      },
+      "cad_binding": {
+        "asset_id": null,
+        "housing_member": null,
+        "output_member": null,
+        "joint_origin_xyz_m": null,
+        "joint_axis_xyz": null,
+        "status": "unknown"
+      },
+      "calibration_id": null,
+      "calibration_status": "unknown",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    }
+  ],
+  "actuators": [
+    {
+      "actuator_id": "actuator-left-outer-calf",
+      "canonical_joint_name": "left_outer_calf",
+      "chirality": "left",
+      "bus_id": "prototype-can-observation",
+      "owner_controller_node_id": null,
+      "ownership_status": "unknown",
+      "address": {
+        "legacy_full_command_can_id": 321,
+        "native_node_id": null,
+        "status": "unverified_observation"
+      },
+      "exact_tuple": {
+        "manufacturer": "MYACTUATOR",
+        "model": "UNKNOWN",
+        "hardware_revision": "UNKNOWN",
+        "drive_firmware": "UNKNOWN",
+        "protocol_name": "UNKNOWN",
+        "protocol_revision": "UNKNOWN",
+        "transport": "CAN_CLASSIC",
+        "control_mode": "UNKNOWN",
+        "support_state": "unsupported",
+        "source_refs": [
+          "dropbear-audit"
+        ]
+      },
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "actuator_id": "actuator-left-inner-calf",
+      "canonical_joint_name": "left_inner_calf",
+      "chirality": "left",
+      "bus_id": "prototype-can-observation",
+      "owner_controller_node_id": null,
+      "ownership_status": "unknown",
+      "address": {
+        "legacy_full_command_can_id": 322,
+        "native_node_id": null,
+        "status": "unverified_observation"
+      },
+      "exact_tuple": {
+        "manufacturer": "MYACTUATOR",
+        "model": "UNKNOWN",
+        "hardware_revision": "UNKNOWN",
+        "drive_firmware": "UNKNOWN",
+        "protocol_name": "UNKNOWN",
+        "protocol_revision": "UNKNOWN",
+        "transport": "CAN_CLASSIC",
+        "control_mode": "UNKNOWN",
+        "support_state": "unsupported",
+        "source_refs": [
+          "dropbear-audit"
+        ]
+      },
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "actuator_id": "actuator-right-inner-calf",
+      "canonical_joint_name": "right_inner_calf",
+      "chirality": "right",
+      "bus_id": "prototype-can-observation",
+      "owner_controller_node_id": null,
+      "ownership_status": "unknown",
+      "address": {
+        "legacy_full_command_can_id": 323,
+        "native_node_id": null,
+        "status": "unverified_observation"
+      },
+      "exact_tuple": {
+        "manufacturer": "MYACTUATOR",
+        "model": "UNKNOWN",
+        "hardware_revision": "UNKNOWN",
+        "drive_firmware": "UNKNOWN",
+        "protocol_name": "UNKNOWN",
+        "protocol_revision": "UNKNOWN",
+        "transport": "CAN_CLASSIC",
+        "control_mode": "UNKNOWN",
+        "support_state": "unsupported",
+        "source_refs": [
+          "dropbear-audit"
+        ]
+      },
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "actuator_id": "actuator-right-outer-calf",
+      "canonical_joint_name": "right_outer_calf",
+      "chirality": "right",
+      "bus_id": "prototype-can-observation",
+      "owner_controller_node_id": null,
+      "ownership_status": "unknown",
+      "address": {
+        "legacy_full_command_can_id": 324,
+        "native_node_id": null,
+        "status": "unverified_observation"
+      },
+      "exact_tuple": {
+        "manufacturer": "MYACTUATOR",
+        "model": "UNKNOWN",
+        "hardware_revision": "UNKNOWN",
+        "drive_firmware": "UNKNOWN",
+        "protocol_name": "UNKNOWN",
+        "protocol_revision": "UNKNOWN",
+        "transport": "CAN_CLASSIC",
+        "control_mode": "UNKNOWN",
+        "support_state": "unsupported",
+        "source_refs": [
+          "dropbear-audit"
+        ]
+      },
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "actuator_id": "actuator-left-knee",
+      "canonical_joint_name": "left_knee",
+      "chirality": "left",
+      "bus_id": "prototype-can-observation",
+      "owner_controller_node_id": null,
+      "ownership_status": "unknown",
+      "address": {
+        "legacy_full_command_can_id": 325,
+        "native_node_id": null,
+        "status": "unverified_observation"
+      },
+      "exact_tuple": {
+        "manufacturer": "MYACTUATOR",
+        "model": "UNKNOWN",
+        "hardware_revision": "UNKNOWN",
+        "drive_firmware": "UNKNOWN",
+        "protocol_name": "UNKNOWN",
+        "protocol_revision": "UNKNOWN",
+        "transport": "CAN_CLASSIC",
+        "control_mode": "UNKNOWN",
+        "support_state": "unsupported",
+        "source_refs": [
+          "dropbear-audit"
+        ]
+      },
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "actuator_id": "actuator-left-hip-pitch",
+      "canonical_joint_name": "left_hip_pitch",
+      "chirality": "left",
+      "bus_id": "prototype-can-observation",
+      "owner_controller_node_id": null,
+      "ownership_status": "unknown",
+      "address": {
+        "legacy_full_command_can_id": 326,
+        "native_node_id": null,
+        "status": "unverified_observation"
+      },
+      "exact_tuple": {
+        "manufacturer": "MYACTUATOR",
+        "model": "UNKNOWN",
+        "hardware_revision": "UNKNOWN",
+        "drive_firmware": "UNKNOWN",
+        "protocol_name": "UNKNOWN",
+        "protocol_revision": "UNKNOWN",
+        "transport": "CAN_CLASSIC",
+        "control_mode": "UNKNOWN",
+        "support_state": "unsupported",
+        "source_refs": [
+          "dropbear-audit"
+        ]
+      },
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "actuator_id": "actuator-right-hip-pitch",
+      "canonical_joint_name": "right_hip_pitch",
+      "chirality": "right",
+      "bus_id": "prototype-can-observation",
+      "owner_controller_node_id": null,
+      "ownership_status": "unknown",
+      "address": {
+        "legacy_full_command_can_id": 327,
+        "native_node_id": null,
+        "status": "unverified_observation"
+      },
+      "exact_tuple": {
+        "manufacturer": "MYACTUATOR",
+        "model": "UNKNOWN",
+        "hardware_revision": "UNKNOWN",
+        "drive_firmware": "UNKNOWN",
+        "protocol_name": "UNKNOWN",
+        "protocol_revision": "UNKNOWN",
+        "transport": "CAN_CLASSIC",
+        "control_mode": "UNKNOWN",
+        "support_state": "unsupported",
+        "source_refs": [
+          "dropbear-audit"
+        ]
+      },
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "actuator_id": "actuator-right-knee",
+      "canonical_joint_name": "right_knee",
+      "chirality": "right",
+      "bus_id": "prototype-can-observation",
+      "owner_controller_node_id": null,
+      "ownership_status": "unknown",
+      "address": {
+        "legacy_full_command_can_id": 328,
+        "native_node_id": null,
+        "status": "unverified_observation"
+      },
+      "exact_tuple": {
+        "manufacturer": "MYACTUATOR",
+        "model": "UNKNOWN",
+        "hardware_revision": "UNKNOWN",
+        "drive_firmware": "UNKNOWN",
+        "protocol_name": "UNKNOWN",
+        "protocol_revision": "UNKNOWN",
+        "transport": "CAN_CLASSIC",
+        "control_mode": "UNKNOWN",
+        "support_state": "unsupported",
+        "source_refs": [
+          "dropbear-audit"
+        ]
+      },
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "actuator_id": "actuator-left-hip-yaw",
+      "canonical_joint_name": "left_hip_yaw",
+      "chirality": "left",
+      "bus_id": "prototype-can-observation",
+      "owner_controller_node_id": null,
+      "ownership_status": "unknown",
+      "address": {
+        "legacy_full_command_can_id": 329,
+        "native_node_id": null,
+        "status": "unverified_observation"
+      },
+      "exact_tuple": {
+        "manufacturer": "MYACTUATOR",
+        "model": "UNKNOWN",
+        "hardware_revision": "UNKNOWN",
+        "drive_firmware": "UNKNOWN",
+        "protocol_name": "UNKNOWN",
+        "protocol_revision": "UNKNOWN",
+        "transport": "CAN_CLASSIC",
+        "control_mode": "UNKNOWN",
+        "support_state": "unsupported",
+        "source_refs": [
+          "dropbear-audit"
+        ]
+      },
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "actuator_id": "actuator-left-hip-roll",
+      "canonical_joint_name": "left_hip_roll",
+      "chirality": "left",
+      "bus_id": "prototype-can-observation",
+      "owner_controller_node_id": null,
+      "ownership_status": "unknown",
+      "address": {
+        "legacy_full_command_can_id": 330,
+        "native_node_id": null,
+        "status": "unverified_observation"
+      },
+      "exact_tuple": {
+        "manufacturer": "MYACTUATOR",
+        "model": "UNKNOWN",
+        "hardware_revision": "UNKNOWN",
+        "drive_firmware": "UNKNOWN",
+        "protocol_name": "UNKNOWN",
+        "protocol_revision": "UNKNOWN",
+        "transport": "CAN_CLASSIC",
+        "control_mode": "UNKNOWN",
+        "support_state": "unsupported",
+        "source_refs": [
+          "dropbear-audit"
+        ]
+      },
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "actuator_id": "actuator-right-hip-roll",
+      "canonical_joint_name": "right_hip_roll",
+      "chirality": "right",
+      "bus_id": "prototype-can-observation",
+      "owner_controller_node_id": null,
+      "ownership_status": "unknown",
+      "address": {
+        "legacy_full_command_can_id": 331,
+        "native_node_id": null,
+        "status": "unverified_observation"
+      },
+      "exact_tuple": {
+        "manufacturer": "MYACTUATOR",
+        "model": "UNKNOWN",
+        "hardware_revision": "UNKNOWN",
+        "drive_firmware": "UNKNOWN",
+        "protocol_name": "UNKNOWN",
+        "protocol_revision": "UNKNOWN",
+        "transport": "CAN_CLASSIC",
+        "control_mode": "UNKNOWN",
+        "support_state": "unsupported",
+        "source_refs": [
+          "dropbear-audit"
+        ]
+      },
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "actuator_id": "actuator-right-hip-yaw",
+      "canonical_joint_name": "right_hip_yaw",
+      "chirality": "right",
+      "bus_id": "prototype-can-observation",
+      "owner_controller_node_id": null,
+      "ownership_status": "unknown",
+      "address": {
+        "legacy_full_command_can_id": 332,
+        "native_node_id": null,
+        "status": "unverified_observation"
+      },
+      "exact_tuple": {
+        "manufacturer": "MYACTUATOR",
+        "model": "UNKNOWN",
+        "hardware_revision": "UNKNOWN",
+        "drive_firmware": "UNKNOWN",
+        "protocol_name": "UNKNOWN",
+        "protocol_revision": "UNKNOWN",
+        "transport": "CAN_CLASSIC",
+        "control_mode": "UNKNOWN",
+        "support_state": "unsupported",
+        "source_refs": [
+          "dropbear-audit"
+        ]
+      },
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    }
+  ],
+  "sensors": [
+    {
+      "sensor_id": "left-outer-calf-external",
+      "sensor_type": "external_absolute_encoder",
+      "canonical_joint_name": "left_outer_calf",
+      "controller_node_id": "left-gateway-role-observation",
+      "interface": {
+        "interface_type": "esp32_adc_gpio_observation",
+        "channel": 14,
+        "sample_units": "raw_adc_count",
+        "status": "unverified_observation"
+      },
+      "calibration_id": null,
+      "calibration_status": "unknown",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "sensor_id": "left-inner-calf-external",
+      "sensor_type": "external_absolute_encoder",
+      "canonical_joint_name": "left_inner_calf",
+      "controller_node_id": "left-gateway-role-observation",
+      "interface": {
+        "interface_type": "esp32_adc_gpio_observation",
+        "channel": 27,
+        "sample_units": "raw_adc_count",
+        "status": "unverified_observation"
+      },
+      "calibration_id": null,
+      "calibration_status": "unknown",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "sensor_id": "left-hip-pitch-external",
+      "sensor_type": "external_absolute_encoder",
+      "canonical_joint_name": "left_hip_pitch",
+      "controller_node_id": "left-gateway-role-observation",
+      "interface": {
+        "interface_type": "esp32_adc_gpio_observation",
+        "channel": 26,
+        "sample_units": "raw_adc_count",
+        "status": "unverified_observation"
+      },
+      "calibration_id": null,
+      "calibration_status": "unknown",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "sensor_id": "left-knee-external",
+      "sensor_type": "external_absolute_encoder",
+      "canonical_joint_name": "left_knee",
+      "controller_node_id": "left-gateway-role-observation",
+      "interface": {
+        "interface_type": "esp32_adc_gpio_observation",
+        "channel": 25,
+        "sample_units": "raw_adc_count",
+        "status": "unverified_observation"
+      },
+      "calibration_id": null,
+      "calibration_status": "unknown",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "sensor_id": "left-hip-roll-external",
+      "sensor_type": "external_absolute_encoder",
+      "canonical_joint_name": "left_hip_roll",
+      "controller_node_id": "left-gateway-role-observation",
+      "interface": {
+        "interface_type": "esp32_adc_gpio_observation",
+        "channel": 33,
+        "sample_units": "raw_adc_count",
+        "status": "unverified_observation"
+      },
+      "calibration_id": null,
+      "calibration_status": "unknown",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "sensor_id": "right-outer-calf-external",
+      "sensor_type": "external_absolute_encoder",
+      "canonical_joint_name": "right_outer_calf",
+      "controller_node_id": "right-gateway-role-observation",
+      "interface": {
+        "interface_type": "esp32_adc_gpio_observation",
+        "channel": 14,
+        "sample_units": "raw_adc_count",
+        "status": "unverified_observation"
+      },
+      "calibration_id": null,
+      "calibration_status": "unknown",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "sensor_id": "right-inner-calf-external",
+      "sensor_type": "external_absolute_encoder",
+      "canonical_joint_name": "right_inner_calf",
+      "controller_node_id": "right-gateway-role-observation",
+      "interface": {
+        "interface_type": "esp32_adc_gpio_observation",
+        "channel": 27,
+        "sample_units": "raw_adc_count",
+        "status": "unverified_observation"
+      },
+      "calibration_id": null,
+      "calibration_status": "unknown",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "sensor_id": "right-hip-pitch-external",
+      "sensor_type": "external_absolute_encoder",
+      "canonical_joint_name": "right_hip_pitch",
+      "controller_node_id": "right-gateway-role-observation",
+      "interface": {
+        "interface_type": "esp32_adc_gpio_observation",
+        "channel": 26,
+        "sample_units": "raw_adc_count",
+        "status": "unverified_observation"
+      },
+      "calibration_id": null,
+      "calibration_status": "unknown",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "sensor_id": "right-knee-external",
+      "sensor_type": "external_absolute_encoder",
+      "canonical_joint_name": "right_knee",
+      "controller_node_id": "right-gateway-role-observation",
+      "interface": {
+        "interface_type": "esp32_adc_gpio_observation",
+        "channel": 25,
+        "sample_units": "raw_adc_count",
+        "status": "unverified_observation"
+      },
+      "calibration_id": null,
+      "calibration_status": "unknown",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "sensor_id": "right-hip-roll-external",
+      "sensor_type": "external_absolute_encoder",
+      "canonical_joint_name": "right_hip_roll",
+      "controller_node_id": "right-gateway-role-observation",
+      "interface": {
+        "interface_type": "esp32_adc_gpio_observation",
+        "channel": 33,
+        "sample_units": "raw_adc_count",
+        "status": "unverified_observation"
+      },
+      "calibration_id": null,
+      "calibration_status": "unknown",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    }
+  ],
+  "cad_assets": [],
+  "calibrations": [],
+  "boundary_aliases": [
+    {
+      "boundary": "dropbear_prototype_import",
+      "alias": "hip_yaw_left",
+      "canonical_name": "left_hip_yaw",
+      "direction": "import_only",
+      "status": "unverified_observation",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "boundary": "dropbear_prototype_import",
+      "alias": "hip_roll_left",
+      "canonical_name": "left_hip_roll",
+      "direction": "import_only",
+      "status": "unverified_observation",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "boundary": "dropbear_prototype_import",
+      "alias": "hip_pitch_left",
+      "canonical_name": "left_hip_pitch",
+      "direction": "import_only",
+      "status": "unverified_observation",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "boundary": "dropbear_prototype_import",
+      "alias": "knee_left",
+      "canonical_name": "left_knee",
+      "direction": "import_only",
+      "status": "unverified_observation",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "boundary": "dropbear_prototype_import",
+      "alias": "inner_calf_left",
+      "canonical_name": "left_inner_calf",
+      "direction": "import_only",
+      "status": "unverified_observation",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "boundary": "dropbear_prototype_import",
+      "alias": "outer_calf_left",
+      "canonical_name": "left_outer_calf",
+      "direction": "import_only",
+      "status": "unverified_observation",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "boundary": "dropbear_prototype_import",
+      "alias": "hip_yaw_right",
+      "canonical_name": "right_hip_yaw",
+      "direction": "import_only",
+      "status": "unverified_observation",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "boundary": "dropbear_prototype_import",
+      "alias": "hip_roll_right",
+      "canonical_name": "right_hip_roll",
+      "direction": "import_only",
+      "status": "unverified_observation",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "boundary": "dropbear_prototype_import",
+      "alias": "hip_pitch_right",
+      "canonical_name": "right_hip_pitch",
+      "direction": "import_only",
+      "status": "unverified_observation",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "boundary": "dropbear_prototype_import",
+      "alias": "knee_right",
+      "canonical_name": "right_knee",
+      "direction": "import_only",
+      "status": "unverified_observation",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "boundary": "dropbear_prototype_import",
+      "alias": "inner_calf_right",
+      "canonical_name": "right_inner_calf",
+      "direction": "import_only",
+      "status": "unverified_observation",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    },
+    {
+      "boundary": "dropbear_prototype_import",
+      "alias": "outer_calf_right",
+      "canonical_name": "right_outer_calf",
+      "direction": "import_only",
+      "status": "unverified_observation",
+      "source_refs": [
+        "dropbear-prototype-ino"
+      ]
+    }
+  ],
+  "provenance_sources": [
+    {
+      "source_id": "dropbear-prototype-ino",
+      "kind": "legacy_source",
+      "locator": "references/Dropbear/Control System/Low Level Control/esp32_devkit_v1.ino",
+      "revision": "Dropbear 13cf5ecaa39b8b89c794fe905dcea0490cfa7726",
+      "evidence_class": "observation",
+      "assertion_scope": "Legacy source symbols, full command CAN identifiers, joint strings, chirality roles, ADC GPIO channels, and configured bitrate only; not physical verification."
+    },
+    {
+      "source_id": "dropbear-audit",
+      "kind": "audit",
+      "locator": "docs/DROPBEAR_CONTROL_STACK_NOTES.md",
+      "revision": "P0-P1 offline baseline 2026-07-22",
+      "evidence_class": "offline",
+      "assertion_scope": "Migration risks and observed software behavior; not exact motor, wiring, calibration, limit, ownership, CAD, or hardware evidence."
+    },
+    {
+      "source_id": "myactuator-catalog",
+      "kind": "vendor_asset",
+      "locator": "assets/myactuator/catalog.tsv",
+      "revision": "44-row pinned acquisition catalog",
+      "evidence_class": "official_specification",
+      "assertion_scope": "Available product/package identities only; no mapping from an installed Dropbear actuator to a catalog model."
+    },
+    {
+      "source_id": "myactuator-step-manifest",
+      "kind": "vendor_asset",
+      "locator": "assets/myactuator/step_manifest.tsv",
+      "revision": "53 pinned STEP variants",
+      "evidence_class": "official_specification",
+      "assertion_scope": "Acquisition hashes and review status only; all output-member, axis/origin, and redistribution reviews remain open."
+    }
+  ],
+  "safety_admission": {
+    "motion_enable_allowed": false,
+    "enable_authority_id": null,
+    "enable_authority_status": "none",
+    "independent_power_removal_status": "unknown",
+    "blockers": [
+      "Physical robot revision and controller identities are unknown.",
+      "Bus topology and one-owner assignments are unknown.",
+      "All twelve actuator models, hardware revisions, drive firmware revisions, native node IDs, protocol revisions, and admitted modes are unknown.",
+      "Motor-to-joint coordinates, limits, feedback applicability, and calibrations are unknown.",
+      "Hip-yaw external feedback is absent in the prototype sensor set.",
+      "CAD housing/output articulation, joint origins, and axes are unreviewed.",
+      "No verified independent power-removal path or enable authority is recorded."
+    ]
+  },
+  "configuration_integrity": {
+    "algorithm": "sha256",
+    "canonicalization": "json-sort-keys-utf8-omit-digest-v1",
+    "digest": "dd8909bceece765e80d83d7d3f93196d6967b4f3ae72e20fdee6f29d21a81cba"
+  }
+}

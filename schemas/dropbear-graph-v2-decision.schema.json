@@ -1,0 +1,734 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.org/schemas/dropbear-graph-v2-decision.schema.json",
+  "title": "Structured Dropbear graph decision V2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_state",
+    "record_revision",
+    "decision_id",
+    "supersedes_decision_id",
+    "subject",
+    "migration",
+    "reviewer",
+    "disposition",
+    "graph",
+    "decision_complete",
+    "canonical_graph_admissible",
+    "support_granted",
+    "physical_motion_authority",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": { "const": "dropbear-graph-decision/2" },
+    "record_state": { "enum": ["draft", "submitted"] },
+    "record_revision": { "const": 2 },
+    "decision_id": {
+      "type": "string",
+      "pattern": "^graphv2decision-[0-9a-f]{20}$"
+    },
+    "supersedes_decision_id": {
+      "type": ["string", "null"],
+      "pattern": "^graphv2decision-[0-9a-f]{20}$"
+    },
+    "subject": { "$ref": "#/$defs/subject" },
+    "migration": { "$ref": "#/$defs/migration" },
+    "reviewer": { "$ref": "#/$defs/reviewer" },
+    "disposition": {
+      "type": ["string", "null"],
+      "enum": ["accept_graph", "reject_graph", null]
+    },
+    "graph": { "$ref": "#/$defs/graph" },
+    "decision_complete": { "type": "boolean" },
+    "canonical_graph_admissible": { "type": "boolean" },
+    "support_granted": { "const": false },
+    "physical_motion_authority": { "const": false },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record_sha256"],
+      "properties": {
+        "record_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    }
+  },
+  "$defs": {
+    "text": { "type": "string", "minLength": 1, "maxLength": 2048 },
+    "nullableText": { "type": ["string", "null"], "minLength": 1 },
+    "sha1": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]{2,127}$" },
+    "refs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/text" }
+    },
+    "chirality": { "enum": ["left", "right", "center", "none"] },
+    "vec3": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": { "type": "number" }
+    },
+    "quat": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": { "type": "number" }
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository_commit",
+        "repository_tree_id",
+        "canonical_configuration_digest",
+        "inventory_path",
+        "inventory_sha256",
+        "source_registry_path",
+        "source_registry_sha256",
+        "source_registry_generation_sha256",
+        "active_source_submission_id",
+        "active_source_decision_id",
+        "active_source_decision_sha256",
+        "v1_graph_path",
+        "v1_graph_sha256",
+        "v1_graph_decision_id",
+        "v1_question_count"
+      ],
+      "properties": {
+        "repository_commit": { "$ref": "#/$defs/sha1" },
+        "repository_tree_id": { "$ref": "#/$defs/sha1" },
+        "canonical_configuration_digest": { "$ref": "#/$defs/sha256" },
+        "inventory_path": {
+          "const": "generated/dropbear_description/inventory.json"
+        },
+        "inventory_sha256": { "$ref": "#/$defs/sha256" },
+        "source_registry_path": {
+          "const": "generated/dropbear_source_registry_v2/registry.json"
+        },
+        "source_registry_sha256": { "$ref": "#/$defs/sha256" },
+        "source_registry_generation_sha256": { "$ref": "#/$defs/sha256" },
+        "active_source_submission_id": {
+          "type": ["string", "null"],
+          "pattern": "^sourcesubmission-[0-9a-f]{20}$"
+        },
+        "active_source_decision_id": {
+          "type": ["string", "null"],
+          "pattern": "^sourceauthority-[0-9a-f]{20}$"
+        },
+        "active_source_decision_sha256": {
+          "anyOf": [{ "$ref": "#/$defs/sha256" }, { "type": "null" }]
+        },
+        "v1_graph_path": {
+          "type": "string",
+          "pattern": "^generated/dropbear_graph_review/templates/graphdecision-[0-9a-f]{20}\\.json$"
+        },
+        "v1_graph_sha256": { "$ref": "#/$defs/sha256" },
+        "v1_graph_decision_id": {
+          "type": "string",
+          "pattern": "^graphdecision-[0-9a-f]{20}$"
+        },
+        "v1_question_count": { "const": 161 }
+      }
+    },
+    "migration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "v1_decision_id",
+        "v1_decision_sha256",
+        "v1_question_count",
+        "resolved_v1_question_count",
+        "unresolved_v1_question_count",
+        "migration_complete",
+        "evidence_refs"
+      ],
+      "properties": {
+        "mode": { "const": "explicit_v1_to_v2" },
+        "v1_decision_id": {
+          "type": "string",
+          "pattern": "^graphdecision-[0-9a-f]{20}$"
+        },
+        "v1_decision_sha256": { "$ref": "#/$defs/sha256" },
+        "v1_question_count": { "const": 161 },
+        "resolved_v1_question_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 161
+        },
+        "unresolved_v1_question_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 161
+        },
+        "migration_complete": { "type": "boolean" },
+        "evidence_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "reviewer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reviewer_id",
+        "organization_or_team",
+        "mechanical_graph_competence_attested",
+        "independence_attested",
+        "reviewed_at",
+        "review_assertion",
+        "signature_evidence_refs"
+      ],
+      "properties": {
+        "reviewer_id": { "$ref": "#/$defs/nullableText" },
+        "organization_or_team": { "$ref": "#/$defs/nullableText" },
+        "mechanical_graph_competence_attested": {
+          "type": ["boolean", "null"]
+        },
+        "independence_attested": { "type": ["boolean", "null"] },
+        "reviewed_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+        "review_assertion": { "$ref": "#/$defs/nullableText" },
+        "signature_evidence_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "transform": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expressed_in_parent_frame_id",
+        "translation_xyz_m",
+        "rotation_xyzw"
+      ],
+      "properties": {
+        "expressed_in_parent_frame_id": {
+          "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }]
+        },
+        "translation_xyz_m": { "$ref": "#/$defs/vec3" },
+        "rotation_xyzw": { "$ref": "#/$defs/quat" }
+      }
+    },
+    "frame": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "frame_id",
+        "kind",
+        "parent_frame_id",
+        "chirality",
+        "transform",
+        "source_evidence_refs"
+      ],
+      "properties": {
+        "frame_id": { "$ref": "#/$defs/id" },
+        "kind": {
+          "enum": ["world", "base", "link", "joint", "actuator", "sensor", "tool"]
+        },
+        "parent_frame_id": {
+          "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }]
+        },
+        "chirality": { "$ref": "#/$defs/chirality" },
+        "transform": { "$ref": "#/$defs/transform" },
+        "source_evidence_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "alias": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "alias_namespace",
+        "alias",
+        "target_kind",
+        "target_id",
+        "source_evidence_refs"
+      ],
+      "properties": {
+        "alias_namespace": {
+          "enum": ["source", "urdf", "ros", "simulator", "firmware", "ui"]
+        },
+        "alias": { "$ref": "#/$defs/text" },
+        "target_kind": {
+          "enum": ["frame", "link", "joint", "coordinate", "actuator"]
+        },
+        "target_id": { "$ref": "#/$defs/id" },
+        "source_evidence_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "link": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "link_id",
+        "frame_id",
+        "chirality",
+        "source_evidence_refs"
+      ],
+      "properties": {
+        "link_id": { "$ref": "#/$defs/id" },
+        "frame_id": { "$ref": "#/$defs/id" },
+        "chirality": { "$ref": "#/$defs/chirality" },
+        "source_evidence_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "axis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["expressed_in_frame_id", "xyz_unit"],
+      "properties": {
+        "expressed_in_frame_id": { "$ref": "#/$defs/id" },
+        "xyz_unit": { "$ref": "#/$defs/vec3" }
+      }
+    },
+    "joint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "joint_id",
+        "parent_link_id",
+        "child_link_id",
+        "joint_type",
+        "activity",
+        "chirality",
+        "origin_frame_id",
+        "axis",
+        "coordinate_id",
+        "source_evidence_refs"
+      ],
+      "properties": {
+        "joint_id": { "$ref": "#/$defs/id" },
+        "parent_link_id": { "$ref": "#/$defs/id" },
+        "child_link_id": { "$ref": "#/$defs/id" },
+        "joint_type": {
+          "enum": ["fixed", "revolute", "continuous", "prismatic"]
+        },
+        "activity": {
+          "enum": ["active", "passive", "mimic", "coupled", "fixed", "simulator_only"]
+        },
+        "chirality": { "$ref": "#/$defs/chirality" },
+        "origin_frame_id": { "$ref": "#/$defs/id" },
+        "axis": {
+          "anyOf": [{ "$ref": "#/$defs/axis" }, { "type": "null" }]
+        },
+        "coordinate_id": { "$ref": "#/$defs/id" },
+        "source_evidence_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "symmetryPair": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "symmetry_id",
+        "entity_kind",
+        "left_id",
+        "right_id",
+        "relation",
+        "reflection_plane",
+        "coordinate_sign",
+        "coordinate_offset_si",
+        "rationale",
+        "evidence_refs"
+      ],
+      "properties": {
+        "symmetry_id": { "$ref": "#/$defs/id" },
+        "entity_kind": { "enum": ["link", "joint", "actuator"] },
+        "left_id": { "$ref": "#/$defs/id" },
+        "right_id": { "$ref": "#/$defs/id" },
+        "relation": {
+          "enum": ["exact_mirror", "transformed", "intentional_difference"]
+        },
+        "reflection_plane": { "enum": ["yz", "xz", "xy", "not_applicable"] },
+        "coordinate_sign": { "type": "number" },
+        "coordinate_offset_si": { "type": "number" },
+        "rationale": { "$ref": "#/$defs/text" },
+        "evidence_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "term": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["coordinate_id", "coefficient"],
+      "properties": {
+        "coordinate_id": { "$ref": "#/$defs/id" },
+        "coefficient": { "type": "number" }
+      }
+    },
+    "domain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["coordinate_id", "lower", "upper", "unit"],
+      "properties": {
+        "coordinate_id": { "$ref": "#/$defs/id" },
+        "lower": { "type": "number" },
+        "upper": { "type": "number" },
+        "unit": { "enum": ["rad", "m"] }
+      }
+    },
+    "coupling": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "coupling_id",
+        "kind",
+        "input_coordinate_ids",
+        "output_coordinate_id",
+        "equation",
+        "valid_domain",
+        "owner",
+        "source_evidence_refs"
+      ],
+      "properties": {
+        "coupling_id": { "$ref": "#/$defs/id" },
+        "kind": {
+          "enum": ["mimic", "linear", "differential", "four_bar", "nonlinear"]
+        },
+        "input_coordinate_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/id" }
+        },
+        "output_coordinate_id": { "$ref": "#/$defs/id" },
+        "equation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["form", "terms", "offset_si"],
+          "properties": {
+            "form": { "enum": ["affine", "reviewed_nonlinear"] },
+            "terms": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": { "$ref": "#/$defs/term" }
+            },
+            "offset_si": { "type": "number" }
+          }
+        },
+        "valid_domain": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/domain" }
+        },
+        "owner": {
+          "enum": ["physical_mechanism", "controller", "estimator", "rigid_body_simulator"]
+        },
+        "source_evidence_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "singularity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "singularity_id",
+        "coupling_id",
+        "detection",
+        "handling_policy",
+        "owner",
+        "evidence_refs"
+      ],
+      "properties": {
+        "singularity_id": { "$ref": "#/$defs/id" },
+        "coupling_id": { "$ref": "#/$defs/id" },
+        "detection": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["coordinate_id", "operator", "threshold", "unit"],
+          "properties": {
+            "coordinate_id": { "$ref": "#/$defs/id" },
+            "operator": { "enum": ["lt", "le", "gt", "ge", "abs_lt", "abs_gt"] },
+            "threshold": { "type": "number" },
+            "unit": { "enum": ["rad", "m", "dimensionless"] }
+          }
+        },
+        "handling_policy": { "enum": ["exclude", "clamp", "switch_branch", "fault"] },
+        "owner": { "enum": ["controller", "estimator", "rigid_body_simulator", "safety"] },
+        "evidence_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "closure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "closure_id",
+        "kind",
+        "endpoint_frame_ids",
+        "joint_ids",
+        "solver_owner",
+        "physical_counterpart_status",
+        "source_evidence_refs"
+      ],
+      "properties": {
+        "closure_id": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["physical_closed_chain", "simulator_only"] },
+        "endpoint_frame_ids": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/id" }
+        },
+        "joint_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/id" }
+        },
+        "solver_owner": {
+          "enum": ["physical_mechanism", "controller", "rigid_body_simulator"]
+        },
+        "physical_counterpart_status": {
+          "enum": ["reviewed", "missing", "not_applicable"]
+        },
+        "source_evidence_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "coordinate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "coordinate_id",
+        "joint_id",
+        "classification",
+        "unit",
+        "commandable"
+      ],
+      "properties": {
+        "coordinate_id": { "$ref": "#/$defs/id" },
+        "joint_id": { "$ref": "#/$defs/id" },
+        "classification": {
+          "enum": ["independent", "dependent", "passive", "fixed", "simulator_only"]
+        },
+        "unit": { "enum": ["rad", "m", "dimensionless"] },
+        "commandable": { "type": "boolean" }
+      }
+    },
+    "dofSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "independent",
+        "dependent",
+        "passive",
+        "fixed",
+        "simulator_only",
+        "total_coordinates",
+        "physical_generalized_dof"
+      ],
+      "properties": {
+        "independent": { "type": "integer", "minimum": 0 },
+        "dependent": { "type": "integer", "minimum": 0 },
+        "passive": { "type": "integer", "minimum": 0 },
+        "fixed": { "type": "integer", "minimum": 0 },
+        "simulator_only": { "type": "integer", "minimum": 0 },
+        "total_coordinates": { "type": "integer", "minimum": 0 },
+        "physical_generalized_dof": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "ownership": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "coordinate_id",
+        "writer_kind",
+        "writer_id",
+        "state_policy_id",
+        "diagnostic_bypass_allowed"
+      ],
+      "properties": {
+        "coordinate_id": { "$ref": "#/$defs/id" },
+        "writer_kind": {
+          "enum": ["gateway", "controller", "replay", "simulator"]
+        },
+        "writer_id": { "$ref": "#/$defs/id" },
+        "state_policy_id": { "$ref": "#/$defs/id" },
+        "diagnostic_bypass_allowed": { "const": false }
+      }
+    },
+    "dependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dependency_id",
+        "kind",
+        "state",
+        "subject_id",
+        "evidence_refs"
+      ],
+      "properties": {
+        "dependency_id": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["cad", "calibration", "limit", "route"] },
+        "state": { "enum": ["missing", "present", "admitted"] },
+        "subject_id": { "$ref": "#/$defs/nullableText" },
+        "evidence_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "actuatorBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actuator_id",
+        "chirality",
+        "command_coordinate_id",
+        "joint_ids",
+        "dependency_ids",
+        "source_evidence_refs"
+      ],
+      "properties": {
+        "actuator_id": {
+          "type": "string",
+          "pattern": "^actuator-(left|right)-(hip-yaw|hip-roll|hip-pitch|knee|inner-calf|outer-calf)$"
+        },
+        "chirality": { "$ref": "#/$defs/chirality" },
+        "command_coordinate_id": { "$ref": "#/$defs/id" },
+        "joint_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/id" }
+        },
+        "dependency_ids": {
+          "type": "array",
+          "minItems": 4,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/id" }
+        },
+        "source_evidence_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "rosMapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mapping_id",
+        "ros_joint_name",
+        "coordinate_id",
+        "actuator_ids",
+        "status",
+        "source_evidence_refs"
+      ],
+      "properties": {
+        "mapping_id": { "$ref": "#/$defs/id" },
+        "ros_joint_name": { "$ref": "#/$defs/text" },
+        "coordinate_id": { "$ref": "#/$defs/id" },
+        "actuator_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/id" }
+        },
+        "status": { "enum": ["mapped", "uncommanded", "passive"] },
+        "source_evidence_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "graph": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "graph_id",
+        "graph_revision",
+        "base_frame_id",
+        "frames",
+        "aliases",
+        "links",
+        "joints",
+        "symmetry_pairs",
+        "couplings",
+        "singularities",
+        "closures",
+        "dof_ledger",
+        "ownership",
+        "dependencies",
+        "actuator_bindings",
+        "ros_mappings"
+      ],
+      "properties": {
+        "graph_id": {
+          "type": "string",
+          "pattern": "^dropbeargraphv2-[0-9a-f]{20}$"
+        },
+        "graph_revision": { "const": 2 },
+        "base_frame_id": {
+          "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }]
+        },
+        "frames": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/frame" }
+        },
+        "aliases": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/alias" }
+        },
+        "links": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/link" }
+        },
+        "joints": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/joint" }
+        },
+        "symmetry_pairs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/symmetryPair" }
+        },
+        "couplings": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/coupling" }
+        },
+        "singularities": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/singularity" }
+        },
+        "closures": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/closure" }
+        },
+        "dof_ledger": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["coordinates", "summary"],
+          "properties": {
+            "coordinates": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": { "$ref": "#/$defs/coordinate" }
+            },
+            "summary": { "$ref": "#/$defs/dofSummary" }
+          }
+        },
+        "ownership": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/ownership" }
+        },
+        "dependencies": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/dependency" }
+        },
+        "actuator_bindings": {
+          "type": "array",
+          "maxItems": 12,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/actuatorBinding" }
+        },
+        "ros_mappings": {
+          "type": "array",
+          "maxItems": 12,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/rosMapping" }
+        }
+      }
+    }
+  }
+}

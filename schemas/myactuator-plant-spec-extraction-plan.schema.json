@@ -1,0 +1,109 @@
+{
+  "$id": "https://hyperspawn.dev/schemas/myactuator-plant-spec-extraction-plan.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "artifact_id": {
+      "const": "myactuator-plant-spec-extraction-plan"
+    },
+    "authority": {
+      "const": "machine_extraction_navigation_only"
+    },
+    "policy": {
+      "additionalProperties": false,
+      "properties": {
+        "all_catalog_models_exactly_once": {
+          "const": true
+        },
+        "exact_model_header_required": {
+          "const": true
+        },
+        "independent_review_required": {
+          "const": true
+        },
+        "machine_selection_cannot_accept_fact": {
+          "const": true
+        },
+        "page_and_source_hash_required": {
+          "const": true
+        },
+        "raw_label_unit_and_value_preserved": {
+          "const": true
+        }
+      },
+      "required": [
+        "all_catalog_models_exactly_once",
+        "exact_model_header_required",
+        "independent_review_required",
+        "machine_selection_cannot_accept_fact",
+        "page_and_source_hash_required",
+        "raw_label_unit_and_value_preserved"
+      ],
+      "type": "object"
+    },
+    "schema_version": {
+      "const": "myactuator-plant-spec-extraction-plan/1"
+    },
+    "sources": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "document_occurrence_id": {
+            "pattern": "^dococc-[0-9a-f]{20}$",
+            "type": "string"
+          },
+          "file_sha256": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "tables": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "model": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "pattern": "^[^\\r\\n\\t]+$",
+                  "type": "string"
+                },
+                "pdf_page_index": {
+                  "minimum": 1,
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "model",
+                "pdf_page_index"
+              ],
+              "type": "object"
+            },
+            "minItems": 1,
+            "type": "array"
+          }
+        },
+        "required": [
+          "document_occurrence_id",
+          "file_sha256",
+          "tables"
+        ],
+        "type": "object"
+      },
+      "maxItems": 9,
+      "minItems": 9,
+      "type": "array"
+    },
+    "support_granted": {
+      "const": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "authority",
+    "policy",
+    "sources",
+    "support_granted"
+  ],
+  "title": "Exact model/page extraction plan for MYACTUATOR product specifications",
+  "type": "object"
+}

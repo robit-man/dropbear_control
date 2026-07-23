@@ -1,0 +1,173 @@
+{
+  "heuristic_selects_output": false,
+  "housing_member_identified": false,
+  "images": {
+    "member_sheet": {
+      "path": "generated/myactuator/cad/review_packets/step-c42154c3b5408d218867/member-sheet.png",
+      "sha256": "03913295b65ad89178de36fb0277743daf3dbc7b3716786fdea54bdbfc8a823e"
+    },
+    "overview": {
+      "path": "generated/myactuator/cad/review_packets/step-c42154c3b5408d218867/overview.png",
+      "sha256": "60864049e77d551c0f82a1542824d5c456da48d8b12c2897818622353b3ad3a4"
+    }
+  },
+  "joint_axis_identified": false,
+  "members": [
+    {
+      "bbox_size_mm": [
+        25.65,
+        49.0,
+        49.0
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        16.81138,
+        0.016325,
+        0.058325
+      ],
+      "occurrence": "NAUO1",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#2830",
+      "related_product_name": "XM_5010DM_MC",
+      "same_product_occurrences": [
+        "NAUO1"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 7087.485742
+    },
+    {
+      "bbox_size_mm": [
+        20.1,
+        49.0,
+        49.0
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        3.959127,
+        -0.0,
+        0.0
+      ],
+      "occurrence": "NAUO2",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#11254",
+      "related_product_name": "XM_5010DM_BC",
+      "same_product_occurrences": [
+        "NAUO2"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 5274.137012
+    },
+    {
+      "bbox_size_mm": [
+        14.5,
+        49.0,
+        49.0
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        9.943171,
+        0.0,
+        0.0
+      ],
+      "occurrence": "NAUO3",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#15185",
+      "related_product_name": "XM_5010DM_CA",
+      "same_product_occurrences": [
+        "NAUO3"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 2498.505496
+    },
+    {
+      "bbox_size_mm": [
+        4.9,
+        49.0,
+        47.708514
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        27.680977,
+        0.0,
+        -0.611116
+      ],
+      "occurrence": "NAUO4",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#8435",
+      "related_product_name": "XM_50DM_FC",
+      "same_product_occurrences": [
+        "NAUO4"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 2456.957911
+    },
+    {
+      "bbox_size_mm": [
+        7.523406,
+        4.505896,
+        4.515546
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        25.758248,
+        22.002431,
+        -0.006439
+      ],
+      "occurrence": "NAUO5",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#4415",
+      "related_product_name": "M2.5X5 SHB",
+      "same_product_occurrences": [
+        "NAUO5",
+        "NAUO6"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 59.564435
+    },
+    {
+      "bbox_size_mm": [
+        7.5,
+        4.5,
+        4.5
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        25.758274,
+        -21.999975,
+        -5.9e-05
+      ],
+      "occurrence": "NAUO6",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#4415",
+      "related_product_name": "M2.5X5 SHB",
+      "same_product_occurrences": [
+        "NAUO5",
+        "NAUO6"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 59.564435
+    }
+  ],
+  "model": "L-5010",
+  "output_member_identified": false,
+  "representative_product_views": 5,
+  "review_status": "candidate_visuals_only",
+  "schema_version": "myactuator-cad-review-packet/1",
+  "series": "RMD-L",
+  "simulation_supported": false,
+  "step_sha256": "e48765ea6bc1ad6741bd067442b1a5c2194ec55082f18d9d5493a5b0196ba4c2",
+  "tool": {
+    "angular_deflection_radians": 0.12,
+    "cadquery": "2.8.0",
+    "camera": "orthographic isometric candidate-review view",
+    "linear_deflection_mm": 0.08
+  },
+  "variant_id": "step-c42154c3b5408d218867",
+  "vendor_relative_path": "RMD-L/L-5010/vendor/2D3D/RMD-5010(\u5927\u5b54)\u4e09\u7ef4\u56fe/RMD-5010\uff0812.7\u5927\u5b54\uff09.STEP"
+}

@@ -1,0 +1,182 @@
+{
+  "schema_version": "ros2-cpp-handoff-report/1",
+  "report_id": "dropbear-ros2-cpp-handoff-offline",
+  "authority": "offline_nonphysical_software_verification_only",
+  "environment_lock": {
+    "path": "tools/ros2-cpp-environment-lock.json",
+    "size_bytes": 4459,
+    "sha256": "ce4d99ba05ad71d33d9590c554ce25e4661f59ba5b2babc992b60d14495fd23b"
+  },
+  "source_manifest": [
+    {
+      "path": "ros2_control/myactuator_dropbear_hardware/CMakeLists.txt",
+      "size_bytes": 2756,
+      "sha256": "db617b7ebb9012af1ac9564046c27c5d786488bfdb18fd535c2a9e46c965c525"
+    },
+    {
+      "path": "ros2_control/myactuator_dropbear_hardware/include/myactuator_dropbear_hardware/semantic_core.hpp",
+      "size_bytes": 7305,
+      "sha256": "7aaf7997fb92f9d4465c0107b89ad2a9c3f12d207f96139cb347455f2b387285"
+    },
+    {
+      "path": "ros2_control/myactuator_dropbear_hardware/include/myactuator_dropbear_hardware/system_interface.hpp",
+      "size_bytes": 2233,
+      "sha256": "9fc3ec63dc86d3b7a12db99d7065c774fbfd75748023dc06cb73ef38638edcf8"
+    },
+    {
+      "path": "ros2_control/myactuator_dropbear_hardware/myactuator_dropbear_hardware.xml",
+      "size_bytes": 416,
+      "sha256": "93e83a45c31696d1161c03e7fadfb88e92eeff54f1b963c1f04570ac0fad70f9"
+    },
+    {
+      "path": "ros2_control/myactuator_dropbear_hardware/package.xml",
+      "size_bytes": 612,
+      "sha256": "bb55e7384ab0fb0f3ad8ad92de55af9e6ead3a5bd69901bf30cc396f2d9699eb"
+    },
+    {
+      "path": "ros2_control/myactuator_dropbear_hardware/src/semantic_core.cpp",
+      "size_bytes": 20057,
+      "sha256": "fb5386e47fbdb34dfe5ab25d38b9c4d6e614760ef620e730894f999183482736"
+    },
+    {
+      "path": "ros2_control/myactuator_dropbear_hardware/src/system_interface.cpp",
+      "size_bytes": 11669,
+      "sha256": "a1884514ebcf6a6ad6b5a781af7af000649241010e502327b4947567c7c14f7c"
+    },
+    {
+      "path": "ros2_control/myactuator_dropbear_hardware/test/denied_hardware.urdf",
+      "size_bytes": 2541,
+      "sha256": "05200ea486bc7d96f5a0981950f5d659f8f7159b4779a6f76870e9e779f90115"
+    },
+    {
+      "path": "ros2_control/myactuator_dropbear_hardware/test/plugin_load_test.cpp",
+      "size_bytes": 2353,
+      "sha256": "6dfc1abaef058631c47aa3e881ed660c3b3c7c01b0603d14c564ab3eaba4cc67"
+    },
+    {
+      "path": "ros2_control/myactuator_dropbear_hardware/test/semantic_core_test.cpp",
+      "size_bytes": 10883,
+      "sha256": "91f3441373bf5823769f021e72236db7772313f0c282f6ec195c45b0624d36ff"
+    },
+    {
+      "path": "schemas/ros2-cpp-environment-lock.schema.json",
+      "size_bytes": 5732,
+      "sha256": "0316e75f4e7b642b134ecebde91301d8f26cdb7ca9a6c634ca31bd77f9ca46cc"
+    },
+    {
+      "path": "schemas/ros2-cpp-handoff-report.schema.json",
+      "size_bytes": 5057,
+      "sha256": "eca217b696ad411da5ce4c4c570d043b86423d0243673e65d7f4d733195ae122"
+    },
+    {
+      "path": "tests/ros2_control_cpp/__init__.py",
+      "size_bytes": 48,
+      "sha256": "0e77995e3c9845d156c3ac5a8f13be8cc23e78579b7960d2859a664dfe53eae0"
+    },
+    {
+      "path": "tests/ros2_control_cpp/run_tests.sh",
+      "size_bytes": 1540,
+      "sha256": "d1075ef68a60fc7d2360fd3a0aaa1975fe3f37fa168fe2b50cdbf7e17865d931"
+    },
+    {
+      "path": "tests/ros2_control_cpp/test_ros2_control_cpp_handoff.py",
+      "size_bytes": 8354,
+      "sha256": "291973fcab882b665d581543bea0418e7dd46ef5d6c9ec2fec62f2b0d9ec6614"
+    },
+    {
+      "path": "tools/generate_ros2_cpp_environment_lock.py",
+      "size_bytes": 8385,
+      "sha256": "d73be19f72523cf83e8a5de04fb08af3e51785154274cb560ea850bfba1e85ea"
+    },
+    {
+      "path": "tools/generate_ros2_cpp_handoff_report.py",
+      "size_bytes": 9372,
+      "sha256": "6abdaa2c147b1cc4f218d28ffb9b229d0a73cf66dbd3540c9181e4f8f60ea68d"
+    },
+    {
+      "path": "tools/ros2-cpp-environment-lock.json",
+      "size_bytes": 4459,
+      "sha256": "ce4d99ba05ad71d33d9590c554ce25e4661f59ba5b2babc992b60d14495fd23b"
+    }
+  ],
+  "parity_transcript": {
+    "path": "generated/myactuator/ros2_control_cpp_handoff/parity.txt",
+    "size_bytes": 828,
+    "sha256": "8d235b1467f829c1d47e5de69ab81eb214d62f3f7e317cbc6b9ed4e1d55201c8",
+    "line_count": 6
+  },
+  "counts": {
+    "case_count": 10,
+    "pass_count": 10,
+    "native_ctest_count": 2,
+    "python_test_count": 6,
+    "parity_line_count": 6
+  },
+  "cases": [
+    {
+      "case_id": "exact-environment-lock",
+      "result": "pass",
+      "evidence": "lock schema, package versions, API headers and ABI binaries match"
+    },
+    {
+      "case_id": "colcon-package-build",
+      "result": "pass",
+      "evidence": "C++17 RelWithDebInfo package build completed without hardware"
+    },
+    {
+      "case_id": "native-semantic-core",
+      "result": "pass",
+      "evidence": "semantic_core_test passed under CTest"
+    },
+    {
+      "case_id": "plugin-load-and-export",
+      "result": "pass",
+      "evidence": "pluginlib loaded class and exported four state/three command handles"
+    },
+    {
+      "case_id": "descriptor-field-parity",
+      "result": "pass",
+      "evidence": "Python and C++ descriptor field-order vectors are byte-identical"
+    },
+    {
+      "case_id": "lifecycle-parity",
+      "result": "pass",
+      "evidence": "configure/activate/deactivate/cleanup/shutdown vectors agree"
+    },
+    {
+      "case_id": "write-admission-parity",
+      "result": "pass",
+      "evidence": "generation/deadline/limit/success/replay dispositions agree"
+    },
+    {
+      "case_id": "read-validity-parity",
+      "result": "pass",
+      "evidence": "stale/missing/faulted values and provenance sources agree"
+    },
+    {
+      "case_id": "generation-revocation-parity",
+      "result": "pass",
+      "evidence": "authority drift returns stale and faults both semantic cores"
+    },
+    {
+      "case_id": "native-bypass-denial",
+      "result": "pass",
+      "evidence": "plugin source has no transport/raw/native command escape surface"
+    }
+  ],
+  "claims": {
+    "cpp_handoff_compiles_in_exact_environment": true,
+    "python_cpp_semantic_parity": true,
+    "plugin_loads": true,
+    "fail_closed_without_authority_and_adapter": true,
+    "physical_adapter_present": false,
+    "canonical_dropbear_admitted": false,
+    "exact_model_fidelity": false,
+    "support_granted": false,
+    "physical_motion_authority": false,
+    "physical_io": false
+  },
+  "integrity": {
+    "record_sha256": "df619fc4666948b561e0801174440c68caa335cdd15f8ce0e85ea40cbe61150c"
+  }
+}

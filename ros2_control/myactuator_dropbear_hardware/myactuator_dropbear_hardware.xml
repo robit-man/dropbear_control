@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<library path="myactuator_dropbear_system_interface">
+  <class
+    name="myactuator_dropbear_hardware/DropbearSystemInterface"
+    type="myactuator_dropbear_hardware::DropbearSystemInterface"
+    base_class_type="hardware_interface::SystemInterface">
+    <description>
+      Thin fail-closed Dropbear SystemInterface over the graph-gated semantic core.
+    </description>
+  </class>
+</library>

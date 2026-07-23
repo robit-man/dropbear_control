@@ -6,6 +6,11 @@
 **Build System:** PlatformIO
 **Reference:** PROTOCOLS_CONTRACT.md, MOTOR_RMD_X_CONTRACT.md, MOTOR_RH_CONTRACT.md, MOTOR_CEM_CONTRACT.md, MOTOR_RMD_H_CONTRACT.md
 
+> **Non-authoritative legacy draft.** This describes intended prototype
+> structure, not implemented or hardware-verified behavior. Its family,
+> protocol, limit and safety claims require reconciliation through the P0–P7
+> evidence gates before use on powered hardware.
+
 ---
 
 ## 1. Overview

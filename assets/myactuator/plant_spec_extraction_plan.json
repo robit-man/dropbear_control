@@ -1,0 +1,246 @@
+{
+  "artifact_id": "myactuator-plant-spec-extraction-plan",
+  "authority": "machine_extraction_navigation_only",
+  "policy": {
+    "all_catalog_models_exactly_once": true,
+    "exact_model_header_required": true,
+    "independent_review_required": true,
+    "machine_selection_cannot_accept_fact": true,
+    "page_and_source_hash_required": true,
+    "raw_label_unit_and_value_preserved": true
+  },
+  "schema_version": "myactuator-plant-spec-extraction-plan/1",
+  "sources": [
+    {
+      "document_occurrence_id": "dococc-6400a992ac1c4f897c12",
+      "file_sha256": "f97143f2c37395dbb083b289101a8ece5dca85c38347a4f0d9c24ec9fac2eb11",
+      "tables": [
+        {
+          "model": "X6-7",
+          "pdf_page_index": 3
+        },
+        {
+          "model": "X6-40",
+          "pdf_page_index": 4
+        },
+        {
+          "model": "X8-25",
+          "pdf_page_index": 5
+        }
+      ]
+    },
+    {
+      "document_occurrence_id": "dococc-db518799f8c05c3eb39b",
+      "file_sha256": "40e859e0ce465a4a23f91074a3ee02d2309dd5fb55e1cba73b41d4cbb81d6a3f",
+      "tables": [
+        {
+          "model": "X10-40",
+          "pdf_page_index": 5
+        },
+        {
+          "model": "X10-100",
+          "pdf_page_index": 6
+        }
+      ]
+    },
+    {
+      "document_occurrence_id": "dococc-a9df8a30acee8632f704",
+      "file_sha256": "ac02150fb7d30f40ffc5968ebe4223b303c376d77d1f479309eafb573902559d",
+      "tables": [
+        {
+          "model": "X2-7",
+          "pdf_page_index": 2
+        },
+        {
+          "model": "X4-10",
+          "pdf_page_index": 3
+        },
+        {
+          "model": "X4-36",
+          "pdf_page_index": 4
+        },
+        {
+          "model": "X6-8",
+          "pdf_page_index": 5
+        },
+        {
+          "model": "X6-60",
+          "pdf_page_index": 6
+        },
+        {
+          "model": "X8-32",
+          "pdf_page_index": 7
+        },
+        {
+          "model": "X8-120",
+          "pdf_page_index": 8
+        },
+        {
+          "model": "X12-320",
+          "pdf_page_index": 9
+        },
+        {
+          "model": "X15-450",
+          "pdf_page_index": 10
+        }
+      ]
+    },
+    {
+      "document_occurrence_id": "dococc-c2593467ee4350ff4c32",
+      "file_sha256": "5262f2e5347d745a19d4e26ab1c0ed31b24b9e4773cb3838ba9927a6ef1fafba",
+      "tables": [
+        {
+          "model": "RH-14",
+          "pdf_page_index": 3
+        },
+        {
+          "model": "RH-17",
+          "pdf_page_index": 7
+        },
+        {
+          "model": "RH-20",
+          "pdf_page_index": 9
+        },
+        {
+          "model": "RH-25",
+          "pdf_page_index": 11
+        },
+        {
+          "model": "RH-32",
+          "pdf_page_index": 13
+        }
+      ]
+    },
+    {
+      "document_occurrence_id": "dococc-3259559f29dc9e49306e",
+      "file_sha256": "f49e31f2086bfd002807321e2aa9adde8f4bba634909164ba221f8aaeb669ee7",
+      "tables": [
+        {
+          "model": "L-4005",
+          "pdf_page_index": 3
+        },
+        {
+          "model": "L-4010",
+          "pdf_page_index": 4
+        },
+        {
+          "model": "L-4015",
+          "pdf_page_index": 5
+        },
+        {
+          "model": "L-5005",
+          "pdf_page_index": 6
+        },
+        {
+          "model": "L-5010",
+          "pdf_page_index": 7
+        },
+        {
+          "model": "L-5015",
+          "pdf_page_index": 8
+        },
+        {
+          "model": "L-7015",
+          "pdf_page_index": 9
+        },
+        {
+          "model": "L-7025",
+          "pdf_page_index": 10
+        },
+        {
+          "model": "L-9015",
+          "pdf_page_index": 11
+        },
+        {
+          "model": "L-9025",
+          "pdf_page_index": 12
+        }
+      ]
+    },
+    {
+      "document_occurrence_id": "dococc-c4f93835473638eebe77",
+      "file_sha256": "0686d17edbf06efa9b54a7782c93f993fa3f6f52dfc29df5271486bb19f4e458",
+      "tables": [
+        {
+          "model": "CEM-25",
+          "pdf_page_index": 4
+        },
+        {
+          "model": "CEM-45",
+          "pdf_page_index": 6
+        }
+      ]
+    },
+    {
+      "document_occurrence_id": "dococc-179fd33c8f1501591340",
+      "file_sha256": "f55450784734daca9c013a5903a1065c79239d9db87d77a96280c3acf54c5956",
+      "tables": [
+        {
+          "model": "H-50-15",
+          "pdf_page_index": 3
+        },
+        {
+          "model": "H-70-15",
+          "pdf_page_index": 4
+        },
+        {
+          "model": "H-90-15",
+          "pdf_page_index": 5
+        }
+      ]
+    },
+    {
+      "document_occurrence_id": "dococc-16c91be36afe9e5aef5f",
+      "file_sha256": "1eb26633ee277f0a49905f6615244f63cd3f7264ad22c1bac850728707f8fa78",
+      "tables": [
+        {
+          "model": "FL-38-08",
+          "pdf_page_index": 2
+        },
+        {
+          "model": "FL-50-08",
+          "pdf_page_index": 2
+        },
+        {
+          "model": "FL-50-15",
+          "pdf_page_index": 2
+        },
+        {
+          "model": "FL-70-10",
+          "pdf_page_index": 3
+        },
+        {
+          "model": "FL-70-16",
+          "pdf_page_index": 3
+        },
+        {
+          "model": "FL-85-13",
+          "pdf_page_index": 3
+        },
+        {
+          "model": "FL-85-23",
+          "pdf_page_index": 3
+        }
+      ]
+    },
+    {
+      "document_occurrence_id": "dococc-7bcb4a2bc437767f615f",
+      "file_sha256": "aaeb380702f7f7f93b623b02562c1e1cb5c3ed760d3dcc8707666bc81b1183ba",
+      "tables": [
+        {
+          "model": "FLO-50-15",
+          "pdf_page_index": 2
+        },
+        {
+          "model": "FLO-70-15",
+          "pdf_page_index": 3
+        },
+        {
+          "model": "FLO-90-15",
+          "pdf_page_index": 4
+        }
+      ]
+    }
+  ],
+  "support_granted": false
+}

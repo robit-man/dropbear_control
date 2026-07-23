@@ -14,6 +14,14 @@ venv/
 
 # Agent / tooling state (not project source)
 .omnius/
+.aiwg/ralph/
+.aiwg/ralph-external/
+
+# Reproducible external-source working copies
+references/Dropbear/
+
+# Web dependency/install outputs
+**/node_modules/
 
 # OS / editor
 .DS_Store

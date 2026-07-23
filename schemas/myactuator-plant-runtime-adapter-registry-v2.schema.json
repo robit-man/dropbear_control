@@ -1,0 +1,349 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.dev/schemas/myactuator-plant-runtime-adapter-registry-v2.schema.json",
+  "title": "MYACTUATOR sourced-plant V2 runtime-adapter registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "authority",
+    "sources",
+    "policy",
+    "adapter",
+    "model_coverage",
+    "contracts",
+    "summary",
+    "support_granted",
+    "physical_motion_authority",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "myactuator-plant-runtime-adapter-registry/2"
+    },
+    "artifact_id": {
+      "const": "myactuator-plant-runtime-adapter-registry-v2"
+    },
+    "authority": {
+      "const": "derived_runtime_adapter_admission_only"
+    },
+    "sources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "catalog_sha256",
+        "parameter_set_registry_sha256",
+        "parameter_set_registry_generation_sha256",
+        "adapter_implementation_sha256",
+        "plant_implementation_sha256",
+        "profile_schema_sha256",
+        "profile_sha256"
+      ],
+      "properties": {
+        "catalog_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "parameter_set_registry_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "parameter_set_registry_generation_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "adapter_implementation_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "plant_implementation_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "profile_schema_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "profile_sha256": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^plantprofilev2-[0-9a-f]{20}$"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/sha256"
+          }
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "generated_source_set_required",
+        "accepted_exact_execution_profile_required",
+        "all_38_source_semantics_represented",
+        "directional_efficiency_never_averaged",
+        "peak_recovery_never_invented",
+        "solver_and_scenario_choices_explicit",
+        "source_facts_never_rewritten",
+        "no_family_default_or_profile_fallback",
+        "adapter_never_grants_support_motion_or_physical_validation"
+      ],
+      "properties": {
+        "generated_source_set_required": {
+          "const": true
+        },
+        "accepted_exact_execution_profile_required": {
+          "const": true
+        },
+        "all_38_source_semantics_represented": {
+          "const": true
+        },
+        "directional_efficiency_never_averaged": {
+          "const": true
+        },
+        "peak_recovery_never_invented": {
+          "const": true
+        },
+        "solver_and_scenario_choices_explicit": {
+          "const": true
+        },
+        "source_facts_never_rewritten": {
+          "const": true
+        },
+        "no_family_default_or_profile_fallback": {
+          "const": true
+        },
+        "adapter_never_grants_support_motion_or_physical_validation": {
+          "const": true
+        }
+      }
+    },
+    "adapter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "adapter_id",
+        "solver_id",
+        "noise_algorithm",
+        "jitter_algorithm",
+        "source_semantic_count",
+        "torque_regimes",
+        "physical_io",
+        "limitations"
+      ],
+      "properties": {
+        "adapter_id": {
+          "const": "plant-adapter-deterministic-event-scheduled-v2"
+        },
+        "solver_id": {
+          "const": "semi-implicit-euler-event-scheduled-v2"
+        },
+        "noise_algorithm": {
+          "const": "sha256-box-muller-counter-v1"
+        },
+        "jitter_algorithm": {
+          "const": "sha256-bounded-uniform-counter-v1"
+        },
+        "source_semantic_count": {
+          "const": 38
+        },
+        "torque_regimes": {
+          "const": [
+            "continuous_only",
+            "peak_one_shot_per_reset"
+          ]
+        },
+        "physical_io": {
+          "const": false
+        },
+        "limitations": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "model_coverage": {
+      "type": "array",
+      "minItems": 44,
+      "maxItems": 44,
+      "items": {
+        "$ref": "#/$defs/modelCoverage"
+      }
+    },
+    "contracts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/contract"
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model_count",
+        "source_parameter_set_count",
+        "profile_submission_count",
+        "runtime_contract_count",
+        "runtime_loadable_parameter_set_count",
+        "runtime_loadable_model_count",
+        "physically_validated_contract_count"
+      ],
+      "properties": {
+        "model_count": {
+          "const": 44
+        },
+        "source_parameter_set_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "profile_submission_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "runtime_contract_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "runtime_loadable_parameter_set_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "runtime_loadable_model_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "physically_validated_contract_count": {
+          "const": 0
+        }
+      }
+    },
+    "support_granted": {
+      "const": false
+    },
+    "physical_motion_authority": {
+      "const": false
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "record_sha256"
+      ],
+      "properties": {
+        "record_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{2,127}$"
+    },
+    "modelCoverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model_key",
+        "series",
+        "model",
+        "source_plant_ids",
+        "runtime_contract_ids",
+        "runtime_loadable_plant_ids",
+        "blockers"
+      ],
+      "properties": {
+        "model_key": {
+          "type": "string",
+          "pattern": "^model-[0-9a-f]{20}$"
+        },
+        "series": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_plant_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^plant-[a-z0-9][a-z0-9-]*$"
+          }
+        },
+        "runtime_contract_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^plantruntimev2-[0-9a-f]{20}$"
+          }
+        },
+        "runtime_loadable_plant_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^plant-[a-z0-9][a-z0-9-]*$"
+          }
+        },
+        "blockers": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_id",
+        "plant_id",
+        "backend_id",
+        "profile_id",
+        "contract_path",
+        "contract_sha256",
+        "parameter_set_sha256"
+      ],
+      "properties": {
+        "contract_id": {
+          "type": "string",
+          "pattern": "^plantruntimev2-[0-9a-f]{20}$"
+        },
+        "plant_id": {
+          "type": "string",
+          "pattern": "^plant-[a-z0-9][a-z0-9-]*$"
+        },
+        "backend_id": {
+          "$ref": "#/$defs/id"
+        },
+        "profile_id": {
+          "type": "string",
+          "pattern": "^plantprofilev2-[0-9a-f]{20}$"
+        },
+        "contract_path": {
+          "type": "string",
+          "pattern": "^contracts/plantruntimev2-[0-9a-f]{20}\\.json$"
+        },
+        "contract_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "parameter_set_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  }
+}

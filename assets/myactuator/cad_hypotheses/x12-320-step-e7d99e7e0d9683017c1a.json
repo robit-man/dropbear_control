@@ -1,0 +1,51 @@
+{
+  "schema_version": "myactuator-cad-segmentation-hypothesis/1",
+  "variant_id": "step-e7d99e7e0d9683017c1a",
+  "step_sha256": "9b1710aef09916c8da02b4e6b750da6bbfe2ba44cad6ba03cd1b53e3858e5eea",
+  "evidence_class": "automated-and-visual-candidate-not-reviewed",
+  "housing_occurrences": [
+    "NAUO1",
+    "NAUO2",
+    "NAUO4",
+    "NAUO6",
+    "NAUO7",
+    "NAUO8",
+    "NAUO9",
+    "NAUO10",
+    "NAUO11",
+    "NAUO12",
+    "NAUO13",
+    "NAUO18"
+  ],
+  "output_occurrences": [
+    "NAUO3",
+    "NAUO5",
+    "NAUO14",
+    "NAUO15",
+    "NAUO16",
+    "NAUO17"
+  ],
+  "source_axis_unit": [0.0, 1.0, 0.0],
+  "origin_source_mm": [0.0, 0.0, 0.0],
+  "source_to_canonical": [
+    1.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, -1.0, 0.0,
+    0.0, 1.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 1.0
+  ],
+  "evidence_refs": [
+    "generated/myactuator/cad/review_packet_manifest.json#step-e7d99e7e0d9683017c1a",
+    "generated/myactuator/cad/review_packets/step-e7d99e7e0d9683017c1a/overview.png",
+    "generated/myactuator/cad/review_packets/step-e7d99e7e0d9683017c1a/member-sheet.png"
+  ],
+  "rationale": "The STEP names identify NAUO3 as output flange and NAUO5 as secondary encoder shaft. Geometry is coaxial about source +Y. The M2 fasteners at the central output pattern are grouped with that shaft/flange for a deliberately non-authoritative articulation pilot; the annular flange cover and its eight radial M3 fasteners are provisionally fixed.",
+  "unresolved_questions": [
+    "Confirm whether NAUO4 and its eight M3 fasteners are stationary housing geometry or co-rotate with the output.",
+    "Confirm whether NAUO14 through NAUO17 and NAUO5 co-rotate with the externally accessible output.",
+    "Confirm the exact output reference plane and therefore the source-axis origin rather than assuming source Y equals zero.",
+    "Confirm the physical encoder-positive direction separately from the geometry-only right-hand +Z simulator convention.",
+    "Confirm the hypothesis for this exact no-brake/brake/package selector before merging any duplicate or sibling source."
+  ],
+  "semantic_review_complete": false,
+  "support_granted": false
+}

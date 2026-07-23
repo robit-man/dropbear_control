@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<robot name="dropbear_control_fixture">
+  <link name="base"/>
+  <link name="left_calf"/>
+  <joint name="left-knee" type="revolute">
+    <parent link="base"/>
+    <child link="left_calf"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.5" upper="1.5" effort="10.0" velocity="2.0"/>
+  </joint>
+
+  <ros2_control name="dropbear-control-fixture" type="system">
+    <hardware>
+      <plugin>myactuator_dropbear_hardware/DropbearSystemInterface</plugin>
+      <param name="canonical_configuration_digest">a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1</param>
+      <param name="accepted_graph_decision_id">graphdecision-c3c3c3c3c3c3c3c3c3c3</param>
+      <param name="accepted_graph_sha256">b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2</param>
+      <param name="source_registry_generation_sha256">d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4</param>
+      <param name="graph_registry_generation_sha256">e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5</param>
+      <param name="simulator_catalog_generation_sha256">f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6</param>
+      <param name="configuration_generation">3</param>
+      <param name="session_id">ros-session-one</param>
+      <param name="session_owner">controller-fixture</param>
+      <param name="lease_id">lease-controller</param>
+      <param name="lease_owner">controller-fixture</param>
+      <param name="lease_sequence">7</param>
+      <param name="lease_issued_monotonic_ns">1</param>
+      <param name="lease_expires_monotonic_ns">999999999999999999</param>
+      <param name="command_deadline_ns">10000000</param>
+    </hardware>
+    <joint name="left-knee">
+      <param name="canonical_actuator_id">actuator-left-knee</param>
+      <param name="position_lower_rad">-1.5</param>
+      <param name="position_upper_rad">1.5</param>
+      <param name="maximum_velocity_rad_s">2.0</param>
+      <param name="maximum_output_effort_nm">10.0</param>
+      <param name="maximum_current_a">5.0</param>
+      <command_interface name="position" data_type="double"/>
+      <command_interface name="velocity" data_type="double"/>
+      <command_interface name="effort" data_type="double"/>
+      <state_interface name="position" data_type="double"/>
+      <state_interface name="velocity" data_type="double"/>
+      <state_interface name="effort" data_type="double"/>
+      <state_interface name="qaxis_current" data_type="double"/>
+    </joint>
+  </ros2_control>
+</robot>

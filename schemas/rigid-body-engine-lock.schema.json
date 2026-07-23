@@ -1,0 +1,277 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.dev/schemas/rigid-body-engine-lock.schema.json",
+  "title": "Exact offline rigid-body benchmark engine lock",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "lock_id",
+    "authority",
+    "selection_status",
+    "platform",
+    "executed_engine",
+    "dependencies",
+    "candidates",
+    "claims",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "rigid-body-engine-lock/1"
+    },
+    "lock_id": {
+      "const": "generic-rigid-body-benchmark-linux-x86-64"
+    },
+    "authority": {
+      "const": "offline_generic_benchmark_environment_only"
+    },
+    "selection_status": {
+      "const": "benchmark_fixture_only_not_dropbear_engine_selection"
+    },
+    "platform": {
+      "$ref": "#/$defs/platform"
+    },
+    "executed_engine": {
+      "$ref": "#/$defs/executed_engine"
+    },
+    "dependencies": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/dependency"
+      }
+    },
+    "candidates": {
+      "type": "array",
+      "minItems": 3,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/candidate"
+      }
+    },
+    "claims": {
+      "$ref": "#/$defs/claims"
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "record_sha256"
+      ],
+      "properties": {
+        "record_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "identifier": {
+      "pattern": "^[a-z][a-z0-9-]{2,127}$",
+      "type": "string"
+    },
+    "platform": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "system",
+        "machine",
+        "python_implementation",
+        "python_major_minor",
+        "libc_name",
+        "libc_version"
+      ],
+      "properties": {
+        "system": {
+          "const": "Linux"
+        },
+        "machine": {
+          "const": "x86_64"
+        },
+        "python_implementation": {
+          "const": "CPython"
+        },
+        "python_major_minor": {
+          "const": "3.12"
+        },
+        "libc_name": {
+          "const": "glibc"
+        },
+        "libc_version": {
+          "const": "2.39"
+        }
+      }
+    },
+    "binary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact",
+        "size_bytes",
+        "sha256"
+      ],
+      "properties": {
+        "artifact": {
+          "$ref": "#/$defs/identifier"
+        },
+        "size_bytes": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "executed_engine": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "engine_id",
+        "name",
+        "package",
+        "version",
+        "api",
+        "binaries"
+      ],
+      "properties": {
+        "engine_id": {
+          "const": "mujoco-python-3-6-0"
+        },
+        "name": {
+          "const": "MuJoCo"
+        },
+        "package": {
+          "const": "mujoco"
+        },
+        "version": {
+          "const": "3.6.0"
+        },
+        "api": {
+          "const": "python-c-api-binding"
+        },
+        "binaries": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/binary"
+          }
+        }
+      }
+    },
+    "dependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "package",
+        "version",
+        "binary"
+      ],
+      "properties": {
+        "package": {
+          "const": "numpy"
+        },
+        "version": {
+          "const": "1.26.4"
+        },
+        "binary": {
+          "$ref": "#/$defs/binary"
+        }
+      }
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_id",
+        "name",
+        "version",
+        "availability",
+        "benchmark_status",
+        "source_url",
+        "disposition"
+      ],
+      "properties": {
+        "candidate_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "name": {
+          "minLength": 1,
+          "maxLength": 128,
+          "type": "string"
+        },
+        "version": {
+          "minLength": 1,
+          "maxLength": 128,
+          "type": "string"
+        },
+        "availability": {
+          "enum": [
+            "installed_exact",
+            "not_installed"
+          ]
+        },
+        "benchmark_status": {
+          "enum": [
+            "executed_generic_fixture",
+            "not_executed"
+          ]
+        },
+        "source_url": {
+          "format": "uri",
+          "type": "string"
+        },
+        "disposition": {
+          "enum": [
+            "generic_fixture_reference_only",
+            "candidate_pending_equivalent_environment"
+          ]
+        }
+      }
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "production_engine_selected",
+        "canonical_dropbear",
+        "exact_model_fidelity",
+        "physically_validated",
+        "support_granted",
+        "physical_motion_authority",
+        "physical_io"
+      ],
+      "properties": {
+        "production_engine_selected": {
+          "const": false
+        },
+        "canonical_dropbear": {
+          "const": false
+        },
+        "exact_model_fidelity": {
+          "const": false
+        },
+        "physically_validated": {
+          "const": false
+        },
+        "support_granted": {
+          "const": false
+        },
+        "physical_motion_authority": {
+          "const": false
+        },
+        "physical_io": {
+          "const": false
+        }
+      }
+    }
+  }
+}

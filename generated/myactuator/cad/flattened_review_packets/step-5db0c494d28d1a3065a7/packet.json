@@ -1,0 +1,67 @@
+{
+  "component_count": 1,
+  "component_kind": "solid",
+  "components": [
+    {
+      "bbox_max_mm": [
+        768.999325,
+        409.02531,
+        37.999999
+      ],
+      "bbox_min_mm": [
+        730.999422,
+        333.025313,
+        -37.999999
+      ],
+      "bbox_size_mm": [
+        37.999904,
+        75.999998,
+        75.999998
+      ],
+      "center_mm": [
+        745.607067,
+        371.024666,
+        0.057614
+      ],
+      "component_id": "solid-0001-4065875d0901",
+      "fingerprint_sha256": "4065875d0901d52ab29570538f9cacfc7e9b64a0d59d039c7a3e3a9eccd1c979",
+      "kind": "solid",
+      "surface_area_mm2": 24620.823501,
+      "topology": {
+        "edges": 342,
+        "faces": 150,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 219
+      },
+      "valid": true,
+      "volume_mm3": 117557.965063
+    }
+  ],
+  "housing_member_identified": false,
+  "images": {
+    "largest_component_sheet": {
+      "path": "generated/myactuator/cad/flattened_review_packets/step-5db0c494d28d1a3065a7/largest-component-sheet.png",
+      "sha256": "a74a4c40bc1d6e59e41b15f6e832fcc1c3b26ca73decb9735066de95c27ae3b7"
+    },
+    "overview": {
+      "path": "generated/myactuator/cad/flattened_review_packets/step-5db0c494d28d1a3065a7/overview.png",
+      "sha256": "ff9e3052520ebaa14cd3147e57148cc412d57b2f87df03f2cf64a289ba7244c8"
+    }
+  },
+  "joint_axis_identified": false,
+  "model": "X6-7",
+  "output_member_identified": false,
+  "partition_disposition": "blocked_inseparable_single_solid_re_source_or_face_partition_required",
+  "representative_component_ids": [
+    "solid-0001-4065875d0901"
+  ],
+  "review_status": "candidate_partition_only",
+  "schema_version": "myactuator-flattened-partition-packet/1",
+  "series": "RMD-X",
+  "simulation_supported": false,
+  "stable_component_ids_are_semantic": false,
+  "step_sha256": "3054c529935d1bdf650d6e156f597701403f06039434710f3281135b7fabea3c",
+  "variant_id": "step-5db0c494d28d1a3065a7",
+  "vendor_relative_path": "RMD-X/X6-7/vendor/X6-7/X6-7 Product information 240403/2D 3D/X6-7(RMD-X6 1\u0433\u25516 V2).step"
+}

@@ -1,0 +1,425 @@
+{
+  "heuristic_selects_output": false,
+  "housing_member_identified": false,
+  "images": {
+    "member_sheet": {
+      "path": "generated/myactuator/cad/review_packets/step-e627f76e6cb91e0b1706/member-sheet.png",
+      "sha256": "50355c50ac53001c58b9adfdb80837611bcb9c4445c8cd404a6864551a17e150"
+    },
+    "overview": {
+      "path": "generated/myactuator/cad/review_packets/step-e627f76e6cb91e0b1706/overview.png",
+      "sha256": "506fd7538c5f44336d6937b1c0cb41a1f31035c5357949a3b3768982ff9cfa07"
+    }
+  },
+  "joint_axis_identified": false,
+  "members": [
+    {
+      "bbox_size_mm": [
+        94.8,
+        18.5,
+        94.8
+      ],
+      "candidate_terms": [
+        "\u7aef\u76d6"
+      ],
+      "center_mm": [
+        -0.05909,
+        -31.231604,
+        0.034308
+      ],
+      "occurrence": "NAUO1",
+      "output_candidate_score": 1,
+      "product_entity_ref": "#11756",
+      "related_product_name": "8MT.013.013\uff08RH-25 \u7aef\u76d6\uff09",
+      "same_product_occurrences": [
+        "NAUO1"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 34083.539888
+    },
+    {
+      "bbox_size_mm": [
+        94.8,
+        12.7,
+        94.8
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        0.0,
+        -44.072583,
+        -2e-06
+      ],
+      "occurrence": "NAUO2",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#12630",
+      "related_product_name": "8MT.013.014\uff08RH-25 \u62b1\u95f8\u76d6\uff09",
+      "same_product_occurrences": [
+        "NAUO2"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 31809.664224
+    },
+    {
+      "bbox_size_mm": [
+        85.0,
+        89.5,
+        85.0
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        -0.0,
+        22.282573,
+        -0.0
+      ],
+      "occurrence": "NAUO3",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#7053",
+      "related_product_name": "8MT.013.049\uff08RH-25 \u51cf\u901f\u673a\u5bc6\u5c01\u76d6-\u53cc\u7f16+\u62b1\u95f8\uff09_Default<\u6309\u52a0\u5de5>",
+      "same_product_occurrences": [
+        "NAUO3"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 28536.846796
+    },
+    {
+      "bbox_size_mm": [
+        94.8,
+        18.7,
+        94.8
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        -0.104947,
+        -60.293881,
+        0.406275
+      ],
+      "occurrence": "NAUO4",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#33209",
+      "related_product_name": "8MT.013.063\uff08RH-25 \u9a71\u52a8\u5668\u76d6-ECAT-\u62b1\u95f8\u5f0f\uff09",
+      "same_product_occurrences": [
+        "NAUO4"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 22376.133095
+    },
+    {
+      "bbox_size_mm": [
+        110.0,
+        37.6,
+        110.0
+      ],
+      "candidate_terms": [
+        "\u673a\u5ea7"
+      ],
+      "center_mm": [
+        -0.0,
+        -8.467117,
+        -0.0
+      ],
+      "occurrence": "NAUO5",
+      "output_candidate_score": -4,
+      "product_entity_ref": "#28202",
+      "related_product_name": "8MT.034.004\uff08RH-25 \u673a\u5ea7\uff09",
+      "same_product_occurrences": [
+        "NAUO5"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 72548.38983
+    },
+    {
+      "bbox_size_mm": [
+        5.5,
+        12.0,
+        5.5
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        24.663787,
+        -60.297469,
+        -35.223538
+      ],
+      "occurrence": "NAUO6",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#2330",
+      "related_product_name": "GB\u2571T 2673.1-2018[\u5185\u516d\u89d2\u82b1\u5f62\u6c89\u5934\u87ba\u9489M2-M4M3\u00d712]_M3\u00d712",
+      "same_product_occurrences": [
+        "NAUO6",
+        "NAUO7",
+        "NAUO8"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 94.879569
+    },
+    {
+      "bbox_size_mm": [
+        5.5,
+        12.0,
+        5.5
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        -42.836372,
+        -60.297469,
+        -3.747697
+      ],
+      "occurrence": "NAUO7",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#2330",
+      "related_product_name": "GB\u2571T 2673.1-2018[\u5185\u516d\u89d2\u82b1\u5f62\u6c89\u5934\u87ba\u9489M2-M4M3\u00d712]_M3\u00d712",
+      "same_product_occurrences": [
+        "NAUO6",
+        "NAUO7",
+        "NAUO8"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 94.879569
+    },
+    {
+      "bbox_size_mm": [
+        5.5,
+        12.0,
+        5.5
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        18.172585,
+        -60.297469,
+        38.971235
+      ],
+      "occurrence": "NAUO8",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#2330",
+      "related_product_name": "GB\u2571T 2673.1-2018[\u5185\u516d\u89d2\u82b1\u5f62\u6c89\u5934\u87ba\u9489M2-M4M3\u00d712]_M3\u00d712",
+      "same_product_occurrences": [
+        "NAUO6",
+        "NAUO7",
+        "NAUO8"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 94.879569
+    },
+    {
+      "bbox_size_mm": [
+        7.0,
+        34.0,
+        7.0
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        -1e-06,
+        11.581519,
+        51.0
+      ],
+      "occurrence": "NAUO9",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#10122",
+      "related_product_name": "GB\u2571T 70.1-2008[\u5185\u516d\u89d2\u5706\u67f1\u5934\u87ba\u9489M4\u00d730]_M4\u00d730",
+      "same_product_occurrences": [
+        "NAUO9",
+        "NAUO10",
+        "NAUO11",
+        "NAUO12"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 514.282362
+    },
+    {
+      "bbox_size_mm": [
+        7.0,
+        34.0,
+        7.0
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        51.0,
+        11.581519,
+        1e-06
+      ],
+      "occurrence": "NAUO10",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#10122",
+      "related_product_name": "GB\u2571T 70.1-2008[\u5185\u516d\u89d2\u5706\u67f1\u5934\u87ba\u9489M4\u00d730]_M4\u00d730",
+      "same_product_occurrences": [
+        "NAUO9",
+        "NAUO10",
+        "NAUO11",
+        "NAUO12"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 514.282362
+    },
+    {
+      "bbox_size_mm": [
+        7.0,
+        34.0,
+        7.0
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        1e-06,
+        11.581519,
+        -51.0
+      ],
+      "occurrence": "NAUO11",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#10122",
+      "related_product_name": "GB\u2571T 70.1-2008[\u5185\u516d\u89d2\u5706\u67f1\u5934\u87ba\u9489M4\u00d730]_M4\u00d730",
+      "same_product_occurrences": [
+        "NAUO9",
+        "NAUO10",
+        "NAUO11",
+        "NAUO12"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 514.282362
+    },
+    {
+      "bbox_size_mm": [
+        7.0,
+        34.0,
+        7.0
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        -51.0,
+        11.581519,
+        -1e-06
+      ],
+      "occurrence": "NAUO12",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#10122",
+      "related_product_name": "GB\u2571T 70.1-2008[\u5185\u516d\u89d2\u5706\u67f1\u5934\u87ba\u9489M4\u00d730]_M4\u00d730",
+      "same_product_occurrences": [
+        "NAUO9",
+        "NAUO10",
+        "NAUO11",
+        "NAUO12"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 514.282362
+    },
+    {
+      "bbox_size_mm": [
+        6.72,
+        16.0,
+        6.72
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        -14.672,
+        30.619693,
+        35.594696
+      ],
+      "occurrence": "NAUO13",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#30692",
+      "related_product_name": "GB\u2571T 70.3-2008[\u5185\u516d\u89d2\u6c89\u5934\u87ba\u9489M3\u00d716]_M3\u00d716",
+      "same_product_occurrences": [
+        "NAUO13",
+        "NAUO14"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 131.974575
+    },
+    {
+      "bbox_size_mm": [
+        6.72,
+        16.0,
+        6.72
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        14.672,
+        30.619693,
+        -35.594696
+      ],
+      "occurrence": "NAUO14",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#30692",
+      "related_product_name": "GB\u2571T 70.3-2008[\u5185\u516d\u89d2\u6c89\u5934\u87ba\u9489M3\u00d716]_M3\u00d716",
+      "same_product_occurrences": [
+        "NAUO13",
+        "NAUO14"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 131.974575
+    },
+    {
+      "bbox_size_mm": [
+        110.0,
+        37.0,
+        110.0
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        -0.00145,
+        16.712532,
+        0.011774
+      ],
+      "occurrence": "NAUO15",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#19821",
+      "related_product_name": "WHS-25-XX-I_Default<\u6309\u52a0\u5de5>",
+      "same_product_occurrences": [
+        "NAUO15"
+      ],
+      "shape_type": "Compound",
+      "valid": true,
+      "volume_mm3": 156885.898824
+    },
+    {
+      "bbox_size_mm": [
+        85.327917,
+        81.850102,
+        85.327917
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        -0.0,
+        -19.195859,
+        0.0
+      ],
+      "occurrence": "NAUO16",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#33494",
+      "related_product_name": "\u96f6\u4ef68^1MT.055.026\uff08RH-25-100-E-B \u4e00\u4f53\u5316\u8c10\u6ce2\u51cf\u901f\u6a21\u7ec4-\u53cc\u7f16+\u62b1\u95f8+ECAT\uff09",
+      "same_product_occurrences": [
+        "NAUO16"
+      ],
+      "shape_type": "Compound",
+      "valid": true,
+      "volume_mm3": 207847.706494
+    }
+  ],
+  "model": "RH-25",
+  "output_member_identified": false,
+  "representative_product_views": 10,
+  "review_status": "candidate_visuals_only",
+  "schema_version": "myactuator-cad-review-packet/1",
+  "series": "RH",
+  "simulation_supported": false,
+  "step_sha256": "d844bc7dfe5c398b0447ea0d93eef77b7cb1bdaa0dbabd603031482c1909f07e",
+  "tool": {
+    "angular_deflection_radians": 0.12,
+    "cadquery": "2.8.0",
+    "camera": "orthographic isometric candidate-review view",
+    "linear_deflection_mm": 0.08
+  },
+  "variant_id": "step-e627f76e6cb91e0b1706",
+  "vendor_relative_path": "RH/RH-25/vendor/RH-25-B/RH-25-100-E-B-D-\u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+}

@@ -1,0 +1,175 @@
+{
+  "adapter_bindings": {
+    "authenticated_transport_adapter_id": null,
+    "durable_audit_sink_adapter_id": null,
+    "ota_installer_adapter_id": null,
+    "persistent_replay_store_adapter_id": null,
+    "signed_artifact_verifier_adapter_id": null
+  },
+  "blockers": [
+    "authenticated_peer_transport_not_bound",
+    "bootloader_anti_rollback_disabled",
+    "durable_audit_sink_not_bound",
+    "exact_installed_board_chip_revision_unknown",
+    "flash_encryption_disabled",
+    "independent_target_review_missing",
+    "legacy_tls_1_0_and_1_1_compiled",
+    "nvs_encryption_disabled",
+    "persistent_security_state_partition_missing",
+    "reboot_persistent_replay_store_not_bound",
+    "secure_boot_disabled",
+    "secure_element_disabled_or_unverified",
+    "signed_artifact_verifier_not_bound",
+    "trust_anchors_and_separated_key_assignments_missing"
+  ],
+  "capabilities": {
+    "application_rollback_enabled": true,
+    "bootloader_anti_rollback_enabled": false,
+    "coredump_partition_present": true,
+    "esp_tls_mbedtls_enabled": true,
+    "esp_tls_secure_element_enabled": false,
+    "flash_encryption_enabled": false,
+    "mbedtls_certificate_bundle_enabled": true,
+    "nvs_encryption_enabled": false,
+    "ota_ab_slots_present": true,
+    "persistent_security_state_partition_present": false,
+    "secure_boot_enabled": false,
+    "tls_1_0_enabled": true,
+    "tls_1_1_enabled": true,
+    "tls_1_2_enabled": true,
+    "tls_1_3_enabled": false
+  },
+  "integrity": {
+    "record_sha256": "5b0bac9e9d6997baace97708b40fe2b1af1a31f87ff58391e7fd1edeceb8c5b4"
+  },
+  "key_assignments": [],
+  "partition_layout": {
+    "partitions": [
+      {
+        "encrypted": false,
+        "name": "nvs",
+        "offset": 36864,
+        "size": 20480,
+        "subtype": "nvs",
+        "type": "data"
+      },
+      {
+        "encrypted": false,
+        "name": "otadata",
+        "offset": 57344,
+        "size": 8192,
+        "subtype": "ota",
+        "type": "data"
+      },
+      {
+        "encrypted": false,
+        "name": "app0",
+        "offset": 65536,
+        "size": 1310720,
+        "subtype": "ota_0",
+        "type": "app"
+      },
+      {
+        "encrypted": false,
+        "name": "app1",
+        "offset": 1376256,
+        "size": 1310720,
+        "subtype": "ota_1",
+        "type": "app"
+      },
+      {
+        "encrypted": false,
+        "name": "spiffs",
+        "offset": 2686976,
+        "size": 1441792,
+        "subtype": "spiffs",
+        "type": "data"
+      },
+      {
+        "encrypted": false,
+        "name": "coredump",
+        "offset": 4128768,
+        "size": 65536,
+        "subtype": "coredump",
+        "type": "data"
+      }
+    ],
+    "source_component_id": "default_partition_table"
+  },
+  "physical_io_enabled": false,
+  "physical_motion_authority": false,
+  "profile_id": "securityprofile-cb147fcc2ea981c64c9b",
+  "project": {
+    "board_id": "esp32dev",
+    "framework": "arduino",
+    "platform_target": "esp32",
+    "platformio_environment": "esp32",
+    "platformio_project_path": "firmware/esp32/platformio.ini",
+    "platformio_project_sha256": "1ddc2e9da69f557265db2a0b72bf3873bd245c09e1f03fa0a442335b1b5c1b48"
+  },
+  "purpose": "authentication_artifact_trust_and_persistence",
+  "record_state": "observed_offline",
+  "schema_version": "security-platform-profile/1",
+  "selection": {
+    "independence_attested": false,
+    "organization_or_team": null,
+    "requested": false,
+    "review_evidence_refs": [],
+    "reviewed_at": null,
+    "reviewer_id": null
+  },
+  "source_refs": [
+    "firmware/esp32/platformio.ini",
+    "https://docs.espressif.com/projects/esp-idf/en/v4.4.7/esp32/api-reference/protocols/esp_tls.html",
+    "https://docs.espressif.com/projects/esp-idf/en/v4.4.7/esp32/security/flash-encryption.html",
+    "https://docs.espressif.com/projects/esp-idf/en/v4.4.7/esp32/security/secure-boot-v2.html"
+  ],
+  "support_granted": false,
+  "target": {
+    "chip_model": null,
+    "chip_revision": null,
+    "efuse_summary_sha256": null,
+    "flash_encryption_mode": null,
+    "installed_asset_id": null,
+    "physical_observation_evidence_refs": [],
+    "secure_boot_revision_compatible": null,
+    "secure_element_part_number": null,
+    "secure_element_provisioning_id": null,
+    "target_family": "classic_esp32"
+  },
+  "toolchain": {
+    "components": [
+      {
+        "component_id": "platform_espressif32",
+        "platformio_home_relative_path": "platforms/espressif32/platform.json",
+        "sha256": "cf91a737e86cc22d670e56f19139a2db56f461ba5b952670c3f38bfe84dce7c3",
+        "version": "7.0.1"
+      },
+      {
+        "component_id": "framework_arduinoespressif32",
+        "platformio_home_relative_path": "packages/framework-arduinoespressif32/package.json",
+        "sha256": "f35415c75f6f43755df92bbbf7ef10c9e65c2edb2569d512636a0477be64d5bf",
+        "version": "3.20017.241212+sha.dcc1105b"
+      },
+      {
+        "component_id": "esp_idf_version_header",
+        "platformio_home_relative_path": "packages/framework-arduinoespressif32/tools/sdk/esp32/include/esp_common/include/esp_idf_version.h",
+        "sha256": "56be0b78266695b3b2a5fd8af5e8661e26e270f7ea35cf0961b9444712c09aaa",
+        "version": "4.4.7"
+      },
+      {
+        "component_id": "esp32_sdkconfig",
+        "platformio_home_relative_path": "packages/framework-arduinoespressif32/tools/sdk/esp32/sdkconfig",
+        "sha256": "a4fe490abd8cd6447874edd79bde1e78d9630af7845bd53f70440a56b3504907",
+        "version": "esp32-arduino-2.0.17-sdkconfig"
+      },
+      {
+        "component_id": "default_partition_table",
+        "platformio_home_relative_path": "packages/framework-arduinoespressif32/tools/partitions/default.csv",
+        "sha256": "3057e2f0b65ffb81f250ba592702c1512cea0ade043ed9baf869ec30987c1290",
+        "version": "arduino-esp32-2.0.17-default"
+      }
+    ]
+  },
+  "trust_anchors": []
+}

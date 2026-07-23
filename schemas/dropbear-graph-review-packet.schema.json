@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.org/schemas/dropbear-graph-review-packet.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "artifact_id", "authority", "sources", "summary", "cohorts", "support_granted", "physical_motion_authority"],
+  "properties": {
+    "schema_version": { "const": "dropbear-graph-review-packet/1" },
+    "artifact_id": { "const": "dropbear-graph-review-packet" },
+    "authority": { "const": "review_input_only" },
+    "sources": {
+      "type": "object", "additionalProperties": false,
+      "required": ["inventory_path", "inventory_sha256", "source_authority_status_path", "source_authority_status_sha256", "graph_template_path", "graph_template_sha256"],
+      "properties": {
+        "inventory_path": { "const": "generated/dropbear_description/inventory.json" },
+        "inventory_sha256": { "$ref": "#/$defs/sha" },
+        "source_authority_status_path": { "const": "generated/dropbear_source_authority/status.json" },
+        "source_authority_status_sha256": { "$ref": "#/$defs/sha" },
+        "graph_template_path": { "type": "string", "pattern": "^generated/dropbear_graph_review/templates/graphdecision-[0-9a-f]{20}\\.json$" },
+        "graph_template_sha256": { "$ref": "#/$defs/sha" }
+      }
+    },
+    "summary": {
+      "type": "object", "additionalProperties": false,
+      "required": ["question_count", "cohort_count", "answered_question_count", "submitted_decision_count", "accepted_graph_count", "canonical_graph_count", "runtime_ros_actuator_mapping_count"],
+      "properties": {
+        "question_count": { "const": 161 },
+        "cohort_count": { "type": "integer", "minimum": 9 },
+        "answered_question_count": { "const": 0 },
+        "submitted_decision_count": { "const": 0 },
+        "accepted_graph_count": { "const": 0 },
+        "canonical_graph_count": { "const": 0 },
+        "runtime_ros_actuator_mapping_count": { "const": 0 }
+      }
+    },
+    "cohorts": {
+      "type": "array", "minItems": 9, "items": { "$ref": "#/$defs/cohort" }
+    },
+    "support_granted": { "const": false },
+    "physical_motion_authority": { "const": false }
+  },
+  "$defs": {
+    "text": { "type": "string", "minLength": 1 },
+    "sha": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "cohort": {
+      "type": "object", "additionalProperties": false,
+      "required": ["cohort_id", "review_order", "kind", "question_ids", "evidence_paths", "review_status"],
+      "properties": {
+        "cohort_id": { "type": "string", "pattern": "^graph-cohort-[0-9]{3}$" },
+        "review_order": { "type": "integer", "minimum": 1 },
+        "kind": { "enum": ["cardinality_and_coupling", "actuator_mapping", "mimic_or_coupling", "gazebo_loop_closure_candidate"] },
+        "question_ids": { "type": "array", "minItems": 1, "maxItems": 20, "uniqueItems": true, "items": { "$ref": "#/$defs/text" } },
+        "evidence_paths": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/text" } },
+        "review_status": { "const": "unanswered" }
+      }
+    }
+  }
+}

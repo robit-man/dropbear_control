@@ -1,0 +1,232 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.dev/schemas/ros2-cpp-handoff-report.schema.json",
+  "title": "ROS 2 C++ handoff verification report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "report_id",
+    "authority",
+    "environment_lock",
+    "source_manifest",
+    "parity_transcript",
+    "counts",
+    "cases",
+    "claims",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "ros2-cpp-handoff-report/1"
+    },
+    "report_id": {
+      "const": "dropbear-ros2-cpp-handoff-offline"
+    },
+    "authority": {
+      "const": "offline_nonphysical_software_verification_only"
+    },
+    "environment_lock": {
+      "$ref": "#/$defs/file_binding"
+    },
+    "source_manifest": {
+      "type": "array",
+      "minItems": 15,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/source_file"
+      }
+    },
+    "parity_transcript": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/file_binding"
+        },
+        {
+          "type": "object",
+          "required": [
+            "line_count"
+          ],
+          "properties": {
+            "line_count": {
+              "const": 6
+            }
+          }
+        }
+      ]
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_count",
+        "pass_count",
+        "native_ctest_count",
+        "python_test_count",
+        "parity_line_count"
+      ],
+      "properties": {
+        "case_count": {
+          "const": 10
+        },
+        "pass_count": {
+          "const": 10
+        },
+        "native_ctest_count": {
+          "const": 2
+        },
+        "python_test_count": {
+          "const": 6
+        },
+        "parity_line_count": {
+          "const": 6
+        }
+      }
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 10,
+      "items": {
+        "$ref": "#/$defs/case"
+      }
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cpp_handoff_compiles_in_exact_environment",
+        "python_cpp_semantic_parity",
+        "plugin_loads",
+        "fail_closed_without_authority_and_adapter",
+        "physical_adapter_present",
+        "canonical_dropbear_admitted",
+        "exact_model_fidelity",
+        "support_granted",
+        "physical_motion_authority",
+        "physical_io"
+      ],
+      "properties": {
+        "cpp_handoff_compiles_in_exact_environment": {
+          "const": true
+        },
+        "python_cpp_semantic_parity": {
+          "const": true
+        },
+        "plugin_loads": {
+          "const": true
+        },
+        "fail_closed_without_authority_and_adapter": {
+          "const": true
+        },
+        "physical_adapter_present": {
+          "const": false
+        },
+        "canonical_dropbear_admitted": {
+          "const": false
+        },
+        "exact_model_fidelity": {
+          "const": false
+        },
+        "support_granted": {
+          "const": false
+        },
+        "physical_motion_authority": {
+          "const": false
+        },
+        "physical_io": {
+          "const": false
+        }
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "record_sha256"
+      ],
+      "properties": {
+        "record_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "file_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "size_bytes",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_./-]+$"
+        },
+        "size_bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "line_count": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "source_file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "size_bytes",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_./-]+$"
+        },
+        "size_bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_id",
+        "result",
+        "evidence"
+      ],
+      "properties": {
+        "case_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]+$"
+        },
+        "result": {
+          "const": "pass"
+        },
+        "evidence": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,1 @@
+"""Artifact trust core tests."""

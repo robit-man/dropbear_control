@@ -1,0 +1,207 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.org/schemas/dropbear-graph-registry-v2.schema.json",
+  "title": "Dropbear graph lifecycle registry V2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "authority",
+    "source",
+    "registry_generation_sha256",
+    "submissions",
+    "events",
+    "active_submission_id",
+    "active_graph_decision_id",
+    "active_graph_decision_sha256",
+    "summary",
+    "blockers",
+    "support_granted",
+    "physical_motion_authority",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": { "const": "dropbear-graph-registry/2" },
+    "artifact_id": { "const": "dropbear-graph-registry-v2" },
+    "authority": { "const": "canonical_graph_selection_only" },
+    "source": { "$ref": "#/$defs/source" },
+    "registry_generation_sha256": { "$ref": "#/$defs/sha256" },
+    "submissions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/submission" }
+    },
+    "events": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/event" }
+    },
+    "active_submission_id": {
+      "type": ["string", "null"],
+      "pattern": "^graphsubmission-[0-9a-f]{20}$"
+    },
+    "active_graph_decision_id": {
+      "type": ["string", "null"],
+      "pattern": "^graphv2decision-[0-9a-f]{20}$"
+    },
+    "active_graph_decision_sha256": {
+      "anyOf": [{ "$ref": "#/$defs/sha256" }, { "type": "null" }]
+    },
+    "summary": { "$ref": "#/$defs/summary" },
+    "blockers": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "support_granted": { "const": false },
+    "physical_motion_authority": { "const": false },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record_sha256"],
+      "properties": {
+        "record_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    }
+  },
+  "$defs": {
+    "text": { "type": "string", "minLength": 1 },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_registry_path",
+        "source_registry_sha256",
+        "source_registry_generation_sha256",
+        "source_active_submission_id",
+        "source_lifecycle",
+        "canonical_configuration_digest",
+        "graph_v2_status_path",
+        "graph_v2_status_sha256"
+      ],
+      "properties": {
+        "source_registry_path": {
+          "const": "generated/dropbear_source_registry_v2/registry.json"
+        },
+        "source_registry_sha256": { "$ref": "#/$defs/sha256" },
+        "source_registry_generation_sha256": { "$ref": "#/$defs/sha256" },
+        "source_active_submission_id": {
+          "type": ["string", "null"],
+          "pattern": "^sourcesubmission-[0-9a-f]{20}$"
+        },
+        "source_lifecycle": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "submitted_count",
+            "accepted_count",
+            "rejected_count",
+            "revoked_count",
+            "superseded_count"
+          ],
+          "properties": {
+            "submitted_count": { "type": "integer", "minimum": 0 },
+            "accepted_count": { "type": "integer", "minimum": 0, "maximum": 1 },
+            "rejected_count": { "type": "integer", "minimum": 0 },
+            "revoked_count": { "type": "integer", "minimum": 0 },
+            "superseded_count": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "canonical_configuration_digest": { "$ref": "#/$defs/sha256" },
+        "graph_v2_status_path": {
+          "const": "generated/dropbear_graph_v2/status.json"
+        },
+        "graph_v2_status_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "submission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "submission_id",
+        "submission_path",
+        "submission_sha256",
+        "decision_id",
+        "decision_sha256",
+        "source_registry_generation_sha256",
+        "lifecycle_state",
+        "canonical_graph_admissible",
+        "superseded_by_submission_id",
+        "last_event_id"
+      ],
+      "properties": {
+        "submission_id": {
+          "type": "string",
+          "pattern": "^graphsubmission-[0-9a-f]{20}$"
+        },
+        "submission_path": { "$ref": "#/$defs/text" },
+        "submission_sha256": { "$ref": "#/$defs/sha256" },
+        "decision_id": {
+          "type": "string",
+          "pattern": "^graphv2decision-[0-9a-f]{20}$"
+        },
+        "decision_sha256": { "$ref": "#/$defs/sha256" },
+        "source_registry_generation_sha256": { "$ref": "#/$defs/sha256" },
+        "lifecycle_state": {
+          "enum": ["submitted", "accepted", "rejected", "revoked", "superseded"]
+        },
+        "canonical_graph_admissible": { "type": "boolean" },
+        "superseded_by_submission_id": {
+          "type": ["string", "null"],
+          "pattern": "^graphsubmission-[0-9a-f]{20}$"
+        },
+        "last_event_id": {
+          "type": ["string", "null"],
+          "pattern": "^graphevent-[0-9a-f]{20}$"
+        }
+      }
+    },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sequence", "event_id", "event_path", "event_sha256", "event_type"],
+      "properties": {
+        "sequence": { "type": "integer", "minimum": 1 },
+        "event_id": {
+          "type": "string",
+          "pattern": "^graphevent-[0-9a-f]{20}$"
+        },
+        "event_path": { "$ref": "#/$defs/text" },
+        "event_sha256": { "$ref": "#/$defs/sha256" },
+        "event_type": { "enum": ["accept", "reject", "revoke", "supersede"] }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "submission_count",
+        "event_count",
+        "submitted_count",
+        "accepted_count",
+        "rejected_count",
+        "revoked_count",
+        "superseded_count",
+        "canonical_graph_count",
+        "actuator_mapping_count",
+        "ros_mapping_count",
+        "canonical_graph_admissible"
+      ],
+      "properties": {
+        "submission_count": { "type": "integer", "minimum": 0 },
+        "event_count": { "type": "integer", "minimum": 0 },
+        "submitted_count": { "type": "integer", "minimum": 0 },
+        "accepted_count": { "type": "integer", "minimum": 0, "maximum": 1 },
+        "rejected_count": { "type": "integer", "minimum": 0 },
+        "revoked_count": { "type": "integer", "minimum": 0 },
+        "superseded_count": { "type": "integer", "minimum": 0 },
+        "canonical_graph_count": { "type": "integer", "minimum": 0, "maximum": 1 },
+        "actuator_mapping_count": { "type": "integer", "minimum": 0, "maximum": 12 },
+        "ros_mapping_count": { "type": "integer", "minimum": 0, "maximum": 12 },
+        "canonical_graph_admissible": { "type": "boolean" }
+      }
+    }
+  }
+}

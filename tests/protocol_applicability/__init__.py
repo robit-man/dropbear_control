@@ -1,0 +1,1 @@
+"""Protocol applicability registry tests."""

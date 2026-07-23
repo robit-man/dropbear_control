@@ -1,0 +1,142 @@
+{
+  "schema_version": "ros2-cpp-environment-lock/1",
+  "lock_id": "dropbear-ros2-jazzy-cpp-linux-x86-64",
+  "authority": "offline_nonphysical_build_environment_only",
+  "platform": {
+    "system": "Linux",
+    "machine": "x86_64",
+    "os_id": "ubuntu",
+    "os_version_id": "24.04",
+    "libc_name": "glibc",
+    "libc_version": "2.39"
+  },
+  "toolchain": {
+    "compiler": {
+      "path": "/usr/bin/x86_64-linux-gnu-g++-13",
+      "version": "x86_64-linux-gnu-g++-13 (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0",
+      "size_bytes": 1027128,
+      "sha256": "52f1ddb33fe78b9441e0f42e9cd22c571f1101938e046c8a26582494e041cc73"
+    },
+    "cmake": {
+      "path": "/usr/bin/cmake",
+      "version": "cmake version 3.28.3",
+      "size_bytes": 11796472,
+      "sha256": "1c5227af4edd22d8d689def545e18ee458260c0fd579eba2187967f38817e638"
+    },
+    "colcon": {
+      "path": "/usr/bin/colcon",
+      "version": "0.21.0+upstream-1",
+      "size_bytes": 971,
+      "sha256": "3525649cc2b3d429fb34062a3d2e6ee2dc175ff84017db734f828ff6ebcd4777"
+    },
+    "python": {
+      "path": "/usr/bin/python3.12",
+      "version": "Python 3.12.3",
+      "size_bytes": 8020928,
+      "sha256": "c2c20b4745d447551221ec3d4e70f92c270c4609fe3df34fc52ea6dd46e92273"
+    }
+  },
+  "debian_packages": [
+    {
+      "name": "python3-colcon-core",
+      "version": "0.21.0+upstream-1"
+    },
+    {
+      "name": "ros-jazzy-ament-cmake",
+      "version": "2.5.6-2noble.20260225.222913"
+    },
+    {
+      "name": "ros-jazzy-class-loader",
+      "version": "2.7.1-1noble.20260604.024917"
+    },
+    {
+      "name": "ros-jazzy-controller-manager",
+      "version": "4.45.2-1noble.20260615.164916"
+    },
+    {
+      "name": "ros-jazzy-hardware-interface",
+      "version": "4.45.2-1noble.20260615.155429"
+    },
+    {
+      "name": "ros-jazzy-pluginlib",
+      "version": "5.4.5-1noble.20260604.025205"
+    },
+    {
+      "name": "ros-jazzy-rclcpp",
+      "version": "28.1.21-1noble.20260615.133124"
+    },
+    {
+      "name": "ros-jazzy-rclcpp-lifecycle",
+      "version": "28.1.21-1noble.20260615.134238"
+    },
+    {
+      "name": "ros-jazzy-ros2-control",
+      "version": "4.45.2-1noble.20260615.175135"
+    }
+  ],
+  "abi_artifacts": [
+    {
+      "role": "class-loader-abi",
+      "path": "/opt/ros/jazzy/lib/libclass_loader.so",
+      "size_bytes": 77056,
+      "sha256": "c0151574e0dd8f76eefce5eeb3840dfbb3c204436cca5f1d16fd3ebb1138d834"
+    },
+    {
+      "role": "hardware-interface-abi",
+      "path": "/opt/ros/jazzy/lib/libhardware_interface.so",
+      "size_bytes": 893776,
+      "sha256": "f2c9c6cc8e37c6c92930d197383f6d467415f6f14076d2d9ca2f5d50287733fd"
+    },
+    {
+      "role": "rclcpp-abi",
+      "path": "/opt/ros/jazzy/lib/librclcpp.so",
+      "size_bytes": 2641344,
+      "sha256": "ddc36a2bce397e2eba9e20452a3733b9ed646a2267e7e48b216d29814e11802f"
+    },
+    {
+      "role": "rclcpp-lifecycle-abi",
+      "path": "/opt/ros/jazzy/lib/librclcpp_lifecycle.so",
+      "size_bytes": 237424,
+      "sha256": "d337b01ad7c14cfc4dc17d4dce63e6e4b9cff643b97cfd03290b510fa243da71"
+    }
+  ],
+  "api_headers": [
+    {
+      "role": "hardware-component-interface-api",
+      "path": "/opt/ros/jazzy/include/hardware_interface/hardware_interface/hardware_component_interface.hpp",
+      "size_bytes": 27419,
+      "sha256": "8977ff2cf7da86074c4dc1c25c64f5684dac88167873c482f8f49c9bd63e0bfd"
+    },
+    {
+      "role": "pluginlib-export-api",
+      "path": "/opt/ros/jazzy/include/pluginlib/pluginlib/class_list_macros.hpp",
+      "size_bytes": 2398,
+      "sha256": "c342786ff3a5cc02816c7a872bc14276c265a0e74c6e692ea2ac8c6c0403229a"
+    },
+    {
+      "role": "system-interface-api",
+      "path": "/opt/ros/jazzy/include/hardware_interface/hardware_interface/system_interface.hpp",
+      "size_bytes": 2861,
+      "sha256": "086efb3a756b3b2b2748091dfb750c0dba0912056e14100a8bc04d76d7abf8af"
+    }
+  ],
+  "build_profile": {
+    "ros_distro": "jazzy",
+    "ros_prefix": "/opt/ros/jazzy",
+    "cxx_standard": 17,
+    "build_type": "RelWithDebInfo",
+    "python_executable": "/usr/bin/python3",
+    "physical_hardware_required": false
+  },
+  "claims": {
+    "cpp_handoff_build_environment": true,
+    "physical_adapter_present": false,
+    "canonical_dropbear_admitted": false,
+    "support_granted": false,
+    "physical_motion_authority": false,
+    "physical_io": false
+  },
+  "integrity": {
+    "record_sha256": "107463456a4929059f8910816666f3a18062d5f5e55ce80e5bbf93dd291eb161"
+  }
+}

@@ -1,0 +1,184 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.dev/schemas/myactuator-reviewer-assignment-register.schema.json",
+  "title": "MYACTUATOR and Dropbear evidence reviewer assignment register",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "register_id",
+    "record_state",
+    "record_revision",
+    "assignments",
+    "summary",
+    "support_granted",
+    "physical_motion_authority",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "myactuator-reviewer-assignment-register/1"
+    },
+    "register_id": {
+      "const": "dropbear-myactuator-evidence-review"
+    },
+    "record_state": {
+      "enum": [
+        "draft",
+        "submitted"
+      ]
+    },
+    "record_revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "assignments": {
+      "type": "array",
+      "minItems": 17,
+      "maxItems": 17,
+      "items": {
+        "$ref": "#/$defs/assignment"
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role_count",
+        "assigned_role_count",
+        "acknowledged_role_count",
+        "assignment_complete"
+      ],
+      "properties": {
+        "role_count": {
+          "const": 17
+        },
+        "assigned_role_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 17
+        },
+        "acknowledged_role_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 17
+        },
+        "assignment_complete": {
+          "type": "boolean"
+        }
+      }
+    },
+    "support_granted": {
+      "const": false
+    },
+    "physical_motion_authority": {
+      "const": false
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "record_sha256"
+      ],
+      "properties": {
+        "record_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "exact": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512,
+      "pattern": "^[^\\r\\n\\t]+$"
+    },
+    "nullableExact": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/exact"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "role": {
+      "enum": [
+        "vendor_source_change_approver",
+        "protocol_evidence_submitter",
+        "protocol_source_reviewer",
+        "protocol_decision_reviewer",
+        "cad_geometry_reviewer",
+        "cad_license_owner",
+        "plant_source_extractor",
+        "plant_fact_reviewer",
+        "dropbear_source_reviewer",
+        "dropbear_source_approver",
+        "dropbear_graph_reviewer",
+        "hardware_owner_authorizer",
+        "safety_reviewer",
+        "u0_operator",
+        "inventory_reviewer",
+        "evidence_custodian",
+        "can_adapter_reviewer"
+      ]
+    },
+    "assignment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role_id",
+        "assignee_id",
+        "organization_or_team",
+        "competence_evidence_refs",
+        "independent_from_role_ids",
+        "acknowledged",
+        "due_at_utc"
+      ],
+      "properties": {
+        "role_id": {
+          "$ref": "#/$defs/role"
+        },
+        "assignee_id": {
+          "$ref": "#/$defs/nullableExact"
+        },
+        "organization_or_team": {
+          "$ref": "#/$defs/nullableExact"
+        },
+        "competence_evidence_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/exact"
+          }
+        },
+        "independent_from_role_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/role"
+          }
+        },
+        "acknowledged": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "due_at_utc": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}

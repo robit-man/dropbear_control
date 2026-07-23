@@ -6,6 +6,10 @@
 **Power Range:** 100W - 1.2kW  
 **Reference:** PROTOCOLS_CONTRACT.md, ESP32_FIRMWARE_CONTRACT.md  
 
+> **Non-authoritative legacy draft.** Example ratings, opcodes, limits and
+> torque mappings below are not exact-model/firmware evidence and must not be
+> used for powered control.
+
 ---
 
 ## 1. Overview

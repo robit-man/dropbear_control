@@ -1,0 +1,211 @@
+{
+  "component_count": 5,
+  "component_kind": "solid",
+  "components": [
+    {
+      "bbox_max_mm": [
+        61.0,
+        61.0,
+        26.3
+      ],
+      "bbox_min_mm": [
+        -61.0,
+        -61.0,
+        -8.3
+      ],
+      "bbox_size_mm": [
+        122.0,
+        122.0,
+        34.6
+      ],
+      "center_mm": [
+        -1.14178,
+        -0.009312,
+        2.331816
+      ],
+      "component_id": "solid-0001-22f503635cf5",
+      "fingerprint_sha256": "22f503635cf557a8df4019f8afe221fe56358f75f37e775cfc33d3ed4360e09b",
+      "kind": "solid",
+      "surface_area_mm2": 60712.754401,
+      "topology": {
+        "edges": 1518,
+        "faces": 549,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 995
+      },
+      "valid": true,
+      "volume_mm3": 75451.394398
+    },
+    {
+      "bbox_max_mm": [
+        25.0,
+        25.0,
+        3.6
+      ],
+      "bbox_min_mm": [
+        -25.0,
+        -25.0,
+        -8.8
+      ],
+      "bbox_size_mm": [
+        50.0,
+        50.0,
+        12.4
+      ],
+      "center_mm": [
+        0.0,
+        -0.032187,
+        -2.945865
+      ],
+      "component_id": "solid-0002-44bf5b580e1f",
+      "fingerprint_sha256": "44bf5b580e1f544e62dc37cbe233d7f58dde9362040dd26c0cdfc231d5f55592",
+      "kind": "solid",
+      "surface_area_mm2": 7453.197359,
+      "topology": {
+        "edges": 140,
+        "faces": 69,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 90
+      },
+      "valid": true,
+      "volume_mm3": 18641.262145
+    },
+    {
+      "bbox_max_mm": [
+        35.5,
+        35.5,
+        44.2
+      ],
+      "bbox_min_mm": [
+        -35.5,
+        -35.5,
+        31.7
+      ],
+      "bbox_size_mm": [
+        71.0,
+        71.0,
+        12.5
+      ],
+      "center_mm": [
+        2.08288,
+        0.0,
+        41.059647
+      ],
+      "component_id": "solid-0003-90d180e49707",
+      "fingerprint_sha256": "90d180e4970740a57efe7a8c63ee897f60e014a75eb2cb8454125edb4825c4a1",
+      "kind": "solid",
+      "surface_area_mm2": 12427.20297,
+      "topology": {
+        "edges": 176,
+        "faces": 66,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 111
+      },
+      "valid": true,
+      "volume_mm3": 7459.398765
+    },
+    {
+      "bbox_max_mm": [
+        27.5,
+        27.5,
+        -3.9
+      ],
+      "bbox_min_mm": [
+        -27.5,
+        -27.5,
+        -6.9
+      ],
+      "bbox_size_mm": [
+        55.0,
+        55.0,
+        3.0
+      ],
+      "center_mm": [
+        0.0,
+        0.0,
+        -5.4
+      ],
+      "component_id": "solid-0004-c4477f8292ef",
+      "fingerprint_sha256": "c4477f8292efe50260f95576bc09c2f87902a52b1cd87962d6123120d9081404",
+      "kind": "solid",
+      "surface_area_mm2": 2027.475824,
+      "topology": {
+        "edges": 30,
+        "faces": 14,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 18
+      },
+      "valid": true,
+      "volume_mm3": 1685.872866
+    },
+    {
+      "bbox_max_mm": [
+        61.0,
+        61.0,
+        35.5
+      ],
+      "bbox_min_mm": [
+        -61.0,
+        -61.0,
+        25.3
+      ],
+      "bbox_size_mm": [
+        122.0,
+        122.0,
+        10.2
+      ],
+      "center_mm": [
+        -1.10342,
+        6.3e-05,
+        29.343384
+      ],
+      "component_id": "solid-0005-f3616f39cecd",
+      "fingerprint_sha256": "f3616f39cecdb337062d3334f496a1987b110cad02a349b64cb0975492163661",
+      "kind": "solid",
+      "surface_area_mm2": 27981.931216,
+      "topology": {
+        "edges": 475,
+        "faces": 172,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 300
+      },
+      "valid": true,
+      "volume_mm3": 47942.493449
+    }
+  ],
+  "housing_member_identified": false,
+  "images": {
+    "largest_component_sheet": {
+      "path": "generated/myactuator/cad/flattened_review_packets/step-d19dc9fdc131c651a154/largest-component-sheet.png",
+      "sha256": "8e26c425b98fc2cddecf5ffa08dbd3e215720c6c8538d3f2fa660e006cffc826"
+    },
+    "overview": {
+      "path": "generated/myactuator/cad/flattened_review_packets/step-d19dc9fdc131c651a154/overview.png",
+      "sha256": "be68bef2ae80b5f6b036a44532d16cc8789521ec1e6f465ec81228b3d28b9543"
+    }
+  },
+  "joint_axis_identified": false,
+  "model": "X10-40",
+  "output_member_identified": false,
+  "partition_disposition": "candidate_disconnected_solids_manual_partition_required",
+  "representative_component_ids": [
+    "solid-0001-22f503635cf5",
+    "solid-0005-f3616f39cecd",
+    "solid-0002-44bf5b580e1f",
+    "solid-0003-90d180e49707",
+    "solid-0004-c4477f8292ef"
+  ],
+  "review_status": "candidate_partition_only",
+  "schema_version": "myactuator-flattened-partition-packet/1",
+  "series": "RMD-X",
+  "simulation_supported": false,
+  "stable_component_ids_are_semantic": false,
+  "step_sha256": "b6150ffd1bc9c296c18013238e7250f54034de5b6b26537060f6a76157ff30f6",
+  "variant_id": "step-d19dc9fdc131c651a154",
+  "vendor_relative_path": "RMD-X/X10-40/vendor/X10-40/X10-40 Product information 240403/2D 3D/X10-40(RMD-X10 1\u0433\u25517 V3).step"
+}

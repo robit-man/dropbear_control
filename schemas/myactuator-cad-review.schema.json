@@ -1,0 +1,272 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.dev/schemas/myactuator-cad-review.schema.json",
+  "title": "MYACTUATOR exact-variant CAD semantic review ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "inspection_schema_version",
+    "inspection_manifest_sha256",
+    "variants",
+    "geometry_configurations",
+    "models"
+  ],
+  "properties": {
+    "schema_version": {"const": "myactuator-cad-review/2"},
+    "inspection_schema_version": {"const": "myactuator-step-inspection/1"},
+    "inspection_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "variants": {
+      "type": "array",
+      "minItems": 53,
+      "maxItems": 53,
+      "items": {"$ref": "#/$defs/variantReview"}
+    },
+    "geometry_configurations": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 53,
+      "items": {"$ref": "#/$defs/geometryConfiguration"}
+    },
+    "models": {
+      "type": "array",
+      "minItems": 44,
+      "maxItems": 44,
+      "items": {"$ref": "#/$defs/modelReview"}
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "nullableString": {"type": ["string", "null"]},
+    "evidenceRefs": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1, "maxLength": 512},
+      "uniqueItems": true
+    },
+    "artifact": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1, "maxLength": 512},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    },
+    "unitReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "source_length_unit", "scale_to_m", "override_rationale", "evidence_refs"],
+      "properties": {
+        "status": {"enum": ["unreviewed", "reviewed"]},
+        "source_length_unit": {"enum": [null, "millimetre", "metre", "inch"]},
+        "scale_to_m": {"type": ["number", "null"], "exclusiveMinimum": 0},
+        "override_rationale": {"$ref": "#/$defs/nullableString"},
+        "evidence_refs": {"$ref": "#/$defs/evidenceRefs"}
+      }
+    },
+    "memberReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "method", "housing_refs", "output_refs", "evidence_refs"],
+      "properties": {
+        "status": {"enum": ["unreviewed", "reviewed"]},
+        "method": {"enum": [null, "assembly_product_entities", "reviewed_partition"]},
+        "housing_refs": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "output_refs": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "evidence_refs": {"$ref": "#/$defs/evidenceRefs"}
+      }
+    },
+    "frameReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "source_to_canonical", "evidence_refs"],
+      "properties": {
+        "status": {"enum": ["unreviewed", "reviewed"]},
+        "source_to_canonical": {
+          "type": ["array", "null"],
+          "minItems": 16,
+          "maxItems": 16,
+          "items": {"type": "number"}
+        },
+        "evidence_refs": {"$ref": "#/$defs/evidenceRefs"}
+      }
+    },
+    "jointReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "joint_type", "origin_m", "axis_unit", "positive_direction", "zero_definition", "evidence_refs"],
+      "properties": {
+        "status": {"enum": ["unreviewed", "reviewed"]},
+        "joint_type": {"enum": [null, "revolute", "continuous"]},
+        "origin_m": {
+          "type": ["array", "null"],
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {"type": "number"}
+        },
+        "axis_unit": {
+          "type": ["array", "null"],
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {"type": "number"}
+        },
+        "positive_direction": {"$ref": "#/$defs/nullableString"},
+        "zero_definition": {"$ref": "#/$defs/nullableString"},
+        "evidence_refs": {"$ref": "#/$defs/evidenceRefs"}
+      }
+    },
+    "artifactReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "source_variant_sha256",
+        "toolchain_lock_sha256",
+        "housing_step",
+        "output_step",
+        "housing_glb",
+        "output_glb",
+        "collision_glb",
+        "visual_evidence_refs"
+      ],
+      "properties": {
+        "status": {"enum": ["unreviewed", "verified"]},
+        "source_variant_sha256": {"anyOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+        "toolchain_lock_sha256": {"anyOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+        "housing_step": {"$ref": "#/$defs/artifact"},
+        "output_step": {"$ref": "#/$defs/artifact"},
+        "housing_glb": {"$ref": "#/$defs/artifact"},
+        "output_glb": {"$ref": "#/$defs/artifact"},
+        "collision_glb": {"$ref": "#/$defs/artifact"},
+        "visual_evidence_refs": {"$ref": "#/$defs/evidenceRefs"}
+      }
+    },
+    "variantReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "variant_id",
+        "series",
+        "model",
+        "vendor_relative_path",
+        "step_sha256",
+        "bytes",
+        "step_structure",
+        "review_status",
+        "reviewer",
+        "reviewed_at",
+        "review_evidence_refs",
+        "unit",
+        "members",
+        "frame",
+        "joint",
+        "artifacts",
+        "redistribution_status",
+        "redistribution_evidence_refs",
+        "denial_reason"
+      ],
+      "properties": {
+        "variant_id": {"type": "string", "pattern": "^step-[0-9a-f]{20}$"},
+        "series": {"type": "string", "minLength": 1},
+        "model": {"type": "string", "minLength": 1},
+        "vendor_relative_path": {"type": "string", "minLength": 1},
+        "step_sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1},
+        "step_structure": {"enum": ["assembly", "flattened"]},
+        "review_status": {
+          "enum": [
+            "unreviewed",
+            "member_candidates_recorded",
+            "geometry_reviewed",
+            "conversion_verified",
+            "accepted_local",
+            "accepted_redistributable",
+            "blocked",
+            "rejected"
+          ]
+        },
+        "reviewer": {"$ref": "#/$defs/nullableString"},
+        "reviewed_at": {"type": ["string", "null"], "format": "date-time"},
+        "review_evidence_refs": {"$ref": "#/$defs/evidenceRefs"},
+        "unit": {"$ref": "#/$defs/unitReview"},
+        "members": {"$ref": "#/$defs/memberReview"},
+        "frame": {"$ref": "#/$defs/frameReview"},
+        "joint": {"$ref": "#/$defs/jointReview"},
+        "artifacts": {"$ref": "#/$defs/artifactReview"},
+        "redistribution_status": {"enum": ["license_review_required", "local_only", "redistribution_approved", "redistribution_prohibited"]},
+        "redistribution_evidence_refs": {"$ref": "#/$defs/evidenceRefs"},
+        "denial_reason": {"type": "string", "minLength": 1}
+      }
+    },
+    "selectorDimension": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "value", "evidence_refs"],
+      "properties": {
+        "name": {"type": "string", "pattern": "^[a-z][a-z0-9_]{0,63}$"},
+        "value": {"type": "string", "minLength": 1, "maxLength": 128},
+        "evidence_refs": {"$ref": "#/$defs/evidenceRefs"}
+      }
+    },
+    "geometryConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "configuration_id",
+        "series",
+        "model",
+        "source_variant_ids",
+        "selector_status",
+        "selector_key",
+        "selector_dimensions",
+        "canonical_variant_id",
+        "status",
+        "reviewer",
+        "reviewed_at",
+        "evidence_refs",
+        "denial_reason"
+      ],
+      "properties": {
+        "configuration_id": {"type": "string", "pattern": "^cadcfg-[0-9a-f]{20}$"},
+        "series": {"type": "string", "minLength": 1},
+        "model": {"type": "string", "minLength": 1},
+        "source_variant_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "pattern": "^step-[0-9a-f]{20}$"},
+          "uniqueItems": true
+        },
+        "selector_status": {"enum": ["unresolved", "reviewed"]},
+        "selector_key": {"type": ["string", "null"], "minLength": 1, "maxLength": 256},
+        "selector_dimensions": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/selectorDimension"}
+        },
+        "canonical_variant_id": {"type": ["string", "null"], "pattern": "^step-[0-9a-f]{20}$"},
+        "status": {"enum": ["unsupported", "candidate", "accepted_local", "accepted_redistributable", "blocked"]},
+        "reviewer": {"$ref": "#/$defs/nullableString"},
+        "reviewed_at": {"type": ["string", "null"], "format": "date-time"},
+        "evidence_refs": {"$ref": "#/$defs/evidenceRefs"},
+        "denial_reason": {"type": "string", "minLength": 1}
+      }
+    },
+    "modelReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["series", "model", "status", "configuration_ids", "denial_reason"],
+      "properties": {
+        "series": {"type": "string", "minLength": 1},
+        "model": {"type": "string", "minLength": 1},
+        "status": {"enum": ["unsupported", "partially_supported_local", "supported_local", "supported_redistributable"]},
+        "configuration_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "pattern": "^cadcfg-[0-9a-f]{20}$"},
+          "uniqueItems": true
+        },
+        "denial_reason": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

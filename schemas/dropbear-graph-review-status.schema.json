@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.org/schemas/dropbear-graph-review-status.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "artifact_id", "authority", "sources", "summary", "accepted_graph_decision_ids", "blockers", "support_granted", "physical_motion_authority"],
+  "properties": {
+    "schema_version": { "const": "dropbear-graph-review-status/1" },
+    "artifact_id": { "const": "dropbear-graph-review-status" },
+    "authority": { "const": "derived_denial_only" },
+    "sources": {
+      "type": "array", "minItems": 4, "maxItems": 4,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["path", "sha256"],
+        "properties": { "path": { "type": "string", "minLength": 1 }, "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" } }
+      }
+    },
+    "summary": {
+      "type": "object", "additionalProperties": false,
+      "required": ["question_count", "unanswered_question_count", "submitted_decision_count", "accepted_graph_count", "canonical_graph_count", "runtime_ros_actuator_mapping_count", "canonical_graph_admissible"],
+      "properties": {
+        "question_count": { "const": 161 },
+        "unanswered_question_count": { "const": 161 },
+        "submitted_decision_count": { "const": 0 },
+        "accepted_graph_count": { "const": 0 },
+        "canonical_graph_count": { "const": 0 },
+        "runtime_ros_actuator_mapping_count": { "const": 0 },
+        "canonical_graph_admissible": { "const": false }
+      }
+    },
+    "accepted_graph_decision_ids": { "type": "array", "maxItems": 0 },
+    "blockers": { "type": "array", "minItems": 5, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+    "support_granted": { "const": false },
+    "physical_motion_authority": { "const": false }
+  }
+}

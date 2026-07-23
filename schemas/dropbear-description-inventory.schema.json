@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.org/schemas/dropbear-description-inventory.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "artifact_id", "authority", "repository", "reconciliation", "scope", "summary", "files", "objects", "exact_duplicate_groups", "logical_groups", "review_questions", "runtime_ros_actuator_mappings", "global_blockers"],
+  "properties": {
+    "schema_version": { "const": "dropbear-description-inventory/1" },
+    "artifact_id": { "const": "dropbear-description-candidate-inventory" },
+    "authority": { "const": "observation_only_no_runtime_promotion" },
+    "repository": {
+      "type": "object", "additionalProperties": false, "required": ["path", "commit", "tree_id"],
+      "properties": { "path": { "const": "references/Dropbear" }, "commit": { "$ref": "#/$defs/sha1" }, "tree_id": { "$ref": "#/$defs/sha1" } }
+    },
+    "reconciliation": {
+      "type": "object", "additionalProperties": false, "required": ["path", "sha256", "canonical_configuration_digest"],
+      "properties": { "path": { "const": "generated/dropbear_reconciliation/reconciliation.json" }, "sha256": { "$ref": "#/$defs/sha256" }, "canonical_configuration_digest": { "$ref": "#/$defs/sha256" } }
+    },
+    "scope": {
+      "type": "object", "additionalProperties": false, "required": ["roots", "extensions"],
+      "properties": {
+        "roots": { "type": "array", "minItems": 3, "uniqueItems": true, "items": { "$ref": "#/$defs/text" } },
+        "extensions": { "type": "array", "minItems": 4, "uniqueItems": true, "items": { "$ref": "#/$defs/text" } }
+      }
+    },
+    "summary": {
+      "type": "object", "additionalProperties": false,
+      "required": ["file_count", "unique_object_count", "source_candidate_count", "expanded_generated_candidate_count", "build_derivative_count", "install_derivative_count", "exact_duplicate_group_count", "logical_group_count", "divergent_logical_group_count", "review_question_count", "regex_fallback_object_count", "runtime_ros_actuator_mapping_count", "authoritative_description_selected", "motion_enable_allowed"],
+      "properties": {
+        "file_count": { "type": "integer", "minimum": 1 },
+        "unique_object_count": { "type": "integer", "minimum": 1 },
+        "source_candidate_count": { "type": "integer", "minimum": 1 },
+        "expanded_generated_candidate_count": { "type": "integer", "minimum": 1 },
+        "build_derivative_count": { "type": "integer", "minimum": 0 },
+        "install_derivative_count": { "type": "integer", "minimum": 1 },
+        "exact_duplicate_group_count": { "type": "integer", "minimum": 1 },
+        "logical_group_count": { "type": "integer", "minimum": 1 },
+        "divergent_logical_group_count": { "type": "integer", "minimum": 1 },
+        "review_question_count": { "type": "integer", "minimum": 14 },
+        "regex_fallback_object_count": { "type": "integer", "minimum": 0 },
+        "runtime_ros_actuator_mapping_count": { "const": 0 },
+        "authoritative_description_selected": { "const": false },
+        "motion_enable_allowed": { "const": false }
+      }
+    },
+    "files": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/file" } },
+    "objects": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/object" } },
+    "exact_duplicate_groups": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/exact_group" } },
+    "logical_groups": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/logical_group" } },
+    "review_questions": { "type": "array", "minItems": 14, "items": { "$ref": "#/$defs/question" } },
+    "runtime_ros_actuator_mappings": { "type": "array", "maxItems": 0 },
+    "global_blockers": { "type": "array", "minItems": 5, "uniqueItems": true, "items": { "$ref": "#/$defs/text" } }
+  },
+  "$defs": {
+    "text": { "type": "string", "minLength": 1 },
+    "nullable_text": { "type": ["string", "null"] },
+    "sha1": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "path_array": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/text" } },
+    "file": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "mode", "git_object_id", "git_reported_size_bytes", "sha256", "size_bytes", "classification", "description_kind", "package_family", "logical_key", "authority", "exact_copy_paths", "exact_candidate_matches", "drifted_candidate_paths"],
+      "properties": {
+        "path": { "$ref": "#/$defs/text" }, "mode": { "pattern": "^[0-9]{6}$", "type": "string" },
+        "git_object_id": { "$ref": "#/$defs/sha1" }, "git_reported_size_bytes": { "type": "integer", "minimum": 0 },
+        "sha256": { "$ref": "#/$defs/sha256" }, "size_bytes": { "type": "integer", "minimum": 0 },
+        "classification": { "enum": ["source_candidate", "expanded_generated_candidate", "build_derivative", "install_derivative"] },
+        "description_kind": { "enum": ["urdf", "xacro", "controller_yaml"] },
+        "package_family": { "enum": ["cad_detailed", "cad_simplified", "gazebo_dropbear", "gazebo_detailed", "gazebo_simplified", "rviz_detailed", "rviz_simplified", "rviz_legacy"] },
+        "logical_key": { "$ref": "#/$defs/text" },
+        "authority": { "enum": ["candidate_observation_only", "derivative_no_authority"] },
+        "exact_copy_paths": { "$ref": "#/$defs/path_array" }, "exact_candidate_matches": { "$ref": "#/$defs/path_array" }, "drifted_candidate_paths": { "$ref": "#/$defs/path_array" }
+      }
+    },
+    "joint": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "type", "parent", "child", "axis_xyz", "origin_xyz", "origin_rpy", "mimic_joint", "mimic_multiplier", "mimic_offset"],
+      "properties": {
+        "name": { "$ref": "#/$defs/text" }, "type": { "$ref": "#/$defs/nullable_text" },
+        "parent": { "$ref": "#/$defs/nullable_text" }, "child": { "$ref": "#/$defs/nullable_text" },
+        "axis_xyz": { "$ref": "#/$defs/nullable_text" }, "origin_xyz": { "$ref": "#/$defs/nullable_text" },
+        "origin_rpy": { "$ref": "#/$defs/nullable_text" }, "mimic_joint": { "$ref": "#/$defs/nullable_text" },
+        "mimic_multiplier": { "$ref": "#/$defs/nullable_text" }, "mimic_offset": { "$ref": "#/$defs/nullable_text" }
+      }
+    },
+    "mimic": {
+      "type": "object", "additionalProperties": false, "required": ["joint", "mimics", "multiplier", "offset"],
+      "properties": { "joint": { "$ref": "#/$defs/text" }, "mimics": { "$ref": "#/$defs/text" }, "multiplier": { "$ref": "#/$defs/nullable_text" }, "offset": { "$ref": "#/$defs/nullable_text" } }
+    },
+    "observations": {
+      "type": "object", "additionalProperties": false,
+      "required": ["parse_status", "parse_error", "links", "joints", "mesh_references", "xacro_macros", "plugin_references", "transmission_joint_names", "ros2_control_joint_names", "controller_joint_names", "mimic_edges"],
+      "properties": {
+        "parse_status": { "enum": ["xml_parsed", "regex_fallback", "yaml_lexical"] },
+        "parse_error": { "$ref": "#/$defs/nullable_text" },
+        "links": { "$ref": "#/$defs/path_array" }, "joints": { "type": "array", "items": { "$ref": "#/$defs/joint" } },
+        "mesh_references": { "$ref": "#/$defs/path_array" }, "xacro_macros": { "$ref": "#/$defs/path_array" },
+        "plugin_references": { "$ref": "#/$defs/path_array" }, "transmission_joint_names": { "$ref": "#/$defs/path_array" },
+        "ros2_control_joint_names": { "$ref": "#/$defs/path_array" }, "controller_joint_names": { "$ref": "#/$defs/path_array" },
+        "mimic_edges": { "type": "array", "items": { "$ref": "#/$defs/mimic" } }
+      }
+    },
+    "object": {
+      "type": "object", "additionalProperties": false,
+      "required": ["git_object_id", "sha256", "size_bytes", "description_kinds", "observations"],
+      "properties": {
+        "git_object_id": { "$ref": "#/$defs/sha1" }, "sha256": { "$ref": "#/$defs/sha256" }, "size_bytes": { "type": "integer", "minimum": 0 },
+        "description_kinds": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["urdf", "xacro", "controller_yaml"] } },
+        "observations": { "$ref": "#/$defs/observations" }
+      }
+    },
+    "exact_group": {
+      "type": "object", "additionalProperties": false, "required": ["git_object_id", "sha256", "paths"],
+      "properties": { "git_object_id": { "$ref": "#/$defs/sha1" }, "sha256": { "$ref": "#/$defs/sha256" }, "paths": { "type": "array", "minItems": 2, "uniqueItems": true, "items": { "$ref": "#/$defs/text" } } }
+    },
+    "logical_group": {
+      "type": "object", "additionalProperties": false, "required": ["logical_key", "status", "git_object_ids", "paths"],
+      "properties": {
+        "logical_key": { "$ref": "#/$defs/text" }, "status": { "enum": ["exact_duplicate", "divergent"] },
+        "git_object_ids": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/sha1" } },
+        "paths": { "type": "array", "minItems": 2, "uniqueItems": true, "items": { "$ref": "#/$defs/text" } }
+      }
+    },
+    "question": {
+      "type": "object", "additionalProperties": false,
+      "required": ["question_id", "kind", "subject_ids", "candidate_joint_names", "evidence_paths", "question", "resolved", "runtime_mapping_id"],
+      "properties": {
+        "question_id": { "pattern": "^[a-z0-9][a-z0-9-]+$", "type": "string" },
+        "kind": { "enum": ["actuator_mapping", "cardinality_and_coupling", "mimic_or_coupling", "gazebo_loop_closure_candidate"] },
+        "subject_ids": { "$ref": "#/$defs/path_array" }, "candidate_joint_names": { "$ref": "#/$defs/path_array" },
+        "evidence_paths": { "$ref": "#/$defs/path_array" }, "question": { "$ref": "#/$defs/text" },
+        "resolved": { "const": false }, "runtime_mapping_id": { "type": "null" }
+      }
+    }
+  }
+}

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MyActuator Dashboard</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">MyActuator <span>Dashboard</span></div>
+    <div class="conn">
+      <button id="btn-sim" class="btn primary">Start Simulation</button>
+      <button id="btn-connect" class="btn">Connect ESP32 (WebSerial)</button>
+      <span id="conn-status" class="status-pill offline">offline</span>
+    </div>
+  </header>
+
+  <div class="shell">
+    <!-- Left sidebar: module navigation -->
+    <nav class="sidebar">
+      <div class="nav-group">
+        <div class="nav-label">Monitor</div>
+        <button class="nav-item active" data-module="fleet">
+          <span class="nav-ico">▤</span> Fleet
+        </button>
+        <button class="nav-item" data-module="detail">
+          <span class="nav-ico">◉</span> Motor Detail
+        </button>
+      </div>
+      <div class="nav-group">
+        <div class="nav-label">Configure</div>
+        <button class="nav-item" data-module="hardware">
+          <span class="nav-ico">⚙</span> Hardware
+        </button>
+        <button class="nav-item" data-module="console">
+          <span class="nav-ico">⌘</span> Command Console
+        </button>
+      </div>
+      <div class="nav-group">
+        <div class="nav-label">Reference</div>
+        <button class="nav-item" data-module="docs">
+          <span class="nav-ico">❏</span> Command Reference
+        </button>
+        <button class="nav-item" data-module="log">
+          <span class="nav-ico">≣</span> Event Log
+        </button>
+      </div>
+    </nav>
+
+    <!-- Primary dashboard: one module shown at a time -->
+    <main class="primary">
+      <!-- Fleet module -->
+      <section class="module" data-view="fleet">
+        <div class="module-head"><h2>Fleet</h2></div>
+        <div class="legacy-add">
+          <select id="legacy-select">
+            <option value="">Legacy variant…</option>
+            <option value="RMD-X6">RMD-X6 (incremental)</option>
+            <option value="RMD-X8">RMD-X8 (incremental)</option>
+            <option value="RMD-X10">RMD-X10 (incremental)</option>
+            <option value="RMD-X10Pro">RMD-X10 Pro (incremental)</option>
+          </select>
+          <button id="btn-add-legacy" class="btn small">Add</button>
+        </div>
+        <div id="fleet-list" class="fleet-list"></div>
+      </section>
+
+      <!-- Motor Detail module -->
+      <section class="module hidden" data-view="detail">
+        <div class="module-head"><h2>Motor Detail</h2></div>
+        <div id="detail-empty" class="empty">Select a motor from the Fleet module.</div>
+        <div id="detail" class="detail-body hidden">
+          <div class="detail-head">
+            <h3 id="d-model">—</h3>
+            <span id="d-series" class="tag">—</span>
+            <span id="d-state" class="tag state">—</span>
+          </div>
+
+          <div class="viz">
+            <canvas id="motor-canvas" width="220" height="220"></canvas>
+          </div>
+
+          <div class="telemetry">
+            <div class="metric"><label>Position</label><span id="m-pos">0.00 rad</span></div>
+            <div class="metric"><label>Velocity</label><span id="m-vel">0.00 rad/s</span></div>
+            <div class="metric"><label>Torque</label><span id="m-torq">0.00 N·m</span></div>
+            <div class="metric"><label>Temp</label><span id="m-temp">25 °C</span></div>
+            <div class="metric"><label>Fault</label><span id="m-fault">NONE</span></div>
+            <div class="metric"><label>Uptime</label><span id="m-uptime">0 s</span></div>
+          </div>
+
+          <div class="enc-cal">
+            <h3>Encoder / Calibration</h3>
+            <div class="metric"><label>Encoder</label><span id="m-enc">—</span></div>
+            <div class="metric"><label>Resolution</label><span id="m-res">—</span></div>
+            <div class="metric"><label>Zeroed Pos</label><span id="m-zeroed">0.00 rad</span></div>
+            <div class="ctl-row">
+              <label>AS5600</label>
+              <input type="checkbox" id="c-as5600" />
+              <span class="muted" id="as5600-note">output-shaft mag. encoder</span>
+            </div>
+            <div class="ctl-row">
+              <button id="c-calibrate" class="btn small primary">Calibrate Zero</button>
+            </div>
+          </div>
+
+          <div class="controls">
+            <h3>Control</h3>
+            <div class="ctl-row">
+              <button id="c-enable" class="btn small">Enable</button>
+              <button id="c-disable" class="btn small">Disable</button>
+              <button id="c-clear" class="btn small">Clear Fault</button>
+            </div>
+            <div class="ctl-row">
+              <label>Mode</label>
+              <select id="c-mode">
+                <option value="position">Position</option>
+                <option value="velocity">Velocity</option>
+                <option value="torque">Torque</option>
+              </select>
+              <input id="c-target" type="number" step="0.1" value="0" />
+                <label><input type="checkbox" id="c-unit-deg"> deg</label>
+              <button id="c-send" class="btn small primary">Send</button>
+            </div>
+            <div class="ctl-row">
+              <label>Fault inject</label>
+              <button id="c-overtemp" class="btn small warn">Overheat</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Hardware module -->
+      <section class="module hidden" data-view="hardware">
+        <div class="module-head"><h2>Hardware</h2></div>
+        <div class="ctl-row">
+          <label>Board</label>
+          <select id="hw-board">
+            <option value="esp32dev">ESP32 30-pin DevKitC</option>
+            <option value="esp32-s3-devkitc-1">ESP32-S3 DevKitC</option>
+            <option value="esp32-c3-devkitm-1">ESP32-C3 DevKitM</option>
+          </select>
+        </div>
+        <div id="hw-pins" class="pin-grid"></div>
+        <div class="ctl-row">
+          <button id="hw-apply" class="btn small primary">Apply Config</button>
+        </div>
+        <h3 class="hw-sub">Signal / Data Flow</h3>
+        <div id="hw-flow" class="flow-grid"></div>
+        <div class="muted hw-note">Pin map mirrors firmware/include/config.h. 30-pin preset loaded by default. Active pins light up from the selected motor's live simulation state.</div>
+      </section>
+
+      <!-- Command Console module -->
+      <section class="module hidden" data-view="console">
+        <div class="module-head"><h2>Command Console</h2></div>
+        <div class="ctl-row">
+          <label>Command</label>
+          <select id="cmd-select"></select>
+        </div>
+        <div id="cmd-params" class="cmd-params"></div>
+        <div class="ctl-row">
+          <button id="cmd-send" class="btn small primary">Issue Command</button>
+          <span id="cmd-target-label" class="muted">target: —</span>
+        </div>
+        <div class="muted hw-note">Full command array from contracts/ (source of truth). Drive-state + link commands are dashboard control extensions.</div>
+      </section>
+
+      <!-- Command Reference module -->
+      <section class="module hidden" data-view="docs">
+        <div class="module-head"><h2>Command Reference</h2></div>
+        <div class="docs-tabs">
+          <button class="doc-tab active" data-tab="commands">Commands</button>
+          <button class="doc-tab" data-tab="params">Params</button>
+          <button class="doc-tab" data-tab="status">Status Word</button>
+          <button class="doc-tab" data-tab="faults">Faults</button>
+          <button class="doc-tab" data-tab="native">Native</button>
+        </div>
+        <div id="doc-commands" class="doc-body"></div>
+        <div id="doc-params" class="doc-body hidden"></div>
+        <div id="doc-status" class="doc-body hidden"></div>
+        <div id="doc-faults" class="doc-body hidden"></div>
+        <div id="doc-native" class="doc-body hidden"></div>
+        <div class="muted hw-note">Source: contracts/ (PROTOCOLS_CONTRACT.md, MOTOR_RMD_X_CONTRACT.md §6) + native RMD-X command set from vendor docs. Vendor site was unreachable at authoring time; native array cross-checked against the RMD-X CAN protocol guide.</div>
+      </section>
+
+      <!-- Event Log module -->
+      <section class="module hidden" data-view="log">
+        <div class="module-head"><h2>Event Log</h2></div>
+        <div id="log" class="log"></div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.org/schemas/dropbear-graph-projection.schema.json",
+  "title": "Denial-only Dropbear graph consumer projection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "view_kind",
+    "authority",
+    "subject",
+    "summary",
+    "blockers",
+    "outputs",
+    "support_granted",
+    "physical_motion_authority"
+  ],
+  "properties": {
+    "schema_version": { "const": "dropbear-graph-projection/1" },
+    "artifact_id": {
+      "type": "string",
+      "pattern": "^dropbear-graph-projection-(host|ros|simulator|ui)$"
+    },
+    "view_kind": { "enum": ["host", "ros", "simulator", "ui"] },
+    "authority": { "const": "derived_denial_only" },
+    "subject": { "$ref": "#/$defs/subject" },
+    "summary": { "$ref": "#/$defs/summary" },
+    "blockers": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "outputs": {
+      "oneOf": [
+        { "$ref": "#/$defs/hostOutputs" },
+        { "$ref": "#/$defs/rosOutputs" },
+        { "$ref": "#/$defs/simulatorOutputs" },
+        { "$ref": "#/$defs/uiOutputs" }
+      ]
+    },
+    "support_granted": { "const": false },
+    "physical_motion_authority": { "const": false }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "view_kind": { "const": "host" } } },
+      "then": {
+        "properties": {
+          "artifact_id": { "const": "dropbear-graph-projection-host" },
+          "outputs": { "$ref": "#/$defs/hostOutputs" }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "view_kind": { "const": "ros" } } },
+      "then": {
+        "properties": {
+          "artifact_id": { "const": "dropbear-graph-projection-ros" },
+          "outputs": { "$ref": "#/$defs/rosOutputs" }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "view_kind": { "const": "simulator" } } },
+      "then": {
+        "properties": {
+          "artifact_id": { "const": "dropbear-graph-projection-simulator" },
+          "outputs": { "$ref": "#/$defs/simulatorOutputs" }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "view_kind": { "const": "ui" } } },
+      "then": {
+        "properties": {
+          "artifact_id": { "const": "dropbear-graph-projection-ui" },
+          "outputs": { "$ref": "#/$defs/uiOutputs" }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "graph_review_status_sha256",
+        "inventory_sha256",
+        "canonical_configuration_digest",
+        "graph_decision_id"
+      ],
+      "properties": {
+        "graph_review_status_sha256": { "$ref": "#/$defs/sha256" },
+        "inventory_sha256": { "$ref": "#/$defs/sha256" },
+        "canonical_configuration_digest": { "$ref": "#/$defs/sha256" },
+        "graph_decision_id": {
+          "type": "string",
+          "pattern": "^graphdecision-[0-9a-f]{20}$"
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "question_count",
+        "unanswered_question_count",
+        "submitted_decision_count",
+        "accepted_graph_count",
+        "canonical_graph_count",
+        "runtime_ros_actuator_mapping_count",
+        "canonical_graph_admissible"
+      ],
+      "properties": {
+        "question_count": { "const": 161 },
+        "unanswered_question_count": { "const": 161 },
+        "submitted_decision_count": { "const": 0 },
+        "accepted_graph_count": { "const": 0 },
+        "canonical_graph_count": { "const": 0 },
+        "runtime_ros_actuator_mapping_count": { "const": 0 },
+        "canonical_graph_admissible": { "const": false }
+      }
+    },
+    "hostOutputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status_only",
+        "transform_count",
+        "actuator_mapping_count",
+        "command_handle_count"
+      ],
+      "properties": {
+        "status_only": { "const": true },
+        "transform_count": { "const": 0 },
+        "actuator_mapping_count": { "const": 0 },
+        "command_handle_count": { "const": 0 }
+      }
+    },
+    "rosOutputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status_only",
+        "urdf_fragment_count",
+        "transmission_count",
+        "ros2_control_hardware_mapping_count"
+      ],
+      "properties": {
+        "status_only": { "const": true },
+        "urdf_fragment_count": { "const": 0 },
+        "transmission_count": { "const": 0 },
+        "ros2_control_hardware_mapping_count": { "const": 0 }
+      }
+    },
+    "simulatorOutputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status_only",
+        "authoritative_graph_count",
+        "physical_plant_count",
+        "actuator_mapping_count"
+      ],
+      "properties": {
+        "status_only": { "const": true },
+        "authoritative_graph_count": { "const": 0 },
+        "physical_plant_count": { "const": 0 },
+        "actuator_mapping_count": { "const": 0 }
+      }
+    },
+    "uiOutputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status_only",
+        "exposed_local_path_count",
+        "downloadable_runtime_description_count",
+        "actuator_mapping_count"
+      ],
+      "properties": {
+        "status_only": { "const": true },
+        "exposed_local_path_count": { "const": 0 },
+        "downloadable_runtime_description_count": { "const": 0 },
+        "actuator_mapping_count": { "const": 0 }
+      }
+    }
+  }
+}

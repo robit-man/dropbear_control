@@ -1,0 +1,187 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.dev/schemas/myactuator-cad-review-decision.schema.json",
+  "title": "Independent exact-configuration CAD semantic review decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_state",
+    "decision_id",
+    "configuration_id",
+    "variant_id",
+    "source_hashes",
+    "reviewer",
+    "disposition",
+    "member_review",
+    "unit_review",
+    "frame_review",
+    "joint_review",
+    "question_responses",
+    "redistribution_review",
+    "semantic_review_complete",
+    "support_granted"
+  ],
+  "properties": {
+    "schema_version": {"const": "myactuator-cad-review-decision/1"},
+    "record_state": {"enum": ["draft", "submitted"]},
+    "decision_id": {"type": "string", "pattern": "^caddecision-[0-9a-f]{20}$"},
+    "configuration_id": {"type": "string", "pattern": "^cadcfg-[0-9a-f]{20}$"},
+    "variant_id": {"type": "string", "pattern": "^step-[0-9a-f]{20}$"},
+    "source_hashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "step_sha256",
+        "inspection_sha256",
+        "review_packet_manifest_sha256",
+        "candidate_hypothesis_sha256",
+        "candidate_export_report_sha256"
+      ],
+      "properties": {
+        "step_sha256": {"$ref": "#/$defs/sha256"},
+        "inspection_sha256": {"$ref": "#/$defs/sha256"},
+        "review_packet_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "candidate_hypothesis_sha256": {"$ref": "#/$defs/sha256"},
+        "candidate_export_report_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "reviewer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reviewer_id", "independence_attested", "reviewed_at", "review_assertion", "signature_evidence_refs"],
+      "properties": {
+        "reviewer_id": {"type": ["string", "null"], "minLength": 1, "maxLength": 128},
+        "independence_attested": {"type": ["boolean", "null"]},
+        "reviewed_at": {"type": ["string", "null"], "format": "date-time"},
+        "review_assertion": {"type": ["string", "null"], "minLength": 1},
+        "signature_evidence_refs": {"$ref": "#/$defs/evidenceRefs"}
+      }
+    },
+    "disposition": {
+      "enum": [null, "accept_geometry", "amend_candidate", "reject_candidate", "needs_more_evidence"]
+    },
+    "member_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "housing_occurrences", "output_occurrences", "evidence_refs", "rationale"],
+      "properties": {
+        "status": {"enum": ["candidate", "reviewed"]},
+        "housing_occurrences": {"$ref": "#/$defs/occurrences"},
+        "output_occurrences": {"$ref": "#/$defs/occurrences"},
+        "evidence_refs": {"$ref": "#/$defs/evidenceRefs"},
+        "rationale": {"type": ["string", "null"], "minLength": 1}
+      }
+    },
+    "unit_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "source_length_unit", "scale_to_m", "evidence_refs", "override_rationale"],
+      "properties": {
+        "status": {"enum": ["candidate", "reviewed"]},
+        "source_length_unit": {"enum": ["millimetre", "metre", "inch"]},
+        "scale_to_m": {"type": "number", "exclusiveMinimum": 0},
+        "evidence_refs": {"$ref": "#/$defs/evidenceRefs"},
+        "override_rationale": {"type": ["string", "null"], "minLength": 1}
+      }
+    },
+    "frame_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "source_axis_unit", "origin_source_mm", "source_to_canonical", "origin_reference", "evidence_refs", "rationale"],
+      "properties": {
+        "status": {"enum": ["candidate", "reviewed"]},
+        "source_axis_unit": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {"type": "number"}
+        },
+        "origin_source_mm": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {"type": "number"}
+        },
+        "source_to_canonical": {
+          "type": "array",
+          "minItems": 16,
+          "maxItems": 16,
+          "items": {"type": "number"}
+        },
+        "origin_reference": {"type": "string", "minLength": 1},
+        "evidence_refs": {"$ref": "#/$defs/evidenceRefs"},
+        "rationale": {"type": ["string", "null"], "minLength": 1}
+      }
+    },
+    "joint_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "joint_type", "origin_m", "axis_unit", "positive_direction", "zero_definition", "physical_sign_resolved", "evidence_refs", "rationale"],
+      "properties": {
+        "status": {"enum": ["candidate", "reviewed"]},
+        "joint_type": {"enum": ["revolute", "continuous"]},
+        "origin_m": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {"type": "number"}
+        },
+        "axis_unit": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {"type": "number"}
+        },
+        "positive_direction": {"type": "string", "minLength": 1},
+        "zero_definition": {"type": "string", "minLength": 1},
+        "physical_sign_resolved": {"type": "boolean"},
+        "evidence_refs": {"$ref": "#/$defs/evidenceRefs"},
+        "rationale": {"type": ["string", "null"], "minLength": 1}
+      }
+    },
+    "question_responses": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/questionResponse"}
+    },
+    "redistribution_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "evidence_refs", "rationale"],
+      "properties": {
+        "status": {"enum": ["license_review_required", "local_only", "redistribution_approved", "redistribution_prohibited"]},
+        "evidence_refs": {"$ref": "#/$defs/evidenceRefs"},
+        "rationale": {"type": ["string", "null"], "minLength": 1}
+      }
+    },
+    "semantic_review_complete": {"type": "boolean"},
+    "support_granted": {"const": false}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "evidenceRefs": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1, "maxLength": 512},
+      "uniqueItems": true
+    },
+    "occurrences": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "pattern": "^NAUO[0-9]+$"},
+      "uniqueItems": true
+    },
+    "questionResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["question_sha256", "question", "resolution", "response", "evidence_refs"],
+      "properties": {
+        "question_sha256": {"$ref": "#/$defs/sha256"},
+        "question": {"type": "string", "minLength": 1},
+        "resolution": {"enum": ["unanswered", "resolved", "unresolved"]},
+        "response": {"type": ["string", "null"], "minLength": 1},
+        "evidence_refs": {"$ref": "#/$defs/evidenceRefs"}
+      }
+    }
+  }
+}

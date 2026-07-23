@@ -1,0 +1,58 @@
+{
+  "schema_version": "myactuator-cad-toolchain/1",
+  "evidence_date": "2026-07-22",
+  "environment": {
+    "machine": "x86_64",
+    "operating_system": "Linux",
+    "python_major_minor": "3.12"
+  },
+  "kernel": {
+    "binding": "cadquery-ocp",
+    "binding_version": "7.9.3.1.1",
+    "occt_version": "7.9.3.1"
+  },
+  "packages": {
+    "direct": "cadquery==2.8.0",
+    "requirements_lock": "requirements-cad-lock.txt",
+    "requirements_lock_sha256": "011cf7b6a22676e5e4ab0ca3ef1522e980331c209743488fe284721efe97af9a",
+    "wheel_lock": "tools/cad-wheel-lock.tsv",
+    "wheel_lock_sha256": "71957d2ad0afe2792cb0fc20c410e6f85e9e7c965fc7657c134ab0dfcdc52ea2",
+    "wheel_count": 44,
+    "pip_version_used": "26.1.1"
+  },
+  "step": {
+    "importer": "OpenCascade STEPCAF/STEPControl through CadQuery",
+    "export_unit": "MM",
+    "canonical_link_exports": ["housing.step", "output.step"]
+  },
+  "mesh": {
+    "occt_internal_length_unit": "MM",
+    "explicit_shape_scale_to_glb_metres": 0.001,
+    "linear_deflection_occt_mm": 0.05,
+    "linear_deflection_glb_metres": 0.00005,
+    "angular_deflection_radians": 0.1,
+    "glb_coordinate_unit": "metre",
+    "visual_links": ["housing.glb", "output.glb"],
+    "collision_link": "collision.glb"
+  },
+  "coordinate_contract": {
+    "canonical_length_unit": "metre",
+    "handedness": "right-handed",
+    "joint_axis_storage": "unit vector in canonical housing frame",
+    "joint_origin_storage": "metres in canonical housing frame",
+    "positive_rotation": "right-hand rule",
+    "glb_axis_conversion": "CadQuery/OCCT applies a root-axis rotation; metric scaling is performed explicitly on the B-Rep and verified from GLB accessors"
+  },
+  "authority_limits": {
+    "automatic_output_member_selection": false,
+    "automatic_axis_acceptance": false,
+    "plant_parameter_source": false,
+    "physical_support_evidence": false,
+    "redistribution_approval": false
+  },
+  "upstream_references": [
+    "https://cadquery.readthedocs.io/en/latest/importexport.html",
+    "https://cadquery.readthedocs.io/en/stable/installation.html",
+    "https://pypi.org/project/cadquery/"
+  ]
+}

@@ -1,0 +1,402 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.org/schemas/myactuator-calibration-registry.schema.json",
+  "title": "Exact-subject actuator/joint calibration registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "registry_id",
+    "registry_revision",
+    "authority",
+    "configuration",
+    "records",
+    "physical_admission",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": { "const": "myactuator-calibration-registry/1" },
+    "registry_id": { "$ref": "#/$defs/stableId" },
+    "registry_revision": { "type": "integer", "minimum": 1 },
+    "authority": { "const": "reviewed_records_only" },
+    "configuration": { "$ref": "#/$defs/configurationIdentity" },
+    "records": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/calibrationRecord" }
+    },
+    "physical_admission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["accepted_physical_record_count", "motion_enable_allowed", "blockers"],
+      "properties": {
+        "accepted_physical_record_count": { "type": "integer", "minimum": 0 },
+        "motion_enable_allowed": { "const": false },
+        "blockers": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/nonemptyString" },
+          "uniqueItems": true
+        }
+      }
+    },
+    "integrity": { "$ref": "#/$defs/integrity" }
+  },
+  "$defs": {
+    "nonemptyString": { "type": "string", "minLength": 1, "maxLength": 160 },
+    "stableId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+      "maxLength": 96
+    },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "utcTimestamp": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]{1,9})?Z$"
+    },
+    "configurationIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["configuration_id", "configuration_revision", "canonical_digest"],
+      "properties": {
+        "configuration_id": { "$ref": "#/$defs/stableId" },
+        "configuration_revision": { "type": "integer", "minimum": 1 },
+        "canonical_digest": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "exactTuple": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "manufacturer",
+        "series",
+        "model",
+        "hardware_revision",
+        "drive_firmware",
+        "protocol_name",
+        "protocol_revision",
+        "transport",
+        "control_mode"
+      ],
+      "properties": {
+        "manufacturer": { "$ref": "#/$defs/nonemptyString" },
+        "series": { "$ref": "#/$defs/nonemptyString" },
+        "model": { "$ref": "#/$defs/nonemptyString" },
+        "hardware_revision": { "$ref": "#/$defs/nonemptyString" },
+        "drive_firmware": { "$ref": "#/$defs/nonemptyString" },
+        "protocol_name": { "$ref": "#/$defs/nonemptyString" },
+        "protocol_revision": { "$ref": "#/$defs/nonemptyString" },
+        "transport": { "$ref": "#/$defs/nonemptyString" },
+        "control_mode": { "$ref": "#/$defs/nonemptyString" }
+      }
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "robot_id",
+        "robot_hardware_revision",
+        "canonical_joint_name",
+        "actuator_id",
+        "installed_actuator_serial",
+        "exact_tuple",
+        "bus_id",
+        "native_node_id",
+        "sensor_id",
+        "sensor_kind",
+        "sensor_serial",
+        "configuration"
+      ],
+      "properties": {
+        "robot_id": { "$ref": "#/$defs/stableId" },
+        "robot_hardware_revision": { "$ref": "#/$defs/nonemptyString" },
+        "canonical_joint_name": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$", "maxLength": 96 },
+        "actuator_id": { "$ref": "#/$defs/stableId" },
+        "installed_actuator_serial": { "$ref": "#/$defs/nonemptyString" },
+        "exact_tuple": { "$ref": "#/$defs/exactTuple" },
+        "bus_id": { "$ref": "#/$defs/stableId" },
+        "native_node_id": { "type": "integer", "minimum": 1, "maximum": 32 },
+        "sensor_id": { "$ref": "#/$defs/stableId" },
+        "sensor_kind": { "enum": ["external_absolute", "external_incremental", "native_motor", "native_output"] },
+        "sensor_serial": { "$ref": "#/$defs/nonemptyString" },
+        "configuration": { "$ref": "#/$defs/configurationIdentity" }
+      }
+    },
+    "wrap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "raw_period", "canonical_period_rad", "canonical_interval"],
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "raw_period": { "type": ["number", "null"], "exclusiveMinimum": 0 },
+        "canonical_period_rad": { "type": ["number", "null"], "exclusiveMinimum": 0 },
+        "canonical_interval": { "enum": ["none", "zero_to_period", "centered"] }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "enabled": { "const": true } }, "required": ["enabled"] },
+          "then": {
+            "properties": {
+              "raw_period": { "type": "number", "exclusiveMinimum": 0 },
+              "canonical_period_rad": { "type": "number", "exclusiveMinimum": 0 },
+              "canonical_interval": { "enum": ["zero_to_period", "centered"] }
+            }
+          },
+          "else": {
+            "properties": {
+              "raw_period": { "type": "null" },
+              "canonical_period_rad": { "type": "null" },
+              "canonical_interval": { "const": "none" }
+            }
+          }
+        }
+      ]
+    },
+    "coordinates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "raw_unit",
+        "raw_zero",
+        "joint_zero_rad",
+        "native_output_zero_rad",
+        "raw_to_joint_scale_rad_per_unit",
+        "motor_to_joint_sign",
+        "output_per_motor_ratio",
+        "canonical_joint_positive_definition",
+        "wrap"
+      ],
+      "properties": {
+        "raw_unit": { "enum": ["count", "volt", "radian", "degree"] },
+        "raw_zero": { "type": "number" },
+        "joint_zero_rad": { "type": "number" },
+        "native_output_zero_rad": { "type": "number" },
+        "raw_to_joint_scale_rad_per_unit": { "type": "number", "not": { "const": 0 } },
+        "motor_to_joint_sign": { "enum": [-1, 1] },
+        "output_per_motor_ratio": { "type": "number", "exclusiveMinimum": 0 },
+        "canonical_joint_positive_definition": { "$ref": "#/$defs/nonemptyString" },
+        "wrap": { "$ref": "#/$defs/wrap" }
+      }
+    },
+    "tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tool_id", "tool_type", "serial", "version", "calibration_due_at"],
+      "properties": {
+        "tool_id": { "$ref": "#/$defs/stableId" },
+        "tool_type": { "$ref": "#/$defs/nonemptyString" },
+        "serial": { "$ref": "#/$defs/nonemptyString" },
+        "version": { "$ref": "#/$defs/nonemptyString" },
+        "calibration_due_at": {
+          "oneOf": [{ "$ref": "#/$defs/utcTimestamp" }, { "type": "null" }]
+        }
+      }
+    },
+    "sourceArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "path_or_uri", "sha256", "authority"],
+      "properties": {
+        "artifact_id": { "$ref": "#/$defs/stableId" },
+        "path_or_uri": { "$ref": "#/$defs/nonemptyString" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "authority": { "enum": ["procedure", "measurement", "fixture", "configuration", "manual"] }
+      }
+    },
+    "procedure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "procedure_id",
+        "procedure_revision",
+        "method",
+        "fixture_reference",
+        "operator_id",
+        "recorded_at",
+        "environment",
+        "tools",
+        "source_artifacts"
+      ],
+      "properties": {
+        "procedure_id": { "$ref": "#/$defs/stableId" },
+        "procedure_revision": { "type": "integer", "minimum": 1 },
+        "method": { "$ref": "#/$defs/nonemptyString" },
+        "fixture_reference": { "$ref": "#/$defs/nonemptyString" },
+        "operator_id": { "$ref": "#/$defs/stableId" },
+        "recorded_at": { "$ref": "#/$defs/utcTimestamp" },
+        "environment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["temperature_c", "supply_voltage_v", "robot_support_state"],
+          "properties": {
+            "temperature_c": { "type": "number" },
+            "supply_voltage_v": { "type": "number", "minimum": 0 },
+            "robot_support_state": { "$ref": "#/$defs/nonemptyString" }
+          }
+        },
+        "tools": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/tool" } },
+        "source_artifacts": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/sourceArtifact" } }
+      }
+    },
+    "sample": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sample_index", "raw_value", "reference_joint_rad", "residual_rad"],
+      "properties": {
+        "sample_index": { "type": "integer", "minimum": 0 },
+        "raw_value": { "type": "number" },
+        "reference_joint_rad": { "type": "number" },
+        "residual_rad": { "type": "number" }
+      }
+    },
+    "measurements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "samples",
+        "uncertainty_rad",
+        "max_absolute_residual_rad",
+        "repeatability_rad",
+        "acceptance_max_residual_rad",
+        "acceptance_max_uncertainty_rad",
+        "acceptance_passed"
+      ],
+      "properties": {
+        "samples": { "type": "array", "minItems": 3, "items": { "$ref": "#/$defs/sample" } },
+        "uncertainty_rad": { "type": "number", "minimum": 0 },
+        "max_absolute_residual_rad": { "type": "number", "minimum": 0 },
+        "repeatability_rad": { "type": "number", "minimum": 0 },
+        "acceptance_max_residual_rad": { "type": "number", "minimum": 0 },
+        "acceptance_max_uncertainty_rad": { "type": "number", "minimum": 0 },
+        "acceptance_passed": { "type": "boolean" }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reviewer_id", "reviewer_kind", "independent_of_operator", "reviewed_at", "disposition", "rationale"],
+      "properties": {
+        "reviewer_id": { "$ref": "#/$defs/stableId" },
+        "reviewer_kind": { "const": "identified_human" },
+        "independent_of_operator": { "const": true },
+        "reviewed_at": { "$ref": "#/$defs/utcTimestamp" },
+        "disposition": { "enum": ["accept", "reject", "revoke"] },
+        "rationale": { "$ref": "#/$defs/nonemptyString" }
+      }
+    },
+    "validity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["valid_from", "valid_until", "invalidation_conditions"],
+      "properties": {
+        "valid_from": { "$ref": "#/$defs/utcTimestamp" },
+        "valid_until": { "oneOf": [{ "$ref": "#/$defs/utcTimestamp" }, { "type": "null" }] },
+        "invalidation_conditions": {
+          "type": "array",
+          "minItems": 9,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "actuator_replaced",
+              "sensor_replaced",
+              "controller_replaced",
+              "native_node_reassigned",
+              "mechanical_disassembly",
+              "drive_firmware_changed",
+              "canonical_configuration_changed",
+              "coordinate_frame_changed",
+              "procedure_or_fixture_changed",
+              "validity_expired"
+            ]
+          }
+        }
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "canonicalization", "digest"],
+      "properties": {
+        "algorithm": { "const": "SHA-256" },
+        "canonicalization": { "const": "UTF-8 sorted-key compact JSON excluding integrity.digest" },
+        "digest": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "calibrationRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "record_schema_version",
+        "record_id",
+        "calibration_family_id",
+        "record_revision",
+        "supersedes_record_id",
+        "state",
+        "evidence_class",
+        "subject",
+        "coordinates",
+        "procedure",
+        "measurements",
+        "review",
+        "validity",
+        "integrity"
+      ],
+      "properties": {
+        "record_schema_version": { "const": "myactuator-calibration-record/1" },
+        "record_id": { "$ref": "#/$defs/stableId" },
+        "calibration_family_id": { "$ref": "#/$defs/stableId" },
+        "record_revision": { "type": "integer", "minimum": 1 },
+        "supersedes_record_id": { "oneOf": [{ "$ref": "#/$defs/stableId" }, { "type": "null" }] },
+        "state": { "enum": ["draft", "accepted", "rejected", "revoked"] },
+        "evidence_class": { "enum": ["synthetic_fixture", "physical_bench"] },
+        "subject": { "$ref": "#/$defs/subject" },
+        "coordinates": { "$ref": "#/$defs/coordinates" },
+        "procedure": { "$ref": "#/$defs/procedure" },
+        "measurements": { "$ref": "#/$defs/measurements" },
+        "review": { "oneOf": [{ "$ref": "#/$defs/review" }, { "type": "null" }] },
+        "validity": { "$ref": "#/$defs/validity" },
+        "integrity": { "$ref": "#/$defs/integrity" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "state": { "const": "draft" } }, "required": ["state"] },
+          "then": { "properties": { "review": { "type": "null" } } }
+        },
+        {
+          "if": { "properties": { "state": { "const": "accepted" } }, "required": ["state"] },
+          "then": {
+            "properties": {
+              "measurements": { "properties": { "acceptance_passed": { "const": true } }, "required": ["acceptance_passed"] },
+              "review": { "allOf": [{ "$ref": "#/$defs/review" }, { "properties": { "disposition": { "const": "accept" } } }] }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "state": { "const": "rejected" } }, "required": ["state"] },
+          "then": {
+            "properties": {
+              "review": {
+                "allOf": [
+                  { "$ref": "#/$defs/review" },
+                  { "properties": { "disposition": { "const": "reject" } } }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "state": { "const": "revoked" } }, "required": ["state"] },
+          "then": {
+            "properties": {
+              "review": {
+                "allOf": [
+                  { "$ref": "#/$defs/review" },
+                  { "properties": { "disposition": { "const": "revoke" } } }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

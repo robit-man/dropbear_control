@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.org/schemas/dropbear-readiness.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "artifact_id", "authority", "configuration", "sources", "summary", "actuators", "global_blockers"],
+  "properties": {
+    "schema_version": { "const": "dropbear-readiness/1" },
+    "artifact_id": { "const": "dropbear-actuator-readiness" },
+    "authority": { "const": "derived_denial_only" },
+    "configuration": { "$ref": "#/$defs/configuration" },
+    "sources": { "type": "array", "minItems": 4, "maxItems": 4, "items": { "$ref": "#/$defs/source" } },
+    "summary": { "$ref": "#/$defs/summary" },
+    "actuators": { "type": "array", "minItems": 12, "maxItems": 12, "items": { "$ref": "#/$defs/actuator" } },
+    "global_blockers": { "type": "array", "minItems": 5, "uniqueItems": true, "items": { "$ref": "#/$defs/text" } }
+  },
+  "$defs": {
+    "text": { "type": "string", "minLength": 1 },
+    "sha": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "configuration": {
+      "type": "object", "additionalProperties": false,
+      "required": ["configuration_id", "configuration_revision", "canonical_digest"],
+      "properties": { "configuration_id": { "$ref": "#/$defs/text" }, "configuration_revision": { "type": "integer", "minimum": 1 }, "canonical_digest": { "$ref": "#/$defs/sha" } }
+    },
+    "source": {
+      "type": "object", "additionalProperties": false, "required": ["path", "sha256"],
+      "properties": { "path": { "$ref": "#/$defs/text" }, "sha256": { "$ref": "#/$defs/sha" } }
+    },
+    "summary": {
+      "type": "object", "additionalProperties": false,
+      "required": ["actuator_count", "external_feedback_observation_count", "motion_ready_count", "materialized_route_count", "accepted_physical_calibration_count", "accepted_measured_limit_record_count", "reviewed_ros_actuation_mapping_count", "motion_enable_allowed"],
+      "properties": {
+        "actuator_count": { "const": 12 },
+        "external_feedback_observation_count": { "const": 10 },
+        "motion_ready_count": { "const": 0 },
+        "materialized_route_count": { "const": 0 },
+        "accepted_physical_calibration_count": { "const": 0 },
+        "accepted_measured_limit_record_count": { "const": 0 },
+        "reviewed_ros_actuation_mapping_count": { "const": 0 },
+        "motion_enable_allowed": { "const": false }
+      }
+    },
+    "dependency": {
+      "type": "object", "additionalProperties": false,
+      "required": ["dependency", "status", "evidence_ids"],
+      "properties": {
+        "dependency": { "enum": ["configuration_identity", "installed_actuator_identity", "native_protocol_applicability", "exclusive_runtime_route", "physical_calibration", "complete_limit_set", "external_feedback", "native_telemetry", "feedback_reconciliation_policy", "accepted_cad_binding", "reviewed_ros_actuation_mapping", "independent_safe_power", "hil_evidence"] },
+        "status": { "enum": ["verified_identity_only", "unverified_observation", "missing"] },
+        "evidence_ids": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/text" } }
+      }
+    },
+    "materialization": {
+      "type": "object", "additionalProperties": false,
+      "required": ["installed_tuple", "route", "calibration_record_id", "effective_limit_record_ids", "feedback_policy_id", "cad_binding_id", "ros_actuation_mapping_id"],
+      "properties": {
+        "installed_tuple": { "type": "null" }, "route": { "type": "null" }, "calibration_record_id": { "type": "null" },
+        "effective_limit_record_ids": { "type": "array", "maxItems": 0 }, "feedback_policy_id": { "type": "null" },
+        "cad_binding_id": { "type": "null" }, "ros_actuation_mapping_id": { "type": "null" }
+      }
+    },
+    "actuator": {
+      "type": "object", "additionalProperties": false,
+      "required": ["actuator_id", "canonical_joint_name", "chirality", "semantic_joint", "dependencies", "runtime_materialization", "motion_ready", "blockers"],
+      "properties": {
+        "actuator_id": { "$ref": "#/$defs/text" },
+        "canonical_joint_name": { "pattern": "^(left|right)_(hip_yaw|hip_roll|hip_pitch|knee|inner_calf|outer_calf)$", "type": "string" },
+        "chirality": { "enum": ["left", "right"] },
+        "semantic_joint": { "enum": ["hip_yaw", "hip_roll", "hip_pitch", "knee", "inner_calf", "outer_calf"] },
+        "dependencies": { "type": "array", "minItems": 13, "maxItems": 13, "items": { "$ref": "#/$defs/dependency" } },
+        "runtime_materialization": { "$ref": "#/$defs/materialization" },
+        "motion_ready": { "const": false },
+        "blockers": { "type": "array", "minItems": 11, "uniqueItems": true, "items": { "$ref": "#/$defs/text" } }
+      }
+    }
+  }
+}

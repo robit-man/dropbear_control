@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.org/schemas/myactuator-limit-registry.schema.json",
+  "title": "Exact-subject multi-provenance limit registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "registry_id", "registry_revision", "authority", "configuration", "records", "physical_admission", "integrity"],
+  "properties": {
+    "schema_version": { "const": "myactuator-limit-registry/1" },
+    "registry_id": { "$ref": "#/$defs/stableId" },
+    "registry_revision": { "type": "integer", "minimum": 1 },
+    "authority": { "const": "reviewed_exact_records_only" },
+    "configuration": { "$ref": "#/$defs/configuration" },
+    "records": { "type": "array", "items": { "$ref": "#/$defs/record" } },
+    "physical_admission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["accepted_measured_record_count", "motion_enable_allowed", "blockers"],
+      "properties": {
+        "accepted_measured_record_count": { "type": "integer", "minimum": 0 },
+        "motion_enable_allowed": { "const": false },
+        "blockers": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/nonemptyString" } }
+      }
+    },
+    "integrity": { "$ref": "#/$defs/integrity" }
+  },
+  "$defs": {
+    "nonemptyString": { "type": "string", "minLength": 1, "maxLength": 192 },
+    "stableId": { "type": "string", "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$", "maxLength": 96 },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "utc": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]{1,9})?Z$" },
+    "configuration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["configuration_id", "configuration_revision", "canonical_digest"],
+      "properties": {
+        "configuration_id": { "$ref": "#/$defs/stableId" },
+        "configuration_revision": { "type": "integer", "minimum": 1 },
+        "canonical_digest": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "exactTuple": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["manufacturer", "series", "model", "hardware_revision", "drive_firmware", "protocol_name", "protocol_revision", "transport", "control_mode"],
+      "properties": {
+        "manufacturer": { "$ref": "#/$defs/nonemptyString" },
+        "series": { "$ref": "#/$defs/nonemptyString" },
+        "model": { "$ref": "#/$defs/nonemptyString" },
+        "hardware_revision": { "$ref": "#/$defs/nonemptyString" },
+        "drive_firmware": { "$ref": "#/$defs/nonemptyString" },
+        "protocol_name": { "$ref": "#/$defs/nonemptyString" },
+        "protocol_revision": { "$ref": "#/$defs/nonemptyString" },
+        "transport": { "$ref": "#/$defs/nonemptyString" },
+        "control_mode": { "$ref": "#/$defs/nonemptyString" }
+      }
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["robot_id", "robot_hardware_revision", "canonical_joint_name", "actuator_id", "installed_actuator_serial", "exact_tuple", "bus_id", "native_node_id", "configuration"],
+      "properties": {
+        "robot_id": { "$ref": "#/$defs/stableId" },
+        "robot_hardware_revision": { "$ref": "#/$defs/nonemptyString" },
+        "canonical_joint_name": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$", "maxLength": 96 },
+        "actuator_id": { "$ref": "#/$defs/stableId" },
+        "installed_actuator_serial": { "$ref": "#/$defs/nonemptyString" },
+        "exact_tuple": { "$ref": "#/$defs/exactTuple" },
+        "bus_id": { "$ref": "#/$defs/stableId" },
+        "native_node_id": { "type": "integer", "minimum": 1, "maximum": 32 },
+        "configuration": { "$ref": "#/$defs/configuration" }
+      }
+    },
+    "envelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["supply_voltage_min_v", "supply_voltage_max_v", "temperature_min_c", "temperature_max_c", "speed_abs_max_rad_s"],
+      "properties": {
+        "supply_voltage_min_v": { "type": ["number", "null"], "minimum": 0 },
+        "supply_voltage_max_v": { "type": ["number", "null"], "minimum": 0 },
+        "temperature_min_c": { "type": ["number", "null"] },
+        "temperature_max_c": { "type": ["number", "null"] },
+        "speed_abs_max_rad_s": { "type": ["number", "null"], "minimum": 0 }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "path_or_uri", "sha256", "authority", "reviewer_id", "reviewer_kind", "reviewed_at"],
+      "properties": {
+        "artifact_id": { "$ref": "#/$defs/stableId" },
+        "path_or_uri": { "$ref": "#/$defs/nonemptyString" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "authority": { "enum": ["vendor_manual", "software_configuration", "physical_measurement", "runtime_derate_policy"] },
+        "reviewer_id": { "$ref": "#/$defs/stableId" },
+        "reviewer_kind": { "enum": ["identified_human", "runtime_controller"] },
+        "reviewed_at": { "$ref": "#/$defs/utc" }
+      }
+    },
+    "runtimeSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["generation", "sample_time_ns", "valid_until_ns", "reason_code", "policy_id", "policy_sha256"],
+      "properties": {
+        "generation": { "type": "integer", "minimum": 1, "maximum": 4294967295 },
+        "sample_time_ns": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+        "valid_until_ns": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+        "reason_code": { "$ref": "#/$defs/stableId" },
+        "policy_id": { "$ref": "#/$defs/stableId" },
+        "policy_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "canonicalization", "digest"],
+      "properties": {
+        "algorithm": { "const": "SHA-256" },
+        "canonicalization": { "const": "UTF-8 sorted-key compact JSON excluding integrity.digest" },
+        "digest": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record_schema_version", "record_id", "record_revision", "state", "provenance_class", "subject", "quantity", "coordinate", "direction", "si_unit", "bound_value", "control_modes", "operating_envelope", "valid_from", "valid_until", "evidence", "runtime_snapshot", "integrity"],
+      "properties": {
+        "record_schema_version": { "const": "myactuator-limit-record/1" },
+        "record_id": { "$ref": "#/$defs/stableId" },
+        "record_revision": { "type": "integer", "minimum": 1 },
+        "state": { "enum": ["draft", "accepted", "revoked"] },
+        "provenance_class": { "enum": ["vendor_rating", "software_command_limit", "measured_safe_robot_limit", "runtime_derate"] },
+        "subject": { "$ref": "#/$defs/subject" },
+        "quantity": { "enum": ["position", "velocity", "qaxis_current", "effort", "temperature", "voltage"] },
+        "coordinate": { "enum": ["motor", "output", "joint", "electrical", "thermal"] },
+        "direction": { "enum": ["lower", "upper", "magnitude"] },
+        "si_unit": { "enum": ["rad", "rad/s", "A", "N*m", "degC", "V"] },
+        "bound_value": { "type": "number" },
+        "control_modes": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["DISABLE", "CURRENT_Q", "POSITION", "VELOCITY", "EFFORT", "IMPEDANCE"] } },
+        "operating_envelope": { "$ref": "#/$defs/envelope" },
+        "valid_from": { "$ref": "#/$defs/utc" },
+        "valid_until": { "oneOf": [{ "$ref": "#/$defs/utc" }, { "type": "null" }] },
+        "evidence": { "$ref": "#/$defs/evidence" },
+        "runtime_snapshot": { "oneOf": [{ "$ref": "#/$defs/runtimeSnapshot" }, { "type": "null" }] },
+        "integrity": { "$ref": "#/$defs/integrity" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "provenance_class": { "const": "runtime_derate" } }, "required": ["provenance_class"] },
+          "then": { "properties": { "runtime_snapshot": { "$ref": "#/$defs/runtimeSnapshot" } } },
+          "else": { "properties": { "runtime_snapshot": { "type": "null" } } }
+        }
+      ]
+    }
+  }
+}

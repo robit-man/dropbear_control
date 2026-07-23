@@ -1,0 +1,14 @@
+{
+  "artifact_id": "myactuator-poppler-text-environment-lock",
+  "command": "pdftotext",
+  "command_arguments": [
+    "-bbox-layout",
+    "-enc",
+    "UTF-8"
+  ],
+  "expected_version": "24.02.0",
+  "physical_io": false,
+  "purpose": "Coordinate-preserving extraction from pinned local MYACTUATOR PDF sources",
+  "schema_version": "myactuator-poppler-text-environment-lock/1",
+  "support_granted": false
+}

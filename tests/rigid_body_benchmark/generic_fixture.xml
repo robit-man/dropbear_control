@@ -1,0 +1,98 @@
+<mujoco model="generic_rigid_body_fixture">
+  <compiler angle="radian" autolimits="true"/>
+  <option timestep="0.001"
+          gravity="0 0 -9.81"
+          integrator="implicitfast"
+          cone="elliptic"
+          iterations="100"
+          tolerance="1e-10"/>
+  <default>
+    <joint damping="0.02" armature="0.001"/>
+    <geom friction="0.9 0.01 0.001"
+          solref="0.01 1"
+          solimp="0.95 0.99 0.001"/>
+  </default>
+
+  <worldbody>
+    <geom name="ground" type="plane" size="1 1 0.1"/>
+
+    <!-- Independent contact fixture: a known box falls and settles on ground. -->
+    <body name="drop_body" pos="0.45 0 0.25">
+      <freejoint name="drop_free"/>
+      <geom name="drop_geom" type="box" size="0.04 0.04 0.04" mass="0.5"/>
+    </body>
+
+    <!-- Independent actuated hinge for command/state and integration tests. -->
+    <body name="drive_body" pos="0 -0.3 0.35">
+      <joint name="drive_joint"
+             type="hinge"
+             axis="0 1 0"
+             range="-1.2 1.2"/>
+      <geom type="capsule"
+            fromto="0 0 0 0 0 -0.2"
+            size="0.018"
+            mass="0.25"
+            contype="0"
+            conaffinity="0"/>
+    </body>
+
+    <!-- Two hinged branches plus a connect equality form a kinematic loop. -->
+    <body name="base" pos="0 0 0.35">
+      <geom type="box"
+            size="0.12 0.04 0.025"
+            mass="1"
+            contype="0"
+            conaffinity="0"/>
+      <body name="arm_a" pos="-0.1 0 0">
+        <joint name="joint_a"
+               type="hinge"
+               axis="0 1 0"
+               range="-1 1"/>
+        <geom type="capsule"
+              fromto="0 0 0 0 0 -0.22"
+              size="0.018"
+              mass="0.2"
+              contype="0"
+              conaffinity="0"/>
+      </body>
+      <body name="arm_b" pos="0.1 0 0">
+        <joint name="joint_b"
+               type="hinge"
+               axis="0 1 0"
+               range="-1 1"/>
+        <geom type="capsule"
+              fromto="0 0 0 0 0 -0.22"
+              size="0.018"
+              mass="0.2"
+              contype="0"
+              conaffinity="0"/>
+      </body>
+    </body>
+  </worldbody>
+
+  <equality>
+    <connect name="loop_closure"
+             body1="arm_a"
+             body2="arm_b"
+             anchor="0 0 0.15"
+             solref="0.002 1"/>
+  </equality>
+
+  <actuator>
+    <motor name="drive_motor"
+           joint="drive_joint"
+           gear="1"
+           ctrllimited="true"
+           ctrlrange="-1 1"/>
+    <motor name="loop_motor_a"
+           joint="joint_a"
+           gear="1"
+           ctrllimited="true"
+           ctrlrange="-0.1 0.1"/>
+    <motor name="loop_motor_b"
+           joint="joint_b"
+           gear="1"
+           ctrllimited="true"
+           ctrlrange="-0.1 0.1"/>
+  </actuator>
+</mujoco>

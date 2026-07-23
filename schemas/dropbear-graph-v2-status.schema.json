@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.org/schemas/dropbear-graph-v2-status.schema.json",
+  "title": "Structured Dropbear graph V2 status",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "authority",
+    "source",
+    "candidate",
+    "active_graph_decision_id",
+    "summary",
+    "blockers",
+    "support_granted",
+    "physical_motion_authority",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": { "const": "dropbear-graph-v2-status/1" },
+    "artifact_id": { "const": "dropbear-graph-v2-status" },
+    "authority": { "const": "derived_graph_lifecycle_status" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_registry_path",
+        "source_registry_sha256",
+        "source_registry_generation_sha256",
+        "v1_graph_path",
+        "v1_graph_sha256"
+      ],
+      "properties": {
+        "source_registry_path": {
+          "const": "generated/dropbear_source_registry_v2/registry.json"
+        },
+        "source_registry_sha256": { "$ref": "#/$defs/sha256" },
+        "source_registry_generation_sha256": { "$ref": "#/$defs/sha256" },
+        "v1_graph_path": {
+          "type": "string",
+          "pattern": "^generated/dropbear_graph_review/templates/graphdecision-[0-9a-f]{20}\\.json$"
+        },
+        "v1_graph_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256",
+        "decision_id",
+        "source_registry_generation_sha256"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^generated/dropbear_graph_v2/candidates/graphv2decision-[0-9a-f]{20}\\.json$"
+        },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "decision_id": {
+          "type": "string",
+          "pattern": "^graphv2decision-[0-9a-f]{20}$"
+        },
+        "source_registry_generation_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "active_graph_decision_id": {
+      "type": ["string", "null"],
+      "pattern": "^graphv2decision-[0-9a-f]{20}$"
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_count",
+        "submitted_count",
+        "accepted_count",
+        "canonical_graph_count",
+        "source_authority_active_count",
+        "v1_question_count",
+        "v1_unresolved_question_count",
+        "frame_count",
+        "coordinate_count",
+        "actuator_mapping_count",
+        "ros_mapping_count",
+        "canonical_graph_admissible"
+      ],
+      "properties": {
+        "candidate_count": { "const": 1 },
+        "submitted_count": { "const": 0 },
+        "accepted_count": { "const": 0 },
+        "canonical_graph_count": { "const": 0 },
+        "source_authority_active_count": { "const": 0 },
+        "v1_question_count": { "const": 161 },
+        "v1_unresolved_question_count": { "const": 161 },
+        "frame_count": { "const": 0 },
+        "coordinate_count": { "const": 0 },
+        "actuator_mapping_count": { "const": 0 },
+        "ros_mapping_count": { "const": 0 },
+        "canonical_graph_admissible": { "const": false }
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "minItems": 4,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "support_granted": { "const": false },
+    "physical_motion_authority": { "const": false },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record_sha256"],
+      "properties": {
+        "record_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

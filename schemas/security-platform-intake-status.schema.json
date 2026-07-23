@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.org/schemas/security-platform-intake-status.schema.json",
+  "title": "ESP32 security platform intake status",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "authority",
+    "source",
+    "profiles",
+    "selected_profile_id",
+    "summary",
+    "observed_capabilities",
+    "selected_capabilities",
+    "blockers",
+    "support_granted",
+    "physical_motion_authority",
+    "physical_io_enabled",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": { "const": "security-platform-intake-status/1" },
+    "artifact_id": { "const": "dropbear-security-platform-intake-status" },
+    "authority": { "const": "source_bound_profile_inventory_only" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "profile_schema_path",
+        "profile_schema_sha256",
+        "status_schema_path",
+        "status_schema_sha256"
+      ],
+      "properties": {
+        "profile_schema_path": {
+          "const": "schemas/security-platform-profile.schema.json"
+        },
+        "profile_schema_sha256": { "$ref": "#/$defs/sha256" },
+        "status_schema_path": {
+          "const": "schemas/security-platform-intake-status.schema.json"
+        },
+        "status_schema_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "profiles": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/entry" }
+    },
+    "selected_profile_id": {
+      "type": ["string", "null"],
+      "pattern": "^securityprofile-[0-9a-f]{20}$"
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "profile_count",
+        "observed_offline_profile_count",
+        "reviewed_target_profile_count",
+        "selected_profile_count",
+        "trust_anchor_count",
+        "key_assignment_count",
+        "private_key_material_count"
+      ],
+      "properties": {
+        "profile_count": { "type": "integer", "minimum": 1 },
+        "observed_offline_profile_count": { "type": "integer", "minimum": 0 },
+        "reviewed_target_profile_count": { "type": "integer", "minimum": 0 },
+        "selected_profile_count": { "type": "integer", "minimum": 0, "maximum": 1 },
+        "trust_anchor_count": { "type": "integer", "minimum": 0 },
+        "key_assignment_count": { "type": "integer", "minimum": 0 },
+        "private_key_material_count": { "const": 0 }
+      }
+    },
+    "observed_capabilities": { "$ref": "#/$defs/selectedCapabilities" },
+    "selected_capabilities": { "$ref": "#/$defs/selectedCapabilities" },
+    "blockers": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "support_granted": { "const": false },
+    "physical_motion_authority": { "const": false },
+    "physical_io_enabled": { "const": false },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record_sha256"],
+      "properties": {
+        "record_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "profile_id",
+        "path",
+        "sha256",
+        "record_state",
+        "board_id",
+        "platform_target",
+        "selection_requested",
+        "selected"
+      ],
+      "properties": {
+        "profile_id": {
+          "type": "string",
+          "pattern": "^securityprofile-[0-9a-f]{20}$"
+        },
+        "path": { "type": "string", "minLength": 1 },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "record_state": {
+          "enum": ["observed_offline", "reviewed_target"]
+        },
+        "board_id": { "const": "esp32dev" },
+        "platform_target": { "const": "esp32" },
+        "selection_requested": { "type": "boolean" },
+        "selected": { "type": "boolean" }
+      }
+    },
+    "selectedCapabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "secure_boot_enabled",
+        "flash_encryption_enabled",
+        "bootloader_anti_rollback_enabled",
+        "nvs_encryption_enabled",
+        "legacy_tls_enabled",
+        "authenticated_transport_adapter_present",
+        "signed_artifact_verifier_adapter_present",
+        "persistent_replay_adapter_present",
+        "durable_audit_adapter_present",
+        "ota_installer_adapter_present"
+      ],
+      "properties": {
+        "secure_boot_enabled": { "type": "boolean" },
+        "flash_encryption_enabled": { "type": "boolean" },
+        "bootloader_anti_rollback_enabled": { "type": "boolean" },
+        "nvs_encryption_enabled": { "type": "boolean" },
+        "legacy_tls_enabled": { "type": "boolean" },
+        "authenticated_transport_adapter_present": { "type": "boolean" },
+        "signed_artifact_verifier_adapter_present": { "type": "boolean" },
+        "persistent_replay_adapter_present": { "type": "boolean" },
+        "durable_audit_adapter_present": { "type": "boolean" },
+        "ota_installer_adapter_present": { "type": "boolean" }
+      }
+    }
+  }
+}

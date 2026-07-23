@@ -1,0 +1,476 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.dev/schemas/myactuator-plant-registry.schema.json",
+  "title": "MYACTUATOR sourced plant and simulation-backend registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "source_hashes",
+    "policy",
+    "summary",
+    "model_coverage",
+    "parameter_sets",
+    "backends"
+  ],
+  "properties": {
+    "schema_version": {"const": "myactuator-plant-registry/4"},
+    "source_hashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "catalog_sha256",
+        "parameter_set_registry_sha256",
+        "parameter_set_registry_generation_sha256",
+        "parameter_set_sha256",
+        "runtime_adapter_v1_registry_sha256",
+        "runtime_adapter_v1_registry_generation_sha256",
+        "runtime_adapter_v2_registry_sha256",
+        "runtime_adapter_v2_registry_generation_sha256",
+        "runtime_contract_sha256"
+      ],
+      "properties": {
+        "catalog_sha256": {"$ref": "#/$defs/sha256"},
+        "parameter_set_registry_sha256": {"$ref": "#/$defs/sha256"},
+        "parameter_set_registry_generation_sha256": {"$ref": "#/$defs/sha256"},
+        "parameter_set_sha256": {
+          "type": "object",
+          "propertyNames": {"pattern": "^plant-[a-z0-9][a-z0-9-]*$"},
+          "additionalProperties": {"$ref": "#/$defs/sha256"}
+        },
+        "runtime_adapter_v1_registry_sha256": {"$ref": "#/$defs/sha256"},
+        "runtime_adapter_v1_registry_generation_sha256": {"$ref": "#/$defs/sha256"},
+        "runtime_adapter_v2_registry_sha256": {"$ref": "#/$defs/sha256"},
+        "runtime_adapter_v2_registry_generation_sha256": {"$ref": "#/$defs/sha256"},
+        "runtime_contract_sha256": {
+          "type": "object",
+          "propertyNames": {"pattern": "^(?:plantruntime|plantruntimev2)-[0-9a-f]{20}$"},
+          "additionalProperties": {"$ref": "#/$defs/sha256"}
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "exact_applicability_required",
+        "parameter_source_required",
+        "si_units_required",
+        "bounded_uncertainty_required",
+        "operating_envelope_required",
+        "validation_class_required",
+        "lifecycle_reviewed_facts_only",
+        "accepted_protocol_applicability_required",
+        "hand_authored_parameter_sets_forbidden",
+        "exact_runtime_contract_required_for_loadability",
+        "single_active_runtime_contract_across_adapter_versions",
+        "unrepresentable_source_semantics_deny",
+        "toy_is_never_physical_plant",
+        "protocol_emulator_is_never_plant",
+        "backend_substitution_must_be_explicit",
+        "plant_does_not_grant_hardware_support"
+      ],
+      "properties": {
+        "exact_applicability_required": {"const": true},
+        "parameter_source_required": {"const": true},
+        "si_units_required": {"const": true},
+        "bounded_uncertainty_required": {"const": true},
+        "operating_envelope_required": {"const": true},
+        "validation_class_required": {"const": true},
+        "lifecycle_reviewed_facts_only": {"const": true},
+        "accepted_protocol_applicability_required": {"const": true},
+        "hand_authored_parameter_sets_forbidden": {"const": true},
+        "exact_runtime_contract_required_for_loadability": {"const": true},
+        "single_active_runtime_contract_across_adapter_versions": {"const": true},
+        "unrepresentable_source_semantics_deny": {"const": true},
+        "toy_is_never_physical_plant": {"const": true},
+        "protocol_emulator_is_never_plant": {"const": true},
+        "backend_substitution_must_be_explicit": {"const": true},
+        "plant_does_not_grant_hardware_support": {"const": true}
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "models",
+        "sourced_parameter_sets",
+        "runtime_loadable_parameter_sets",
+        "physically_validated_parameter_sets",
+        "backend_descriptors"
+      ],
+      "properties": {
+        "models": {"const": 44},
+        "sourced_parameter_sets": {"type": "integer", "minimum": 0},
+        "runtime_loadable_parameter_sets": {"type": "integer", "minimum": 0},
+        "physically_validated_parameter_sets": {"type": "integer", "minimum": 0},
+        "backend_descriptors": {"type": "integer", "minimum": 2}
+      }
+    },
+    "model_coverage": {
+      "type": "array",
+      "minItems": 44,
+      "maxItems": 44,
+      "items": {"$ref": "#/$defs/modelCoverage"}
+    },
+    "parameter_sets": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/parameterSet"}
+    },
+    "backends": {
+      "type": "array",
+      "minItems": 2,
+      "items": {"$ref": "#/$defs/backend"}
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+    "exactText": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!.*[?*\\[\\]{}]).+$"
+    },
+    "range": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "minimum",
+        "maximum",
+        "unit",
+        "uncertainty",
+        "source_refs",
+        "validation_class"
+      ],
+      "properties": {
+        "minimum": {"type": "number"},
+        "maximum": {"type": "number"},
+        "unit": {"type": "string", "minLength": 1},
+        "uncertainty": {"$ref": "#/$defs/uncertainty"},
+        "source_refs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^plantfact-[0-9a-f]{20}$"}
+        },
+        "validation_class": {
+          "enum": ["official_specification", "source_derived", "bench_identified", "hil_validated", "robot_validated"]
+        }
+      }
+    },
+    "uncertainty": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "lower", "upper", "unit", "coverage_probability"],
+      "properties": {
+        "kind": {"enum": ["bounded_interval", "uniform_interval", "normal_confidence_interval"]},
+        "lower": {"type": "number"},
+        "upper": {"type": "number"},
+        "unit": {"type": "string", "minLength": 1},
+        "coverage_probability": {"type": "number", "exclusiveMinimum": 0, "maximum": 1}
+      }
+    },
+    "parameter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "value",
+        "unit",
+        "uncertainty",
+        "source_refs",
+        "applicability_envelope_refs",
+        "validation_class"
+      ],
+      "properties": {
+        "value": {"type": "number"},
+        "unit": {"type": "string", "minLength": 1},
+        "uncertainty": {"$ref": "#/$defs/uncertainty"},
+        "source_refs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/id"}
+        },
+        "applicability_envelope_refs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/id"}
+        },
+        "validation_class": {
+          "enum": ["official_specification", "source_derived", "bench_identified", "hil_validated", "robot_validated"]
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_id", "kind", "locator", "revision", "sha256", "claim_scope", "acquired_at_utc"],
+      "properties": {
+        "source_id": {"$ref": "#/$defs/id"},
+        "kind": {"enum": ["reviewed_source_fact", "official_datasheet", "official_curve", "official_protocol", "bench_measurement", "hil_measurement", "robot_measurement"]},
+        "locator": {"type": "string", "minLength": 1},
+        "revision": {"$ref": "#/$defs/exactText"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "claim_scope": {"type": "string", "minLength": 1},
+        "acquired_at_utc": {"type": "string", "format": "date-time"}
+      }
+    },
+    "applicability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["series", "model", "hardware_revision", "drive_firmware", "protocol_version", "transport", "control_mode"],
+      "properties": {
+        "series": {"$ref": "#/$defs/exactText"},
+        "model": {"$ref": "#/$defs/exactText"},
+        "hardware_revision": {"$ref": "#/$defs/exactText"},
+        "drive_firmware": {"$ref": "#/$defs/exactText"},
+        "protocol_version": {"$ref": "#/$defs/exactText"},
+        "transport": {"$ref": "#/$defs/exactText"},
+        "control_mode": {"$ref": "#/$defs/exactText"}
+      }
+    },
+    "operatingEnvelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["envelope_id", "supply_voltage_v", "ambient_temperature_k", "output_speed_rad_s", "output_torque_nm", "rotation_direction"],
+      "properties": {
+        "envelope_id": {"$ref": "#/$defs/id"},
+        "supply_voltage_v": {"$ref": "#/$defs/range"},
+        "ambient_temperature_k": {"$ref": "#/$defs/range"},
+        "output_speed_rad_s": {"$ref": "#/$defs/range"},
+        "output_torque_nm": {"$ref": "#/$defs/range"},
+        "rotation_direction": {"enum": ["positive", "negative", "bidirectional"]}
+      }
+    },
+    "electrical": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["phase_resistance_ohm", "phase_inductance_h", "torque_constant_nm_per_a", "back_emf_v_s_per_rad", "max_qaxis_current_a"],
+      "properties": {
+        "phase_resistance_ohm": {"$ref": "#/$defs/parameter"},
+        "phase_inductance_h": {"$ref": "#/$defs/parameter"},
+        "torque_constant_nm_per_a": {"$ref": "#/$defs/parameter"},
+        "back_emf_v_s_per_rad": {"$ref": "#/$defs/parameter"},
+        "max_qaxis_current_a": {"$ref": "#/$defs/parameter"}
+      }
+    },
+    "mechanical": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rotor_inertia_kg_m2", "output_inertia_kg_m2", "coulomb_friction_nm", "viscous_friction_nm_s_per_rad"],
+      "properties": {
+        "rotor_inertia_kg_m2": {"$ref": "#/$defs/parameter"},
+        "output_inertia_kg_m2": {"$ref": "#/$defs/parameter"},
+        "coulomb_friction_nm": {"$ref": "#/$defs/parameter"},
+        "viscous_friction_nm_s_per_rad": {"$ref": "#/$defs/parameter"}
+      }
+    },
+    "transmission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ratio_motor_per_output", "forward_efficiency_ratio", "reverse_efficiency_ratio", "torsional_stiffness_nm_per_rad", "backlash_rad"],
+      "properties": {
+        "ratio_motor_per_output": {"$ref": "#/$defs/parameter"},
+        "forward_efficiency_ratio": {"$ref": "#/$defs/parameter"},
+        "reverse_efficiency_ratio": {"$ref": "#/$defs/parameter"},
+        "torsional_stiffness_nm_per_rad": {"$ref": "#/$defs/parameter"},
+        "backlash_rad": {"$ref": "#/$defs/parameter"}
+      }
+    },
+    "saturation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_motor_speed_rad_s", "max_output_speed_rad_s", "max_continuous_output_torque_nm", "max_peak_output_torque_nm", "peak_duration_s"],
+      "properties": {
+        "max_motor_speed_rad_s": {"$ref": "#/$defs/parameter"},
+        "max_output_speed_rad_s": {"$ref": "#/$defs/parameter"},
+        "max_continuous_output_torque_nm": {"$ref": "#/$defs/parameter"},
+        "max_peak_output_torque_nm": {"$ref": "#/$defs/parameter"},
+        "peak_duration_s": {"$ref": "#/$defs/parameter"}
+      }
+    },
+    "thermal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["winding_resistance_k_per_w", "case_resistance_k_per_w", "winding_heat_capacity_j_per_k", "case_heat_capacity_j_per_k", "max_winding_temperature_k", "max_case_temperature_k"],
+      "properties": {
+        "winding_resistance_k_per_w": {"$ref": "#/$defs/parameter"},
+        "case_resistance_k_per_w": {"$ref": "#/$defs/parameter"},
+        "winding_heat_capacity_j_per_k": {"$ref": "#/$defs/parameter"},
+        "case_heat_capacity_j_per_k": {"$ref": "#/$defs/parameter"},
+        "max_winding_temperature_k": {"$ref": "#/$defs/parameter"},
+        "max_case_temperature_k": {"$ref": "#/$defs/parameter"}
+      }
+    },
+    "sensor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["position_quantization_rad", "position_noise_stddev_rad", "velocity_noise_stddev_rad_s", "current_noise_stddev_a"],
+      "properties": {
+        "position_quantization_rad": {"$ref": "#/$defs/parameter"},
+        "position_noise_stddev_rad": {"$ref": "#/$defs/parameter"},
+        "velocity_noise_stddev_rad_s": {"$ref": "#/$defs/parameter"},
+        "current_noise_stddev_a": {"$ref": "#/$defs/parameter"}
+      }
+    },
+    "latency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["command_delay_s", "current_loop_period_s", "state_sample_period_s", "feedback_delay_s", "delay_jitter_s"],
+      "properties": {
+        "command_delay_s": {"$ref": "#/$defs/parameter"},
+        "current_loop_period_s": {"$ref": "#/$defs/parameter"},
+        "state_sample_period_s": {"$ref": "#/$defs/parameter"},
+        "feedback_delay_s": {"$ref": "#/$defs/parameter"},
+        "delay_jitter_s": {"$ref": "#/$defs/parameter"}
+      }
+    },
+    "parameterGroups": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["electrical", "mechanical", "transmission", "saturation", "thermal", "sensor", "latency"],
+      "properties": {
+        "electrical": {"$ref": "#/$defs/electrical"},
+        "mechanical": {"$ref": "#/$defs/mechanical"},
+        "transmission": {"$ref": "#/$defs/transmission"},
+        "saturation": {"$ref": "#/$defs/saturation"},
+        "thermal": {"$ref": "#/$defs/thermal"},
+        "sensor": {"$ref": "#/$defs/sensor"},
+        "latency": {"$ref": "#/$defs/latency"}
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["class", "evidence_refs", "scenario_ids", "validated_at_utc"],
+      "properties": {
+        "class": {"enum": ["source_only", "bench_correlated", "hil_correlated", "robot_correlated"]},
+        "evidence_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "scenario_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+        "validated_at_utc": {"type": ["string", "null"], "format": "date-time"}
+      }
+    },
+    "assembly": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "assembly_registry_artifact_id",
+        "assembly_registry_generation_sha256",
+        "protocol_applicability_registry_sha256",
+        "accepted_protocol_decision_ids",
+        "candidate_decision_registry_sha256",
+        "candidate_decision_registry_generation_sha256",
+        "source_fact_ids",
+        "source_fact_sha256",
+        "source_fact_set_sha256",
+        "materializer_sha256",
+        "physical_correlation_evidence_present"
+      ],
+      "properties": {
+        "assembly_registry_artifact_id": {
+          "const": "myactuator-plant-parameter-set-registry"
+        },
+        "assembly_registry_generation_sha256": {"$ref": "#/$defs/sha256"},
+        "protocol_applicability_registry_sha256": {"$ref": "#/$defs/sha256"},
+        "accepted_protocol_decision_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^protocoldecision-[0-9a-f]{20}$"}
+        },
+        "candidate_decision_registry_sha256": {"$ref": "#/$defs/sha256"},
+        "candidate_decision_registry_generation_sha256": {"$ref": "#/$defs/sha256"},
+        "source_fact_ids": {
+          "type": "array",
+          "minItems": 38,
+          "maxItems": 38,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^plantfact-[0-9a-f]{20}$"}
+        },
+        "source_fact_sha256": {
+          "type": "object",
+          "minProperties": 38,
+          "maxProperties": 38,
+          "propertyNames": {"pattern": "^plantfact-[0-9a-f]{20}$"},
+          "additionalProperties": {"$ref": "#/$defs/sha256"}
+        },
+        "source_fact_set_sha256": {"$ref": "#/$defs/sha256"},
+        "materializer_sha256": {"$ref": "#/$defs/sha256"},
+        "physical_correlation_evidence_present": {"const": false}
+      }
+    },
+    "parameterSet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["plant_id", "parameter_revision", "status", "runtime_loadable", "runtime_adapter_id", "runtime_contract_id", "support_granted", "physical_motion_authority", "applicability", "model_forms", "sources", "operating_envelopes", "parameters", "validation", "assembly"],
+      "properties": {
+        "plant_id": {"type": "string", "pattern": "^plant-[a-z0-9][a-z0-9-]*$"},
+        "parameter_revision": {"type": "integer", "minimum": 1},
+        "status": {"enum": ["sourced", "bench_calibrated", "hil_validated", "robot_validated"]},
+        "runtime_loadable": {"type": "boolean"},
+        "runtime_adapter_id": {
+          "type": ["string", "null"],
+          "pattern": "^plant-adapter-[a-z0-9][a-z0-9-]*$"
+        },
+        "runtime_contract_id": {
+          "type": ["string", "null"],
+          "pattern": "^(?:plantruntime|plantruntimev2)-[0-9a-f]{20}$"
+        },
+        "support_granted": {"const": false},
+        "physical_motion_authority": {"const": false},
+        "applicability": {"$ref": "#/$defs/applicability"},
+        "model_forms": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["electrical", "mechanical", "transmission", "friction_backlash", "saturation", "thermal", "sensor", "latency", "integrator"],
+          "properties": {
+            "electrical": {"const": "dq-lumped-v1"},
+            "mechanical": {"const": "two-inertia-output-v1"},
+            "transmission": {"const": "ratio-efficiency-compliance-v1"},
+            "friction_backlash": {"const": "coulomb-viscous-deadzone-v1"},
+            "saturation": {"const": "current-speed-torque-duration-v1"},
+            "thermal": {"const": "two-node-rc-v1"},
+            "sensor": {"const": "quantized-biased-noisy-v1"},
+            "latency": {"const": "bounded-delay-jitter-v1"},
+            "integrator": {"enum": ["semi-implicit-euler-v1", "rk4-fixed-step-v1"]}
+          }
+        },
+        "sources": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/source"}},
+        "operating_envelopes": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/operatingEnvelope"}},
+        "parameters": {"$ref": "#/$defs/parameterGroups"},
+        "validation": {"$ref": "#/$defs/validation"},
+        "assembly": {"$ref": "#/$defs/assembly"}
+      }
+    },
+    "modelCoverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["series", "model", "status", "plant_ids", "denial_reason"],
+      "properties": {
+        "series": {"type": "string", "minLength": 1},
+        "model": {"type": "string", "minLength": 1},
+        "status": {"enum": ["unsupported", "sourced", "partially_validated", "validated"]},
+        "plant_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^plant-[a-z0-9][a-z0-9-]*$"}},
+        "denial_reason": {"type": ["string", "null"], "minLength": 1}
+      }
+    },
+    "backend": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["backend_id", "kind", "evidence_class", "runtime_loadable", "models_physical_dynamics", "physically_validated", "parameter_set_id", "runtime_contract_id", "substitution_scope"],
+      "properties": {
+        "backend_id": {"$ref": "#/$defs/id"},
+        "kind": {"enum": ["recorded_replay", "protocol_emulator", "toy_demo", "synthetic_actuator_plant", "actuator_plant", "rigid_body", "physical_adapter"]},
+        "evidence_class": {"enum": ["offline-replay", "sil-protocol", "synthetic-demo-no-physical-fidelity", "synthetic-test-equations-no-real-parameter-fidelity", "descriptor-only-no-canonical-graph-or-assets", "sil-plant-sourced", "sil-plant-bench-correlated", "sil-plant-hil-correlated", "sil-robot", "physical-hardware"]},
+        "runtime_loadable": {"type": "boolean"},
+        "models_physical_dynamics": {"type": "boolean"},
+        "physically_validated": {"type": "boolean"},
+        "parameter_set_id": {"type": ["string", "null"], "pattern": "^plant-[a-z0-9][a-z0-9-]*$"},
+        "runtime_contract_id": {"type": ["string", "null"], "pattern": "^(?:plantruntime|plantruntimev2)-[0-9a-f]{20}$"},
+        "substitution_scope": {"enum": ["host-state-replay-only", "native-protocol-only", "browser-visualization-only", "offline-controller-and-sil-tests-only", "single-actuator-mechanics", "whole-robot-mechanics", "physical-io"]}
+      }
+    }
+  }
+}

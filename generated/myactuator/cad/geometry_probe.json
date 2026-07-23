@@ -1,0 +1,3041 @@
+{
+  "evidence_class": "offline-cad-import",
+  "inspection_report_sha256": "f898802c65256c33836358af826e27462660e41975422c272b9f85a2f4acc3f9",
+  "schema_version": "myactuator-step-geometry-probe/1",
+  "source_geometry_interpreted_semantically": false,
+  "summary": {
+    "closed_solid_variants": 48,
+    "imports_succeeded": 53,
+    "models": 44,
+    "no_closed_solid_variants": 5,
+    "supported_models": 0,
+    "unique_geometries_probed": 48,
+    "valid_topologies": 53,
+    "variants": 53,
+    "visual_tessellation_candidates": 53
+  },
+  "toolchain_lock_sha256": "46b5e4e568fbdd31ea0cb4614add55c33d16873337d50350371b1e53a22ea0fc",
+  "variants": [
+    {
+      "bytes": 4339662,
+      "closed_solid_volume_mm3": 278404.035283715,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "assembly",
+      "member_identity_preserved": false,
+      "model": "X12-320",
+      "occt_internal_bbox_mm": {
+        "diagonal": 194.87688451,
+        "max": [
+          62.0000001,
+          76.5000001,
+          62.0000001
+        ],
+        "min": [
+          -62.0000001,
+          -8.5,
+          -62.0000001
+        ],
+        "size": [
+          124.0000002,
+          85.0000001,
+          124.0000002
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-X",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "9b1710aef09916c8da02b4e6b750da6bbfe2ba44cad6ba03cd1b53e3858e5eea",
+      "surface_area_mm2": 194285.295591476,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 4753,
+        "faces": 1833,
+        "shells": 18,
+        "solids": 18,
+        "vertices": 3086,
+        "wires": 2079
+      },
+      "valid": true,
+      "variant_id": "step-e7d99e7e0d9683017c1a",
+      "vendor_relative_path": "RMD-X/X12-320/vendor/RMD-X12-P20-320 \u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "bytes": 4384201,
+      "closed_solid_volume_mm3": 55917.378963795,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "assembly",
+      "member_identity_preserved": false,
+      "model": "X6-60",
+      "occt_internal_bbox_mm": {
+        "diagonal": 131.743121557,
+        "max": [
+          40.0000001,
+          67.5,
+          40.0000001
+        ],
+        "min": [
+          -40.0000001,
+          -1e-07,
+          -40.0000001
+        ],
+        "size": [
+          80.0000002,
+          67.5000001,
+          80.0000002
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-X",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "7aa150d5ea2d1b81136e4925dd96045c2d3d0a0b9f7d444cb3a02084c88e9cdd",
+      "surface_area_mm2": 84072.203634676,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 4219,
+        "faces": 1661,
+        "shells": 36,
+        "solids": 23,
+        "vertices": 2717,
+        "wires": 1902
+      },
+      "valid": true,
+      "variant_id": "step-fefa2b9ccb0a532dda95",
+      "vendor_relative_path": "RMD-X/X6-60/vendor/RMD-X6-P20-60 \u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "bytes": 5178717,
+      "closed_solid_volume_mm3": 471955.554460007,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "assembly",
+      "member_identity_preserved": false,
+      "model": "X15-450",
+      "occt_internal_bbox_mm": {
+        "diagonal": 251.419967421,
+        "max": [
+          83.0,
+          93.0,
+          83.0
+        ],
+        "min": [
+          -83.0,
+          2.9999999,
+          -83.0
+        ],
+        "size": [
+          166.0,
+          90.0000001,
+          166.0
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-X",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "707843e9e9b5d3406f607c9e89d63f87bd13adde82f80d7ab55cd3ca36c40988",
+      "surface_area_mm2": 360874.362032671,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 6510,
+        "faces": 2576,
+        "shells": 29,
+        "solids": 29,
+        "vertices": 4126,
+        "wires": 2946
+      },
+      "valid": true,
+      "variant_id": "step-6c143229f6a28e492bf2",
+      "vendor_relative_path": "RMD-X/X15-450/vendor/RMD-X15-P20-450 \u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "bytes": 1921263,
+      "closed_solid_volume_mm3": 39687.159556634,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "assembly",
+      "member_identity_preserved": false,
+      "model": "X4-36",
+      "occt_internal_bbox_mm": {
+        "diagonal": 98.84837547,
+        "max": [
+          27.500005928,
+          57.5,
+          27.500000132
+        ],
+        "min": [
+          -27.500000132,
+          -3.5,
+          -27.500005928
+        ],
+        "size": [
+          55.00000606,
+          61.0,
+          55.00000606
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-X",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "c20260bf8faf780d9bdd4599f7cc973bf42951f683b1b953af6082ff7c5ef51c",
+      "surface_area_mm2": 49798.714330515,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 2392,
+        "faces": 1035,
+        "shells": 20,
+        "solids": 20,
+        "vertices": 1476,
+        "wires": 1192
+      },
+      "valid": true,
+      "variant_id": "step-a445ee72b425d35404f4",
+      "vendor_relative_path": "RMD-X/X4-36/vendor/RMD-X4-P36-36 \u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "bytes": 362233,
+      "closed_solid_volume_mm3": 117557.9650632,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "flattened",
+      "member_identity_preserved": false,
+      "model": "X6-7",
+      "occt_internal_bbox_mm": {
+        "diagonal": 113.999964635,
+        "max": [
+          768.999325317,
+          409.025310362,
+          37.999998778
+        ],
+        "min": [
+          730.999421637,
+          333.025312806,
+          -37.999998778
+        ],
+        "size": [
+          37.99990368,
+          75.999997556,
+          75.999997556
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-X",
+      "shape_type": "Solid",
+      "simulation_supported": false,
+      "step_sha256": "3054c529935d1bdf650d6e156f597701403f06039434710f3281135b7fabea3c",
+      "surface_area_mm2": 24620.823500624,
+      "topology": {
+        "compounds": 0,
+        "compsolids": 0,
+        "edges": 342,
+        "faces": 150,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 219,
+        "wires": 179
+      },
+      "valid": true,
+      "variant_id": "step-e260e80fe3f4060ea16b",
+      "vendor_relative_path": "RMD-X/X6-7/vendor/X6-7/(RMD-X6 1\u0433\u25516 V2) Product information 240220/2D 3D/RMD-X6 1\u0433\u25516 V2.step"
+    },
+    {
+      "bytes": 362233,
+      "closed_solid_volume_mm3": 117557.9650632,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": "step-e260e80fe3f4060ea16b",
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "flattened",
+      "member_identity_preserved": false,
+      "model": "X6-7",
+      "occt_internal_bbox_mm": {
+        "diagonal": 113.999964635,
+        "max": [
+          768.999325317,
+          409.025310362,
+          37.999998778
+        ],
+        "min": [
+          730.999421637,
+          333.025312806,
+          -37.999998778
+        ],
+        "size": [
+          37.99990368,
+          75.999997556,
+          75.999997556
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-X",
+      "shape_type": "Solid",
+      "simulation_supported": false,
+      "step_sha256": "3054c529935d1bdf650d6e156f597701403f06039434710f3281135b7fabea3c",
+      "surface_area_mm2": 24620.823500624,
+      "topology": {
+        "compounds": 0,
+        "compsolids": 0,
+        "edges": 342,
+        "faces": 150,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 219,
+        "wires": 179
+      },
+      "valid": true,
+      "variant_id": "step-5db0c494d28d1a3065a7",
+      "vendor_relative_path": "RMD-X/X6-7/vendor/X6-7/X6-7 Product information 240403/2D 3D/X6-7(RMD-X6 1\u0433\u25516 V2).step"
+    },
+    {
+      "bytes": 573375,
+      "closed_solid_volume_mm3": 184863.24894796,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "flattened",
+      "member_identity_preserved": false,
+      "model": "X6-40",
+      "occt_internal_bbox_mm": {
+        "diagonal": 123.33794823,
+        "max": [
+          569.088826717,
+          393.817986816,
+          18.5
+        ],
+        "min": [
+          493.088825768,
+          317.817987563,
+          -41.999995396
+        ],
+        "size": [
+          76.000000949,
+          75.999999253,
+          60.499995396
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-X",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "41ceb872d086221b45aa0f7422a2df01944a5ab8d0a8e13766184feb977782f6",
+      "surface_area_mm2": 29402.663553516,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 386,
+        "faces": 169,
+        "shells": 2,
+        "solids": 2,
+        "vertices": 246,
+        "wires": 200
+      },
+      "valid": true,
+      "variant_id": "step-d4f20f1eaa44ed21396b",
+      "vendor_relative_path": "RMD-X/X6-40/vendor/X6-40/(RMD-X6-S2 1\u0433\u255136 V2) Product information 240220/2D 3D/RMD-X6-S2 1\u0433\u255136 V2.step"
+    },
+    {
+      "bytes": 573375,
+      "closed_solid_volume_mm3": 184863.24894796,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": "step-d4f20f1eaa44ed21396b",
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "flattened",
+      "member_identity_preserved": false,
+      "model": "X6-40",
+      "occt_internal_bbox_mm": {
+        "diagonal": 123.33794823,
+        "max": [
+          569.088826717,
+          393.817986816,
+          18.5
+        ],
+        "min": [
+          493.088825768,
+          317.817987563,
+          -41.999995396
+        ],
+        "size": [
+          76.000000949,
+          75.999999253,
+          60.499995396
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-X",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "41ceb872d086221b45aa0f7422a2df01944a5ab8d0a8e13766184feb977782f6",
+      "surface_area_mm2": 29402.663553516,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 386,
+        "faces": 169,
+        "shells": 2,
+        "solids": 2,
+        "vertices": 246,
+        "wires": 200
+      },
+      "valid": true,
+      "variant_id": "step-ca4746f295c6b7e95ec1",
+      "vendor_relative_path": "RMD-X/X6-40/vendor/X6-40/X6-40 Product information 240403/2D 3D/X6-40 (RMD-X6-S2 1\u0433\u255136 V2).step"
+    },
+    {
+      "bytes": 5151412,
+      "closed_solid_volume_mm3": 68618.654175428,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "flattened",
+      "member_identity_preserved": false,
+      "model": "X8-25",
+      "occt_internal_bbox_mm": {
+        "diagonal": 147.678705502,
+        "max": [
+          49.0000001,
+          46.0,
+          49.0000001
+        ],
+        "min": [
+          -49.0,
+          -5.0,
+          -49.0000001
+        ],
+        "size": [
+          98.0000001,
+          51.0,
+          98.0000002
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-X",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "751dcbccb675b6ac1ee2d745dea1e158857f459fe21ae3ca11c054c6931677c9",
+      "surface_area_mm2": 74195.146077671,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 3138,
+        "faces": 1183,
+        "shells": 21,
+        "solids": 21,
+        "vertices": 2065,
+        "wires": 1339
+      },
+      "valid": true,
+      "variant_id": "step-1a6461c26f4f47967fe2",
+      "vendor_relative_path": "RMD-X/X8-25/vendor/X8-25 Product information 240814/2D 3D/X8-25 (RMD-X8 PRO 1\uff1a9 V2).step"
+    },
+    {
+      "bytes": 2116541,
+      "closed_solid_volume_mm3": 0.0,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "flattened",
+      "member_identity_preserved": false,
+      "model": "X6-8",
+      "occt_internal_bbox_mm": {
+        "diagonal": 120.259095553,
+        "max": [
+          13.0,
+          39.5000001,
+          39.5000001
+        ],
+        "min": [
+          -31.500000001,
+          -39.5000001,
+          -39.5000001
+        ],
+        "size": [
+          44.500000001,
+          79.0000002,
+          79.0000002
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": false,
+        "requires_healing_or_solidification": true,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-X",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "acc58264e35a36f8aab6f65b11db023df11c65fb6a29ea8300b56068cfc0b424",
+      "surface_area_mm2": 42872.688257399,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 1423,
+        "faces": 460,
+        "shells": 8,
+        "solids": 0,
+        "vertices": 963,
+        "wires": 521
+      },
+      "valid": true,
+      "variant_id": "step-2fae2b65832b5f18316d",
+      "vendor_relative_path": "RMD-X/X6-8/vendor/X6-8/(RMD-X6 1\u0433\u25518 V3) Product information 240220/2D 3D/RMD-X6-P8 V3.step"
+    },
+    {
+      "bytes": 2116541,
+      "closed_solid_volume_mm3": 0.0,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": "step-2fae2b65832b5f18316d",
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "flattened",
+      "member_identity_preserved": false,
+      "model": "X6-8",
+      "occt_internal_bbox_mm": {
+        "diagonal": 120.259095553,
+        "max": [
+          13.0,
+          39.5000001,
+          39.5000001
+        ],
+        "min": [
+          -31.500000001,
+          -39.5000001,
+          -39.5000001
+        ],
+        "size": [
+          44.500000001,
+          79.0000002,
+          79.0000002
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": false,
+        "requires_healing_or_solidification": true,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-X",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "acc58264e35a36f8aab6f65b11db023df11c65fb6a29ea8300b56068cfc0b424",
+      "surface_area_mm2": 42872.688257399,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 1423,
+        "faces": 460,
+        "shells": 8,
+        "solids": 0,
+        "vertices": 963,
+        "wires": 521
+      },
+      "valid": true,
+      "variant_id": "step-3b0b760b90937bb0bcdc",
+      "vendor_relative_path": "RMD-X/X6-8/vendor/X6-8/X6-8 Product information 240403/2D 3D/X6-8(RMD-X6 1\u0433\u25518 V3).step"
+    },
+    {
+      "bytes": 2713841,
+      "closed_solid_volume_mm3": 151180.421623261,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "flattened",
+      "member_identity_preserved": false,
+      "model": "X10-40",
+      "occt_internal_bbox_mm": {
+        "diagonal": 180.490997276,
+        "max": [
+          61.0000001,
+          61.0000001,
+          44.2
+        ],
+        "min": [
+          -61.0000001,
+          -61.0000001,
+          -8.8
+        ],
+        "size": [
+          122.0000002,
+          122.0000002,
+          53.0
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-X",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "b6150ffd1bc9c296c18013238e7250f54034de5b6b26537060f6a76157ff30f6",
+      "surface_area_mm2": 110602.561769787,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 2339,
+        "faces": 870,
+        "shells": 5,
+        "solids": 5,
+        "vertices": 1514,
+        "wires": 967
+      },
+      "valid": true,
+      "variant_id": "step-3904f765232207374c62",
+      "vendor_relative_path": "RMD-X/X10-40/vendor/X10-40/(RMD-X10 1\u0433\u25517 V3)Product information 240220/2D 3D/RMD-X10 1\u0433\u25517 V3.step"
+    },
+    {
+      "bytes": 2713841,
+      "closed_solid_volume_mm3": 151180.421623261,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": "step-3904f765232207374c62",
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "flattened",
+      "member_identity_preserved": false,
+      "model": "X10-40",
+      "occt_internal_bbox_mm": {
+        "diagonal": 180.490997276,
+        "max": [
+          61.0000001,
+          61.0000001,
+          44.2
+        ],
+        "min": [
+          -61.0000001,
+          -61.0000001,
+          -8.8
+        ],
+        "size": [
+          122.0000002,
+          122.0000002,
+          53.0
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-X",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "b6150ffd1bc9c296c18013238e7250f54034de5b6b26537060f6a76157ff30f6",
+      "surface_area_mm2": 110602.561769787,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 2339,
+        "faces": 870,
+        "shells": 5,
+        "solids": 5,
+        "vertices": 1514,
+        "wires": 967
+      },
+      "valid": true,
+      "variant_id": "step-d19dc9fdc131c651a154",
+      "vendor_relative_path": "RMD-X/X10-40/vendor/X10-40/X10-40 Product information 240403/2D 3D/X10-40(RMD-X10 1\u0433\u25517 V3).step"
+    },
+    {
+      "bytes": 2516211,
+      "closed_solid_volume_mm3": 176706.112311212,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "flattened",
+      "member_identity_preserved": false,
+      "model": "X10-100",
+      "occt_internal_bbox_mm": {
+        "diagonal": 187.733854426,
+        "max": [
+          61.0000001,
+          61.0000001,
+          65.1
+        ],
+        "min": [
+          -61.0000001,
+          -61.0000001,
+          -8.9
+        ],
+        "size": [
+          122.0000002,
+          122.0000002,
+          74.0
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-X",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "81304836d486734067048fb8130e1cfd7043c1a70496f2d180ce768ed2618ade",
+      "surface_area_mm2": 123863.811937018,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 1633,
+        "faces": 630,
+        "shells": 5,
+        "solids": 5,
+        "vertices": 1044,
+        "wires": 767
+      },
+      "valid": true,
+      "variant_id": "step-db88b3a928f3c1058d94",
+      "vendor_relative_path": "RMD-X/X10-100/vendor/X10-100/(RMD-X10-S2 V3)Product information 240220/2D 3D/RMD-X10-S2 V3.step"
+    },
+    {
+      "bytes": 2516211,
+      "closed_solid_volume_mm3": 176706.112311212,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": "step-db88b3a928f3c1058d94",
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "flattened",
+      "member_identity_preserved": false,
+      "model": "X10-100",
+      "occt_internal_bbox_mm": {
+        "diagonal": 187.733854426,
+        "max": [
+          61.0000001,
+          61.0000001,
+          65.1
+        ],
+        "min": [
+          -61.0000001,
+          -61.0000001,
+          -8.9
+        ],
+        "size": [
+          122.0000002,
+          122.0000002,
+          74.0
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-X",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "81304836d486734067048fb8130e1cfd7043c1a70496f2d180ce768ed2618ade",
+      "surface_area_mm2": 123863.811937018,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 1633,
+        "faces": 630,
+        "shells": 5,
+        "solids": 5,
+        "vertices": 1044,
+        "wires": 767
+      },
+      "valid": true,
+      "variant_id": "step-c152c261cc1c009e60bb",
+      "vendor_relative_path": "RMD-X/X10-100/vendor/X10-100/X10-100 Product information 240403/2D 3D/X10-100(RMD-X10-S2 V3).step"
+    },
+    {
+      "bytes": 1648091,
+      "closed_solid_volume_mm3": 28857.969354866,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "assembly",
+      "member_identity_preserved": false,
+      "model": "X2-7",
+      "occt_internal_bbox_mm": {
+        "diagonal": 88.919378154,
+        "max": [
+          22.00683363,
+          48.0,
+          22.00683363
+        ],
+        "min": [
+          -22.00683363,
+          -15.5,
+          -22.00683363
+        ],
+        "size": [
+          44.01366726,
+          63.5,
+          44.01366726
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-X",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "b46d560ca3ea90fc05f4a52341cd0b5cc703100e9808b44dbf5ef33e7ae0c7b2",
+      "surface_area_mm2": 38828.549705283,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 1800,
+        "faces": 746,
+        "shells": 18,
+        "solids": 18,
+        "vertices": 1135,
+        "wires": 899
+      },
+      "valid": true,
+      "variant_id": "step-6daf39ef3e1771cf40c6",
+      "vendor_relative_path": "RMD-X/X2-7/vendor/RMD-X2-P28-7 \u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "bytes": 1506392,
+      "closed_solid_volume_mm3": 35308.232765276,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "assembly",
+      "member_identity_preserved": false,
+      "model": "X4-10",
+      "occt_internal_bbox_mm": {
+        "diagonal": 95.552341907,
+        "max": [
+          27.5000001,
+          48.0,
+          27.5000001
+        ],
+        "min": [
+          -27.5000001,
+          -7.5,
+          -27.5000001
+        ],
+        "size": [
+          55.0000002,
+          55.5,
+          55.0000002
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-X",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "c549a02aa8293449685ca41413cd6fdd69314fa5c67698b76235de5d2cd5b321",
+      "surface_area_mm2": 44469.038149341,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 1744,
+        "faces": 775,
+        "shells": 20,
+        "solids": 20,
+        "vertices": 1061,
+        "wires": 923
+      },
+      "valid": true,
+      "variant_id": "step-1dc75d76676a84fe8c1a",
+      "vendor_relative_path": "RMD-X/X4-10/vendor/RMD-X4-P12.5-10 \u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "bytes": 2496890,
+      "closed_solid_volume_mm3": 53754.871949041,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "assembly",
+      "member_identity_preserved": false,
+      "model": "X8-32",
+      "occt_internal_bbox_mm": {
+        "diagonal": 141.878258001,
+        "max": [
+          48.0000001,
+          37.098521402,
+          48.0000001
+        ],
+        "min": [
+          -48.0000001,
+          -4.101478798,
+          -48.0000001
+        ],
+        "size": [
+          96.0000002,
+          41.2000002,
+          96.0000002
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-X",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "9798fab437ec5d6799c80834a2d5b21cc016b71c9b2f520ee56ddc0655735f1b",
+      "surface_area_mm2": 67514.518929408,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 2058,
+        "faces": 746,
+        "shells": 12,
+        "solids": 12,
+        "vertices": 1377,
+        "wires": 869
+      },
+      "valid": true,
+      "variant_id": "step-2c9f9a8e81a091988803",
+      "vendor_relative_path": "RMD-X/X8-32/vendor/RMD-X8-P9-32-R-\u7535\u673a\u7ec4\u5408\u56fe-B.STEP"
+    },
+    {
+      "bytes": 3289212,
+      "closed_solid_volume_mm3": 135674.919535671,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "assembly",
+      "member_identity_preserved": false,
+      "model": "X8-120",
+      "occt_internal_bbox_mm": {
+        "diagonal": 155.589202769,
+        "max": [
+          47.868220444,
+          48.502991099,
+          26.876796269
+        ],
+        "min": [
+          -48.131779556,
+          -47.497008901,
+          -49.123203851
+        ],
+        "size": [
+          96.0,
+          96.0,
+          76.00000012
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-X",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "8b1c56cbd29f4c8d9710e351636064991d982d8823158b668fdda4f69aa536aa",
+      "surface_area_mm2": 128929.369298478,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 3661,
+        "faces": 1489,
+        "shells": 20,
+        "solids": 20,
+        "vertices": 2333,
+        "wires": 1734
+      },
+      "valid": true,
+      "variant_id": "step-264f5ec05fc7ce9caece",
+      "vendor_relative_path": "RMD-X/X8-120/vendor/RMD-X8-P20-120 \u7535\u673a\u7ec4\u5408\u56fe -A0.STEP"
+    },
+    {
+      "bytes": 1990492,
+      "closed_solid_volume_mm3": 104484.852650038,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "assembly",
+      "member_identity_preserved": false,
+      "model": "RH-14",
+      "occt_internal_bbox_mm": {
+        "diagonal": 128.354548376,
+        "max": [
+          32.728369716,
+          20.52595237,
+          35.0000001
+        ],
+        "min": [
+          -37.271630484,
+          -61.17404783,
+          -35.0000001
+        ],
+        "size": [
+          70.0000002,
+          81.7000002,
+          70.0000002
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RH",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "6b0acdb82140b487be079b5515718157d16d512f3a584ac5439fe55380e7b595",
+      "surface_area_mm2": 94029.180099611,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 2264,
+        "faces": 900,
+        "shells": 32,
+        "solids": 32,
+        "vertices": 1484,
+        "wires": 1150
+      },
+      "valid": true,
+      "variant_id": "step-4054296b282f60755175",
+      "vendor_relative_path": "RH/RH-14/vendor/RH-14-N/RH-14-100-E-N-D-\u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "bytes": 4824391,
+      "closed_solid_volume_mm3": 187987.913854641,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "assembly",
+      "member_identity_preserved": false,
+      "model": "RH-17",
+      "occt_internal_bbox_mm": {
+        "diagonal": 153.674981907,
+        "max": [
+          40.0000001,
+          28.5,
+          40.0000001
+        ],
+        "min": [
+          -40.0000001,
+          -75.5,
+          -40.0000001
+        ],
+        "size": [
+          80.0000002,
+          104.0,
+          80.0000002
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RH",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "02424efbc162b8832f1bf4d73cf9af45d0c45d8385cadb8685e1670e2b07ae33",
+      "surface_area_mm2": 131399.090046665,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 4076,
+        "faces": 1683,
+        "shells": 34,
+        "solids": 34,
+        "vertices": 2565,
+        "wires": 2047
+      },
+      "valid": true,
+      "variant_id": "step-cc372035f6cd51c3ef24",
+      "vendor_relative_path": "RH/RH-17/vendor/RH-17-B/RH-17-100-E-B-D-\u7535\u673a\u7ec4\u5408\u56fe-A.STEP"
+    },
+    {
+      "bytes": 4144407,
+      "closed_solid_volume_mm3": 169594.409959845,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "assembly",
+      "member_identity_preserved": false,
+      "model": "RH-17",
+      "occt_internal_bbox_mm": {
+        "diagonal": 144.692916426,
+        "max": [
+          40.0000001,
+          28.5,
+          40.0000001
+        ],
+        "min": [
+          -40.0000001,
+          -61.7,
+          -40.0000001
+        ],
+        "size": [
+          80.0000002,
+          90.2,
+          80.0000002
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RH",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "7e5494085f6091c5db928ab52a7cc143b6458ddfd35a27ca5b1af37bdaafb8b5",
+      "surface_area_mm2": 119850.572944928,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 3556,
+        "faces": 1486,
+        "shells": 32,
+        "solids": 32,
+        "vertices": 2240,
+        "wires": 1834
+      },
+      "valid": true,
+      "variant_id": "step-f6c14110f5116e71127f",
+      "vendor_relative_path": "RH/RH-17/vendor/RH-17-N/RH-17-100-E-N-D-\u7535\u673a\u7ec4\u5408\u56fe-A.STEP"
+    },
+    {
+      "bytes": 14513402,
+      "closed_solid_volume_mm3": 296353.81161705,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "assembly",
+      "member_identity_preserved": false,
+      "model": "RH-20",
+      "occt_internal_bbox_mm": {
+        "diagonal": 160.270895959,
+        "max": [
+          59.4000001,
+          45.0000001,
+          45.0000001
+        ],
+        "min": [
+          -38.0,
+          -45.0000001,
+          -45.0000001
+        ],
+        "size": [
+          97.4000001,
+          90.0000002,
+          90.0000002
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RH",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "7ad6339aed87f0aee08e39f91d3c52c0f25b5b5745defb0b43b12c2e9d63b1e0",
+      "surface_area_mm2": 179357.228626327,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 6262,
+        "faces": 2550,
+        "shells": 50,
+        "solids": 50,
+        "vertices": 3972,
+        "wires": 3006
+      },
+      "valid": true,
+      "variant_id": "step-7a5330c0c93e21ab024c",
+      "vendor_relative_path": "RH/RH-20/vendor/RH-20-B/RH-20-100-E-B-D-\u7535\u673a\u7ec4\u5408\u56fe A.STEP"
+    },
+    {
+      "bytes": 14116862,
+      "closed_solid_volume_mm3": 270010.213375395,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "assembly",
+      "member_identity_preserved": false,
+      "model": "RH-20",
+      "occt_internal_bbox_mm": {
+        "diagonal": 151.896050219,
+        "max": [
+          44.9,
+          45.0000001,
+          45.0000001
+        ],
+        "min": [
+          -38.0,
+          -45.0000001,
+          -45.0000001
+        ],
+        "size": [
+          82.9,
+          90.0000002,
+          90.0000002
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RH",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "db9b18ff801ee812c031000ba19f434161247dbac12309b46a9e25a5fa59159a",
+      "surface_area_mm2": 161928.748007587,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 5702,
+        "faces": 2297,
+        "shells": 41,
+        "solids": 41,
+        "vertices": 3634,
+        "wires": 2712
+      },
+      "valid": true,
+      "variant_id": "step-022560fdbee303dad083",
+      "vendor_relative_path": "RH/RH-20/vendor/RH-20-N/RH-20-100-E-N-D-\u7535\u673a\u7ec4\u5408\u56fe A.STEP"
+    },
+    {
+      "bytes": 2836196,
+      "closed_solid_volume_mm3": 556680.395085054,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "assembly",
+      "member_identity_preserved": false,
+      "model": "RH-25",
+      "occt_internal_bbox_mm": {
+        "diagonal": 187.795207953,
+        "max": [
+          54.999999847,
+          39.5000001,
+          54.999999847
+        ],
+        "min": [
+          -55.000000353,
+          -65.7000001,
+          -55.000000353
+        ],
+        "size": [
+          110.0000002,
+          105.2000002,
+          110.0000002
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RH",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "d844bc7dfe5c398b0447ea0d93eef77b7cb1bdaa0dbabd603031482c1909f07e",
+      "surface_area_mm2": 294175.159638166,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 2977,
+        "faces": 1255,
+        "shells": 42,
+        "solids": 42,
+        "vertices": 1939,
+        "wires": 1682
+      },
+      "valid": true,
+      "variant_id": "step-e627f76e6cb91e0b1706",
+      "vendor_relative_path": "RH/RH-25/vendor/RH-25-B/RH-25-100-E-B-D-\u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "bytes": 2651233,
+      "closed_solid_volume_mm3": 309590.950323699,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "assembly",
+      "member_identity_preserved": false,
+      "model": "RH-25",
+      "occt_internal_bbox_mm": {
+        "diagonal": 179.47214303,
+        "max": [
+          54.999995419,
+          39.5000001,
+          55.000050454
+        ],
+        "min": [
+          -55.000004781,
+          -50.0000001,
+          -54.999949746
+        ],
+        "size": [
+          110.0000002,
+          89.5000002,
+          110.0000002
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RH",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "1aa25ae2e93009a6b72239d8b08acdd91dde3e1b3e902b2c28b221bffb973312",
+      "surface_area_mm2": 217770.833912685,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 2910,
+        "faces": 1235,
+        "shells": 44,
+        "solids": 44,
+        "vertices": 1889,
+        "wires": 1625
+      },
+      "valid": true,
+      "variant_id": "step-8e396b8c7a180692041a",
+      "vendor_relative_path": "RH/RH-25/vendor/RH-25-N/RH-25-100-E-N-D-\u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "bytes": 2158134,
+      "closed_solid_volume_mm3": 646171.87046962,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "assembly",
+      "member_identity_preserved": false,
+      "model": "RH-32",
+      "occt_internal_bbox_mm": {
+        "diagonal": 236.702535187,
+        "max": [
+          71.0000001,
+          43.6000001,
+          71.0000001
+        ],
+        "min": [
+          -71.0000001,
+          -81.7000001,
+          -71.0000001
+        ],
+        "size": [
+          142.0000002,
+          125.3000002,
+          142.0000002
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RH",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "d4108f26134abe3de0a80bb50d1872ea308305be0b33dae09682fa737723fa3d",
+      "surface_area_mm2": 305591.96111716,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 2527,
+        "faces": 1116,
+        "shells": 38,
+        "solids": 35,
+        "vertices": 1645,
+        "wires": 1474
+      },
+      "valid": true,
+      "variant_id": "step-27f5a09e3dc9f3c310f1",
+      "vendor_relative_path": "RH/RH-32/vendor/RH-32-B/RH-32-100-E-B-D-\u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "bytes": 1886382,
+      "closed_solid_volume_mm3": 610138.753901912,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "assembly",
+      "member_identity_preserved": false,
+      "model": "RH-32",
+      "occt_internal_bbox_mm": {
+        "diagonal": 228.207274549,
+        "max": [
+          71.0000001,
+          43.6000001,
+          71.0000001
+        ],
+        "min": [
+          -71.0000001,
+          -64.8000001,
+          -71.0000001
+        ],
+        "size": [
+          142.0000002,
+          108.4000002,
+          142.0000002
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RH",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "242bd9c29aaefe6841aeb23be7ce837e5880df1f303e158d93d7501997d12234",
+      "surface_area_mm2": 282271.83067546,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 2251,
+        "faces": 1010,
+        "shells": 36,
+        "solids": 33,
+        "vertices": 1461,
+        "wires": 1334
+      },
+      "valid": true,
+      "variant_id": "step-ffcceaf535839747be7c",
+      "vendor_relative_path": "RH/RH-32/vendor/RH-32-N/RH-32-100-E-N-D-\u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+    },
+    {
+      "bytes": 561496,
+      "closed_solid_volume_mm3": 8121.410196566,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "flattened",
+      "member_identity_preserved": false,
+      "model": "L-4005",
+      "occt_internal_bbox_mm": {
+        "diagonal": 60.541886496,
+        "max": [
+          23.0000001,
+          19.8000001,
+          19.8
+        ],
+        "min": [
+          -0.0,
+          -19.8000001,
+          -19.8
+        ],
+        "size": [
+          23.0000001,
+          39.6000002,
+          39.6
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-L",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "627c4ba70869a262aadd4d598e57b8e682741e1f8316575401e3b9514f2335d0",
+      "surface_area_mm2": 13040.130293206,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 581,
+        "faces": 241,
+        "shells": 7,
+        "solids": 5,
+        "vertices": 377,
+        "wires": 288
+      },
+      "valid": true,
+      "variant_id": "step-517e7d1e68c956d417d5",
+      "vendor_relative_path": "RMD-L/L-4005/vendor/L-4005-251029/2D3D/RMD-4005\u4e09\u7ef4\u56fe/RMD-4005.step"
+    },
+    {
+      "bytes": 706830,
+      "closed_solid_volume_mm3": 9259.565618262,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "flattened",
+      "member_identity_preserved": false,
+      "model": "L-4010",
+      "occt_internal_bbox_mm": {
+        "diagonal": 62.612458995,
+        "max": [
+          28.0000001,
+          19.8000001,
+          19.8
+        ],
+        "min": [
+          -0.0,
+          -19.8000001,
+          -19.8
+        ],
+        "size": [
+          28.0000001,
+          39.6000002,
+          39.6
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-L",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "053ec7291db3b1254344d2e7de474955d05c722396e7fcf373f7a6596dc5dbb1",
+      "surface_area_mm2": 14921.663710375,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 713,
+        "faces": 293,
+        "shells": 9,
+        "solids": 7,
+        "vertices": 467,
+        "wires": 348
+      },
+      "valid": true,
+      "variant_id": "step-38d3f4f17489f8084976",
+      "vendor_relative_path": "RMD-L/L-4010/vendor/L-4010-251029/2D3D/RMD-4010\u4e09\u7ef4\u56fe/RMD-4010.step"
+    },
+    {
+      "bytes": 719047,
+      "closed_solid_volume_mm3": 9982.503765214,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "flattened",
+      "member_identity_preserved": false,
+      "model": "L-4015",
+      "occt_internal_bbox_mm": {
+        "diagonal": 65.002461664,
+        "max": [
+          33.0000001,
+          19.8000001,
+          19.8
+        ],
+        "min": [
+          -0.0,
+          -19.8000001,
+          -19.8
+        ],
+        "size": [
+          33.0000001,
+          39.6000002,
+          39.6
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-L",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "56cd81678baf8e6e7bf3214e528d1b384dcd7debb5257556b86e73d7f227d793",
+      "surface_area_mm2": 16103.369981146,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 727,
+        "faces": 300,
+        "shells": 9,
+        "solids": 7,
+        "vertices": 473,
+        "wires": 352
+      },
+      "valid": true,
+      "variant_id": "step-99f7bd64109f4c46c33e",
+      "vendor_relative_path": "RMD-L/L-4015/vendor/L-4015-251029/2D3D/RMD-4015\u4e09\u7ef4\u56fe/RMD-4015.step"
+    },
+    {
+      "bytes": 1290638,
+      "closed_solid_volume_mm3": 15114.841341011,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "assembly",
+      "member_identity_preserved": false,
+      "model": "L-5005",
+      "occt_internal_bbox_mm": {
+        "diagonal": 73.302182877,
+        "max": [
+          23.9000001,
+          24.5,
+          24.5
+        ],
+        "min": [
+          -0.0,
+          -24.5,
+          -24.5000001
+        ],
+        "size": [
+          23.9000001,
+          49.0,
+          49.0000001
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-L",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "900d4184fa8fbce3177934e39cf9c0ce708021eac973829693b0cc863f4236de",
+      "surface_area_mm2": 22351.416751186,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 958,
+        "faces": 354,
+        "shells": 4,
+        "solids": 4,
+        "vertices": 634,
+        "wires": 412
+      },
+      "valid": true,
+      "variant_id": "step-456c102af005b608c23a",
+      "vendor_relative_path": "RMD-L/L-5005/vendor/2D3D/RMD-5005(\u5927\u5b54)\u4e09\u7ef4\u56fe/RMD-5005\uff0812.7\u5927\u5b54\uff09.STEP"
+    },
+    {
+      "bytes": 1397412,
+      "closed_solid_volume_mm3": 17436.215029379,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "assembly",
+      "member_identity_preserved": false,
+      "model": "L-5010",
+      "occt_internal_bbox_mm": {
+        "diagonal": 75.081355979,
+        "max": [
+          28.9000001,
+          24.5,
+          24.5
+        ],
+        "min": [
+          -0.0,
+          -24.5,
+          -24.5000001
+        ],
+        "size": [
+          28.9000001,
+          49.0,
+          49.0000001
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-L",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "e48765ea6bc1ad6741bd067442b1a5c2194ec55082f18d9d5493a5b0196ba4c2",
+      "surface_area_mm2": 25116.200749485,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 1076,
+        "faces": 408,
+        "shells": 6,
+        "solids": 6,
+        "vertices": 706,
+        "wires": 470
+      },
+      "valid": true,
+      "variant_id": "step-c42154c3b5408d218867",
+      "vendor_relative_path": "RMD-L/L-5010/vendor/2D3D/RMD-5010(\u5927\u5b54)\u4e09\u7ef4\u56fe/RMD-5010\uff0812.7\u5927\u5b54\uff09.STEP"
+    },
+    {
+      "bytes": 1287252,
+      "closed_solid_volume_mm3": 19820.509705168,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "assembly",
+      "member_identity_preserved": false,
+      "model": "L-5015",
+      "occt_internal_bbox_mm": {
+        "diagonal": 77.144086077,
+        "max": [
+          33.9000001,
+          24.5,
+          24.5
+        ],
+        "min": [
+          -0.0,
+          -24.5,
+          -24.5000001
+        ],
+        "size": [
+          33.9000001,
+          49.0,
+          49.0000001
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-L",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "c8635267daf0112668d4ab806fbd6dc0765cd5927b249c73897887d31ed472a3",
+      "surface_area_mm2": 27580.700433239,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 954,
+        "faces": 354,
+        "shells": 4,
+        "solids": 4,
+        "vertices": 630,
+        "wires": 412
+      },
+      "valid": true,
+      "variant_id": "step-01e8258646417ccd06bc",
+      "vendor_relative_path": "RMD-L/L-5015/vendor/2D3D/RMD-5015(\u5927\u5b54)\u4e09\u7ef4\u56fe/RMD-5015\uff0812.7\u5927\u5b54\uff09.STEP"
+    },
+    {
+      "bytes": 781788,
+      "closed_solid_volume_mm3": 32455.534387705,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "flattened",
+      "member_identity_preserved": false,
+      "model": "L-7015",
+      "occt_internal_bbox_mm": {
+        "diagonal": 103.301549042,
+        "max": [
+          0.0,
+          34.5,
+          34.5000001
+        ],
+        "min": [
+          -33.9000001,
+          -34.5,
+          -34.5000001
+        ],
+        "size": [
+          33.9000001,
+          69.0,
+          69.0000002
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-L",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "5aebf7958263085b3d8038ebf91326a3d9c3c0e56158e3e81c1eff8726e09772",
+      "surface_area_mm2": 43266.201441712,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 770,
+        "faces": 298,
+        "shells": 6,
+        "solids": 6,
+        "vertices": 500,
+        "wires": 376
+      },
+      "valid": true,
+      "variant_id": "step-940faa35dc5a3627ba95",
+      "vendor_relative_path": "RMD-L/L-7015/vendor/L-7015-251029/2D3D/RMD-7015\u4e09\u7ef4\u56fe/RMD-7015.step"
+    },
+    {
+      "bytes": 1346203,
+      "closed_solid_volume_mm3": 35635.614048039,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "flattened",
+      "member_identity_preserved": false,
+      "model": "L-7025",
+      "occt_internal_bbox_mm": {
+        "diagonal": 107.879562646,
+        "max": [
+          0.0,
+          34.5,
+          34.5000001
+        ],
+        "min": [
+          -46.0000001,
+          -34.5,
+          -34.5000001
+        ],
+        "size": [
+          46.0000001,
+          69.0,
+          69.0000002
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-L",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "204d0ec9a6ddf6a6b15bfc6aba954f378a7db14e054b73e32df82da1ccbfb5b1",
+      "surface_area_mm2": 42132.983895648,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 1139,
+        "faces": 430,
+        "shells": 9,
+        "solids": 9,
+        "vertices": 755,
+        "wires": 504
+      },
+      "valid": true,
+      "variant_id": "step-935c5675150f4bbe3901",
+      "vendor_relative_path": "RMD-L/L-7025/vendor/L-7025-251029/2D3D/RMD-7025\u4e09\u7ef4\u56fe/RMD-7025.step"
+    },
+    {
+      "bytes": 1125003,
+      "closed_solid_volume_mm3": 76057.247495118,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "flattened",
+      "member_identity_preserved": false,
+      "model": "L-9015",
+      "occt_internal_bbox_mm": {
+        "diagonal": 132.687603271,
+        "max": [
+          0.0,
+          44.5000001,
+          44.5000001
+        ],
+        "min": [
+          -42.0000001,
+          -44.5000001,
+          -44.5
+        ],
+        "size": [
+          42.0000001,
+          89.0000002,
+          89.0000001
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-L",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "b9f2810be98ff13bbbbf46eb63d17e1c1c955ab49926d74cb3c64dffb71f1a1d",
+      "surface_area_mm2": 68850.168861504,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 1186,
+        "faces": 465,
+        "shells": 9,
+        "solids": 9,
+        "vertices": 767,
+        "wires": 553
+      },
+      "valid": true,
+      "variant_id": "step-d53cacfa382b310eec1d",
+      "vendor_relative_path": "RMD-L/L-9015/vendor/L-9015-251029/2D3D/RMD-9015\u4e09\u7ef4\u56fe/RMD-9015.step"
+    },
+    {
+      "bytes": 1143199,
+      "closed_solid_volume_mm3": 81492.795957428,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "flattened",
+      "member_identity_preserved": false,
+      "model": "L-9025",
+      "occt_internal_bbox_mm": {
+        "diagonal": 136.568664283,
+        "max": [
+          0.0,
+          44.5000001,
+          44.5000001
+        ],
+        "min": [
+          -53.0000001,
+          -44.5000001,
+          -44.5
+        ],
+        "size": [
+          53.0000001,
+          89.0000002,
+          89.0000001
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-L",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "9509f74b2d2621d3e6a8fcf5117789d399a4e6cd238f306c3d807cb7d7a523cc",
+      "surface_area_mm2": 75624.353242001,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 1200,
+        "faces": 469,
+        "shells": 9,
+        "solids": 9,
+        "vertices": 777,
+        "wires": 557
+      },
+      "valid": true,
+      "variant_id": "step-a608afabe80cef903d06",
+      "vendor_relative_path": "RMD-L/L-9025/vendor/L-9025-251029/2D3D/RMD-9025\u4e09\u7ef4\u56fe/RMD-9025.step"
+    },
+    {
+      "bytes": 2563214,
+      "closed_solid_volume_mm3": 0.0,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "flattened",
+      "member_identity_preserved": false,
+      "model": "CEM-25",
+      "occt_internal_bbox_mm": {
+        "diagonal": 128.731672529,
+        "max": [
+          35.0,
+          70.791211534,
+          35.0
+        ],
+        "min": [
+          -35.0,
+          -11.5000001,
+          -35.0
+        ],
+        "size": [
+          70.0,
+          82.291211634,
+          70.0
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": false,
+        "requires_healing_or_solidification": true,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "CEM",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "7cc8ae9050419bc90f1638bb4c2ab926859f5714c6217c4cd82473c2001b653d",
+      "surface_area_mm2": 70040.267397342,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 3290,
+        "faces": 651,
+        "shells": 75,
+        "solids": 0,
+        "vertices": 2701,
+        "wires": 867
+      },
+      "valid": true,
+      "variant_id": "step-9b8c5b35fa146b589a00",
+      "vendor_relative_path": "CEM/CEM-25/vendor/CEM-25-251014/2D3D/CEM25-3D.STEP"
+    },
+    {
+      "bytes": 2558082,
+      "closed_solid_volume_mm3": 0.0,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "flattened",
+      "member_identity_preserved": false,
+      "model": "CEM-45",
+      "occt_internal_bbox_mm": {
+        "diagonal": 139.804507371,
+        "max": [
+          39.0000001,
+          16.5,
+          39.0000001
+        ],
+        "min": [
+          -39.0000001,
+          -69.391211534,
+          -39.0000001
+        ],
+        "size": [
+          78.0000002,
+          85.891211534,
+          78.0000002
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": false,
+        "requires_healing_or_solidification": true,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "CEM",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "50a4db623d01704793c55c5ad57baab1108b705e989eaa5ee59c65acdb0a585d",
+      "surface_area_mm2": 55872.578740106,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 3106,
+        "faces": 662,
+        "shells": 75,
+        "solids": 0,
+        "vertices": 2526,
+        "wires": 891
+      },
+      "valid": true,
+      "variant_id": "step-016c88381bff534ed534",
+      "vendor_relative_path": "CEM/CEM-45/vendor/CEM-45-251014/2D3D/CEM-45-3D.STEP"
+    },
+    {
+      "bytes": 1533011,
+      "closed_solid_volume_mm3": 16059.317718414,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "assembly",
+      "member_identity_preserved": false,
+      "model": "H-50-15",
+      "occt_internal_bbox_mm": {
+        "diagonal": 84.356387987,
+        "max": [
+          20.695034987,
+          27.259269915,
+          111.8000001
+        ],
+        "min": [
+          -25.304965013,
+          -22.740731827,
+          61.7999999
+        ],
+        "size": [
+          46.0,
+          50.000001742,
+          50.0000002
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-H",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "564785527811bc6942ae513b9f3255b28f9b6e3def440be8724e5b4fb323b967",
+      "surface_area_mm2": 30973.004323632,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 1985,
+        "faces": 762,
+        "shells": 16,
+        "solids": 16,
+        "vertices": 1292,
+        "wires": 883
+      },
+      "valid": true,
+      "variant_id": "step-360816921ce84b5d3df9",
+      "vendor_relative_path": "RMD-H/H-50-15/vendor/H-50-15-241210/RMD-H-50-15.STEP"
+    },
+    {
+      "bytes": 7630063,
+      "closed_solid_volume_mm3": 34733.229301182,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "assembly",
+      "member_identity_preserved": false,
+      "model": "H-70-15",
+      "occt_internal_bbox_mm": {
+        "diagonal": 110.680848949,
+        "max": [
+          35.0000001,
+          43.0,
+          35.000002014
+        ],
+        "min": [
+          -35.0000001,
+          -6.5,
+          -35.0000001
+        ],
+        "size": [
+          70.0000002,
+          49.5,
+          70.000002114
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-H",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "e13345f07b191bdd935e028753d09d17f0e6ca57a7231832eeda9b64b58193bf",
+      "surface_area_mm2": 52870.194655914,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 6002,
+        "faces": 1173,
+        "shells": 95,
+        "solids": 6,
+        "vertices": 4920,
+        "wires": 1503
+      },
+      "valid": true,
+      "variant_id": "step-5b3a01b9a8f9a28474ab",
+      "vendor_relative_path": "RMD-H/H-70-15/vendor/H-70-15-241210/RMD-H-70-15.STEP"
+    },
+    {
+      "bytes": 1069120,
+      "closed_solid_volume_mm3": 57956.116741397,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "assembly",
+      "member_identity_preserved": false,
+      "model": "H-90-15",
+      "occt_internal_bbox_mm": {
+        "diagonal": 136.206644748,
+        "max": [
+          45.0000001,
+          42.2,
+          45.0
+        ],
+        "min": [
+          -45.0000001,
+          -6.3,
+          -45.000000208
+        ],
+        "size": [
+          90.0000002,
+          48.5,
+          90.000000208
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "RMD-H",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "139c8d63a6021976f748c559b9744858a1ce09b8b5212777a153cedd272f698e",
+      "surface_area_mm2": 70605.622351336,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 1016,
+        "faces": 418,
+        "shells": 15,
+        "solids": 15,
+        "vertices": 652,
+        "wires": 528
+      },
+      "valid": true,
+      "variant_id": "step-366cf26f0cefc026b98c",
+      "vendor_relative_path": "RMD-H/H-90-15/vendor/H-90-15-241210/RMD-H-90-15.STEP"
+    },
+    {
+      "bytes": 3369935,
+      "closed_solid_volume_mm3": 12431.587978869,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "flattened",
+      "member_identity_preserved": false,
+      "model": "FL-38-08",
+      "occt_internal_bbox_mm": {
+        "diagonal": 57.016686188,
+        "max": [
+          19.0,
+          15.55,
+          19.0
+        ],
+        "min": [
+          -19.0,
+          -3.5000001,
+          -19.0
+        ],
+        "size": [
+          38.0,
+          19.0500001,
+          38.0
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "FL-FLO",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "f1abae74d6bf7cbb9a336c03066cd10bd1369019b78643384a2855b67fd82ea1",
+      "surface_area_mm2": 6945.700258475,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 3084,
+        "faces": 1131,
+        "shells": 2,
+        "solids": 2,
+        "vertices": 2020,
+        "wires": 1230
+      },
+      "valid": true,
+      "variant_id": "step-f5f72951b3f77ce16c91",
+      "vendor_relative_path": "FL-FLO/FL-38-08/vendor/FL-38-08-250403/FL-38-08.STEP"
+    },
+    {
+      "bytes": 12764764,
+      "closed_solid_volume_mm3": 18365.060104497,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "flattened",
+      "member_identity_preserved": false,
+      "model": "FL-50-08",
+      "occt_internal_bbox_mm": {
+        "diagonal": 106.224439586,
+        "max": [
+          24.999816832,
+          26.105709931,
+          22.086786524
+        ],
+        "min": [
+          -24.999816832,
+          -62.772812369,
+          -7.65
+        ],
+        "size": [
+          49.999633663,
+          88.8785223,
+          29.736786524
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "FL-FLO",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "a3378d08a0191ce92db66b7958ea1128c0ec68b9f25e3c9490efac55fab54919",
+      "surface_area_mm2": 16987.912268531,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 11411,
+        "faces": 4440,
+        "shells": 148,
+        "solids": 148,
+        "vertices": 7470,
+        "wires": 4745
+      },
+      "valid": true,
+      "variant_id": "step-f79a0d2a8ed4022d7b25",
+      "vendor_relative_path": "FL-FLO/FL-50-08/vendor/FL-50-08-\u970d\u5c14-250403/FL-50-08-\u970d\u5c14.STEP"
+    },
+    {
+      "bytes": 13369674,
+      "closed_solid_volume_mm3": 25728.522029942,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "flattened",
+      "member_identity_preserved": false,
+      "model": "FL-50-15",
+      "occt_internal_bbox_mm": {
+        "diagonal": 108.15731633,
+        "max": [
+          24.999816832,
+          26.105709931,
+          25.186786524
+        ],
+        "min": [
+          -24.999816832,
+          -62.772812369,
+          -10.85
+        ],
+        "size": [
+          49.999633663,
+          88.8785223,
+          36.036786524
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "FL-FLO",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "94ca843a36a43bca2e2a90e68d20639b5a935ca035df0bf9d7834cf8b75f0f71",
+      "surface_area_mm2": 26066.513916263,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 12308,
+        "faces": 4767,
+        "shells": 191,
+        "solids": 191,
+        "vertices": 8084,
+        "wires": 5038
+      },
+      "valid": true,
+      "variant_id": "step-2c22da519db7b7083d85",
+      "vendor_relative_path": "FL-FLO/FL-50-15/vendor/FL-50-15-\u970d\u5c14-250403/FL-50-15-\u970d\u5c14.STEP"
+    },
+    {
+      "bytes": 22948116,
+      "closed_solid_volume_mm3": 516751.266473475,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "flattened",
+      "member_identity_preserved": false,
+      "model": "FL-70-10",
+      "occt_internal_bbox_mm": {
+        "diagonal": 129.102178435,
+        "max": [
+          34.49974736,
+          34.5000001,
+          24.086786424
+        ],
+        "min": [
+          -34.49974736,
+          -69.302739769,
+          -9.55
+        ],
+        "size": [
+          68.999494719,
+          103.802739869,
+          33.636786424
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "FL-FLO",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "0402f5c7cd56b931ea3fd58f773c98c69feb10765eda11e89f77c7557700a343",
+      "surface_area_mm2": 195080.4557204,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 20468,
+        "faces": 7802,
+        "shells": 157,
+        "solids": 157,
+        "vertices": 13355,
+        "wires": 8303
+      },
+      "valid": true,
+      "variant_id": "step-059128e92a4d797f8c91",
+      "vendor_relative_path": "FL-FLO/FL-70-10/vendor/FL-70-10-\u970d\u5c14-250403/FL-70-10-\u970d\u5c14.STEP"
+    },
+    {
+      "bytes": 75219363,
+      "closed_solid_volume_mm3": 1710898.473263097,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "flattened",
+      "member_identity_preserved": false,
+      "model": "FL-70-16",
+      "occt_internal_bbox_mm": {
+        "diagonal": 130.673120743,
+        "max": [
+          34.49974736,
+          34.5000001,
+          26.886786424
+        ],
+        "min": [
+          -34.49974736,
+          -69.302739769,
+          -12.35
+        ],
+        "size": [
+          68.999494719,
+          103.802739869,
+          39.236786424
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "FL-FLO",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "9aa432e36490f82916b2611d9dbc0866f1e7c1d989254029b314e8aa1a9190cc",
+      "surface_area_mm2": 729140.075833776,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 66195,
+        "faces": 25095,
+        "shells": 517,
+        "solids": 517,
+        "vertices": 43259,
+        "wires": 26730
+      },
+      "valid": true,
+      "variant_id": "step-6ada01d640147a47a3f2",
+      "vendor_relative_path": "FL-FLO/FL-70-16/vendor/FL-70-16-\u970d\u5c14-250403/FL-70-16-\u970d\u5c14.STEP"
+    },
+    {
+      "bytes": 20504352,
+      "closed_solid_volume_mm3": 76958.642582053,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "flattened",
+      "member_identity_preserved": false,
+      "model": "FL-85-13",
+      "occt_internal_bbox_mm": {
+        "diagonal": 153.642596064,
+        "max": [
+          42.49924524,
+          42.49924524,
+          26.636786424
+        ],
+        "min": [
+          -42.49924524,
+          -79.58235609,
+          -11.8000001
+        ],
+        "size": [
+          84.998490479,
+          122.08160133,
+          38.436786524
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "FL-FLO",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "079127720258cf123b37b6c501c134af1a9b5accc46b582a652680f8fea54f85",
+      "surface_area_mm2": 41718.633156334,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 17960,
+        "faces": 6954,
+        "shells": 161,
+        "solids": 161,
+        "vertices": 11705,
+        "wires": 7421
+      },
+      "valid": true,
+      "variant_id": "step-9e4dfc7514bcc698c10b",
+      "vendor_relative_path": "FL-FLO/FL-85-13/vendor/FL-85-13-\u970d\u5c14-250403/FL-85-13-\u970d\u5c14.STEP"
+    },
+    {
+      "bytes": 2881866,
+      "closed_solid_volume_mm3": 0.0,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "metre",
+      "manifest_structure": "flattened",
+      "member_identity_preserved": false,
+      "model": "FL-85-23",
+      "occt_internal_bbox_mm": {
+        "diagonal": 156.444185082,
+        "max": [
+          42.49924524,
+          42.49924524,
+          26.636786424
+        ],
+        "min": [
+          -42.49924524,
+          -79.58235609,
+          -21.8
+        ],
+        "size": [
+          84.998490479,
+          122.08160133,
+          48.436786424
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": false,
+        "requires_healing_or_solidification": true,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "FL-FLO",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "33725d57b8e3f86c7783a08eb8c29e5a850fd942e0afd61cd5c49ed40318beab",
+      "surface_area_mm2": 64829.264631884,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 4597,
+        "faces": 766,
+        "shells": 187,
+        "solids": 0,
+        "vertices": 4002,
+        "wires": 983
+      },
+      "valid": true,
+      "variant_id": "step-ca8c0d17fec01e9e7992",
+      "vendor_relative_path": "FL-FLO/FL-85-23/vendor/FL-85-23-251119/FL-85-23-.STEP"
+    },
+    {
+      "bytes": 4159960,
+      "closed_solid_volume_mm3": 30449.58756277,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "assembly",
+      "member_identity_preserved": false,
+      "model": "FLO-50-15",
+      "occt_internal_bbox_mm": {
+        "diagonal": 77.328455306,
+        "max": [
+          25.0,
+          4.0,
+          25.0
+        ],
+        "min": [
+          -25.0,
+          -27.3,
+          -25.0
+        ],
+        "size": [
+          50.0,
+          31.3,
+          50.0
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "FL-FLO",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "14a717df6f4dda27fafabcd579e1b69b02a892a5f4caddfbfff29fe61ac4078c",
+      "surface_area_mm2": 43700.915139535,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 5364,
+        "faces": 1401,
+        "shells": 140,
+        "solids": 33,
+        "vertices": 4128,
+        "wires": 1547
+      },
+      "valid": true,
+      "variant_id": "step-bdeb039dbc7f9b26f03c",
+      "vendor_relative_path": "FL-FLO/FLO-50-15/vendor/FLO-50-15-20241122/FLO-50-15.STEP"
+    },
+    {
+      "bytes": 3923319,
+      "closed_solid_volume_mm3": 54639.186796757,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "assembly",
+      "member_identity_preserved": false,
+      "model": "FLO-70-15",
+      "occt_internal_bbox_mm": {
+        "diagonal": 103.735239914,
+        "max": [
+          35.0,
+          26.5,
+          35.0
+        ],
+        "min": [
+          -35.0,
+          -4.5,
+          -35.0
+        ],
+        "size": [
+          70.0,
+          31.0,
+          70.0
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "FL-FLO",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "ea166d71408d90f6d9b61f2c6925913c3074724a971929f1e0d264d42aaa405f",
+      "surface_area_mm2": 67964.321097865,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 5160,
+        "faces": 1307,
+        "shells": 151,
+        "solids": 33,
+        "vertices": 4047,
+        "wires": 1467
+      },
+      "valid": true,
+      "variant_id": "step-6a3a1c46035f4affd50d",
+      "vendor_relative_path": "FL-FLO/FLO-70-15/vendor/FLO-70-15-20241122/FLO-70-15.STEP"
+    },
+    {
+      "bytes": 4367530,
+      "closed_solid_volume_mm3": 81760.168918565,
+      "closed_top_level": false,
+      "geometry_reused_from_variant_id": null,
+      "housing_member_identified": false,
+      "joint_axis_identified": false,
+      "length_unit_candidate": "millimetre",
+      "manifest_structure": "assembly",
+      "member_identity_preserved": false,
+      "model": "FLO-90-15",
+      "occt_internal_bbox_mm": {
+        "diagonal": 130.836118866,
+        "max": [
+          45.0,
+          26.0,
+          45.0
+        ],
+        "min": [
+          -45.0,
+          -4.3,
+          -45.0
+        ],
+        "size": [
+          90.0,
+          30.3,
+          90.0
+        ]
+      },
+      "output_member_identified": false,
+      "readiness": {
+        "closed_solid_collision_candidate": true,
+        "requires_healing_or_solidification": false,
+        "requires_semantic_member_review": true,
+        "step_imported": true,
+        "valid_topology": true,
+        "visual_tessellation_candidate": true
+      },
+      "series": "FL-FLO",
+      "shape_type": "Compound",
+      "simulation_supported": false,
+      "step_sha256": "cba893975b9be1a20c1a273d4f1194b9124f5b09b8e04d2dccf8222e6bcfc211",
+      "surface_area_mm2": 92522.746893542,
+      "topology": {
+        "compounds": 1,
+        "compsolids": 0,
+        "edges": 5994,
+        "faces": 1575,
+        "shells": 171,
+        "solids": 39,
+        "vertices": 4643,
+        "wires": 1744
+      },
+      "valid": true,
+      "variant_id": "step-d09d01993dfb290debdd",
+      "vendor_relative_path": "FL-FLO/FLO-90-15/vendor/FLO-90-15-20241122/FLO-90-15.STEP"
+    }
+  ]
+}

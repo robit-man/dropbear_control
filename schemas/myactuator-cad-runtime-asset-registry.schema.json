@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.dev/schemas/myactuator-cad-runtime-asset-registry.schema.json",
+  "title": "Canonical local CAD runtime asset registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "source_hashes", "policy", "summary", "models", "configurations", "source_variants", "dropbear"],
+  "properties": {
+    "schema_version": {"const": "myactuator-cad-runtime-asset-registry/1"},
+    "source_hashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["inspection_sha256", "review_ledger_sha256", "support_report_sha256", "dropbear_simulator_view_sha256"],
+      "properties": {
+        "inspection_sha256": {"$ref": "#/$defs/sha256"},
+        "review_ledger_sha256": {"$ref": "#/$defs/sha256"},
+        "support_report_sha256": {"$ref": "#/$defs/sha256"},
+        "dropbear_simulator_view_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["exact_configuration_required", "accepted_local_may_load_only_locally", "accepted_redistributable_required_for_browser", "source_step_is_never_runtime_asset", "candidate_is_never_runtime_asset", "artifact_hash_verification_required", "plant_parameters_are_separate"],
+      "properties": {
+        "exact_configuration_required": {"const": true},
+        "accepted_local_may_load_only_locally": {"const": true},
+        "accepted_redistributable_required_for_browser": {"const": true},
+        "source_step_is_never_runtime_asset": {"const": true},
+        "candidate_is_never_runtime_asset": {"const": true},
+        "artifact_hash_verification_required": {"const": true},
+        "plant_parameters_are_separate": {"const": true}
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["models", "source_variants", "geometry_configurations", "accepted_configurations", "local_runtime_loadable_configurations", "browser_loadable_configurations", "candidate_reports", "dropbear_bound_cad_assets"],
+      "properties": {
+        "models": {"const": 44},
+        "source_variants": {"const": 53},
+        "geometry_configurations": {"type": "integer", "minimum": 1, "maximum": 53},
+        "accepted_configurations": {"type": "integer", "minimum": 0, "maximum": 53},
+        "local_runtime_loadable_configurations": {"type": "integer", "minimum": 0, "maximum": 53},
+        "browser_loadable_configurations": {"type": "integer", "minimum": 0, "maximum": 53},
+        "candidate_reports": {"type": "integer", "minimum": 0, "maximum": 53},
+        "dropbear_bound_cad_assets": {"type": "integer", "minimum": 0}
+      }
+    },
+    "models": {
+      "type": "array",
+      "minItems": 44,
+      "maxItems": 44,
+      "items": {"$ref": "#/$defs/model"}
+    },
+    "configurations": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 53,
+      "items": {"$ref": "#/$defs/configuration"}
+    },
+    "source_variants": {
+      "type": "array",
+      "minItems": 53,
+      "maxItems": 53,
+      "items": {"$ref": "#/$defs/sourceVariant"}
+    },
+    "dropbear": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["configuration_id", "configuration_digest", "motion_enable_allowed", "bound_cad_asset_ids"],
+      "properties": {
+        "configuration_id": {"type": "string", "minLength": 1},
+        "configuration_digest": {"$ref": "#/$defs/sha256"},
+        "motion_enable_allowed": {"type": "boolean"},
+        "bound_cad_asset_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    },
+    "assets": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["housing_step", "output_step", "housing_glb", "output_glb", "collision_glb"],
+      "properties": {
+        "housing_step": {"$ref": "#/$defs/artifact"},
+        "output_step": {"$ref": "#/$defs/artifact"},
+        "housing_glb": {"$ref": "#/$defs/artifact"},
+        "output_glb": {"$ref": "#/$defs/artifact"},
+        "collision_glb": {"$ref": "#/$defs/artifact"}
+      }
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["variant_id", "report_path", "report_sha256", "evidence_class", "unresolved_question_count", "accepted_asset", "support_granted"],
+      "properties": {
+        "variant_id": {"type": "string", "pattern": "^step-[0-9a-f]{20}$"},
+        "report_path": {"type": "string", "minLength": 1},
+        "report_sha256": {"$ref": "#/$defs/sha256"},
+        "evidence_class": {"const": "offline-real-cad-candidate-not-reviewed"},
+        "unresolved_question_count": {"type": "integer", "minimum": 1},
+        "accepted_asset": {"const": false},
+        "support_granted": {"const": false}
+      }
+    },
+    "selectorDimension": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "value", "evidence_refs"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "value": {"type": "string", "minLength": 1},
+        "evidence_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "configuration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["configuration_id", "series", "model", "selector_status", "selector_key", "selector_dimensions", "source_variant_ids", "canonical_variant_id", "review_status", "local_runtime_loadable", "browser_loadable", "local_assets", "candidate_reports"],
+      "properties": {
+        "configuration_id": {"type": "string", "pattern": "^cadcfg-[0-9a-f]{20}$"},
+        "series": {"type": "string", "minLength": 1},
+        "model": {"type": "string", "minLength": 1},
+        "selector_status": {"enum": ["unresolved", "reviewed"]},
+        "selector_key": {"type": ["string", "null"]},
+        "selector_dimensions": {"type": "array", "items": {"$ref": "#/$defs/selectorDimension"}},
+        "source_variant_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^step-[0-9a-f]{20}$"}},
+        "canonical_variant_id": {"type": ["string", "null"], "pattern": "^step-[0-9a-f]{20}$"},
+        "review_status": {"enum": ["unsupported", "candidate", "accepted_local", "accepted_redistributable", "blocked"]},
+        "local_runtime_loadable": {"type": "boolean"},
+        "browser_loadable": {"type": "boolean"},
+        "local_assets": {"$ref": "#/$defs/assets"},
+        "candidate_reports": {"type": "array", "items": {"$ref": "#/$defs/candidate"}}
+      }
+    },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["series", "model", "review_status", "configuration_ids"],
+      "properties": {
+        "series": {"type": "string", "minLength": 1},
+        "model": {"type": "string", "minLength": 1},
+        "review_status": {"enum": ["unsupported", "partially_supported_local", "supported_local", "supported_redistributable"]},
+        "configuration_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^cadcfg-[0-9a-f]{20}$"}}
+      }
+    },
+    "sourceVariant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["variant_id", "series", "model", "step_sha256", "source_structure", "review_status", "source_step_is_runtime_asset", "candidate_report_available"],
+      "properties": {
+        "variant_id": {"type": "string", "pattern": "^step-[0-9a-f]{20}$"},
+        "series": {"type": "string", "minLength": 1},
+        "model": {"type": "string", "minLength": 1},
+        "step_sha256": {"$ref": "#/$defs/sha256"},
+        "source_structure": {"enum": ["assembly", "flattened"]},
+        "review_status": {"enum": ["unreviewed", "member_candidates_recorded", "geometry_reviewed", "conversion_verified", "accepted_local", "accepted_redistributable", "blocked", "rejected"]},
+        "source_step_is_runtime_asset": {"const": false},
+        "candidate_report_available": {"type": "boolean"}
+      }
+    }
+  }
+}

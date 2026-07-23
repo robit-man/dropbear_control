@@ -1,0 +1,205 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.dev/schemas/myactuator-plant-candidate-event.schema.json",
+  "title": "MYACTUATOR plant specification candidate lifecycle event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_id",
+    "sequence",
+    "event_type",
+    "subject",
+    "transition",
+    "reviewer",
+    "reason",
+    "evidence_refs",
+    "support_granted",
+    "physical_motion_authority",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "myactuator-plant-candidate-event/1"
+    },
+    "event_id": {
+      "type": "string",
+      "pattern": "^plantcandidateevent-[0-9a-f]{20}$"
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "event_type": {
+      "enum": ["accept", "reject", "defer", "revoke", "supersede"]
+    },
+    "subject": {
+      "$ref": "#/$defs/subject"
+    },
+    "transition": {
+      "$ref": "#/$defs/transition"
+    },
+    "reviewer": {
+      "$ref": "#/$defs/reviewer"
+    },
+    "reason": {
+      "$ref": "#/$defs/text"
+    },
+    "evidence_refs": {
+      "$ref": "#/$defs/refs"
+    },
+    "support_granted": {
+      "const": false
+    },
+    "physical_motion_authority": {
+      "const": false
+    },
+    "integrity": {
+      "$ref": "#/$defs/integrity"
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048,
+      "pattern": "^[^\\r\\n\\t]+$"
+    },
+    "refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/text"
+      }
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "submission_id",
+        "submission_sha256",
+        "candidate_id",
+        "candidate_sha256",
+        "superseding_submission_id",
+        "superseding_submission_sha256"
+      ],
+      "properties": {
+        "submission_id": {
+          "type": "string",
+          "pattern": "^plantcandidatesubmission-[0-9a-f]{20}$"
+        },
+        "submission_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "candidate_id": {
+          "type": "string",
+          "pattern": "^plantspeccandidate-[0-9a-f]{20}$"
+        },
+        "candidate_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "superseding_submission_id": {
+          "type": ["string", "null"],
+          "pattern": "^plantcandidatesubmission-[0-9a-f]{20}$"
+        },
+        "superseding_submission_sha256": {
+          "oneOf": [
+            {"$ref": "#/$defs/sha256"},
+            {"type": "null"}
+          ]
+        }
+      }
+    },
+    "transition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "prior_state",
+        "next_state",
+        "superseding_prior_state",
+        "superseding_next_state"
+      ],
+      "properties": {
+        "prior_state": {
+          "enum": ["submitted", "accepted"]
+        },
+        "next_state": {
+          "enum": ["accepted", "rejected", "deferred", "revoked", "superseded"]
+        },
+        "superseding_prior_state": {
+          "type": ["string", "null"],
+          "enum": ["submitted", null]
+        },
+        "superseding_next_state": {
+          "type": ["string", "null"],
+          "enum": ["accepted", null]
+        }
+      }
+    },
+    "reviewer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role_id",
+        "actor_id",
+        "organization_or_team",
+        "human_attested",
+        "independence_attested",
+        "assignment_register_revision",
+        "competence_evidence_refs",
+        "reviewed_at_utc",
+        "decision_assertion",
+        "signature_evidence_refs"
+      ],
+      "properties": {
+        "role_id": {
+          "const": "plant_fact_reviewer"
+        },
+        "actor_id": {
+          "$ref": "#/$defs/text"
+        },
+        "organization_or_team": {
+          "$ref": "#/$defs/text"
+        },
+        "human_attested": {
+          "const": true
+        },
+        "independence_attested": {
+          "const": true
+        },
+        "assignment_register_revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "competence_evidence_refs": {
+          "$ref": "#/$defs/refs"
+        },
+        "reviewed_at_utc": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "decision_assertion": {
+          "$ref": "#/$defs/text"
+        },
+        "signature_evidence_refs": {
+          "$ref": "#/$defs/refs"
+        }
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record_sha256"],
+      "properties": {
+        "record_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  }
+}

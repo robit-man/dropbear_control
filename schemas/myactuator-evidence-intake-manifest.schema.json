@@ -1,0 +1,263 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.dev/schemas/myactuator-evidence-intake-manifest.schema.json",
+  "title": "MYACTUATOR CAD and plant human evidence intake manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "intake_id",
+    "authority",
+    "sources",
+    "policy",
+    "packets",
+    "summary",
+    "accepted",
+    "support_granted",
+    "physical_motion_authority",
+    "physical_action_permitted",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "myactuator-evidence-intake-manifest/1"
+    },
+    "intake_id": {
+      "type": "string",
+      "pattern": "^evidenceintake-[0-9a-f]{20}$"
+    },
+    "authority": {
+      "const": "human_handoff_navigation_and_generated_drafts_only"
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "items": {
+        "$ref": "#/$defs/source"
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "generated_packet_is_not_submission",
+        "generated_packet_is_not_review",
+        "missing_values_remain_null",
+        "family_defaults_forbidden",
+        "independent_review_required",
+        "source_drift_revokes",
+        "physical_actions_require_separate_authorization",
+        "intake_never_grants_support_or_motion"
+      ],
+      "properties": {
+        "generated_packet_is_not_submission": {
+          "const": true
+        },
+        "generated_packet_is_not_review": {
+          "const": true
+        },
+        "missing_values_remain_null": {
+          "const": true
+        },
+        "family_defaults_forbidden": {
+          "const": true
+        },
+        "independent_review_required": {
+          "const": true
+        },
+        "source_drift_revokes": {
+          "const": true
+        },
+        "physical_actions_require_separate_authorization": {
+          "const": true
+        },
+        "intake_never_grants_support_or_motion": {
+          "const": true
+        }
+      }
+    },
+    "packets": {
+      "type": "array",
+      "minItems": 97,
+      "maxItems": 97,
+      "items": {
+        "$ref": "#/$defs/packet"
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "packet_count",
+        "cad_packet_count",
+        "plant_packet_count",
+        "ready_packet_count",
+        "blocked_packet_count",
+        "task_count",
+        "cad_task_count",
+        "plant_task_count",
+        "assigned_packet_count",
+        "accepted_packet_count",
+        "physical_action_permitted_count"
+      ],
+      "properties": {
+        "packet_count": {
+          "const": 97
+        },
+        "cad_packet_count": {
+          "const": 53
+        },
+        "plant_packet_count": {
+          "const": 44
+        },
+        "ready_packet_count": {
+          "const": 85
+        },
+        "blocked_packet_count": {
+          "const": 12
+        },
+        "task_count": {
+          "const": 2361
+        },
+        "cad_task_count": {
+          "const": 689
+        },
+        "plant_task_count": {
+          "const": 1672
+        },
+        "assigned_packet_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 97
+        },
+        "accepted_packet_count": {
+          "const": 0
+        },
+        "physical_action_permitted_count": {
+          "const": 0
+        }
+      }
+    },
+    "accepted": {
+      "const": false
+    },
+    "support_granted": {
+      "const": false
+    },
+    "physical_motion_authority": {
+      "const": false
+    },
+    "physical_action_permitted": {
+      "const": false
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "record_sha256"
+      ],
+      "properties": {
+        "record_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "exact": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048,
+      "pattern": "^[^\\r\\n\\t]+$"
+    },
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[^\\r\\n\\t]+$"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/path"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "packet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "packet_id",
+        "packet_kind",
+        "path",
+        "sha256",
+        "subject_id",
+        "queue_item_id",
+        "readiness",
+        "assigned",
+        "task_count",
+        "accepted",
+        "physical_action_permitted"
+      ],
+      "properties": {
+        "packet_id": {
+          "type": "string",
+          "pattern": "^intakepacket-[0-9a-f]{20}$"
+        },
+        "packet_kind": {
+          "enum": [
+            "cad_semantic_review",
+            "plant_source_extraction"
+          ]
+        },
+        "path": {
+          "$ref": "#/$defs/path"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "subject_id": {
+          "$ref": "#/$defs/exact"
+        },
+        "queue_item_id": {
+          "type": "string",
+          "pattern": "^reviewitem-[0-9a-f]{20}$"
+        },
+        "readiness": {
+          "enum": [
+            "ready_for_review",
+            "source_or_partition_needed",
+            "ready_for_extraction"
+          ]
+        },
+        "assigned": {
+          "type": "boolean"
+        },
+        "task_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "accepted": {
+          "const": false
+        },
+        "physical_action_permitted": {
+          "const": false
+        }
+      }
+    }
+  }
+}

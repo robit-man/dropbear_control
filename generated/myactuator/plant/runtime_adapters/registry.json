@@ -1,0 +1,541 @@
+{
+  "adapter": {
+    "adapter_id": "plant-adapter-deterministic-fixed-step-v1",
+    "limitations": [
+      "command delay and delay jitter must be exactly zero",
+      "position velocity and current noise standard deviations must be exactly zero",
+      "state sample period must equal the current-loop/solver period",
+      "feedback delay must be an integer number of solver steps",
+      "peak torque is excluded by the continuous-only execution profile",
+      "directional efficiency requires one direction or equal bidirectional values",
+      "scenario limits damping controller gain and derate threshold require independent review"
+    ],
+    "physical_io": false,
+    "solver_id": "semi-implicit-euler-fixed-step-v1",
+    "source_semantic_count": 38,
+    "torque_regime": "continuous_only"
+  },
+  "artifact_id": "myactuator-plant-runtime-adapter-registry",
+  "authority": "derived_runtime_adapter_admission_only",
+  "contracts": [],
+  "integrity": {
+    "record_sha256": "97ed94e202382e4e64c9f7b50d59d9e7087a668428d39c55c6681208e6a97bc2"
+  },
+  "model_coverage": [
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "X12-320",
+      "model_key": "model-430164a8a4bdd57cd6e9",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RMD-X",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "X6-60",
+      "model_key": "model-e1b03ec1ed5ba6d0a3f0",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RMD-X",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "X15-450",
+      "model_key": "model-31ea80a6887b6e0541fa",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RMD-X",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "X4-36",
+      "model_key": "model-8cbde8632e5f86a2120a",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RMD-X",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "X6-7",
+      "model_key": "model-0e52d20778ce97137d6b",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RMD-X",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "X6-40",
+      "model_key": "model-3b64dbab3e6722533c23",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RMD-X",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "X8-25",
+      "model_key": "model-11265e9c8d1a8d48d12e",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RMD-X",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "X6-8",
+      "model_key": "model-9bf9cb587e4ba0fc6f5c",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RMD-X",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "X10-40",
+      "model_key": "model-c24a4eefe7a9488e6850",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RMD-X",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "X10-100",
+      "model_key": "model-a548ca582490c89ad7b9",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RMD-X",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "X2-7",
+      "model_key": "model-0abc54824661426f55cb",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RMD-X",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "X4-10",
+      "model_key": "model-e61193822c02aaf81850",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RMD-X",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "X8-32",
+      "model_key": "model-653158dabcaa994505bc",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RMD-X",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "X8-120",
+      "model_key": "model-7667932dccaa7c272641",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RMD-X",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "RH-14",
+      "model_key": "model-5ad55126bcfbdf15adbe",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RH",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "RH-17",
+      "model_key": "model-23c877ef5ab100e5e441",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RH",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "RH-20",
+      "model_key": "model-12c5f032dd3b370c6cfa",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RH",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "RH-25",
+      "model_key": "model-2d955cb1b984d75ad06f",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RH",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "RH-32",
+      "model_key": "model-b9996630bf0f15d13fa9",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RH",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "L-4005",
+      "model_key": "model-e58a67571c25f177e9fe",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RMD-L",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "L-4010",
+      "model_key": "model-be0988eb5cb06ffbbec1",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RMD-L",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "L-4015",
+      "model_key": "model-1b3903bfbad6cf234e88",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RMD-L",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "L-5005",
+      "model_key": "model-b524bd0995e291a37aa6",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RMD-L",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "L-5010",
+      "model_key": "model-d0ebf830e847246c960e",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RMD-L",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "L-5015",
+      "model_key": "model-c5d39b12d94c68d06c05",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RMD-L",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "L-7015",
+      "model_key": "model-28797dbe4b803054f7d7",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RMD-L",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "L-7025",
+      "model_key": "model-8cfb9a792ae169957ecb",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RMD-L",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "L-9015",
+      "model_key": "model-c700daa74a69dd5b3e43",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RMD-L",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "L-9025",
+      "model_key": "model-728addd1f105af0468d9",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RMD-L",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "CEM-25",
+      "model_key": "model-44a171ca8400b46cf116",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "CEM",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "CEM-45",
+      "model_key": "model-0b07705ddb6c082e22e6",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "CEM",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "H-50-15",
+      "model_key": "model-22ff4d736079db0004b2",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RMD-H",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "H-70-15",
+      "model_key": "model-2d3eede78c085a84b283",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RMD-H",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "H-90-15",
+      "model_key": "model-2d411ce256943ef75255",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "RMD-H",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "FL-38-08",
+      "model_key": "model-045a7471d8b244d01224",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "FL-FLO",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "FL-50-08",
+      "model_key": "model-3a8cb431a8a52dbe425d",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "FL-FLO",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "FL-50-15",
+      "model_key": "model-acafe6af972a379c4483",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "FL-FLO",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "FL-70-10",
+      "model_key": "model-91c240c4a53d12159199",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "FL-FLO",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "FL-70-16",
+      "model_key": "model-e6b8076b1107641d4ba5",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "FL-FLO",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "FL-85-13",
+      "model_key": "model-d1026bb521c913c93142",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "FL-FLO",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "FL-85-23",
+      "model_key": "model-f6f94bcf4ea2b328489a",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "FL-FLO",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "FLO-50-15",
+      "model_key": "model-adbe47bffcefad76e014",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "FL-FLO",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "FLO-70-15",
+      "model_key": "model-6a6379dac291f66c575e",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "FL-FLO",
+      "source_plant_ids": []
+    },
+    {
+      "blockers": [
+        "sourced_exact_tuple_plant_missing"
+      ],
+      "model": "FLO-90-15",
+      "model_key": "model-5cf8498a3e5870ebe37e",
+      "runtime_contract_ids": [],
+      "runtime_loadable_plant_ids": [],
+      "series": "FL-FLO",
+      "source_plant_ids": []
+    }
+  ],
+  "physical_motion_authority": false,
+  "policy": {
+    "accepted_exact_execution_profile_required": true,
+    "adapter_never_grants_support_motion_or_physical_validation": true,
+    "all_38_source_semantics_accounted": true,
+    "generated_source_set_required": true,
+    "no_family_default_or_profile_fallback": true,
+    "solver_and_scenario_choices_explicit": true,
+    "source_facts_never_rewritten": true,
+    "unrepresentable_semantics_deny": true
+  },
+  "schema_version": "myactuator-plant-runtime-adapter-registry/1",
+  "sources": {
+    "adapter_implementation_sha256": "da6740c6def38591b556b060857b70d786d01e847e0244bbceabb7f975d69a87",
+    "catalog_sha256": "5a5b3bf61a30a5225cb61a18bfb06050d6c7abc011d709e30dc9227c5c889d6b",
+    "parameter_set_registry_generation_sha256": "e714ed6c5b8b9321f2691e74e43ec942b1ec2f20294b1149320862c988ee85be",
+    "parameter_set_registry_sha256": "bf34b5248551180e4608ca89a2058ef0f805b591006274cbfcf265f6f94373cb",
+    "plant_implementation_sha256": "15ef0d4de023bfef9fb93e546907213fe4d5a9c0983a5edd49714347195d4bed",
+    "profile_schema_sha256": "1ac599b0dc17ee8436f6919f660622ab0bc558d663d5985b9554217668004122",
+    "profile_sha256": {}
+  },
+  "summary": {
+    "model_count": 44,
+    "physically_validated_contract_count": 0,
+    "profile_submission_count": 0,
+    "runtime_contract_count": 0,
+    "runtime_loadable_model_count": 0,
+    "runtime_loadable_parameter_set_count": 0,
+    "source_parameter_set_count": 0
+  },
+  "support_granted": false
+}

@@ -1,0 +1,534 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.dev/schemas/myactuator-protocol-applicability-registry.schema.json",
+  "title": "Source-bound MYACTUATOR exact-tuple protocol applicability registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "authority",
+    "sources",
+    "policy",
+    "summary",
+    "document_packages",
+    "document_file_occurrences",
+    "models",
+    "accepted_applicability_decisions",
+    "support_granted",
+    "physical_motion_authority",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "myactuator-protocol-applicability-registry/2"
+    },
+    "artifact_id": {
+      "const": "myactuator-protocol-applicability-registry"
+    },
+    "authority": {
+      "const": "source_index_and_reviewed_exact_tuple_applicability_only"
+    },
+    "sources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "catalog_sha256",
+        "documents_sha256",
+        "document_archives_sha256",
+        "document_files_sha256",
+        "source_claims_sha256",
+        "decision_file_sha256"
+      ],
+      "properties": {
+        "catalog_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "documents_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "document_archives_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "document_files_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "source_claims_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "decision_file_sha256": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^protocoldecision-[0-9a-f]{20}\\.json$"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/sha256"
+          }
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "package_placement_is_candidate_only",
+        "filename_or_extraction_is_not_applicability",
+        "duplicate_bytes_retain_occurrence_provenance",
+        "sensor_interface_is_not_motor_motion_protocol",
+        "exact_model_hardware_firmware_protocol_transport_mode_required",
+        "no_family_generation_or_latest_fallback",
+        "human_review_required_for_acceptance",
+        "source_drift_revokes",
+        "applicability_never_grants_motor_support"
+      ],
+      "properties": {
+        "package_placement_is_candidate_only": {
+          "const": true
+        },
+        "filename_or_extraction_is_not_applicability": {
+          "const": true
+        },
+        "duplicate_bytes_retain_occurrence_provenance": {
+          "const": true
+        },
+        "sensor_interface_is_not_motor_motion_protocol": {
+          "const": true
+        },
+        "exact_model_hardware_firmware_protocol_transport_mode_required": {
+          "const": true
+        },
+        "no_family_generation_or_latest_fallback": {
+          "const": true
+        },
+        "human_review_required_for_acceptance": {
+          "const": true
+        },
+        "source_drift_revokes": {
+          "const": true
+        },
+        "applicability_never_grants_motor_support": {
+          "const": true
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model_count",
+        "document_package_count",
+        "document_file_occurrence_count",
+        "unique_document_file_count",
+        "candidate_model_package_relationship_count",
+        "candidate_model_protocol_relationship_count",
+        "source_claim_scope_counts",
+        "accepted_applicability_count",
+        "accepted_model_count",
+        "supported_model_count"
+      ],
+      "properties": {
+        "model_count": {
+          "const": 44
+        },
+        "document_package_count": {
+          "const": 9
+        },
+        "document_file_occurrence_count": {
+          "const": 32
+        },
+        "unique_document_file_count": {
+          "const": 23
+        },
+        "candidate_model_package_relationship_count": {
+          "type": "integer",
+          "minimum": 44
+        },
+        "candidate_model_protocol_relationship_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "source_claim_scope_counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "drive_manual",
+            "fieldbus_protocol",
+            "motor_motion_protocol",
+            "product_manual",
+            "sensor_interface",
+            "setup_manual"
+          ],
+          "properties": {
+            "drive_manual": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "fieldbus_protocol": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "motor_motion_protocol": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "product_manual": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sensor_interface": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "setup_manual": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "accepted_applicability_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "accepted_model_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 44
+        },
+        "supported_model_count": {
+          "const": 0
+        }
+      }
+    },
+    "document_packages": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": {
+        "$ref": "#/$defs/documentPackage"
+      }
+    },
+    "document_file_occurrences": {
+      "type": "array",
+      "minItems": 32,
+      "maxItems": 32,
+      "items": {
+        "$ref": "#/$defs/documentFileOccurrence"
+      }
+    },
+    "models": {
+      "type": "array",
+      "minItems": 44,
+      "maxItems": 44,
+      "items": {
+        "$ref": "#/$defs/model"
+      }
+    },
+    "accepted_applicability_decisions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object"
+      }
+    },
+    "support_granted": {
+      "const": false
+    },
+    "physical_motion_authority": {
+      "const": false
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "record_sha256"
+      ],
+      "properties": {
+        "record_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "exact": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[^\\r\\n\\t]+$"
+    },
+    "modelKey": {
+      "type": "string",
+      "pattern": "^model-[0-9a-f]{20}$"
+    },
+    "packageId": {
+      "type": "string",
+      "pattern": "^docpkg-[0-9a-f]{20}$"
+    },
+    "occurrenceId": {
+      "type": "string",
+      "pattern": "^dococc-[0-9a-f]{20}$"
+    },
+    "sourceClaim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "document_scope",
+        "title",
+        "revision",
+        "applicable_driver",
+        "transports",
+        "command_scope",
+        "claim_locator",
+        "evidence_state",
+        "human_reviewed",
+        "applicability_authority"
+      ],
+      "properties": {
+        "document_scope": {
+          "enum": [
+            "drive_manual",
+            "fieldbus_protocol",
+            "motor_motion_protocol",
+            "product_manual",
+            "sensor_interface",
+            "setup_manual"
+          ]
+        },
+        "title": {
+          "$ref": "#/$defs/exact"
+        },
+        "revision": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/exact"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "applicable_driver": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/exact"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "transports": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "classic_can",
+              "ethercat",
+              "rs485"
+            ]
+          }
+        },
+        "command_scope": {
+          "enum": [
+            "drive_configuration",
+            "fieldbus_motor_control",
+            "motor_motion_control",
+            "product_characteristics",
+            "sensor_electrical_interface",
+            "setup_software"
+          ]
+        },
+        "claim_locator": {
+          "$ref": "#/$defs/exact"
+        },
+        "evidence_state": {
+          "enum": [
+            "source_filename_unreviewed",
+            "source_text_extract_unreviewed",
+            "source_filename_and_text_extract_unreviewed"
+          ]
+        },
+        "human_reviewed": {
+          "const": false
+        },
+        "applicability_authority": {
+          "const": false
+        }
+      }
+    },
+    "documentPackage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "package_id",
+        "series",
+        "document_set",
+        "package_revision",
+        "archive_filename",
+        "archive_sha256",
+        "file_occurrence_ids",
+        "candidate_model_keys",
+        "applicability_authority"
+      ],
+      "properties": {
+        "package_id": {
+          "$ref": "#/$defs/packageId"
+        },
+        "series": {
+          "$ref": "#/$defs/exact"
+        },
+        "document_set": {
+          "$ref": "#/$defs/exact"
+        },
+        "package_revision": {
+          "$ref": "#/$defs/exact"
+        },
+        "archive_filename": {
+          "$ref": "#/$defs/exact"
+        },
+        "archive_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "file_occurrence_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/occurrenceId"
+          }
+        },
+        "candidate_model_keys": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/modelKey"
+          }
+        },
+        "applicability_authority": {
+          "const": false
+        }
+      }
+    },
+    "documentFileOccurrence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "occurrence_id",
+        "package_id",
+        "series",
+        "document_set",
+        "vendor_relative_path",
+        "file_name",
+        "file_sha256",
+        "bytes",
+        "source_claim"
+      ],
+      "properties": {
+        "occurrence_id": {
+          "$ref": "#/$defs/occurrenceId"
+        },
+        "package_id": {
+          "$ref": "#/$defs/packageId"
+        },
+        "series": {
+          "$ref": "#/$defs/exact"
+        },
+        "document_set": {
+          "$ref": "#/$defs/exact"
+        },
+        "vendor_relative_path": {
+          "$ref": "#/$defs/exact"
+        },
+        "file_name": {
+          "$ref": "#/$defs/exact"
+        },
+        "file_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "source_claim": {
+          "$ref": "#/$defs/sourceClaim"
+        }
+      }
+    },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model_key",
+        "series",
+        "model",
+        "package_revision",
+        "candidate_package_ids",
+        "candidate_protocol_occurrence_ids",
+        "applicability_status",
+        "accepted_decision_ids",
+        "support_granted",
+        "blockers"
+      ],
+      "properties": {
+        "model_key": {
+          "$ref": "#/$defs/modelKey"
+        },
+        "series": {
+          "$ref": "#/$defs/exact"
+        },
+        "model": {
+          "$ref": "#/$defs/exact"
+        },
+        "package_revision": {
+          "$ref": "#/$defs/exact"
+        },
+        "candidate_package_ids": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/packageId"
+          }
+        },
+        "candidate_protocol_occurrence_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/occurrenceId"
+          }
+        },
+        "applicability_status": {
+          "enum": [
+            "unsupported",
+            "accepted"
+          ]
+        },
+        "accepted_decision_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^protocoldecision-[0-9a-f]{20}$"
+          }
+        },
+        "support_granted": {
+          "const": false
+        },
+        "blockers": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/exact"
+          }
+        }
+      }
+    }
+  }
+}

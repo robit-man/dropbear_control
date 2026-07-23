@@ -1,0 +1,707 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.dev/schemas/simulation-trace-interchange.schema.json",
+  "title": "Backend-neutral deterministic simulation trace interchange",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "trace_id",
+    "authority",
+    "producer",
+    "subject",
+    "backend",
+    "source_generations",
+    "clock",
+    "reset",
+    "commands",
+    "states",
+    "dispositions",
+    "events",
+    "summary",
+    "claims",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "simulation-trace-interchange/1"
+    },
+    "trace_id": {
+      "pattern": "^simtrace-[0-9a-f]{24}$",
+      "type": "string"
+    },
+    "authority": {
+      "const": "offline_backend_interchange_only"
+    },
+    "producer": {
+      "$ref": "#/$defs/producer"
+    },
+    "subject": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/catalog_subject"
+        },
+        {
+          "$ref": "#/$defs/generic_subject"
+        },
+        {
+          "$ref": "#/$defs/dropbear_subject"
+        }
+      ]
+    },
+    "backend": {
+      "$ref": "#/$defs/backend"
+    },
+    "source_generations": {
+      "$ref": "#/$defs/source_generations"
+    },
+    "clock": {
+      "$ref": "#/$defs/clock"
+    },
+    "reset": {
+      "$ref": "#/$defs/reset"
+    },
+    "commands": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/command"
+      }
+    },
+    "states": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/state"
+      }
+    },
+    "dispositions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/disposition"
+      }
+    },
+    "events": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/event"
+      }
+    },
+    "summary": {
+      "$ref": "#/$defs/summary"
+    },
+    "claims": {
+      "$ref": "#/$defs/claims"
+    },
+    "integrity": {
+      "$ref": "#/$defs/integrity"
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "identifier": {
+      "pattern": "^[a-z][a-z0-9-]{2,127}$",
+      "type": "string"
+    },
+    "backend_kind": {
+      "pattern": "^[a-z][a-z0-9_]{2,63}$",
+      "type": "string"
+    },
+    "uint64": {
+      "minimum": 0,
+      "maximum": 18446744073709551615,
+      "type": "integer"
+    },
+    "positive_uint64": {
+      "minimum": 1,
+      "maximum": 18446744073709551615,
+      "type": "integer"
+    },
+    "nullable_sha256": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/sha256"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "nullable_number": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "nullable_text": {
+      "oneOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "version",
+        "source_sha256"
+      ],
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/identifier"
+        },
+        "version": {
+          "minLength": 1,
+          "maxLength": 128,
+          "type": "string"
+        },
+        "source_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "catalog_subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "subject_id",
+        "fixture_id",
+        "model_key",
+        "series",
+        "model",
+        "configuration_id",
+        "evidence_class"
+      ],
+      "properties": {
+        "kind": {
+          "const": "catalog_model_selection"
+        },
+        "subject_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "fixture_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "model_key": {
+          "pattern": "^model-[0-9a-f]{20}$",
+          "type": "string"
+        },
+        "series": {
+          "minLength": 1,
+          "maxLength": 128,
+          "type": "string"
+        },
+        "model": {
+          "minLength": 1,
+          "maxLength": 128,
+          "type": "string"
+        },
+        "configuration_id": {
+          "pattern": "^cadcfg-[0-9a-f]{20}$",
+          "type": "string"
+        },
+        "evidence_class": {
+          "$ref": "#/$defs/identifier"
+        }
+      }
+    },
+    "generic_subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "subject_id",
+        "fixture_id",
+        "model_key",
+        "series",
+        "model",
+        "configuration_id",
+        "evidence_class"
+      ],
+      "properties": {
+        "kind": {
+          "const": "generic_rigid_body_fixture"
+        },
+        "subject_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "fixture_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "model_key": {
+          "type": "null"
+        },
+        "series": {
+          "type": "null"
+        },
+        "model": {
+          "type": "null"
+        },
+        "configuration_id": {
+          "type": "null"
+        },
+        "evidence_class": {
+          "const": "synthetic-generic-fixture"
+        }
+      }
+    },
+    "dropbear_subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "subject_id",
+        "fixture_id",
+        "model_key",
+        "series",
+        "model",
+        "configuration_id",
+        "evidence_class",
+        "graph_submission_id",
+        "cad_registry_sha256",
+        "plant_registry_sha256"
+      ],
+      "properties": {
+        "kind": {
+          "const": "canonical_dropbear_scene"
+        },
+        "subject_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "fixture_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "model_key": {
+          "type": "null"
+        },
+        "series": {
+          "type": "null"
+        },
+        "model": {
+          "type": "null"
+        },
+        "configuration_id": {
+          "type": "null"
+        },
+        "evidence_class": {
+          "$ref": "#/$defs/identifier"
+        },
+        "graph_submission_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "cad_registry_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "plant_registry_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "backend": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "backend_id",
+        "backend_kind",
+        "engine_name",
+        "engine_version",
+        "engine_binary_sha256",
+        "use_case",
+        "deterministic_virtual_time",
+        "command_capable",
+        "exact_model_fidelity",
+        "physically_validated",
+        "physical_io"
+      ],
+      "properties": {
+        "backend_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "backend_kind": {
+          "$ref": "#/$defs/backend_kind"
+        },
+        "engine_name": {
+          "minLength": 1,
+          "maxLength": 128,
+          "type": "string"
+        },
+        "engine_version": {
+          "minLength": 1,
+          "maxLength": 128,
+          "type": "string"
+        },
+        "engine_binary_sha256": {
+          "$ref": "#/$defs/nullable_sha256"
+        },
+        "use_case": {
+          "enum": [
+            "recorded_replay",
+            "protocol_state_sil",
+            "catalog_demo",
+            "synthetic_plant_sil",
+            "exact_model_plant_sil",
+            "whole_robot_rigid_body",
+            "generic_rigid_body_benchmark",
+            "physical_hil"
+          ]
+        },
+        "deterministic_virtual_time": {
+          "type": "boolean"
+        },
+        "command_capable": {
+          "type": "boolean"
+        },
+        "exact_model_fidelity": {
+          "type": "boolean"
+        },
+        "physically_validated": {
+          "type": "boolean"
+        },
+        "physical_io": {
+          "const": false
+        }
+      }
+    },
+    "source_generations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "catalog_sha256",
+        "source_registry_sha256",
+        "graph_registry_sha256"
+      ],
+      "properties": {
+        "catalog_sha256": {
+          "$ref": "#/$defs/nullable_sha256"
+        },
+        "source_registry_sha256": {
+          "$ref": "#/$defs/nullable_sha256"
+        },
+        "graph_registry_sha256": {
+          "$ref": "#/$defs/nullable_sha256"
+        }
+      }
+    },
+    "clock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "timebase",
+        "tick_period_ns",
+        "initial_tick",
+        "final_tick"
+      ],
+      "properties": {
+        "timebase": {
+          "const": "integer_virtual_tick"
+        },
+        "tick_period_ns": {
+          "$ref": "#/$defs/positive_uint64"
+        },
+        "initial_tick": {
+          "const": 0
+        },
+        "final_tick": {
+          "$ref": "#/$defs/uint64"
+        }
+      }
+    },
+    "reset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "seed",
+        "reset_generation",
+        "initial_state_sha256"
+      ],
+      "properties": {
+        "seed": {
+          "$ref": "#/$defs/uint64"
+        },
+        "reset_generation": {
+          "$ref": "#/$defs/positive_uint64"
+        },
+        "initial_state_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "command": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_sequence",
+        "sequence",
+        "tick",
+        "deadline_tick",
+        "actuator_id",
+        "mode",
+        "target_si",
+        "target_unit",
+        "maximum_absolute_target_si"
+      ],
+      "properties": {
+        "event_sequence": {
+          "$ref": "#/$defs/positive_uint64"
+        },
+        "sequence": {
+          "$ref": "#/$defs/positive_uint64"
+        },
+        "tick": {
+          "$ref": "#/$defs/uint64"
+        },
+        "deadline_tick": {
+          "$ref": "#/$defs/positive_uint64"
+        },
+        "actuator_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "mode": {
+          "enum": [
+            "disable",
+            "qaxis_current",
+            "output_velocity",
+            "output_position",
+            "joint_effort"
+          ]
+        },
+        "target_si": {
+          "$ref": "#/$defs/nullable_number"
+        },
+        "target_unit": {
+          "$ref": "#/$defs/nullable_text"
+        },
+        "maximum_absolute_target_si": {
+          "$ref": "#/$defs/nullable_number"
+        }
+      }
+    },
+    "state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_sequence",
+        "tick",
+        "sample_tick",
+        "actuator_id",
+        "position_rad",
+        "velocity_rad_s",
+        "effort_nm",
+        "qaxis_current_a",
+        "temperature_k",
+        "validity",
+        "source",
+        "fault_code",
+        "provenance_refs"
+      ],
+      "properties": {
+        "event_sequence": {
+          "$ref": "#/$defs/positive_uint64"
+        },
+        "tick": {
+          "$ref": "#/$defs/uint64"
+        },
+        "sample_tick": {
+          "$ref": "#/$defs/uint64"
+        },
+        "actuator_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "position_rad": {
+          "$ref": "#/$defs/nullable_number"
+        },
+        "velocity_rad_s": {
+          "$ref": "#/$defs/nullable_number"
+        },
+        "effort_nm": {
+          "$ref": "#/$defs/nullable_number"
+        },
+        "qaxis_current_a": {
+          "$ref": "#/$defs/nullable_number"
+        },
+        "temperature_k": {
+          "$ref": "#/$defs/nullable_number"
+        },
+        "validity": {
+          "enum": [
+            "valid",
+            "stale",
+            "missing",
+            "faulted"
+          ]
+        },
+        "source": {
+          "$ref": "#/$defs/identifier"
+        },
+        "fault_code": {
+          "$ref": "#/$defs/identifier"
+        },
+        "provenance_refs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          }
+        }
+      }
+    },
+    "disposition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_sequence",
+        "tick",
+        "command_sequence",
+        "result",
+        "reason"
+      ],
+      "properties": {
+        "event_sequence": {
+          "$ref": "#/$defs/positive_uint64"
+        },
+        "tick": {
+          "$ref": "#/$defs/uint64"
+        },
+        "command_sequence": {
+          "$ref": "#/$defs/positive_uint64"
+        },
+        "result": {
+          "enum": [
+            "accepted",
+            "denied"
+          ]
+        },
+        "reason": {
+          "$ref": "#/$defs/identifier"
+        }
+      }
+    },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sequence",
+        "tick",
+        "kind",
+        "payload",
+        "previous_sha256",
+        "record_sha256"
+      ],
+      "properties": {
+        "sequence": {
+          "$ref": "#/$defs/positive_uint64"
+        },
+        "tick": {
+          "$ref": "#/$defs/uint64"
+        },
+        "kind": {
+          "$ref": "#/$defs/identifier"
+        },
+        "payload": {
+          "type": "object"
+        },
+        "previous_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "record_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "command_count",
+        "state_count",
+        "disposition_count",
+        "event_count",
+        "accepted_command_count",
+        "denied_command_count"
+      ],
+      "properties": {
+        "command_count": {
+          "$ref": "#/$defs/uint64"
+        },
+        "state_count": {
+          "$ref": "#/$defs/uint64"
+        },
+        "disposition_count": {
+          "$ref": "#/$defs/uint64"
+        },
+        "event_count": {
+          "$ref": "#/$defs/positive_uint64"
+        },
+        "accepted_command_count": {
+          "$ref": "#/$defs/uint64"
+        },
+        "denied_command_count": {
+          "$ref": "#/$defs/uint64"
+        }
+      }
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "generic_fixture_only",
+        "canonical_dropbear",
+        "exact_model_fidelity",
+        "physically_validated",
+        "support_granted",
+        "physical_motion_authority",
+        "physical_io"
+      ],
+      "properties": {
+        "generic_fixture_only": {
+          "type": "boolean"
+        },
+        "canonical_dropbear": {
+          "type": "boolean"
+        },
+        "exact_model_fidelity": {
+          "type": "boolean"
+        },
+        "physically_validated": {
+          "type": "boolean"
+        },
+        "support_granted": {
+          "const": false
+        },
+        "physical_motion_authority": {
+          "const": false
+        },
+        "physical_io": {
+          "const": false
+        }
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_chain_sha256",
+        "record_sha256"
+      ],
+      "properties": {
+        "event_chain_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "record_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  }
+}

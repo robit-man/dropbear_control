@@ -5,6 +5,12 @@
 **Target Platform:** ESP32 (ESP32 DevKitC, ESP32-S3)  
 **Build System:** PlatformIO  
 
+> **Non-authoritative legacy draft.** The IDs, bit rates, Modbus/CoE mappings,
+> auto-detection behavior and torque semantics below are unverified prototype
+> proposals and conflict with current vendor sources. They must not drive
+> powered hardware. Use the source register and versioned codecs under
+> `host/myactuator_lib/` and `firmware/esp32/src/protocols/`.
+
 ---
 
 ## 1. Overview

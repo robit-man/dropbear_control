@@ -1,0 +1,242 @@
+{
+  "heuristic_selects_output": false,
+  "housing_member_identified": false,
+  "images": {
+    "member_sheet": {
+      "path": "generated/myactuator/cad/review_packets/step-5b3a01b9a8f9a28474ab/member-sheet.png",
+      "sha256": "84e20f6bddf50689fc3646196aeec0669ba5b8426112ba60c121f7e0f2304709"
+    },
+    "overview": {
+      "path": "generated/myactuator/cad/review_packets/step-5b3a01b9a8f9a28474ab/overview.png",
+      "sha256": "a96d0d1bba74585139522e99f9532adfe2dda0edef2244b517cbea39a562fde3"
+    }
+  },
+  "joint_axis_identified": false,
+  "members": [
+    {
+      "bbox_size_mm": [
+        70.0,
+        42.0,
+        70.0
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        -0.0,
+        -0.630772,
+        -0.0
+      ],
+      "occurrence": "NAUO1",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#16903",
+      "related_product_name": "MT-H7015-0001_Default<\u6309\u52a0\u5de5>",
+      "same_product_occurrences": [
+        "NAUO1"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 15624.621265
+    },
+    {
+      "bbox_size_mm": [
+        70.0,
+        30.0,
+        70.0
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        -0.0,
+        8.257083,
+        0.0
+      ],
+      "occurrence": "NAUO2",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#26330",
+      "related_product_name": "MT-H7015-0002_Default<\u6309\u52a0\u5de5>",
+      "same_product_occurrences": [
+        "NAUO2"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 10084.689002
+    },
+    {
+      "bbox_size_mm": [
+        70.0,
+        8.3,
+        70.000002
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        -0.221783,
+        41.244852,
+        -0.011012
+      ],
+      "occurrence": "NAUO3",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#40355",
+      "related_product_name": "MT-H7015-0004-V1_Default<\u6309\u52a0\u5de5>",
+      "same_product_occurrences": [
+        "NAUO3"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 4943.314346
+    },
+    {
+      "bbox_size_mm": [
+        3.8,
+        2.0,
+        3.8
+      ],
+      "candidate_terms": [
+        "\u87ba\u4e1d"
+      ],
+      "center_mm": [
+        -14.481764,
+        42.225867,
+        28.535566
+      ],
+      "occurrence": "NAUO4",
+      "output_candidate_score": -8,
+      "product_entity_ref": "#3532",
+      "related_product_name": "\u5185\u516d\u89d2\u6c89\u5934\u87ba\u4e1d M2_M2x6  12.9\u7ea7\u9ed1",
+      "same_product_occurrences": [
+        "NAUO4"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 13.341882
+    },
+    {
+      "bbox_size_mm": [
+        70.0,
+        18.0,
+        70.000002
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        -0.033223,
+        31.598083,
+        -1.473347
+      ],
+      "occurrence": "NAUO5",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#68735",
+      "related_product_name": "MT-H7015-0006-V1_Default<\u6309\u52a0\u5de5>",
+      "same_product_occurrences": [
+        "NAUO5"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 4050.75903
+    },
+    {
+      "bbox_size_mm": [
+        31.916039,
+        8.7,
+        17.77466
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        8.847207,
+        31.954074,
+        15.073446
+      ],
+      "occurrence": "NAUO6",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#2880",
+      "related_product_name": "3D_\u8f6c\u63a5\u677f_2024-07-26_Default<\u6309\u52a0\u5de5>",
+      "same_product_occurrences": [
+        "NAUO6"
+      ],
+      "shape_type": "Compound",
+      "valid": true,
+      "volume_mm3": 2054.644197
+    },
+    {
+      "bbox_size_mm": [
+        15.508597,
+        7.170343,
+        12.570528
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        -0.115624,
+        33.005412,
+        29.279746
+      ],
+      "occurrence": "NAUO7",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#11214",
+      "related_product_name": "\u63a5\u63d2\u5934_Default<\u6309\u52a0\u5de5>",
+      "same_product_occurrences": [
+        "NAUO7"
+      ],
+      "shape_type": "Shell",
+      "valid": true,
+      "volume_mm3": 744.603807
+    },
+    {
+      "bbox_size_mm": [
+        33.812807,
+        7.170343,
+        28.287353
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        6.29237,
+        31.81691,
+        22.748616
+      ],
+      "occurrence": "NAUO8",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#21954",
+      "related_product_name": "3D_RH14\u8f6c\u63a5\u677f_2024-07-31.03_Default<\u6309\u52a0\u5de5>",
+      "same_product_occurrences": [
+        "NAUO8"
+      ],
+      "shape_type": "Compound",
+      "valid": true,
+      "volume_mm3": 2153.719269
+    },
+    {
+      "bbox_size_mm": [
+        2.463575,
+        2.0,
+        9.918992
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        33.740957,
+        39.5,
+        -6.614981
+      ],
+      "occurrence": "NAUO9",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#14920",
+      "related_product_name": "\u706f\u5e26_Default<\u6309\u52a0\u5de5>",
+      "same_product_occurrences": [
+        "NAUO9"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 16.503775
+    }
+  ],
+  "model": "H-70-15",
+  "output_member_identified": false,
+  "representative_product_views": 9,
+  "review_status": "candidate_visuals_only",
+  "schema_version": "myactuator-cad-review-packet/1",
+  "series": "RMD-H",
+  "simulation_supported": false,
+  "step_sha256": "e13345f07b191bdd935e028753d09d17f0e6ca57a7231832eeda9b64b58193bf",
+  "tool": {
+    "angular_deflection_radians": 0.12,
+    "cadquery": "2.8.0",
+    "camera": "orthographic isometric candidate-review view",
+    "linear_deflection_mm": 0.08
+  },
+  "variant_id": "step-5b3a01b9a8f9a28474ab",
+  "vendor_relative_path": "RMD-H/H-70-15/vendor/H-70-15-241210/RMD-H-70-15.STEP"
+}

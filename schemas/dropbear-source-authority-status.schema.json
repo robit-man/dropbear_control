@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.org/schemas/dropbear-source-authority-status.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "artifact_id", "authority", "source", "template", "summary", "accepted_decision_ids", "blockers"],
+  "properties": {
+    "schema_version": { "const": "dropbear-source-authority-status/1" },
+    "artifact_id": { "const": "dropbear-source-authority-status" },
+    "authority": { "const": "derived_denial_only" },
+    "source": {
+      "type": "object", "additionalProperties": false,
+      "required": ["inventory_path", "inventory_sha256", "repository_commit", "repository_tree_id", "canonical_configuration_digest"],
+      "properties": {
+        "inventory_path": { "const": "generated/dropbear_description/inventory.json" },
+        "inventory_sha256": { "$ref": "#/$defs/sha256" },
+        "repository_commit": { "$ref": "#/$defs/sha1" },
+        "repository_tree_id": { "$ref": "#/$defs/sha1" },
+        "canonical_configuration_digest": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "template": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "sha256", "decision_id"],
+      "properties": {
+        "path": { "type": "string", "pattern": "^generated/dropbear_source_authority/templates/sourceauthority-[0-9a-f]{20}\\.json$" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "decision_id": { "type": "string", "pattern": "^sourceauthority-[0-9a-f]{20}$" }
+      }
+    },
+    "summary": {
+      "type": "object", "additionalProperties": false,
+      "required": ["role_count", "divergent_logical_group_count", "submitted_decision_count", "accepted_decision_count", "runtime_complete_decision_count", "source_authority_selected", "support_granted", "physical_motion_authority"],
+      "properties": {
+        "role_count": { "const": 7 },
+        "divergent_logical_group_count": { "const": 29 },
+        "submitted_decision_count": { "const": 0 },
+        "accepted_decision_count": { "const": 0 },
+        "runtime_complete_decision_count": { "const": 0 },
+        "source_authority_selected": { "const": false },
+        "support_granted": { "const": false },
+        "physical_motion_authority": { "const": false }
+      }
+    },
+    "accepted_decision_ids": { "type": "array", "maxItems": 0 },
+    "blockers": { "type": "array", "minItems": 4, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+  },
+  "$defs": {
+    "sha1": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+  }
+}

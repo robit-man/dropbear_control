@@ -11,7 +11,7 @@
 #define PIN_CAN_TX          22
 #define PIN_CAN_RX          23
 #define PIN_RS485_TX        17
-#define PIN_RS485_RX        16
+#define PIN_RS485_RX        15
 #define PIN_RS485_DE_RE     21
 #define PIN_ETHERCAT_TX     22
 #define PIN_ETHERCAT_RX     23

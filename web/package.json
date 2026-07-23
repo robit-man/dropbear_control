@@ -1,0 +1,20 @@
+{
+  "name": "web",
+  "version": "1.0.0",
+  "description": "Prototype browser dashboard and synthetic, non-authoritative motor simulator.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node test/cad_support.test.mjs && node test/simulator_runtime.test.mjs && node test/plant_evidence.test.mjs && node test/protocol.test.mjs && node test/sim.test.mjs && node test/harness.test.mjs && node test/e2e.test.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "playwright": "^1.61.1",
+    "three": "^0.185.1"
+  }
+}

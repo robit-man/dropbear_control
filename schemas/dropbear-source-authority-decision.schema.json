@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.org/schemas/dropbear-source-authority-decision.schema.json",
+  "title": "Independent Dropbear robot-description source-authority decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "record_state", "record_revision", "decision_id", "supersedes_decision_id", "subject", "reviewer", "disposition", "family_policy", "role_decisions", "divergence_decisions", "decision_complete", "runtime_description_complete", "support_granted", "physical_motion_authority", "integrity"],
+  "properties": {
+    "schema_version": { "const": "dropbear-source-authority-decision/1" },
+    "record_state": { "enum": ["draft", "submitted"] },
+    "record_revision": { "const": 1 },
+    "decision_id": { "type": "string", "pattern": "^sourceauthority-[0-9a-f]{20}$" },
+    "supersedes_decision_id": { "type": ["string", "null"], "pattern": "^sourceauthority-[0-9a-f]{20}$" },
+    "subject": {
+      "type": "object", "additionalProperties": false,
+      "required": ["repository_path", "repository_commit", "repository_tree_id", "inventory_path", "inventory_schema_version", "inventory_sha256", "canonical_configuration_digest"],
+      "properties": {
+        "repository_path": { "const": "references/Dropbear" },
+        "repository_commit": { "$ref": "#/$defs/sha1" },
+        "repository_tree_id": { "$ref": "#/$defs/sha1" },
+        "inventory_path": { "const": "generated/dropbear_description/inventory.json" },
+        "inventory_schema_version": { "const": "dropbear-description-inventory/1" },
+        "inventory_sha256": { "$ref": "#/$defs/sha256" },
+        "canonical_configuration_digest": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "reviewer": { "$ref": "#/$defs/reviewer" },
+    "disposition": { "enum": [null, "accept_selection", "needs_more_evidence", "reject_inventory"] },
+    "family_policy": { "$ref": "#/$defs/familyPolicy" },
+    "role_decisions": {
+      "type": "array", "minItems": 7, "maxItems": 7,
+      "items": { "$ref": "#/$defs/roleDecision" }
+    },
+    "divergence_decisions": {
+      "type": "array", "minItems": 1,
+      "items": { "$ref": "#/$defs/divergenceDecision" }
+    },
+    "decision_complete": { "type": "boolean" },
+    "runtime_description_complete": { "type": "boolean" },
+    "support_granted": { "const": false },
+    "physical_motion_authority": { "const": false },
+    "integrity": {
+      "type": "object", "additionalProperties": false, "required": ["record_sha256"],
+      "properties": { "record_sha256": { "$ref": "#/$defs/sha256" } }
+    }
+  },
+  "$defs": {
+    "text": { "type": "string", "minLength": 1 },
+    "nullableText": { "type": ["string", "null"], "minLength": 1 },
+    "sha1": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "evidenceRefs": {
+      "type": "array", "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1, "maxLength": 1024 }
+    },
+    "reviewer": {
+      "type": "object", "additionalProperties": false,
+      "required": ["reviewer_id", "organization_or_team", "independence_attested", "reviewed_at", "review_assertion", "signature_evidence_refs"],
+      "properties": {
+        "reviewer_id": { "$ref": "#/$defs/nullableText" },
+        "organization_or_team": { "$ref": "#/$defs/nullableText" },
+        "independence_attested": { "type": ["boolean", "null"] },
+        "reviewed_at": { "type": ["string", "null"], "format": "date-time" },
+        "review_assertion": { "$ref": "#/$defs/nullableText" },
+        "signature_evidence_refs": { "$ref": "#/$defs/evidenceRefs" }
+      }
+    },
+    "family": {
+      "enum": ["cad_detailed", "cad_simplified", "gazebo_dropbear", "gazebo_detailed", "gazebo_simplified", "rviz_detailed", "rviz_simplified", "rviz_legacy"]
+    },
+    "familyPolicy": {
+      "type": "object", "additionalProperties": false,
+      "required": ["mode", "primary_family", "rationale", "evidence_refs"],
+      "properties": {
+        "mode": { "enum": [null, "single_family", "mixed_reviewed"] },
+        "primary_family": { "anyOf": [{ "$ref": "#/$defs/family" }, { "type": "null" }] },
+        "rationale": { "$ref": "#/$defs/nullableText" },
+        "evidence_refs": { "$ref": "#/$defs/evidenceRefs" }
+      }
+    },
+    "lineage": {
+      "type": "object", "additionalProperties": false,
+      "required": ["generator_id", "generator_version", "arguments_sha256", "source_paths", "evidence_refs"],
+      "properties": {
+        "generator_id": { "$ref": "#/$defs/text" },
+        "generator_version": { "$ref": "#/$defs/text" },
+        "arguments_sha256": { "$ref": "#/$defs/sha256" },
+        "source_paths": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/text" } },
+        "evidence_refs": { "$ref": "#/$defs/evidenceRefs" }
+      }
+    },
+    "selection": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "git_object_id", "sha256", "size_bytes", "logical_key", "package_family", "classification", "selection_kind", "generated_lineage"],
+      "properties": {
+        "path": { "$ref": "#/$defs/text" },
+        "git_object_id": { "$ref": "#/$defs/sha1" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "size_bytes": { "type": "integer", "minimum": 0 },
+        "logical_key": { "$ref": "#/$defs/text" },
+        "package_family": { "$ref": "#/$defs/family" },
+        "classification": { "enum": ["source_candidate", "expanded_generated_candidate"] },
+        "selection_kind": { "enum": ["primary_source", "expanded_with_lineage"] },
+        "generated_lineage": { "anyOf": [{ "$ref": "#/$defs/lineage" }, { "type": "null" }] }
+      }
+    },
+    "roleDecision": {
+      "type": "object", "additionalProperties": false,
+      "required": ["role", "status", "selected_files", "unavailability_reason", "rationale", "evidence_refs"],
+      "properties": {
+        "role": { "enum": ["kinematic_tree", "visual_geometry", "collision_geometry", "inertial_properties", "ros2_control", "gazebo_constraints", "controller_configuration"] },
+        "status": { "enum": ["unanswered", "selected", "unavailable"] },
+        "selected_files": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/selection" } },
+        "unavailability_reason": { "$ref": "#/$defs/nullableText" },
+        "rationale": { "$ref": "#/$defs/nullableText" },
+        "evidence_refs": { "$ref": "#/$defs/evidenceRefs" }
+      }
+    },
+    "divergenceDecision": {
+      "type": "object", "additionalProperties": false,
+      "required": ["logical_key", "candidate_git_object_ids", "disposition", "selected_git_object_ids", "rationale", "evidence_refs"],
+      "properties": {
+        "logical_key": { "$ref": "#/$defs/text" },
+        "candidate_git_object_ids": { "type": "array", "minItems": 2, "uniqueItems": true, "items": { "$ref": "#/$defs/sha1" } },
+        "disposition": { "enum": ["unanswered", "select_object", "select_multiple_with_roles", "amend_before_use", "reject_group", "not_in_selected_scope"] },
+        "selected_git_object_ids": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/sha1" } },
+        "rationale": { "$ref": "#/$defs/nullableText" },
+        "evidence_refs": { "$ref": "#/$defs/evidenceRefs" }
+      }
+    }
+  }
+}

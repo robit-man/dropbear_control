@@ -1,0 +1,36 @@
+{
+  "schema_version": "myactuator-reviewer-assignment-register/1",
+  "register_id": "dropbear-myactuator-evidence-review",
+  "record_state": "draft",
+  "record_revision": 1,
+  "assignments": [
+    {"role_id": "vendor_source_change_approver", "assignee_id": null, "organization_or_team": null, "competence_evidence_refs": [], "independent_from_role_ids": [], "acknowledged": null, "due_at_utc": null},
+    {"role_id": "protocol_evidence_submitter", "assignee_id": null, "organization_or_team": null, "competence_evidence_refs": [], "independent_from_role_ids": [], "acknowledged": null, "due_at_utc": null},
+    {"role_id": "protocol_source_reviewer", "assignee_id": null, "organization_or_team": null, "competence_evidence_refs": [], "independent_from_role_ids": ["protocol_evidence_submitter"], "acknowledged": null, "due_at_utc": null},
+    {"role_id": "protocol_decision_reviewer", "assignee_id": null, "organization_or_team": null, "competence_evidence_refs": [], "independent_from_role_ids": ["protocol_evidence_submitter", "protocol_source_reviewer"], "acknowledged": null, "due_at_utc": null},
+    {"role_id": "cad_geometry_reviewer", "assignee_id": null, "organization_or_team": null, "competence_evidence_refs": [], "independent_from_role_ids": [], "acknowledged": null, "due_at_utc": null},
+    {"role_id": "cad_license_owner", "assignee_id": null, "organization_or_team": null, "competence_evidence_refs": [], "independent_from_role_ids": [], "acknowledged": null, "due_at_utc": null},
+    {"role_id": "plant_source_extractor", "assignee_id": null, "organization_or_team": null, "competence_evidence_refs": [], "independent_from_role_ids": [], "acknowledged": null, "due_at_utc": null},
+    {"role_id": "plant_fact_reviewer", "assignee_id": null, "organization_or_team": null, "competence_evidence_refs": [], "independent_from_role_ids": ["plant_source_extractor"], "acknowledged": null, "due_at_utc": null},
+    {"role_id": "dropbear_source_reviewer", "assignee_id": null, "organization_or_team": null, "competence_evidence_refs": [], "independent_from_role_ids": [], "acknowledged": null, "due_at_utc": null},
+    {"role_id": "dropbear_source_approver", "assignee_id": null, "organization_or_team": null, "competence_evidence_refs": [], "independent_from_role_ids": ["dropbear_source_reviewer"], "acknowledged": null, "due_at_utc": null},
+    {"role_id": "dropbear_graph_reviewer", "assignee_id": null, "organization_or_team": null, "competence_evidence_refs": [], "independent_from_role_ids": ["dropbear_source_approver"], "acknowledged": null, "due_at_utc": null},
+    {"role_id": "hardware_owner_authorizer", "assignee_id": null, "organization_or_team": null, "competence_evidence_refs": [], "independent_from_role_ids": [], "acknowledged": null, "due_at_utc": null},
+    {"role_id": "safety_reviewer", "assignee_id": null, "organization_or_team": null, "competence_evidence_refs": [], "independent_from_role_ids": ["u0_operator"], "acknowledged": null, "due_at_utc": null},
+    {"role_id": "u0_operator", "assignee_id": null, "organization_or_team": null, "competence_evidence_refs": [], "independent_from_role_ids": ["safety_reviewer", "inventory_reviewer"], "acknowledged": null, "due_at_utc": null},
+    {"role_id": "inventory_reviewer", "assignee_id": null, "organization_or_team": null, "competence_evidence_refs": [], "independent_from_role_ids": ["u0_operator"], "acknowledged": null, "due_at_utc": null},
+    {"role_id": "evidence_custodian", "assignee_id": null, "organization_or_team": null, "competence_evidence_refs": [], "independent_from_role_ids": [], "acknowledged": null, "due_at_utc": null},
+    {"role_id": "can_adapter_reviewer", "assignee_id": null, "organization_or_team": null, "competence_evidence_refs": [], "independent_from_role_ids": ["hardware_owner_authorizer"], "acknowledged": null, "due_at_utc": null}
+  ],
+  "summary": {
+    "role_count": 17,
+    "assigned_role_count": 0,
+    "acknowledged_role_count": 0,
+    "assignment_complete": false
+  },
+  "support_granted": false,
+  "physical_motion_authority": false,
+  "integrity": {
+    "record_sha256": "771c4be90122f3910554a2a26141ad7817ca23d279e97083d82db1e6adeb9170"
+  }
+}

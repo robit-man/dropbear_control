@@ -1,0 +1,636 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.dev/schemas/rigid-body-benchmark-report.schema.json",
+  "title": "Generic rigid-body benchmark report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "benchmark_id",
+    "authority",
+    "contract",
+    "engine_lock",
+    "fixture",
+    "trace",
+    "cases",
+    "summary",
+    "dropbear",
+    "claims",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "rigid-body-benchmark-report/1"
+    },
+    "benchmark_id": {
+      "const": "generic-rigid-body-benchmark-v1"
+    },
+    "authority": {
+      "const": "offline_synthetic_benchmark_only"
+    },
+    "contract": {
+      "$ref": "#/$defs/contract"
+    },
+    "engine_lock": {
+      "$ref": "#/$defs/engine_lock"
+    },
+    "fixture": {
+      "$ref": "#/$defs/fixture"
+    },
+    "trace": {
+      "$ref": "#/$defs/trace"
+    },
+    "cases": {
+      "$ref": "#/$defs/cases"
+    },
+    "summary": {
+      "$ref": "#/$defs/summary"
+    },
+    "dropbear": {
+      "$ref": "#/$defs/dropbear"
+    },
+    "claims": {
+      "$ref": "#/$defs/claims"
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "record_sha256"
+      ],
+      "properties": {
+        "record_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "pass": {
+      "const": "PASS"
+    },
+    "contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "step_count",
+        "tick_period_ns",
+        "sample_period_ticks",
+        "deterministic_runs",
+        "joint_response_minimum_rad",
+        "contact_penetration_maximum_m",
+        "settled_penetration_maximum_m",
+        "closed_chain_residual_maximum_m",
+        "closed_chain_response_minimum_rad"
+      ],
+      "properties": {
+        "step_count": {
+          "const": 2500
+        },
+        "tick_period_ns": {
+          "const": 1000000
+        },
+        "sample_period_ticks": {
+          "const": 10
+        },
+        "deterministic_runs": {
+          "const": 2
+        },
+        "joint_response_minimum_rad": {
+          "const": 0.1
+        },
+        "contact_penetration_maximum_m": {
+          "const": 0.01
+        },
+        "settled_penetration_maximum_m": {
+          "const": 0.0001
+        },
+        "closed_chain_residual_maximum_m": {
+          "const": 0.00001
+        },
+        "closed_chain_response_minimum_rad": {
+          "const": 0.000001
+        }
+      }
+    },
+    "engine_lock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "lock_id",
+        "lock_sha256",
+        "engine_id",
+        "engine_version",
+        "engine_binary_sha256",
+        "candidate_count",
+        "executed_candidate_count"
+      ],
+      "properties": {
+        "lock_id": {
+          "const": "generic-rigid-body-benchmark-linux-x86-64"
+        },
+        "lock_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "engine_id": {
+          "const": "mujoco-python-3-6-0"
+        },
+        "engine_version": {
+          "const": "3.6.0"
+        },
+        "engine_binary_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "candidate_count": {
+          "const": 3
+        },
+        "executed_candidate_count": {
+          "const": 1
+        }
+      }
+    },
+    "fixture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixture_id",
+        "fixture_sha256",
+        "generic",
+        "degrees_of_freedom",
+        "actuator_count",
+        "equality_constraint_count"
+      ],
+      "properties": {
+        "fixture_id": {
+          "const": "generic-rigid-body-fixture-v1"
+        },
+        "fixture_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "generic": {
+          "const": true
+        },
+        "degrees_of_freedom": {
+          "const": 9
+        },
+        "actuator_count": {
+          "const": 3
+        },
+        "equality_constraint_count": {
+          "const": 1
+        }
+      }
+    },
+    "trace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "trace_id",
+        "trace_file_sha256",
+        "record_sha256",
+        "event_chain_sha256",
+        "event_count",
+        "command_count",
+        "state_count"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "simulation-trace-interchange/1"
+        },
+        "trace_id": {
+          "pattern": "^simtrace-[0-9a-f]{24}$",
+          "type": "string"
+        },
+        "trace_file_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "record_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "event_chain_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "event_count": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "command_count": {
+          "const": 9
+        },
+        "state_count": {
+          "const": 753
+        }
+      }
+    },
+    "base_case": {
+      "type": "object",
+      "required": [
+        "result"
+      ],
+      "properties": {
+        "result": {
+          "$ref": "#/$defs/pass"
+        }
+      }
+    },
+    "cases": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "engine_lock",
+        "headless_execution",
+        "fixed_step_articulation",
+        "contact_stability",
+        "closed_chain",
+        "deterministic_replay",
+        "joint_state_parity",
+        "workflow",
+        "unavailable_dropbear_descriptor",
+        "canonical_scene_admission"
+      ],
+      "properties": {
+        "engine_lock": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "result",
+            "verified_binary_count",
+            "verified_dependency_count"
+          ],
+          "properties": {
+            "result": {
+              "$ref": "#/$defs/pass"
+            },
+            "verified_binary_count": {
+              "const": 2
+            },
+            "verified_dependency_count": {
+              "const": 1
+            }
+          }
+        },
+        "headless_execution": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "result",
+            "rendering_requested",
+            "display_required",
+            "model_load_count"
+          ],
+          "properties": {
+            "result": {
+              "$ref": "#/$defs/pass"
+            },
+            "rendering_requested": {
+              "const": false
+            },
+            "display_required": {
+              "const": false
+            },
+            "model_load_count": {
+              "const": 2
+            }
+          }
+        },
+        "fixed_step_articulation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "result",
+            "steps",
+            "final_simulation_time_s",
+            "maximum_drive_joint_response_rad",
+            "all_state_finite"
+          ],
+          "properties": {
+            "result": {
+              "$ref": "#/$defs/pass"
+            },
+            "steps": {
+              "const": 2500
+            },
+            "final_simulation_time_s": {
+              "type": "number"
+            },
+            "maximum_drive_joint_response_rad": {
+              "minimum": 0.1,
+              "type": "number"
+            },
+            "all_state_finite": {
+              "const": true
+            }
+          }
+        },
+        "contact_stability": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "result",
+            "contact_observed",
+            "minimum_contact_distance_m",
+            "settled_minimum_contact_distance_m",
+            "final_drop_body_height_m"
+          ],
+          "properties": {
+            "result": {
+              "$ref": "#/$defs/pass"
+            },
+            "contact_observed": {
+              "const": true
+            },
+            "minimum_contact_distance_m": {
+              "minimum": -0.01,
+              "type": "number"
+            },
+            "settled_minimum_contact_distance_m": {
+              "minimum": -0.0001,
+              "type": "number"
+            },
+            "final_drop_body_height_m": {
+              "minimum": 0.039,
+              "maximum": 0.041,
+              "type": "number"
+            }
+          }
+        },
+        "closed_chain": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "result",
+            "equality_constraint_count",
+            "maximum_loop_joint_response_rad",
+            "maximum_equality_residual_m"
+          ],
+          "properties": {
+            "result": {
+              "$ref": "#/$defs/pass"
+            },
+            "equality_constraint_count": {
+              "const": 1
+            },
+            "maximum_loop_joint_response_rad": {
+              "minimum": 0.000001,
+              "type": "number"
+            },
+            "maximum_equality_residual_m": {
+              "maximum": 0.00001,
+              "minimum": 0,
+              "type": "number"
+            }
+          }
+        },
+        "deterministic_replay": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "result",
+            "run_count",
+            "byte_equal_trace",
+            "run_record_sha256s"
+          ],
+          "properties": {
+            "result": {
+              "$ref": "#/$defs/pass"
+            },
+            "run_count": {
+              "const": 2
+            },
+            "byte_equal_trace": {
+              "const": true
+            },
+            "run_record_sha256s": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": {
+                "$ref": "#/$defs/sha256"
+              }
+            }
+          }
+        },
+        "joint_state_parity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "result",
+            "joint_count",
+            "position_unit",
+            "velocity_unit",
+            "effort_unit",
+            "validity_explicit",
+            "ros_runtime_loaded"
+          ],
+          "properties": {
+            "result": {
+              "$ref": "#/$defs/pass"
+            },
+            "joint_count": {
+              "const": 3
+            },
+            "position_unit": {
+              "const": "rad"
+            },
+            "velocity_unit": {
+              "const": "rad/s"
+            },
+            "effort_unit": {
+              "const": "Nm"
+            },
+            "validity_explicit": {
+              "const": true
+            },
+            "ros_runtime_loaded": {
+              "const": false
+            }
+          }
+        },
+        "workflow": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "result",
+            "single_command",
+            "atomic_outputs",
+            "network_required",
+            "physical_io"
+          ],
+          "properties": {
+            "result": {
+              "$ref": "#/$defs/pass"
+            },
+            "single_command": {
+              "const": "python3 tools/run_rigid_body_benchmark.py --check"
+            },
+            "atomic_outputs": {
+              "const": true
+            },
+            "network_required": {
+              "const": false
+            },
+            "physical_io": {
+              "const": false
+            }
+          }
+        },
+        "unavailable_dropbear_descriptor": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "result",
+            "backend_id",
+            "runtime_loadable",
+            "admission_reason"
+          ],
+          "properties": {
+            "result": {
+              "$ref": "#/$defs/pass"
+            },
+            "backend_id": {
+              "const": "dropbear-rigid-body-unavailable-v1"
+            },
+            "runtime_loadable": {
+              "const": false
+            },
+            "admission_reason": {
+              "const": "backend_not_loadable"
+            }
+          }
+        },
+        "canonical_scene_admission": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "result",
+            "active_graph_count",
+            "accepted_cad_configuration_count",
+            "admitted_real_plant_count",
+            "canonical_scene_executed"
+          ],
+          "properties": {
+            "result": {
+              "$ref": "#/$defs/pass"
+            },
+            "active_graph_count": {
+              "const": 0
+            },
+            "accepted_cad_configuration_count": {
+              "const": 0
+            },
+            "admitted_real_plant_count": {
+              "const": 0
+            },
+            "canonical_scene_executed": {
+              "const": false
+            }
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_count",
+        "passed_case_count",
+        "failed_case_count",
+        "result"
+      ],
+      "properties": {
+        "case_count": {
+          "const": 10
+        },
+        "passed_case_count": {
+          "const": 10
+        },
+        "failed_case_count": {
+          "const": 0
+        },
+        "result": {
+          "$ref": "#/$defs/pass"
+        }
+      }
+    },
+    "dropbear": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "production_engine_selected",
+        "canonical_scene_available",
+        "canonical_scene_executed",
+        "blockers"
+      ],
+      "properties": {
+        "production_engine_selected": {
+          "const": false
+        },
+        "canonical_scene_available": {
+          "const": false
+        },
+        "canonical_scene_executed": {
+          "const": false
+        },
+        "blockers": {
+          "type": "array",
+          "minItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "active_canonical_graph_absent",
+              "accepted_articulated_cad_absent",
+              "admitted_real_motor_plants_absent",
+              "equivalent_candidate_engine_benchmarks_pending",
+              "ros_cpp_runtime_handoff_pending"
+            ]
+          }
+        }
+      }
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "generic_fixture_passed",
+        "production_engine_selected",
+        "canonical_dropbear",
+        "exact_model_fidelity",
+        "physically_validated",
+        "support_granted",
+        "physical_motion_authority",
+        "physical_io"
+      ],
+      "properties": {
+        "generic_fixture_passed": {
+          "const": true
+        },
+        "production_engine_selected": {
+          "const": false
+        },
+        "canonical_dropbear": {
+          "const": false
+        },
+        "exact_model_fidelity": {
+          "const": false
+        },
+        "physically_validated": {
+          "const": false
+        },
+        "support_granted": {
+          "const": false
+        },
+        "physical_motion_authority": {
+          "const": false
+        },
+        "physical_io": {
+          "const": false
+        }
+      }
+    }
+  }
+}

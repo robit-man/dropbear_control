@@ -1,0 +1,528 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.dev/schemas/myactuator-cad-review-campaign.schema.json",
+  "title": "Model-complete local MYACTUATOR CAD semantic-review campaign",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "campaign_id",
+    "authority",
+    "sources",
+    "policy",
+    "summary",
+    "question_catalog",
+    "configurations",
+    "accepted_configuration_ids",
+    "support_granted",
+    "physical_motion_authority",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "myactuator-cad-review-campaign/1"
+    },
+    "campaign_id": {
+      "const": "myactuator-all-exact-configurations-cad-review-v1"
+    },
+    "authority": {
+      "const": "local_review_navigation_and_unanswered_questions_only"
+    },
+    "sources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "catalog_sha256",
+        "inspection_sha256",
+        "cad_review_ledger_sha256",
+        "assembly_packet_manifest_sha256",
+        "flattened_partition_manifest_sha256",
+        "runtime_asset_registry_sha256"
+      ],
+      "properties": {
+        "catalog_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "inspection_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "cad_review_ledger_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "assembly_packet_manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "flattened_partition_manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "runtime_asset_registry_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "local_only",
+        "packet_ranking_is_not_semantic_selection",
+        "stable_component_id_is_not_semantic_selection",
+        "duplicate_bytes_retain_independent_configuration_review",
+        "shell_is_not_collision_geometry",
+        "candidate_export_is_not_accepted_geometry",
+        "all_questions_require_independent_human_evidence",
+        "redistribution_requires_separate_approval",
+        "campaign_never_grants_support"
+      ],
+      "properties": {
+        "local_only": {
+          "const": true
+        },
+        "packet_ranking_is_not_semantic_selection": {
+          "const": true
+        },
+        "stable_component_id_is_not_semantic_selection": {
+          "const": true
+        },
+        "duplicate_bytes_retain_independent_configuration_review": {
+          "const": true
+        },
+        "shell_is_not_collision_geometry": {
+          "const": true
+        },
+        "candidate_export_is_not_accepted_geometry": {
+          "const": true
+        },
+        "all_questions_require_independent_human_evidence": {
+          "const": true
+        },
+        "redistribution_requires_separate_approval": {
+          "const": true
+        },
+        "campaign_never_grants_support": {
+          "const": true
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model_count",
+        "configuration_count",
+        "variant_count",
+        "assembly_configuration_count",
+        "flattened_configuration_count",
+        "shell_only_configuration_count",
+        "currently_packet_reviewable_count",
+        "blocked_re_source_or_specialized_partition_count",
+        "candidate_export_available_count",
+        "duplicate_geometry_group_count",
+        "duplicate_geometry_configuration_count",
+        "question_count_per_configuration",
+        "unanswered_question_count",
+        "accepted_configuration_count",
+        "browser_releasable_configuration_count"
+      ],
+      "properties": {
+        "model_count": {
+          "const": 44
+        },
+        "configuration_count": {
+          "const": 53
+        },
+        "variant_count": {
+          "const": 53
+        },
+        "assembly_configuration_count": {
+          "const": 26
+        },
+        "flattened_configuration_count": {
+          "const": 27
+        },
+        "shell_only_configuration_count": {
+          "const": 5
+        },
+        "currently_packet_reviewable_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 53
+        },
+        "blocked_re_source_or_specialized_partition_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 53
+        },
+        "candidate_export_available_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 53
+        },
+        "duplicate_geometry_group_count": {
+          "const": 5
+        },
+        "duplicate_geometry_configuration_count": {
+          "const": 10
+        },
+        "question_count_per_configuration": {
+          "const": 13
+        },
+        "unanswered_question_count": {
+          "const": 689
+        },
+        "accepted_configuration_count": {
+          "const": 0
+        },
+        "browser_releasable_configuration_count": {
+          "const": 0
+        }
+      }
+    },
+    "question_catalog": {
+      "type": "array",
+      "minItems": 13,
+      "maxItems": 13,
+      "items": {
+        "$ref": "#/$defs/question"
+      }
+    },
+    "configurations": {
+      "type": "array",
+      "minItems": 53,
+      "maxItems": 53,
+      "items": {
+        "$ref": "#/$defs/configuration"
+      }
+    },
+    "accepted_configuration_ids": {
+      "type": "array",
+      "maxItems": 0
+    },
+    "support_granted": {
+      "const": false
+    },
+    "physical_motion_authority": {
+      "const": false
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "record_sha256"
+      ],
+      "properties": {
+        "record_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "exact": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512,
+      "pattern": "^[^\\r\\n\\t]+$"
+    },
+    "modelKey": {
+      "type": "string",
+      "pattern": "^model-[0-9a-f]{20}$"
+    },
+    "configurationId": {
+      "type": "string",
+      "pattern": "^cadcfg-[0-9a-f]{20}$"
+    },
+    "variantId": {
+      "type": "string",
+      "pattern": "^step-[0-9a-f]{20}$"
+    },
+    "question": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "question_id",
+        "prompt",
+        "required_evidence_class"
+      ],
+      "properties": {
+        "question_id": {
+          "type": "string",
+          "pattern": "^CADQ-[A-Z0-9-]{3,40}$"
+        },
+        "prompt": {
+          "$ref": "#/$defs/exact"
+        },
+        "required_evidence_class": {
+          "enum": [
+            "independent_geometry_review",
+            "qualified_mass_property_source",
+            "license_or_vendor_permission"
+          ]
+        }
+      }
+    },
+    "questionResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "question_id",
+        "state",
+        "response",
+        "evidence_refs"
+      ],
+      "properties": {
+        "question_id": {
+          "type": "string",
+          "pattern": "^CADQ-[A-Z0-9-]{3,40}$"
+        },
+        "state": {
+          "const": "unanswered"
+        },
+        "response": {
+          "type": "null"
+        },
+        "evidence_refs": {
+          "type": "array",
+          "maxItems": 0
+        }
+      }
+    },
+    "packetEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "packet_kind",
+        "packet_json_path",
+        "packet_json_sha256",
+        "overview_path",
+        "overview_sha256",
+        "sheet_path",
+        "sheet_sha256",
+        "local_materialization_required",
+        "redistributable"
+      ],
+      "properties": {
+        "packet_kind": {
+          "enum": [
+            "assembly_member_packet",
+            "flattened_component_packet"
+          ]
+        },
+        "packet_json_path": {
+          "$ref": "#/$defs/exact"
+        },
+        "packet_json_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "overview_path": {
+          "$ref": "#/$defs/exact"
+        },
+        "overview_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "sheet_path": {
+          "$ref": "#/$defs/exact"
+        },
+        "sheet_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "local_materialization_required": {
+          "const": true
+        },
+        "redistributable": {
+          "const": false
+        }
+      }
+    },
+    "candidateState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "review_lane",
+        "current_action",
+        "packet_reviewable_now",
+        "candidate_export_path",
+        "candidate_export_sha256",
+        "assembly_member_count",
+        "positive_name_candidate_count",
+        "flattened_component_kind",
+        "flattened_component_count",
+        "partition_disposition"
+      ],
+      "properties": {
+        "review_lane": {
+          "enum": [
+            "assembly_member_semantic_review",
+            "flattened_disconnected_component_partition",
+            "flattened_face_partition_or_re_source",
+            "flattened_high_component_partition_or_re_source",
+            "shell_healing_or_re_source"
+          ]
+        },
+        "current_action": {
+          "$ref": "#/$defs/exact"
+        },
+        "packet_reviewable_now": {
+          "type": "boolean"
+        },
+        "candidate_export_path": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/exact"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "candidate_export_sha256": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "assembly_member_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "positive_name_candidate_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "flattened_component_kind": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "solid",
+            "shell",
+            null
+          ]
+        },
+        "flattened_component_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "partition_disposition": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/exact"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "configuration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "configuration_id",
+        "model_key",
+        "series",
+        "model",
+        "variant_id",
+        "step_sha256",
+        "source_structure",
+        "source_length_unit_candidate",
+        "duplicate_geometry_group_id",
+        "review_status",
+        "selector_status",
+        "packet_evidence",
+        "candidate_state",
+        "question_responses",
+        "accepted_asset",
+        "browser_releasable",
+        "support_granted"
+      ],
+      "properties": {
+        "configuration_id": {
+          "$ref": "#/$defs/configurationId"
+        },
+        "model_key": {
+          "$ref": "#/$defs/modelKey"
+        },
+        "series": {
+          "$ref": "#/$defs/exact"
+        },
+        "model": {
+          "$ref": "#/$defs/exact"
+        },
+        "variant_id": {
+          "$ref": "#/$defs/variantId"
+        },
+        "step_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "source_structure": {
+          "enum": [
+            "assembly",
+            "flattened"
+          ]
+        },
+        "source_length_unit_candidate": {
+          "enum": [
+            "millimetre",
+            "metre"
+          ]
+        },
+        "duplicate_geometry_group_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^duplicate-[0-9a-f]{20}$"
+        },
+        "review_status": {
+          "const": "unreviewed"
+        },
+        "selector_status": {
+          "const": "unresolved"
+        },
+        "packet_evidence": {
+          "$ref": "#/$defs/packetEvidence"
+        },
+        "candidate_state": {
+          "$ref": "#/$defs/candidateState"
+        },
+        "question_responses": {
+          "type": "array",
+          "minItems": 13,
+          "maxItems": 13,
+          "items": {
+            "$ref": "#/$defs/questionResponse"
+          }
+        },
+        "accepted_asset": {
+          "const": false
+        },
+        "browser_releasable": {
+          "const": false
+        },
+        "support_granted": {
+          "const": false
+        }
+      }
+    }
+  }
+}

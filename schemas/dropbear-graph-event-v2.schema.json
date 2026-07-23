@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.org/schemas/dropbear-graph-event-v2.schema.json",
+  "title": "Dropbear graph V2 governance event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_id",
+    "sequence",
+    "event_type",
+    "source_registry_generation_sha256",
+    "subject",
+    "transition",
+    "approver",
+    "reason",
+    "evidence_refs",
+    "support_granted",
+    "physical_motion_authority",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": { "const": "dropbear-graph-event/2" },
+    "event_id": {
+      "type": "string",
+      "pattern": "^graphevent-[0-9a-f]{20}$"
+    },
+    "sequence": { "type": "integer", "minimum": 1 },
+    "event_type": { "enum": ["accept", "reject", "revoke", "supersede"] },
+    "source_registry_generation_sha256": { "$ref": "#/$defs/sha256" },
+    "subject": { "$ref": "#/$defs/subject" },
+    "transition": { "$ref": "#/$defs/transition" },
+    "approver": { "$ref": "#/$defs/approver" },
+    "reason": { "$ref": "#/$defs/text" },
+    "evidence_refs": { "$ref": "#/$defs/refs" },
+    "support_granted": { "const": false },
+    "physical_motion_authority": { "const": false },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record_sha256"],
+      "properties": {
+        "record_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    }
+  },
+  "$defs": {
+    "text": { "type": "string", "minLength": 1, "maxLength": 2048 },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/text" }
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "submission_id",
+        "submission_sha256",
+        "decision_id",
+        "decision_sha256",
+        "superseding_submission_id",
+        "superseding_submission_sha256"
+      ],
+      "properties": {
+        "submission_id": {
+          "type": "string",
+          "pattern": "^graphsubmission-[0-9a-f]{20}$"
+        },
+        "submission_sha256": { "$ref": "#/$defs/sha256" },
+        "decision_id": {
+          "type": "string",
+          "pattern": "^graphv2decision-[0-9a-f]{20}$"
+        },
+        "decision_sha256": { "$ref": "#/$defs/sha256" },
+        "superseding_submission_id": {
+          "type": ["string", "null"],
+          "pattern": "^graphsubmission-[0-9a-f]{20}$"
+        },
+        "superseding_submission_sha256": {
+          "anyOf": [{ "$ref": "#/$defs/sha256" }, { "type": "null" }]
+        }
+      }
+    },
+    "transition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prior_state", "next_state"],
+      "properties": {
+        "prior_state": { "enum": ["submitted", "accepted"] },
+        "next_state": {
+          "enum": ["accepted", "rejected", "revoked", "superseded"]
+        }
+      }
+    },
+    "approver": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "approver_id",
+        "organization_or_team",
+        "human_attested",
+        "independence_attested",
+        "governance_authority_attested",
+        "approved_at",
+        "approval_assertion",
+        "signature_evidence_refs"
+      ],
+      "properties": {
+        "approver_id": { "$ref": "#/$defs/text" },
+        "organization_or_team": { "$ref": "#/$defs/text" },
+        "human_attested": { "const": true },
+        "independence_attested": { "const": true },
+        "governance_authority_attested": { "const": true },
+        "approved_at": { "type": "string", "format": "date-time" },
+        "approval_assertion": { "$ref": "#/$defs/text" },
+        "signature_evidence_refs": { "$ref": "#/$defs/refs" }
+      }
+    }
+  }
+}

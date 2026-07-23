@@ -1,0 +1,85 @@
+{
+  "schema_version": "rigid-body-engine-lock/1",
+  "lock_id": "generic-rigid-body-benchmark-linux-x86-64",
+  "authority": "offline_generic_benchmark_environment_only",
+  "selection_status": "benchmark_fixture_only_not_dropbear_engine_selection",
+  "platform": {
+    "system": "Linux",
+    "machine": "x86_64",
+    "python_implementation": "CPython",
+    "python_major_minor": "3.12",
+    "libc_name": "glibc",
+    "libc_version": "2.39"
+  },
+  "executed_engine": {
+    "engine_id": "mujoco-python-3-6-0",
+    "name": "MuJoCo",
+    "package": "mujoco",
+    "version": "3.6.0",
+    "api": "python-c-api-binding",
+    "binaries": [
+      {
+        "artifact": "libmujoco-linux-x86-64",
+        "size_bytes": 5175888,
+        "sha256": "385ae719dde65acffdb0a66605e43fa0c680cb8b331fc4dfe26b39ab3f5630ff"
+      },
+      {
+        "artifact": "mujoco-python-structs-cpython-312-linux-x86-64",
+        "size_bytes": 3412392,
+        "sha256": "6113f3ef5be670ad6cb3e45d92bba8ac248ea27eaed12413cb8ea9fbee07b372"
+      }
+    ]
+  },
+  "dependencies": [
+    {
+      "package": "numpy",
+      "version": "1.26.4",
+      "binary": {
+        "artifact": "numpy-multiarray-umath-cpython-312-linux-x86-64",
+        "size_bytes": 5868088,
+        "sha256": "ade966a58746fa5bc8e937a6c7d2d0a3b1e49adbb9890c3a3267157131f22313"
+      }
+    }
+  ],
+  "candidates": [
+    {
+      "candidate_id": "mujoco-python-3-6-0",
+      "name": "MuJoCo",
+      "version": "3.6.0",
+      "availability": "installed_exact",
+      "benchmark_status": "executed_generic_fixture",
+      "source_url": "https://github.com/google-deepmind/mujoco/releases/tag/3.6.0",
+      "disposition": "generic_fixture_reference_only"
+    },
+    {
+      "candidate_id": "gazebo-jetty-gz-sim-10-4-0",
+      "name": "Gazebo Jetty / gz-sim",
+      "version": "10.4.0",
+      "availability": "not_installed",
+      "benchmark_status": "not_executed",
+      "source_url": "https://gazebosim.org/docs/jetty/install_ubuntu/",
+      "disposition": "candidate_pending_equivalent_environment"
+    },
+    {
+      "candidate_id": "drake-1-55-0",
+      "name": "Drake",
+      "version": "1.55.0",
+      "availability": "not_installed",
+      "benchmark_status": "not_executed",
+      "source_url": "https://drake.mit.edu/pip.html",
+      "disposition": "candidate_pending_equivalent_environment"
+    }
+  ],
+  "claims": {
+    "production_engine_selected": false,
+    "canonical_dropbear": false,
+    "exact_model_fidelity": false,
+    "physically_validated": false,
+    "support_granted": false,
+    "physical_motion_authority": false,
+    "physical_io": false
+  },
+  "integrity": {
+    "record_sha256": "36fd6598162e8dede8918f884d602d897caf5bdc5314b7067c2f38bdc1097cdd"
+  }
+}

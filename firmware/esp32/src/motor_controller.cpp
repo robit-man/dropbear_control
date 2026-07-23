@@ -122,3 +122,17 @@ void MotorController::clearFault() {
   faultCode = FAULT_NONE;
   currentState = MOTOR_STATE_READY;
 }
+
+float MotorController::getPositionRadians() const {
+  if (encoder && encoder->getResolution() > 0) {
+    return (float)position / (float)encoder->getResolution() * 2.0f * PI;
+  }
+  return 0.0f;
+}
+
+float MotorController::getVelocityRadiansPerSec() const {
+  if (encoder && encoder->getResolution() > 0) {
+    return velocity / (float)encoder->getResolution() * 2.0f * PI;
+  }
+  return 0.0f;
+}

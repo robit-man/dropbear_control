@@ -1,0 +1,26 @@
+{
+  "schema_version": "myactuator-calibration-registry/1",
+  "registry_id": "dropbear-physical-calibrations",
+  "registry_revision": 1,
+  "authority": "reviewed_records_only",
+  "configuration": {
+    "configuration_id": "dropbear-prototype-observation",
+    "configuration_revision": 1,
+    "canonical_digest": "dd8909bceece765e80d83d7d3f93196d6967b4f3ae72e20fdee6f29d21a81cba"
+  },
+  "records": [],
+  "physical_admission": {
+    "accepted_physical_record_count": 0,
+    "motion_enable_allowed": false,
+    "blockers": [
+      "installed_motor_sensor_and_route_subjects_missing",
+      "reviewed_physical_calibration_records_missing",
+      "independent_safe_power_and_hil_evidence_missing"
+    ]
+  },
+  "integrity": {
+    "algorithm": "SHA-256",
+    "canonicalization": "UTF-8 sorted-key compact JSON excluding integrity.digest",
+    "digest": "4462803f134f2d943ecd3a04d8330c377937e4382ef5f08b23a707a5eaeaa01d"
+  }
+}

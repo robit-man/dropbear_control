@@ -1,0 +1,407 @@
+{
+  "backends": [
+    {
+      "backend_id": "canonical-recorded-state-replay-v1",
+      "evidence_class": "offline-replay",
+      "kind": "recorded_replay",
+      "models_physical_dynamics": false,
+      "parameter_set_id": null,
+      "physically_validated": false,
+      "runtime_contract_id": null,
+      "runtime_loadable": true,
+      "substitution_scope": "host-state-replay-only"
+    },
+    {
+      "backend_id": "rmd-v44-protocol-emulator",
+      "evidence_class": "sil-protocol",
+      "kind": "protocol_emulator",
+      "models_physical_dynamics": false,
+      "parameter_set_id": null,
+      "physically_validated": false,
+      "runtime_contract_id": null,
+      "runtime_loadable": true,
+      "substitution_scope": "native-protocol-only"
+    },
+    {
+      "backend_id": "browser-toy-demo-v1",
+      "evidence_class": "synthetic-demo-no-physical-fidelity",
+      "kind": "toy_demo",
+      "models_physical_dynamics": false,
+      "parameter_set_id": null,
+      "physically_validated": false,
+      "runtime_contract_id": null,
+      "runtime_loadable": true,
+      "substitution_scope": "browser-visualization-only"
+    },
+    {
+      "backend_id": "synthetic-electromechanical-fixed-step-v1",
+      "evidence_class": "synthetic-test-equations-no-real-parameter-fidelity",
+      "kind": "synthetic_actuator_plant",
+      "models_physical_dynamics": true,
+      "parameter_set_id": null,
+      "physically_validated": false,
+      "runtime_contract_id": null,
+      "runtime_loadable": true,
+      "substitution_scope": "offline-controller-and-sil-tests-only"
+    },
+    {
+      "backend_id": "dropbear-rigid-body-unavailable-v1",
+      "evidence_class": "descriptor-only-no-canonical-graph-or-assets",
+      "kind": "rigid_body",
+      "models_physical_dynamics": false,
+      "parameter_set_id": null,
+      "physically_validated": false,
+      "runtime_contract_id": null,
+      "runtime_loadable": false,
+      "substitution_scope": "whole-robot-mechanics"
+    }
+  ],
+  "model_coverage": [
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "X12-320",
+      "plant_ids": [],
+      "series": "RMD-X",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "X6-60",
+      "plant_ids": [],
+      "series": "RMD-X",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "X15-450",
+      "plant_ids": [],
+      "series": "RMD-X",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "X4-36",
+      "plant_ids": [],
+      "series": "RMD-X",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "X6-7",
+      "plant_ids": [],
+      "series": "RMD-X",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "X6-40",
+      "plant_ids": [],
+      "series": "RMD-X",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "X8-25",
+      "plant_ids": [],
+      "series": "RMD-X",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "X6-8",
+      "plant_ids": [],
+      "series": "RMD-X",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "X10-40",
+      "plant_ids": [],
+      "series": "RMD-X",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "X10-100",
+      "plant_ids": [],
+      "series": "RMD-X",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "X2-7",
+      "plant_ids": [],
+      "series": "RMD-X",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "X4-10",
+      "plant_ids": [],
+      "series": "RMD-X",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "X8-32",
+      "plant_ids": [],
+      "series": "RMD-X",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "X8-120",
+      "plant_ids": [],
+      "series": "RMD-X",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "RH-14",
+      "plant_ids": [],
+      "series": "RH",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "RH-17",
+      "plant_ids": [],
+      "series": "RH",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "RH-20",
+      "plant_ids": [],
+      "series": "RH",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "RH-25",
+      "plant_ids": [],
+      "series": "RH",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "RH-32",
+      "plant_ids": [],
+      "series": "RH",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "L-4005",
+      "plant_ids": [],
+      "series": "RMD-L",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "L-4010",
+      "plant_ids": [],
+      "series": "RMD-L",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "L-4015",
+      "plant_ids": [],
+      "series": "RMD-L",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "L-5005",
+      "plant_ids": [],
+      "series": "RMD-L",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "L-5010",
+      "plant_ids": [],
+      "series": "RMD-L",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "L-5015",
+      "plant_ids": [],
+      "series": "RMD-L",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "L-7015",
+      "plant_ids": [],
+      "series": "RMD-L",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "L-7025",
+      "plant_ids": [],
+      "series": "RMD-L",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "L-9015",
+      "plant_ids": [],
+      "series": "RMD-L",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "L-9025",
+      "plant_ids": [],
+      "series": "RMD-L",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "CEM-25",
+      "plant_ids": [],
+      "series": "CEM",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "CEM-45",
+      "plant_ids": [],
+      "series": "CEM",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "H-50-15",
+      "plant_ids": [],
+      "series": "RMD-H",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "H-70-15",
+      "plant_ids": [],
+      "series": "RMD-H",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "H-90-15",
+      "plant_ids": [],
+      "series": "RMD-H",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "FL-38-08",
+      "plant_ids": [],
+      "series": "FL-FLO",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "FL-50-08",
+      "plant_ids": [],
+      "series": "FL-FLO",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "FL-50-15",
+      "plant_ids": [],
+      "series": "FL-FLO",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "FL-70-10",
+      "plant_ids": [],
+      "series": "FL-FLO",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "FL-70-16",
+      "plant_ids": [],
+      "series": "FL-FLO",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "FL-85-13",
+      "plant_ids": [],
+      "series": "FL-FLO",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "FL-85-23",
+      "plant_ids": [],
+      "series": "FL-FLO",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "FLO-50-15",
+      "plant_ids": [],
+      "series": "FL-FLO",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "FLO-70-15",
+      "plant_ids": [],
+      "series": "FL-FLO",
+      "status": "unsupported"
+    },
+    {
+      "denial_reason": "no complete sourced exact-tuple plant parameter set",
+      "model": "FLO-90-15",
+      "plant_ids": [],
+      "series": "FL-FLO",
+      "status": "unsupported"
+    }
+  ],
+  "parameter_sets": [],
+  "policy": {
+    "accepted_protocol_applicability_required": true,
+    "backend_substitution_must_be_explicit": true,
+    "bounded_uncertainty_required": true,
+    "exact_applicability_required": true,
+    "exact_runtime_contract_required_for_loadability": true,
+    "hand_authored_parameter_sets_forbidden": true,
+    "lifecycle_reviewed_facts_only": true,
+    "operating_envelope_required": true,
+    "parameter_source_required": true,
+    "plant_does_not_grant_hardware_support": true,
+    "protocol_emulator_is_never_plant": true,
+    "si_units_required": true,
+    "single_active_runtime_contract_across_adapter_versions": true,
+    "toy_is_never_physical_plant": true,
+    "unrepresentable_source_semantics_deny": true,
+    "validation_class_required": true
+  },
+  "schema_version": "myactuator-plant-registry/4",
+  "source_hashes": {
+    "catalog_sha256": "5a5b3bf61a30a5225cb61a18bfb06050d6c7abc011d709e30dc9227c5c889d6b",
+    "parameter_set_registry_generation_sha256": "e714ed6c5b8b9321f2691e74e43ec942b1ec2f20294b1149320862c988ee85be",
+    "parameter_set_registry_sha256": "bf34b5248551180e4608ca89a2058ef0f805b591006274cbfcf265f6f94373cb",
+    "parameter_set_sha256": {},
+    "runtime_adapter_v1_registry_generation_sha256": "97ed94e202382e4e64c9f7b50d59d9e7087a668428d39c55c6681208e6a97bc2",
+    "runtime_adapter_v1_registry_sha256": "912f645ea4c9d21de5fccfacf91ebef78f9f088173fd1a365ae33e6346166681",
+    "runtime_adapter_v2_registry_generation_sha256": "fc58d3541ff5c1046c5a608fa001b18fe83986b937e82abff5196000728e9c94",
+    "runtime_adapter_v2_registry_sha256": "163b1b0c99051c331c281742bc7cde5bcacbd3d758fe633481e8bfa098da692b",
+    "runtime_contract_sha256": {}
+  },
+  "summary": {
+    "backend_descriptors": 5,
+    "models": 44,
+    "physically_validated_parameter_sets": 0,
+    "runtime_loadable_parameter_sets": 0,
+    "sourced_parameter_sets": 0
+  }
+}

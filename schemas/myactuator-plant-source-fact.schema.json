@@ -1,0 +1,587 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.dev/schemas/myactuator-plant-source-fact.schema.json",
+  "title": "Lifecycle-materialized exact-source MYACTUATOR plant fact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "fact_id",
+    "model_identity",
+    "target",
+    "observation",
+    "provenance",
+    "evidence",
+    "review",
+    "prov",
+    "support_granted",
+    "physical_motion_authority"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "myactuator-plant-source-fact/2"
+    },
+    "fact_id": {
+      "type": "string",
+      "pattern": "^plantfact-[0-9a-f]{20}$"
+    },
+    "model_identity": {
+      "$ref": "#/$defs/modelIdentity"
+    },
+    "target": {
+      "$ref": "#/$defs/target"
+    },
+    "observation": {
+      "oneOf": [
+        {"$ref": "#/$defs/scalarObservation"},
+        {"$ref": "#/$defs/rangeObservation"}
+      ]
+    },
+    "provenance": {
+      "$ref": "#/$defs/provenance"
+    },
+    "evidence": {
+      "$ref": "#/$defs/evidence"
+    },
+    "review": {
+      "$ref": "#/$defs/review"
+    },
+    "prov": {
+      "$ref": "#/$defs/prov"
+    },
+    "support_granted": {
+      "const": false
+    },
+    "physical_motion_authority": {
+      "const": false
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096,
+      "pattern": "^[^\\r\\n\\t]+$"
+    },
+    "nullableText": {
+      "oneOf": [
+        {"$ref": "#/$defs/text"},
+        {"type": "null"}
+      ]
+    },
+    "refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/text"
+      }
+    },
+    "bbox": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "prefixItems": [
+        {"type": "number"},
+        {"type": "number"},
+        {"type": "number"},
+        {"type": "number"}
+      ]
+    },
+    "nullableBbox": {
+      "oneOf": [
+        {"$ref": "#/$defs/bbox"},
+        {"type": "null"}
+      ]
+    },
+    "modelIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["model_key", "series", "model", "package_revision"],
+      "properties": {
+        "model_key": {
+          "type": "string",
+          "pattern": "^model-[0-9a-f]{20}$"
+        },
+        "series": {
+          "$ref": "#/$defs/text"
+        },
+        "model": {
+          "$ref": "#/$defs/text"
+        },
+        "package_revision": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requirement_kind",
+        "domain",
+        "name",
+        "canonical_unit"
+      ],
+      "properties": {
+        "requirement_kind": {
+          "enum": ["parameter", "operating_envelope"]
+        },
+        "domain": {
+          "enum": [
+            "electrical",
+            "mechanical",
+            "transmission",
+            "saturation",
+            "thermal",
+            "sensor",
+            "latency",
+            "operating_envelope"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "canonical_unit": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "conversion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "scale", "offset", "expression"],
+      "properties": {
+        "kind": {
+          "enum": ["identity", "exact_linear_si", "reviewed_derivation"]
+        },
+        "scale": {
+          "type": "number"
+        },
+        "offset": {
+          "type": "number"
+        },
+        "expression": {
+          "$ref": "#/$defs/nullableText"
+        }
+      }
+    },
+    "scalarObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "shape",
+        "source_value",
+        "source_unit",
+        "normalized_value",
+        "normalized_unit",
+        "conversion"
+      ],
+      "properties": {
+        "shape": {
+          "const": "scalar"
+        },
+        "source_value": {
+          "type": "number"
+        },
+        "source_unit": {
+          "$ref": "#/$defs/text"
+        },
+        "normalized_value": {
+          "type": "number"
+        },
+        "normalized_unit": {
+          "$ref": "#/$defs/text"
+        },
+        "conversion": {
+          "$ref": "#/$defs/conversion"
+        }
+      }
+    },
+    "rangeObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "shape",
+        "source_minimum",
+        "source_maximum",
+        "source_unit",
+        "normalized_minimum",
+        "normalized_maximum",
+        "normalized_unit",
+        "conversion"
+      ],
+      "properties": {
+        "shape": {
+          "const": "range"
+        },
+        "source_minimum": {
+          "type": "number"
+        },
+        "source_maximum": {
+          "type": "number"
+        },
+        "source_unit": {
+          "$ref": "#/$defs/text"
+        },
+        "normalized_minimum": {
+          "type": "number"
+        },
+        "normalized_maximum": {
+          "type": "number"
+        },
+        "normalized_unit": {
+          "$ref": "#/$defs/text"
+        },
+        "conversion": {
+          "$ref": "#/$defs/conversion"
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_registry_artifact_id",
+        "candidate_registry_sha256",
+        "candidate_id",
+        "candidate_sha256",
+        "table_id",
+        "document_occurrence_id",
+        "file_sha256",
+        "pdf_page_index",
+        "page_text_sha256",
+        "model_header_text",
+        "source_property_id",
+        "source_label",
+        "source_unit",
+        "source_value",
+        "label_bbox",
+        "unit_bbox",
+        "value_bbox"
+      ],
+      "properties": {
+        "candidate_registry_artifact_id": {
+          "const": "myactuator-plant-spec-candidate-registry"
+        },
+        "candidate_registry_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "candidate_id": {
+          "type": "string",
+          "pattern": "^plantspeccandidate-[0-9a-f]{20}$"
+        },
+        "candidate_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "table_id": {
+          "type": "string",
+          "pattern": "^plantspectable-[0-9a-f]{20}$"
+        },
+        "document_occurrence_id": {
+          "type": "string",
+          "pattern": "^dococc-[0-9a-f]{20}$"
+        },
+        "file_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "pdf_page_index": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "page_text_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "model_header_text": {
+          "$ref": "#/$defs/text"
+        },
+        "source_property_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "source_label": {
+          "$ref": "#/$defs/text"
+        },
+        "source_unit": {
+          "type": "string",
+          "maxLength": 512
+        },
+        "source_value": {
+          "$ref": "#/$defs/text"
+        },
+        "label_bbox": {
+          "$ref": "#/$defs/bbox"
+        },
+        "unit_bbox": {
+          "$ref": "#/$defs/nullableBbox"
+        },
+        "value_bbox": {
+          "$ref": "#/$defs/bbox"
+        }
+      }
+    },
+    "uncertainty": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "class",
+        "lower",
+        "upper",
+        "unit",
+        "coverage_probability"
+      ],
+      "properties": {
+        "class": {
+          "enum": [
+            "source_stated_bound",
+            "transcribed_display_resolution",
+            "digitization_bound",
+            "derived_bound"
+          ]
+        },
+        "lower": {
+          "type": "number"
+        },
+        "upper": {
+          "type": "number"
+        },
+        "unit": {
+          "$ref": "#/$defs/text"
+        },
+        "coverage_probability": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "operatingCondition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "supply_voltage_v",
+        "ambient_temperature_k",
+        "rotation_direction",
+        "notes"
+      ],
+      "properties": {
+        "supply_voltage_v": {
+          "type": ["number", "null"]
+        },
+        "ambient_temperature_k": {
+          "type": ["number", "null"]
+        },
+        "rotation_direction": {
+          "enum": [
+            "positive",
+            "negative",
+            "bidirectional",
+            "not_stated"
+          ]
+        },
+        "notes": {
+          "$ref": "#/$defs/nullableText"
+        }
+      }
+    },
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role_id",
+        "actor_id",
+        "organization_or_team",
+        "assignment_register_revision",
+        "competence_evidence_refs"
+      ],
+      "properties": {
+        "role_id": {
+          "enum": ["plant_source_extractor", "plant_fact_reviewer"]
+        },
+        "actor_id": {
+          "$ref": "#/$defs/text"
+        },
+        "organization_or_team": {
+          "$ref": "#/$defs/text"
+        },
+        "assignment_register_revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "competence_evidence_refs": {
+          "$ref": "#/$defs/refs"
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "class",
+        "extraction_method",
+        "source_interpretation",
+        "extractor",
+        "submitted_at_utc",
+        "uncertainty",
+        "operating_condition"
+      ],
+      "properties": {
+        "class": {
+          "enum": ["official_stated", "source_derived", "digitized_curve"]
+        },
+        "extraction_method": {
+          "enum": [
+            "manual_transcription",
+            "machine_text_assisted",
+            "curve_digitization",
+            "equation_derivation"
+          ]
+        },
+        "source_interpretation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "selected_number_indices",
+            "qualifier_resolution",
+            "annotation_resolution",
+            "alternative_resolution"
+          ],
+          "properties": {
+            "selected_number_indices": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 2,
+              "uniqueItems": true,
+              "items": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "qualifier_resolution": {
+              "$ref": "#/$defs/nullableText"
+            },
+            "annotation_resolution": {
+              "$ref": "#/$defs/nullableText"
+            },
+            "alternative_resolution": {
+              "$ref": "#/$defs/nullableText"
+            }
+          }
+        },
+        "extractor": {
+          "$ref": "#/$defs/actor"
+        },
+        "submitted_at_utc": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "uncertainty": {
+          "$ref": "#/$defs/uncertainty"
+        },
+        "operating_condition": {
+          "$ref": "#/$defs/operatingCondition"
+        }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "candidate_decision_registry_generation_sha256",
+        "submission_id",
+        "submission_sha256",
+        "acceptance_event_id",
+        "acceptance_event_sha256",
+        "reviewer",
+        "reviewed_at_utc",
+        "decision_assertion",
+        "signature_evidence_refs"
+      ],
+      "properties": {
+        "status": {
+          "const": "accepted"
+        },
+        "candidate_decision_registry_generation_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "submission_id": {
+          "type": "string",
+          "pattern": "^plantcandidatesubmission-[0-9a-f]{20}$"
+        },
+        "submission_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "acceptance_event_id": {
+          "type": "string",
+          "pattern": "^plantcandidateevent-[0-9a-f]{20}$"
+        },
+        "acceptance_event_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "reviewer": {
+          "$ref": "#/$defs/actor"
+        },
+        "reviewed_at_utc": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "decision_assertion": {
+          "$ref": "#/$defs/text"
+        },
+        "signature_evidence_refs": {
+          "$ref": "#/$defs/refs"
+        }
+      }
+    },
+    "prov": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "entity_urn",
+        "was_derived_from_urns",
+        "generation_activity_urn",
+        "extractor_agent_urn",
+        "reviewer_agent_urn",
+        "generated_at_utc"
+      ],
+      "properties": {
+        "entity_urn": {
+          "type": "string",
+          "pattern": "^urn:myactuator:plant-fact:plantfact-[0-9a-f]{20}$"
+        },
+        "was_derived_from_urns": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "generation_activity_urn": {
+          "type": "string",
+          "pattern": "^urn:myactuator:activity:plant-fact-review:plantcandidateevent-[0-9a-f]{20}$"
+        },
+        "extractor_agent_urn": {
+          "type": "string",
+          "pattern": "^urn:myactuator:agent:[0-9a-f]{20}$"
+        },
+        "reviewer_agent_urn": {
+          "type": "string",
+          "pattern": "^urn:myactuator:agent:[0-9a-f]{20}$"
+        },
+        "generated_at_utc": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}

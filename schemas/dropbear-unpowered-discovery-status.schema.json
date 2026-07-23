@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.org/schemas/dropbear-unpowered-discovery-status.schema.json",
+  "title": "Dropbear unpowered-discovery preparation status",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "authority",
+    "sources",
+    "summary",
+    "blockers",
+    "support_granted",
+    "physical_motion_authority"
+  ],
+  "properties": {
+    "schema_version": { "const": "dropbear-unpowered-discovery-status/1" },
+    "artifact_id": { "const": "dropbear-unpowered-discovery-status" },
+    "authority": { "const": "planning_only_no_execution_authority" },
+    "sources": {
+      "type": "array",
+      "minItems": 13,
+      "maxItems": 13,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "sha256"],
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "planned_workstream_count",
+        "installed_actuator_slot_count",
+        "submitted_inventory_count",
+        "selected_can_controller_count",
+        "authorized_action_count",
+        "ready_for_human_review",
+        "ready_for_execution"
+      ],
+      "properties": {
+        "planned_workstream_count": { "const": 12 },
+        "installed_actuator_slot_count": { "const": 12 },
+        "submitted_inventory_count": { "const": 0 },
+        "selected_can_controller_count": { "const": 0 },
+        "authorized_action_count": { "const": 0 },
+        "ready_for_human_review": { "const": true },
+        "ready_for_execution": { "const": false }
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "support_granted": { "const": false },
+    "physical_motion_authority": { "const": false }
+  }
+}

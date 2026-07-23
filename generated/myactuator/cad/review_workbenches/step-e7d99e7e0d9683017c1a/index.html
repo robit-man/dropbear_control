@@ -1,0 +1,864 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Independent CAD review — RMD-X X12-320</title>
+<style>
+body { font: 15px/1.45 system-ui, sans-serif; max-width: 1500px; margin: auto; padding: 24px; color: #18212b; background: #f5f7fa; }
+h1,h2 { margin-top: 1.4em; } .warning { border: 2px solid #9a6700; background: #fff8c5; padding: 14px; }
+.images { display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 12px; }
+.images figure { margin: 0; background: white; padding: 8px; } .images img { width: 100%; height: 360px; object-fit: contain; }
+table { border-collapse: collapse; width: 100%; background: white; } th,td { border: 1px solid #ccd4dd; padding: 6px; text-align: left; }
+label { display: block; margin: 8px 0; } textarea { display: block; width: 100%; min-height: 72px; }
+.question { margin: 14px 0; background: white; } code,pre { background: #eef1f4; } pre { overflow: auto; padding: 10px; }
+button { font-size: 16px; padding: 10px 16px; } #status { white-space: pre-wrap; font-weight: 650; }
+</style>
+</head>
+<body>
+<h1>Independent CAD review: RMD-X / X12-320</h1>
+<div class="warning"><strong>Candidate only.</strong> This local workbench does not grant CAD, simulator, motor, firmware, plant, HIL or robot support. It makes no network requests. A downloaded decision must pass <code>python3 tools/manage_cad_review_decisions.py --validate &lt;file&gt;</code>, then accepted geometry must be rebuilt and reverified.</div>
+
+<h2>Exact identity</h2>
+<pre>{
+  &quot;configuration_id&quot;: &quot;cadcfg-a1d2e03798f1e51ebbdb&quot;,
+  &quot;decision_id&quot;: &quot;caddecision-7201eb1ae77673ed653f&quot;,
+  &quot;source_hashes&quot;: {
+    &quot;candidate_export_report_sha256&quot;: &quot;7a71bab526f784dee6ca498c251191dd11a03f9e540c62e589213a3fc3d63239&quot;,
+    &quot;candidate_hypothesis_sha256&quot;: &quot;bc354162c0654fec7a0c9cf1e9ce0a61bf2c9a730684a30875ddfb6ec929a0b1&quot;,
+    &quot;inspection_sha256&quot;: &quot;f898802c65256c33836358af826e27462660e41975422c272b9f85a2f4acc3f9&quot;,
+    &quot;review_packet_manifest_sha256&quot;: &quot;472ef40fd99e02239bd4ba2992732fd4241afa1041ac8e1de65320cafc9585d0&quot;,
+    &quot;step_sha256&quot;: &quot;9b1710aef09916c8da02b4e6b750da6bbfe2ba44cad6ba03cd1b53e3858e5eea&quot;
+  },
+  &quot;variant_id&quot;: &quot;step-e7d99e7e0d9683017c1a&quot;
+}</pre>
+
+<h2>Local evidence</h2>
+<div class="images">
+<figure><img src="../../review_packets/step-e7d99e7e0d9683017c1a/overview.png" alt="exact source assembly overview"><figcaption>Exact source assembly overview</figcaption></figure>
+<figure><img src="../../review_packets/step-e7d99e7e0d9683017c1a/member-sheet.png" alt="isolated representative member sheet"><figcaption>Representative member sheet</figcaption></figure>
+<figure><img src="../../candidate_exports/step-e7d99e7e0d9683017c1a/pose-+0deg.png" alt="candidate split at zero"><figcaption>Candidate housing/output split — zero</figcaption></figure>
+<figure><img src="../../candidate_exports/step-e7d99e7e0d9683017c1a/pose--30deg.png" alt="candidate split at minus thirty degrees"><figcaption>Candidate output -30 degrees</figcaption></figure>
+<figure><img src="../../candidate_exports/step-e7d99e7e0d9683017c1a/pose-+30deg.png" alt="candidate split at plus thirty degrees"><figcaption>Candidate output +30 degrees</figcaption></figure>
+</div>
+
+<h2>Occurrence membership</h2>
+<table><thead><tr><th>Occurrence</th><th>STEP product</th><th>Name score</th><th>Kernel kind</th><th>Independent selection</th></tr></thead><tbody><tr><td><code>NAUO1</code></td><td>8MT.013.035-驱动后盖-B_Default&lt;按加工&gt;</td><td>+0</td><td>shape_occurrence</td><td><label><input type='radio' name='member-NAUO1' value='housing' checked> housing</label> <label><input type='radio' name='member-NAUO1' value='output' > output</label></td></tr><tr><td><code>NAUO2</code></td><td>8MT.013.042-端盖-C_Default&lt;按加工&gt;</td><td>+1</td><td>shape_occurrence</td><td><label><input type='radio' name='member-NAUO2' value='housing' checked> housing</label> <label><input type='radio' name='member-NAUO2' value='output' > output</label></td></tr><tr><td><code>NAUO3</code></td><td>XMT.109.007-输出法兰 D_Default&lt;按加工&gt;</td><td>+20</td><td>shape_occurrence</td><td><label><input type='radio' name='member-NAUO3' value='housing' > housing</label> <label><input type='radio' name='member-NAUO3' value='output' checked> output</label></td></tr><tr><td><code>NAUO4</code></td><td>XMT.110.007-输出法兰盖板-B_Default&lt;按加工&gt;</td><td>+20</td><td>shape_occurrence</td><td><label><input type='radio' name='member-NAUO4' value='housing' checked> housing</label> <label><input type='radio' name='member-NAUO4' value='output' > output</label></td></tr><tr><td><code>NAUO5</code></td><td>XMT.112.006-二编轴-B_Default&lt;按加工&gt;</td><td>+3</td><td>shape_occurrence</td><td><label><input type='radio' name='member-NAUO5' value='housing' > housing</label> <label><input type='radio' name='member-NAUO5' value='output' checked> output</label></td></tr><tr><td><code>NAUO6</code></td><td>内六角沉头螺丝M3X10</td><td>-8</td><td>shape_occurrence</td><td><label><input type='radio' name='member-NAUO6' value='housing' checked> housing</label> <label><input type='radio' name='member-NAUO6' value='output' > output</label></td></tr><tr><td><code>NAUO7</code></td><td>内六角沉头螺丝M3X10</td><td>-8</td><td>shape_occurrence</td><td><label><input type='radio' name='member-NAUO7' value='housing' checked> housing</label> <label><input type='radio' name='member-NAUO7' value='output' > output</label></td></tr><tr><td><code>NAUO8</code></td><td>内六角沉头螺丝M3X10</td><td>-8</td><td>shape_occurrence</td><td><label><input type='radio' name='member-NAUO8' value='housing' checked> housing</label> <label><input type='radio' name='member-NAUO8' value='output' > output</label></td></tr><tr><td><code>NAUO9</code></td><td>内六角沉头螺丝M3X10</td><td>-8</td><td>shape_occurrence</td><td><label><input type='radio' name='member-NAUO9' value='housing' checked> housing</label> <label><input type='radio' name='member-NAUO9' value='output' > output</label></td></tr><tr><td><code>NAUO10</code></td><td>内六角沉头螺丝M3X10</td><td>-8</td><td>shape_occurrence</td><td><label><input type='radio' name='member-NAUO10' value='housing' checked> housing</label> <label><input type='radio' name='member-NAUO10' value='output' > output</label></td></tr><tr><td><code>NAUO11</code></td><td>内六角沉头螺丝M3X10</td><td>-8</td><td>shape_occurrence</td><td><label><input type='radio' name='member-NAUO11' value='housing' checked> housing</label> <label><input type='radio' name='member-NAUO11' value='output' > output</label></td></tr><tr><td><code>NAUO12</code></td><td>内六角沉头螺丝M3X10</td><td>-8</td><td>shape_occurrence</td><td><label><input type='radio' name='member-NAUO12' value='housing' checked> housing</label> <label><input type='radio' name='member-NAUO12' value='output' > output</label></td></tr><tr><td><code>NAUO13</code></td><td>内六角沉头螺丝M3X10</td><td>-8</td><td>shape_occurrence</td><td><label><input type='radio' name='member-NAUO13' value='housing' checked> housing</label> <label><input type='radio' name='member-NAUO13' value='output' > output</label></td></tr><tr><td><code>NAUO14</code></td><td>内六角沉头螺丝M2X4</td><td>-8</td><td>shape_occurrence</td><td><label><input type='radio' name='member-NAUO14' value='housing' > housing</label> <label><input type='radio' name='member-NAUO14' value='output' checked> output</label></td></tr><tr><td><code>NAUO15</code></td><td>内六角沉头螺丝M2X4</td><td>-8</td><td>shape_occurrence</td><td><label><input type='radio' name='member-NAUO15' value='housing' > housing</label> <label><input type='radio' name='member-NAUO15' value='output' checked> output</label></td></tr><tr><td><code>NAUO16</code></td><td>内六角沉头螺丝M2X4</td><td>-8</td><td>shape_occurrence</td><td><label><input type='radio' name='member-NAUO16' value='housing' > housing</label> <label><input type='radio' name='member-NAUO16' value='output' checked> output</label></td></tr><tr><td><code>NAUO17</code></td><td>内六角沉头螺丝M2X4</td><td>-8</td><td>shape_occurrence</td><td><label><input type='radio' name='member-NAUO17' value='housing' > housing</label> <label><input type='radio' name='member-NAUO17' value='output' checked> output</label></td></tr><tr><td><code>NAUO18</code></td><td>X12-机座-毛坯图</td><td>-4</td><td>shape_occurrence</td><td><label><input type='radio' name='member-NAUO18' value='housing' checked> housing</label> <label><input type='radio' name='member-NAUO18' value='output' > output</label></td></tr></tbody></table>
+<label>Membership rationale <textarea id="member-rationale"></textarea></label>
+
+<h2>Unit, frame and joint</h2>
+<label>Source unit <select id="source-unit"><option>millimetre</option><option>metre</option><option>inch</option></select></label>
+<label>Source axis JSON <input id="source-axis" size="40" value='[0.0, 1.0, 0.0]'></label>
+<label>Source origin mm JSON <input id="source-origin" size="40" value='[0.0, 0.0, 0.0]'></label>
+<label>Source-to-canonical 4x4 JSON <textarea id="transform">[1.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]</textarea></label>
+<label>Origin/reference-plane definition <textarea id="origin-reference">candidate assumption: source-axis intersection at source coordinate origin; reviewer must identify the physical reference plane</textarea></label>
+<label>Frame rationale <textarea id="frame-rationale"></textarea></label>
+<label>Positive direction <textarea id="positive-direction">right-hand rotation about canonical +Z; physical motor/encoder sign unresolved</textarea></label>
+<label>Zero definition <textarea id="zero-definition">exact vendor STEP assembly placement under the candidate partition</textarea></label>
+<label><input id="physical-sign" type="checkbox"> Physical motor/encoder sign has separate evidence</label>
+<label>Joint rationale <textarea id="joint-rationale"></textarea></label>
+
+<h2>Required questions</h2>
+<fieldset class='question' data-index='0'><legend>1. Confirm whether NAUO4 and its eight M3 fasteners are stationary housing geometry or co-rotate with the output.</legend><label>Resolution <select class='q-resolution'><option value='unanswered'>unanswered</option><option value='resolved'>resolved</option><option value='unresolved'>unresolved</option></select></label><label>Response <textarea class='q-response'></textarea></label><label>Evidence refs (one per line) <textarea class='q-evidence'></textarea></label></fieldset><fieldset class='question' data-index='1'><legend>2. Confirm whether NAUO14 through NAUO17 and NAUO5 co-rotate with the externally accessible output.</legend><label>Resolution <select class='q-resolution'><option value='unanswered'>unanswered</option><option value='resolved'>resolved</option><option value='unresolved'>unresolved</option></select></label><label>Response <textarea class='q-response'></textarea></label><label>Evidence refs (one per line) <textarea class='q-evidence'></textarea></label></fieldset><fieldset class='question' data-index='2'><legend>3. Confirm the exact output reference plane and therefore the source-axis origin rather than assuming source Y equals zero.</legend><label>Resolution <select class='q-resolution'><option value='unanswered'>unanswered</option><option value='resolved'>resolved</option><option value='unresolved'>unresolved</option></select></label><label>Response <textarea class='q-response'></textarea></label><label>Evidence refs (one per line) <textarea class='q-evidence'></textarea></label></fieldset><fieldset class='question' data-index='3'><legend>4. Confirm the physical encoder-positive direction separately from the geometry-only right-hand +Z simulator convention.</legend><label>Resolution <select class='q-resolution'><option value='unanswered'>unanswered</option><option value='resolved'>resolved</option><option value='unresolved'>unresolved</option></select></label><label>Response <textarea class='q-response'></textarea></label><label>Evidence refs (one per line) <textarea class='q-evidence'></textarea></label></fieldset><fieldset class='question' data-index='4'><legend>5. Confirm the hypothesis for this exact no-brake/brake/package selector before merging any duplicate or sibling source.</legend><label>Resolution <select class='q-resolution'><option value='unanswered'>unanswered</option><option value='resolved'>resolved</option><option value='unresolved'>unresolved</option></select></label><label>Response <textarea class='q-response'></textarea></label><label>Evidence refs (one per line) <textarea class='q-evidence'></textarea></label></fieldset>
+
+<h2>Reviewer and disposition</h2>
+<label>Reviewer ID <input id="reviewer-id" size="60"></label>
+<label><input id="independent" type="checkbox"> I attest that I independently inspected the exact evidence and am not the automation that generated this candidate.</label>
+<label>Review assertion <textarea id="review-assertion"></textarea></label>
+<label>Signature evidence refs (one per line) <textarea id="signature-refs"></textarea></label>
+<label>Disposition <select id="disposition"><option value="">choose</option><option value="accept_geometry">accept geometry</option><option value="amend_candidate">amend candidate</option><option value="reject_candidate">reject candidate</option><option value="needs_more_evidence">needs more evidence</option></select></label>
+<label>Redistribution <select id="redistribution"><option value="license_review_required">license review required</option><option value="local_only">local only</option><option value="redistribution_approved">redistribution approved</option><option value="redistribution_prohibited">redistribution prohibited</option></select></label>
+<label>Redistribution rationale <textarea id="redistribution-rationale"></textarea></label>
+<label>Redistribution evidence refs (one per line) <textarea id="redistribution-evidence"></textarea></label>
+<button id="download" type="button">Validate fields and download submitted decision</button>
+<div id="status" role="status"></div>
+
+<script type="application/json" id="workbench-data">{
+  "candidate_articulation": {
+    "housing_fixed": true,
+    "output_only_rigid_rotation": true,
+    "poses": [
+      {
+        "angle_degrees": -30.0,
+        "max_vertex_deviation_mm": 0.001,
+        "output_centroid_mm": [
+          0.0,
+          -0.0,
+          -1.078649995
+        ],
+        "rigid_rotation_matches": true,
+        "triangles": 109818
+      },
+      {
+        "angle_degrees": 0.0,
+        "max_vertex_deviation_mm": 0.0,
+        "output_centroid_mm": [
+          0.0,
+          0.0,
+          -1.078649995
+        ],
+        "rigid_rotation_matches": true,
+        "triangles": 109818
+      },
+      {
+        "angle_degrees": 30.0,
+        "max_vertex_deviation_mm": 0.001,
+        "output_centroid_mm": [
+          0.0,
+          0.0,
+          -1.078649995
+        ],
+        "rigid_rotation_matches": true,
+        "triangles": 109818
+      }
+    ],
+    "vertex_comparison_tolerance_mm": 0.002
+  },
+  "members": [
+    {
+      "bbox_size_mm": [
+        124.0,
+        15.5,
+        124.0
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        -4.665383,
+        69.741274,
+        -0.170956
+      ],
+      "occurrence": "NAUO1",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#32196",
+      "related_product_name": "8MT.013.035-\u9a71\u52a8\u540e\u76d6-B_Default<\u6309\u52a0\u5de5>",
+      "same_product_occurrences": [
+        "NAUO1"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 26964.76223
+    },
+    {
+      "bbox_size_mm": [
+        124.0,
+        20.7,
+        124.0
+      ],
+      "candidate_terms": [
+        "\u7aef\u76d6"
+      ],
+      "center_mm": [
+        0.924894,
+        54.587667,
+        0.84466
+      ],
+      "occurrence": "NAUO2",
+      "output_candidate_score": 1,
+      "product_entity_ref": "#19315",
+      "related_product_name": "8MT.013.042-\u7aef\u76d6-C_Default<\u6309\u52a0\u5de5>",
+      "same_product_occurrences": [
+        "NAUO2"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 36673.557688
+    },
+    {
+      "bbox_size_mm": [
+        85.0,
+        13.8,
+        85.0
+      ],
+      "candidate_terms": [
+        "\u8f93\u51fa",
+        "\u6cd5\u5170"
+      ],
+      "center_mm": [
+        0.0,
+        -2.405161,
+        -0.0
+      ],
+      "occurrence": "NAUO3",
+      "output_candidate_score": 20,
+      "product_entity_ref": "#49069",
+      "related_product_name": "XMT.109.007-\u8f93\u51fa\u6cd5\u5170 D_Default<\u6309\u52a0\u5de5>",
+      "same_product_occurrences": [
+        "NAUO3"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 36625.922118
+    },
+    {
+      "bbox_size_mm": [
+        109.0,
+        5.5,
+        109.0
+      ],
+      "candidate_terms": [
+        "\u8f93\u51fa",
+        "\u6cd5\u5170"
+      ],
+      "center_mm": [
+        -0.0,
+        -3.064249,
+        0.0
+      ],
+      "occurrence": "NAUO4",
+      "output_candidate_score": 20,
+      "product_entity_ref": "#15320",
+      "related_product_name": "XMT.110.007-\u8f93\u51fa\u6cd5\u5170\u76d6\u677f-B_Default<\u6309\u52a0\u5de5>",
+      "same_product_occurrences": [
+        "NAUO4"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 14383.341094
+    },
+    {
+      "bbox_size_mm": [
+        30.0,
+        71.0,
+        30.0
+      ],
+      "candidate_terms": [
+        "\u8f74"
+      ],
+      "center_mm": [
+        -0.0,
+        15.581596,
+        -0.0
+      ],
+      "occurrence": "NAUO5",
+      "output_candidate_score": 3,
+      "product_entity_ref": "#20674",
+      "related_product_name": "XMT.112.006-\u4e8c\u7f16\u8f74-B_Default<\u6309\u52a0\u5de5>",
+      "same_product_occurrences": [
+        "NAUO5"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 2937.110117
+    },
+    {
+      "bbox_size_mm": [
+        5.734315,
+        10.0,
+        5.734315
+      ],
+      "candidate_terms": [
+        "\u87ba\u4e1d"
+      ],
+      "center_mm": [
+        -0.017365,
+        -0.947638,
+        -51.001519
+      ],
+      "occurrence": "NAUO6",
+      "output_candidate_score": -8,
+      "product_entity_ref": "#2933",
+      "related_product_name": "\u5185\u516d\u89d2\u6c89\u5934\u87ba\u4e1dM3X10",
+      "same_product_occurrences": [
+        "NAUO6",
+        "NAUO7",
+        "NAUO8",
+        "NAUO9",
+        "NAUO10",
+        "NAUO11",
+        "NAUO12",
+        "NAUO13"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 82.726221
+    },
+    {
+      "bbox_size_mm": [
+        5.734315,
+        10.0,
+        5.734315
+      ],
+      "candidate_terms": [
+        "\u87ba\u4e1d"
+      ],
+      "center_mm": [
+        36.051241,
+        -0.947638,
+        -36.075799
+      ],
+      "occurrence": "NAUO7",
+      "output_candidate_score": -8,
+      "product_entity_ref": "#2933",
+      "related_product_name": "\u5185\u516d\u89d2\u6c89\u5934\u87ba\u4e1dM3X10",
+      "same_product_occurrences": [
+        "NAUO6",
+        "NAUO7",
+        "NAUO8",
+        "NAUO9",
+        "NAUO10",
+        "NAUO11",
+        "NAUO12",
+        "NAUO13"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 82.726221
+    },
+    {
+      "bbox_size_mm": [
+        5.734315,
+        10.0,
+        5.734315
+      ],
+      "candidate_terms": [
+        "\u87ba\u4e1d"
+      ],
+      "center_mm": [
+        51.001519,
+        -0.947638,
+        -0.017365
+      ],
+      "occurrence": "NAUO8",
+      "output_candidate_score": -8,
+      "product_entity_ref": "#2933",
+      "related_product_name": "\u5185\u516d\u89d2\u6c89\u5934\u87ba\u4e1dM3X10",
+      "same_product_occurrences": [
+        "NAUO6",
+        "NAUO7",
+        "NAUO8",
+        "NAUO9",
+        "NAUO10",
+        "NAUO11",
+        "NAUO12",
+        "NAUO13"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 82.726221
+    },
+    {
+      "bbox_size_mm": [
+        5.734315,
+        10.0,
+        5.734315
+      ],
+      "candidate_terms": [
+        "\u87ba\u4e1d"
+      ],
+      "center_mm": [
+        36.075799,
+        -0.947638,
+        36.051241
+      ],
+      "occurrence": "NAUO9",
+      "output_candidate_score": -8,
+      "product_entity_ref": "#2933",
+      "related_product_name": "\u5185\u516d\u89d2\u6c89\u5934\u87ba\u4e1dM3X10",
+      "same_product_occurrences": [
+        "NAUO6",
+        "NAUO7",
+        "NAUO8",
+        "NAUO9",
+        "NAUO10",
+        "NAUO11",
+        "NAUO12",
+        "NAUO13"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 82.726221
+    },
+    {
+      "bbox_size_mm": [
+        5.734315,
+        10.0,
+        5.734315
+      ],
+      "candidate_terms": [
+        "\u87ba\u4e1d"
+      ],
+      "center_mm": [
+        0.017365,
+        -0.947638,
+        51.001519
+      ],
+      "occurrence": "NAUO10",
+      "output_candidate_score": -8,
+      "product_entity_ref": "#2933",
+      "related_product_name": "\u5185\u516d\u89d2\u6c89\u5934\u87ba\u4e1dM3X10",
+      "same_product_occurrences": [
+        "NAUO6",
+        "NAUO7",
+        "NAUO8",
+        "NAUO9",
+        "NAUO10",
+        "NAUO11",
+        "NAUO12",
+        "NAUO13"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 82.726221
+    },
+    {
+      "bbox_size_mm": [
+        5.734315,
+        10.0,
+        5.734315
+      ],
+      "candidate_terms": [
+        "\u87ba\u4e1d"
+      ],
+      "center_mm": [
+        -36.051241,
+        -0.947638,
+        36.075799
+      ],
+      "occurrence": "NAUO11",
+      "output_candidate_score": -8,
+      "product_entity_ref": "#2933",
+      "related_product_name": "\u5185\u516d\u89d2\u6c89\u5934\u87ba\u4e1dM3X10",
+      "same_product_occurrences": [
+        "NAUO6",
+        "NAUO7",
+        "NAUO8",
+        "NAUO9",
+        "NAUO10",
+        "NAUO11",
+        "NAUO12",
+        "NAUO13"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 82.726221
+    },
+    {
+      "bbox_size_mm": [
+        5.734315,
+        10.0,
+        5.734315
+      ],
+      "candidate_terms": [
+        "\u87ba\u4e1d"
+      ],
+      "center_mm": [
+        -51.001519,
+        -0.947638,
+        0.017365
+      ],
+      "occurrence": "NAUO12",
+      "output_candidate_score": -8,
+      "product_entity_ref": "#2933",
+      "related_product_name": "\u5185\u516d\u89d2\u6c89\u5934\u87ba\u4e1dM3X10",
+      "same_product_occurrences": [
+        "NAUO6",
+        "NAUO7",
+        "NAUO8",
+        "NAUO9",
+        "NAUO10",
+        "NAUO11",
+        "NAUO12",
+        "NAUO13"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 82.726221
+    },
+    {
+      "bbox_size_mm": [
+        5.734315,
+        10.0,
+        5.734315
+      ],
+      "candidate_terms": [
+        "\u87ba\u4e1d"
+      ],
+      "center_mm": [
+        -36.075799,
+        -0.947638,
+        -36.051241
+      ],
+      "occurrence": "NAUO13",
+      "output_candidate_score": -8,
+      "product_entity_ref": "#2933",
+      "related_product_name": "\u5185\u516d\u89d2\u6c89\u5934\u87ba\u4e1dM3X10",
+      "same_product_occurrences": [
+        "NAUO6",
+        "NAUO7",
+        "NAUO8",
+        "NAUO9",
+        "NAUO10",
+        "NAUO11",
+        "NAUO12",
+        "NAUO13"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 82.726221
+    },
+    {
+      "bbox_size_mm": [
+        3.934315,
+        4.0,
+        3.934315
+      ],
+      "candidate_terms": [
+        "\u87ba\u4e1d"
+      ],
+      "center_mm": [
+        -0.0,
+        -6.218665,
+        -12.0
+      ],
+      "occurrence": "NAUO14",
+      "output_candidate_score": -8,
+      "product_entity_ref": "#11355",
+      "related_product_name": "\u5185\u516d\u89d2\u6c89\u5934\u87ba\u4e1dM2X4",
+      "same_product_occurrences": [
+        "NAUO14",
+        "NAUO15",
+        "NAUO16",
+        "NAUO17"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 16.939502
+    },
+    {
+      "bbox_size_mm": [
+        3.934315,
+        4.0,
+        3.934315
+      ],
+      "candidate_terms": [
+        "\u87ba\u4e1d"
+      ],
+      "center_mm": [
+        -12.0,
+        -6.218665,
+        0.0
+      ],
+      "occurrence": "NAUO15",
+      "output_candidate_score": -8,
+      "product_entity_ref": "#11355",
+      "related_product_name": "\u5185\u516d\u89d2\u6c89\u5934\u87ba\u4e1dM2X4",
+      "same_product_occurrences": [
+        "NAUO14",
+        "NAUO15",
+        "NAUO16",
+        "NAUO17"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 16.939502
+    },
+    {
+      "bbox_size_mm": [
+        3.934315,
+        4.0,
+        3.934315
+      ],
+      "candidate_terms": [
+        "\u87ba\u4e1d"
+      ],
+      "center_mm": [
+        0.0,
+        -6.218665,
+        12.0
+      ],
+      "occurrence": "NAUO16",
+      "output_candidate_score": -8,
+      "product_entity_ref": "#11355",
+      "related_product_name": "\u5185\u516d\u89d2\u6c89\u5934\u87ba\u4e1dM2X4",
+      "same_product_occurrences": [
+        "NAUO14",
+        "NAUO15",
+        "NAUO16",
+        "NAUO17"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 16.939502
+    },
+    {
+      "bbox_size_mm": [
+        3.934315,
+        4.0,
+        3.934315
+      ],
+      "candidate_terms": [
+        "\u87ba\u4e1d"
+      ],
+      "center_mm": [
+        12.0,
+        -6.218665,
+        -0.0
+      ],
+      "occurrence": "NAUO17",
+      "output_candidate_score": -8,
+      "product_entity_ref": "#11355",
+      "related_product_name": "\u5185\u516d\u89d2\u6c89\u5934\u87ba\u4e1dM2X4",
+      "same_product_occurrences": [
+        "NAUO14",
+        "NAUO15",
+        "NAUO16",
+        "NAUO17"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 16.939502
+    },
+    {
+      "bbox_size_mm": [
+        124.0,
+        55.1,
+        124.0
+      ],
+      "candidate_terms": [
+        "\u673a\u5ea7"
+      ],
+      "center_mm": [
+        0.550011,
+        24.875183,
+        -0.902593
+      ],
+      "occurrence": "NAUO18",
+      "output_candidate_score": -4,
+      "product_entity_ref": "#3849",
+      "related_product_name": "X12-\u673a\u5ea7-\u6bdb\u576f\u56fe",
+      "same_product_occurrences": [
+        "NAUO18"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 160089.774258
+    }
+  ],
+  "template": {
+    "configuration_id": "cadcfg-a1d2e03798f1e51ebbdb",
+    "decision_id": "caddecision-7201eb1ae77673ed653f",
+    "disposition": null,
+    "frame_review": {
+      "evidence_refs": [
+        "assets/myactuator/cad_hypotheses/x12-320-step-e7d99e7e0d9683017c1a.json",
+        "generated/myactuator/cad/candidate_export_reports/step-e7d99e7e0d9683017c1a.json",
+        "generated/myactuator/cad/review_packet_manifest.json#step-e7d99e7e0d9683017c1a",
+        "generated/myactuator/cad/review_packets/step-e7d99e7e0d9683017c1a/overview.png",
+        "generated/myactuator/cad/review_packets/step-e7d99e7e0d9683017c1a/member-sheet.png"
+      ],
+      "origin_reference": "candidate assumption: source-axis intersection at source coordinate origin; reviewer must identify the physical reference plane",
+      "origin_source_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rationale": null,
+      "source_axis_unit": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "source_to_canonical": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -1.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "status": "candidate"
+    },
+    "joint_review": {
+      "axis_unit": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "evidence_refs": [
+        "assets/myactuator/cad_hypotheses/x12-320-step-e7d99e7e0d9683017c1a.json",
+        "generated/myactuator/cad/candidate_export_reports/step-e7d99e7e0d9683017c1a.json",
+        "generated/myactuator/cad/review_packet_manifest.json#step-e7d99e7e0d9683017c1a",
+        "generated/myactuator/cad/review_packets/step-e7d99e7e0d9683017c1a/overview.png",
+        "generated/myactuator/cad/review_packets/step-e7d99e7e0d9683017c1a/member-sheet.png"
+      ],
+      "joint_type": "continuous",
+      "origin_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "physical_sign_resolved": false,
+      "positive_direction": "right-hand rotation about canonical +Z; physical motor/encoder sign unresolved",
+      "rationale": null,
+      "status": "candidate",
+      "zero_definition": "exact vendor STEP assembly placement under the candidate partition"
+    },
+    "member_review": {
+      "evidence_refs": [
+        "assets/myactuator/cad_hypotheses/x12-320-step-e7d99e7e0d9683017c1a.json",
+        "generated/myactuator/cad/candidate_export_reports/step-e7d99e7e0d9683017c1a.json",
+        "generated/myactuator/cad/review_packet_manifest.json#step-e7d99e7e0d9683017c1a",
+        "generated/myactuator/cad/review_packets/step-e7d99e7e0d9683017c1a/overview.png",
+        "generated/myactuator/cad/review_packets/step-e7d99e7e0d9683017c1a/member-sheet.png"
+      ],
+      "housing_occurrences": [
+        "NAUO1",
+        "NAUO2",
+        "NAUO4",
+        "NAUO6",
+        "NAUO7",
+        "NAUO8",
+        "NAUO9",
+        "NAUO10",
+        "NAUO11",
+        "NAUO12",
+        "NAUO13",
+        "NAUO18"
+      ],
+      "output_occurrences": [
+        "NAUO3",
+        "NAUO5",
+        "NAUO14",
+        "NAUO15",
+        "NAUO16",
+        "NAUO17"
+      ],
+      "rationale": null,
+      "status": "candidate"
+    },
+    "question_responses": [
+      {
+        "evidence_refs": [],
+        "question": "Confirm whether NAUO4 and its eight M3 fasteners are stationary housing geometry or co-rotate with the output.",
+        "question_sha256": "5202cf94118a0fcc9294e47f190667ae03af7bb1c7c261c70b2c3eeab00b7c4e",
+        "resolution": "unanswered",
+        "response": null
+      },
+      {
+        "evidence_refs": [],
+        "question": "Confirm whether NAUO14 through NAUO17 and NAUO5 co-rotate with the externally accessible output.",
+        "question_sha256": "04168e766b9b86553113b00312ad4c9b0a2209ae9ea328737c74db78dc91e1e5",
+        "resolution": "unanswered",
+        "response": null
+      },
+      {
+        "evidence_refs": [],
+        "question": "Confirm the exact output reference plane and therefore the source-axis origin rather than assuming source Y equals zero.",
+        "question_sha256": "3e6ea64c4c80f3d9b17f00a0e77ed5cf80d6a3bd2f60856fc8aa2d89e6b19af3",
+        "resolution": "unanswered",
+        "response": null
+      },
+      {
+        "evidence_refs": [],
+        "question": "Confirm the physical encoder-positive direction separately from the geometry-only right-hand +Z simulator convention.",
+        "question_sha256": "b90af292764732bbaecd0213f30b0c381ead21b7e57dc0786f23f715120673b0",
+        "resolution": "unanswered",
+        "response": null
+      },
+      {
+        "evidence_refs": [],
+        "question": "Confirm the hypothesis for this exact no-brake/brake/package selector before merging any duplicate or sibling source.",
+        "question_sha256": "ea5040221731eff82818302c008f5524eb84aeafb28c811b8e8d7126292531b6",
+        "resolution": "unanswered",
+        "response": null
+      }
+    ],
+    "record_state": "draft",
+    "redistribution_review": {
+      "evidence_refs": [],
+      "rationale": null,
+      "status": "license_review_required"
+    },
+    "reviewer": {
+      "independence_attested": null,
+      "review_assertion": null,
+      "reviewed_at": null,
+      "reviewer_id": null,
+      "signature_evidence_refs": []
+    },
+    "schema_version": "myactuator-cad-review-decision/1",
+    "semantic_review_complete": false,
+    "source_hashes": {
+      "candidate_export_report_sha256": "7a71bab526f784dee6ca498c251191dd11a03f9e540c62e589213a3fc3d63239",
+      "candidate_hypothesis_sha256": "bc354162c0654fec7a0c9cf1e9ce0a61bf2c9a730684a30875ddfb6ec929a0b1",
+      "inspection_sha256": "f898802c65256c33836358af826e27462660e41975422c272b9f85a2f4acc3f9",
+      "review_packet_manifest_sha256": "472ef40fd99e02239bd4ba2992732fd4241afa1041ac8e1de65320cafc9585d0",
+      "step_sha256": "9b1710aef09916c8da02b4e6b750da6bbfe2ba44cad6ba03cd1b53e3858e5eea"
+    },
+    "support_granted": false,
+    "unit_review": {
+      "evidence_refs": [
+        "generated/myactuator/cad/step_inspection.json#step-e7d99e7e0d9683017c1a"
+      ],
+      "override_rationale": null,
+      "scale_to_m": 0.001,
+      "source_length_unit": "millimetre",
+      "status": "candidate"
+    },
+    "variant_id": "step-e7d99e7e0d9683017c1a"
+  }
+}</script>
+<script>
+const data = JSON.parse(document.getElementById('workbench-data').textContent);
+const lines = (id) => document.getElementById(id).value.split(/
+/).map(v => v.trim()).filter(Boolean);
+const value = (id) => document.getElementById(id).value.trim();
+function downloadDecision() {
+  const d = structuredClone(data.template);
+  const errors = [];
+  d.record_state = 'submitted';
+  d.reviewer = { reviewer_id: value('reviewer-id') || null, independence_attested: document.getElementById('independent').checked, reviewed_at: new Date().toISOString(), review_assertion: value('review-assertion') || null, signature_evidence_refs: lines('signature-refs') };
+  d.disposition = value('disposition') || null;
+  if (!d.reviewer.reviewer_id || !d.reviewer.independence_attested || !d.reviewer.review_assertion) errors.push('reviewer identity, independence attestation and assertion are required');
+  if (!d.disposition) errors.push('a disposition is required');
+  d.member_review.housing_occurrences = [];
+  d.member_review.output_occurrences = [];
+  for (const member of data.members) {
+    const selected = document.querySelector(`input[name="member-${member.occurrence}"]:checked`);
+    if (!selected) errors.push(`missing member selection ${member.occurrence}`);
+    else d.member_review[`${selected.value}_occurrences`].push(member.occurrence);
+  }
+  d.member_review.rationale = value('member-rationale') || null;
+  d.unit_review.source_length_unit = value('source-unit');
+  d.unit_review.scale_to_m = { millimetre: 0.001, metre: 1.0, inch: 0.0254 }[d.unit_review.source_length_unit];
+  try { d.frame_review.source_axis_unit = JSON.parse(value('source-axis')); } catch { errors.push('source axis is not JSON'); }
+  try { d.frame_review.origin_source_mm = JSON.parse(value('source-origin')); } catch { errors.push('source origin is not JSON'); }
+  try { d.frame_review.source_to_canonical = JSON.parse(value('transform')); } catch { errors.push('transform is not JSON'); }
+  d.frame_review.origin_reference = value('origin-reference');
+  d.frame_review.rationale = value('frame-rationale') || null;
+  d.joint_review.positive_direction = value('positive-direction');
+  d.joint_review.zero_definition = value('zero-definition');
+  d.joint_review.physical_sign_resolved = document.getElementById('physical-sign').checked;
+  d.joint_review.rationale = value('joint-rationale') || null;
+  d.question_responses = [...document.querySelectorAll('.question')].map((field, index) => ({ ...d.question_responses[index], resolution: field.querySelector('.q-resolution').value, response: field.querySelector('.q-response').value.trim() || null, evidence_refs: field.querySelector('.q-evidence').value.split(/
+/).map(v => v.trim()).filter(Boolean) }));
+  d.redistribution_review = { status: value('redistribution'), rationale: value('redistribution-rationale') || null, evidence_refs: lines('redistribution-evidence') };
+  const accepting = d.disposition === 'accept_geometry';
+  d.semantic_review_complete = accepting;
+  for (const key of ['member_review','unit_review','frame_review','joint_review']) d[key].status = accepting ? 'reviewed' : 'candidate';
+  if (accepting) {
+    if (!d.member_review.rationale || !d.frame_review.rationale || !d.joint_review.rationale) errors.push('acceptance requires member, frame and joint rationales');
+    for (const [index, answer] of d.question_responses.entries()) if (answer.resolution !== 'resolved' || !answer.response || !answer.evidence_refs.length) errors.push(`question ${index + 1} is not resolved with response/evidence`);
+  }
+  d.support_granted = false;
+  const status = document.getElementById('status');
+  if (errors.length) { status.textContent = errors.join('
+'); return; }
+  const blob = new Blob([JSON.stringify(d, null, 2) + '
+'], { type: 'application/json' });
+  const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `${d.decision_id}.json`; link.click(); URL.revokeObjectURL(link.href);
+  status.textContent = 'Decision downloaded. It has not been accepted or applied; run the repository validator next.';
+}
+document.getElementById('download').addEventListener('click', downloadDecision);
+</script>
+</body></html>

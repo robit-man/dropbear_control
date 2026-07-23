@@ -1,0 +1,2668 @@
+{
+  "component_count": 75,
+  "component_kind": "shell",
+  "components": [
+    {
+      "bbox_max_mm": [
+        -26.279696,
+        -64.991212,
+        -12.703174
+      ],
+      "bbox_min_mm": [
+        -29.104355,
+        -68.779406,
+        -13.26505
+      ],
+      "bbox_size_mm": [
+        2.824659,
+        3.788195,
+        0.561876
+      ],
+      "center_mm": [
+        -27.343486,
+        -66.542596,
+        -12.928069
+      ],
+      "component_id": "shell-0001-05c6f5f19365",
+      "fingerprint_sha256": "05c6f5f19365241cda2bf32ca372b570b3b8d6d4f05278b51418a07f07ebb8f1",
+      "kind": "shell",
+      "surface_area_mm2": 4.033627,
+      "topology": {
+        "edges": 33,
+        "faces": 3,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 31
+      },
+      "valid": true,
+      "volume_mm3": 4.033627
+    },
+    {
+      "bbox_max_mm": [
+        36.987374,
+        -64.991212,
+        36.987374
+      ],
+      "bbox_min_mm": [
+        -36.987374,
+        -64.991212,
+        -36.987374
+      ],
+      "bbox_size_mm": [
+        73.974747,
+        0.0,
+        73.974747
+      ],
+      "center_mm": [
+        1.194574,
+        -64.991212,
+        -0.137821
+      ],
+      "component_id": "shell-0002-065ac427b1f7",
+      "fingerprint_sha256": "065ac427b1f7ac57ba941274c950f02de3f0fa374e61737939df41c78bb3605f",
+      "kind": "shell",
+      "surface_area_mm2": 3230.438544,
+      "topology": {
+        "edges": 34,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 34
+      },
+      "valid": true,
+      "volume_mm3": 3230.438544
+    },
+    {
+      "bbox_max_mm": [
+        -29.788452,
+        -63.886157,
+        5.432619
+      ],
+      "bbox_min_mm": [
+        -31.004186,
+        -68.653737,
+        4.417794
+      ],
+      "bbox_size_mm": [
+        1.215733,
+        4.76758,
+        1.014825
+      ],
+      "center_mm": [
+        -30.216517,
+        -66.420878,
+        5.093845
+      ],
+      "component_id": "shell-0003-0aa1dc7446c0",
+      "fingerprint_sha256": "0aa1dc7446c04551f36660df0092ced1df3f1190f544f676d2ec789615c45433",
+      "kind": "shell",
+      "surface_area_mm2": 10.950137,
+      "topology": {
+        "edges": 8,
+        "faces": 3,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 6
+      },
+      "valid": true,
+      "volume_mm3": 10.950137
+    },
+    {
+      "bbox_max_mm": [
+        -11.633639,
+        -64.991212,
+        -25.069052
+      ],
+      "bbox_min_mm": [
+        -12.195515,
+        -68.779406,
+        -27.89371
+      ],
+      "bbox_size_mm": [
+        0.561876,
+        3.788195,
+        2.824659
+      ],
+      "center_mm": [
+        -11.989897,
+        -66.427765,
+        -26.102735
+      ],
+      "component_id": "shell-0004-0b327e303116",
+      "fingerprint_sha256": "0b327e303116ddfc400852feadba37c8d0590ef17dc64f84ba821afa43a001d3",
+      "kind": "shell",
+      "surface_area_mm2": 3.50792,
+      "topology": {
+        "edges": 27,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 27
+      },
+      "valid": true,
+      "volume_mm3": 3.50792
+    },
+    {
+      "bbox_max_mm": [
+        10.0,
+        16.5,
+        15.124356
+      ],
+      "bbox_min_mm": [
+        4.0,
+        15.5,
+        9.124356
+      ],
+      "bbox_size_mm": [
+        6.0,
+        1.0,
+        6.0
+      ],
+      "center_mm": [
+        7.0,
+        16.198103,
+        12.124356
+      ],
+      "component_id": "shell-0005-0e10fbd1511b",
+      "fingerprint_sha256": "0e10fbd1511bb25f55aa207b035bcba5ae374afe3f4f598be0d33d52029709c7",
+      "kind": "shell",
+      "surface_area_mm2": 51.719315,
+      "topology": {
+        "edges": 54,
+        "faces": 20,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 36
+      },
+      "valid": true,
+      "volume_mm3": 51.719315
+    },
+    {
+      "bbox_max_mm": [
+        -9.950141,
+        -66.391212,
+        26.207219
+      ],
+      "bbox_min_mm": [
+        -10.538612,
+        -68.391212,
+        26.090161
+      ],
+      "bbox_size_mm": [
+        0.58847,
+        2.0,
+        0.117057
+      ],
+      "center_mm": [
+        -10.211256,
+        -67.295868,
+        26.155278
+      ],
+      "component_id": "shell-0006-10a91ab64b26",
+      "fingerprint_sha256": "10a91ab64b26f50078e04e680338bdca0d37afc17819307fad17763db8ab7fc8",
+      "kind": "shell",
+      "surface_area_mm2": 0.983812,
+      "topology": {
+        "edges": 7,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 7
+      },
+      "valid": true,
+      "volume_mm3": 0.983812
+    },
+    {
+      "bbox_max_mm": [
+        2.84,
+        -7.0,
+        34.84
+      ],
+      "bbox_min_mm": [
+        -2.84,
+        -10.0,
+        29.16
+      ],
+      "bbox_size_mm": [
+        5.68,
+        3.0,
+        5.68
+      ],
+      "center_mm": [
+        -0.0,
+        -8.168959,
+        32.0
+      ],
+      "component_id": "shell-0007-1c0bddb2cd01",
+      "fingerprint_sha256": "1c0bddb2cd0123f22a3482abca0d410047fde201085dd2a859612525d5d3eab1",
+      "kind": "shell",
+      "surface_area_mm2": 68.692808,
+      "topology": {
+        "edges": 8,
+        "faces": 3,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 6
+      },
+      "valid": true,
+      "volume_mm3": 68.692808
+    },
+    {
+      "bbox_max_mm": [
+        -23.767028,
+        7.0,
+        20.618247
+      ],
+      "bbox_min_mm": [
+        -29.447028,
+        4.0,
+        14.938247
+      ],
+      "bbox_size_mm": [
+        5.68,
+        3.0,
+        5.68
+      ],
+      "center_mm": [
+        -26.590551,
+        5.636377,
+        17.744837
+      ],
+      "component_id": "shell-0008-1c4709c99b5b",
+      "fingerprint_sha256": "1c4709c99b5bfddf8c98babc09a99d267ce776428da4da91c3d6d2d168d8b4f7",
+      "kind": "shell",
+      "surface_area_mm2": 103.162663,
+      "topology": {
+        "edges": 25,
+        "faces": 9,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 18
+      },
+      "valid": true,
+      "volume_mm3": 103.162663
+    },
+    {
+      "bbox_max_mm": [
+        -28.060993,
+        -66.836943,
+        -14.931121
+      ],
+      "bbox_min_mm": [
+        -28.100012,
+        -68.761212,
+        -15.127278
+      ],
+      "bbox_size_mm": [
+        0.039019,
+        1.924269,
+        0.196157
+      ],
+      "center_mm": [
+        -28.080502,
+        -67.799077,
+        -15.0292
+      ],
+      "component_id": "shell-0009-234dc63917ed",
+      "fingerprint_sha256": "234dc63917ed948bcce687632f40444074078d2fa4159a2791b65f1fbd9ac6ee",
+      "kind": "shell",
+      "surface_area_mm2": 0.384854,
+      "topology": {
+        "edges": 4,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 4
+      },
+      "valid": true,
+      "volume_mm3": 0.384854
+    },
+    {
+      "bbox_max_mm": [
+        -19.338832,
+        -65.991212,
+        -26.734689
+      ],
+      "bbox_min_mm": [
+        -19.534989,
+        -68.153192,
+        -26.773709
+      ],
+      "bbox_size_mm": [
+        0.196157,
+        2.16198,
+        0.039019
+      ],
+      "center_mm": [
+        -19.436911,
+        -67.072202,
+        -26.754199
+      ],
+      "component_id": "shell-0010-294ab9f8b2ae",
+      "fingerprint_sha256": "294ab9f8b2ae5ddd6c8485b2228104b048841a7da340735afe3a2c34f098dd7a",
+      "kind": "shell",
+      "surface_area_mm2": 0.432396,
+      "topology": {
+        "edges": 4,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 4
+      },
+      "valid": true,
+      "volume_mm3": 0.432396
+    },
+    {
+      "bbox_max_mm": [
+        -9.794065,
+        -66.391212,
+        25.422591
+      ],
+      "bbox_min_mm": [
+        -10.382535,
+        -68.391212,
+        25.177846
+      ],
+      "bbox_size_mm": [
+        0.58847,
+        2.0,
+        0.244745
+      ],
+      "center_mm": [
+        -10.052293,
+        -67.326767,
+        25.368274
+      ],
+      "component_id": "shell-0011-2abf7d93cf15",
+      "fingerprint_sha256": "2abf7d93cf1546b6def5a22451b780af00f4515bc360b54fe3bccdec31876bf5",
+      "kind": "shell",
+      "surface_area_mm2": 1.013134,
+      "topology": {
+        "edges": 10,
+        "faces": 2,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 9
+      },
+      "valid": true,
+      "volume_mm3": 1.013134
+    },
+    {
+      "bbox_max_mm": [
+        39.0,
+        -7.0,
+        39.0
+      ],
+      "bbox_min_mm": [
+        -39.0,
+        -39.7,
+        -39.0
+      ],
+      "bbox_size_mm": [
+        78.0,
+        32.7,
+        78.0
+      ],
+      "center_mm": [
+        -0.0,
+        -23.928021,
+        -1e-06
+      ],
+      "component_id": "shell-0012-2b92c0f5082b",
+      "fingerprint_sha256": "2b92c0f5082b7e08f0e4c983b337ed13d14a4683013a3ddee693c307642c9753",
+      "kind": "shell",
+      "surface_area_mm2": 11998.13698,
+      "topology": {
+        "edges": 164,
+        "faces": 53,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 120
+      },
+      "valid": true,
+      "volume_mm3": 11998.13698
+    },
+    {
+      "bbox_max_mm": [
+        20.5,
+        14.5,
+        20.5
+      ],
+      "bbox_min_mm": [
+        -20.5,
+        9.49142,
+        -20.5
+      ],
+      "bbox_size_mm": [
+        41.0,
+        5.00858,
+        41.0
+      ],
+      "center_mm": [
+        -0.0,
+        12.398181,
+        0.0
+      ],
+      "component_id": "shell-0013-2ba922406fa0",
+      "fingerprint_sha256": "2ba922406fa0cc29a3d9219b64ac176e5e2617b11fb5c3ed8c0c0f030d329e54",
+      "kind": "shell",
+      "surface_area_mm2": 1825.159435,
+      "topology": {
+        "edges": 74,
+        "faces": 24,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 52
+      },
+      "valid": true,
+      "volume_mm3": 1825.159435
+    },
+    {
+      "bbox_max_mm": [
+        -9.967568,
+        -64.991212,
+        -22.701419
+      ],
+      "bbox_min_mm": [
+        -10.800627,
+        -68.811212,
+        -26.889367
+      ],
+      "bbox_size_mm": [
+        0.833059,
+        3.82,
+        4.187949
+      ],
+      "center_mm": [
+        -10.275026,
+        -66.793607,
+        -25.343716
+      ],
+      "component_id": "shell-0014-2d88117834e7",
+      "fingerprint_sha256": "2d88117834e7e4ceeb21492d17800d8670a3231645d481810ed82cca219008ab",
+      "kind": "shell",
+      "surface_area_mm2": 9.147655,
+      "topology": {
+        "edges": 24,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 24
+      },
+      "valid": true,
+      "volume_mm3": 9.147655
+    },
+    {
+      "bbox_max_mm": [
+        -8.53226,
+        -66.391212,
+        19.079257
+      ],
+      "bbox_min_mm": [
+        -9.12073,
+        -68.391212,
+        18.962199
+      ],
+      "bbox_size_mm": [
+        0.58847,
+        2.0,
+        0.117057
+      ],
+      "center_mm": [
+        -8.793375,
+        -67.295868,
+        19.027316
+      ],
+      "component_id": "shell-0015-2e9ea2b85b68",
+      "fingerprint_sha256": "2e9ea2b85b68a9ef2f0267a0082ddb7598673efba03f6fbbfb036d533f53cf7b",
+      "kind": "shell",
+      "surface_area_mm2": 0.983812,
+      "topology": {
+        "edges": 7,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 7
+      },
+      "valid": true,
+      "volume_mm3": 0.983812
+    },
+    {
+      "bbox_max_mm": [
+        -14.938247,
+        7.0,
+        -23.767028
+      ],
+      "bbox_min_mm": [
+        -20.618247,
+        4.0,
+        -29.447028
+      ],
+      "bbox_size_mm": [
+        5.68,
+        3.0,
+        5.68
+      ],
+      "center_mm": [
+        -17.744837,
+        5.636377,
+        -26.590551
+      ],
+      "component_id": "shell-0016-2eb99aa9eea7",
+      "fingerprint_sha256": "2eb99aa9eea7e6de526ba068bd8d23c0b475f7683844f7baefa88a9a12088a06",
+      "kind": "shell",
+      "surface_area_mm2": 103.162663,
+      "topology": {
+        "edges": 25,
+        "faces": 9,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 18
+      },
+      "valid": true,
+      "volume_mm3": 103.162663
+    },
+    {
+      "bbox_max_mm": [
+        -25.121075,
+        -64.991212,
+        -8.02013
+      ],
+      "bbox_min_mm": [
+        -29.309023,
+        -68.811212,
+        -9.049346
+      ],
+      "bbox_size_mm": [
+        4.187949,
+        3.82,
+        1.029216
+      ],
+      "center_mm": [
+        -27.824987,
+        -66.834201,
+        -8.562104
+      ],
+      "component_id": "shell-0017-2f328707740e",
+      "fingerprint_sha256": "2f328707740ef193bb22f30c6a521c7b8a6c62b7fc29d9c151764056f7f38da2",
+      "kind": "shell",
+      "surface_area_mm2": 9.532508,
+      "topology": {
+        "edges": 27,
+        "faces": 2,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 26
+      },
+      "valid": true,
+      "volume_mm3": 9.532508
+    },
+    {
+      "bbox_max_mm": [
+        -26.078995,
+        -64.991212,
+        -3.204479
+      ],
+      "bbox_min_mm": [
+        -30.266944,
+        -68.811212,
+        -4.233695
+      ],
+      "bbox_size_mm": [
+        4.187949,
+        3.82,
+        1.029216
+      ],
+      "center_mm": [
+        -28.782907,
+        -66.834201,
+        -3.746453
+      ],
+      "component_id": "shell-0018-2fcc02eff1eb",
+      "fingerprint_sha256": "2fcc02eff1ebc6ed873eb923c1173115d2037bb0e187839e61e910c3dc6a6fd2",
+      "kind": "shell",
+      "surface_area_mm2": 9.532508,
+      "topology": {
+        "edges": 27,
+        "faces": 2,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 26
+      },
+      "valid": true,
+      "volume_mm3": 9.532508
+    },
+    {
+      "bbox_max_mm": [
+        2.84,
+        -7.0,
+        -29.16
+      ],
+      "bbox_min_mm": [
+        -2.84,
+        -10.0,
+        -34.84
+      ],
+      "bbox_size_mm": [
+        5.68,
+        3.0,
+        5.68
+      ],
+      "center_mm": [
+        -0.0,
+        -8.168959,
+        -32.0
+      ],
+      "component_id": "shell-0019-3234d82acdd6",
+      "fingerprint_sha256": "3234d82acdd62f9ece0f5fd486a2dd0363cdaaded636385ccc4d5b520beb4a42",
+      "kind": "shell",
+      "surface_area_mm2": 68.692808,
+      "topology": {
+        "edges": 8,
+        "faces": 3,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 6
+      },
+      "valid": true,
+      "volume_mm3": 68.692808
+    },
+    {
+      "bbox_max_mm": [
+        -9.633099,
+        -64.991212,
+        -22.634111
+      ],
+      "bbox_min_mm": [
+        -16.150805,
+        -69.121212,
+        -27.933999
+      ],
+      "bbox_size_mm": [
+        6.517706,
+        4.13,
+        5.299889
+      ],
+      "center_mm": [
+        -13.105946,
+        -67.427505,
+        -25.148741
+      ],
+      "component_id": "shell-0020-331b4a312eea",
+      "fingerprint_sha256": "331b4a312eeae5e407eecf311112ebb93c45833c3969fcbde93bbffc0b98873b",
+      "kind": "shell",
+      "surface_area_mm2": 164.930778,
+      "topology": {
+        "edges": 152,
+        "faces": 33,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 118
+      },
+      "valid": true,
+      "volume_mm3": 164.930778
+    },
+    {
+      "bbox_max_mm": [
+        -10.184256,
+        -66.391212,
+        27.38416
+      ],
+      "bbox_min_mm": [
+        -10.772727,
+        -68.391212,
+        27.070945
+      ],
+      "bbox_size_mm": [
+        0.58847,
+        2.0,
+        0.313214
+      ],
+      "center_mm": [
+        -10.508492,
+        -67.307163,
+        27.291279
+      ],
+      "component_id": "shell-0021-33ae36c6aebd",
+      "fingerprint_sha256": "33ae36c6aebdad60cfbe208e615737ec34fdaf883fdbda8e148ca47b2b85dbc6",
+      "kind": "shell",
+      "surface_area_mm2": 1.363348,
+      "topology": {
+        "edges": 10,
+        "faces": 2,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 9
+      },
+      "valid": true,
+      "volume_mm3": 1.363348
+    },
+    {
+      "bbox_max_mm": [
+        -9.958399,
+        -64.991212,
+        29.580426
+      ],
+      "bbox_min_mm": [
+        -12.753633,
+        -69.191212,
+        29.024403
+      ],
+      "bbox_size_mm": [
+        2.795235,
+        4.2,
+        0.556023
+      ],
+      "center_mm": [
+        -11.784798,
+        -66.306775,
+        29.217122
+      ],
+      "component_id": "shell-0022-33edd2a99b85",
+      "fingerprint_sha256": "33edd2a99b851c1866e3495a8eb27f0909509d55c139b56c74cd72fa07d9ba8d",
+      "kind": "shell",
+      "surface_area_mm2": 3.005882,
+      "topology": {
+        "edges": 23,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 23
+      },
+      "valid": true,
+      "volume_mm3": 3.005882
+    },
+    {
+      "bbox_max_mm": [
+        1.5,
+        3.0,
+        33.5
+      ],
+      "bbox_min_mm": [
+        -1.5,
+        3.0,
+        30.5
+      ],
+      "bbox_size_mm": [
+        3.0,
+        0.0,
+        3.0
+      ],
+      "center_mm": [
+        -0.0,
+        3.0,
+        32.0
+      ],
+      "component_id": "shell-0023-35294f01f82c",
+      "fingerprint_sha256": "35294f01f82c6c3b0b2772fce2fe7443a93b276de2ff000ded3b5fe9c062682e",
+      "kind": "shell",
+      "surface_area_mm2": 7.068583,
+      "topology": {
+        "edges": 2,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 2
+      },
+      "valid": true,
+      "volume_mm3": 7.068583
+    },
+    {
+      "bbox_max_mm": [
+        -30.5,
+        3.0,
+        1.5
+      ],
+      "bbox_min_mm": [
+        -33.5,
+        3.0,
+        -1.5
+      ],
+      "bbox_size_mm": [
+        3.0,
+        0.0,
+        3.0
+      ],
+      "center_mm": [
+        -32.0,
+        3.0,
+        -0.0
+      ],
+      "component_id": "shell-0024-3a0a0fae4015",
+      "fingerprint_sha256": "3a0a0fae40157d8f804fcfbf9671ef9502d72d6eb650e33018d60afcd6daa084",
+      "kind": "shell",
+      "surface_area_mm2": 7.068583,
+      "topology": {
+        "edges": 2,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 2
+      },
+      "valid": true,
+      "volume_mm3": 7.068583
+    },
+    {
+      "bbox_max_mm": [
+        -7.064002,
+        -65.691212,
+        22.746382
+      ],
+      "bbox_min_mm": [
+        -11.159635,
+        -69.391212,
+        16.036781
+      ],
+      "bbox_size_mm": [
+        4.095634,
+        3.7,
+        6.709601
+      ],
+      "center_mm": [
+        -9.12276,
+        -67.774869,
+        19.327376
+      ],
+      "component_id": "shell-0025-3ae87daf2c6f",
+      "fingerprint_sha256": "3ae87daf2c6f95dc34aeaea846830995ab4637723511620f1b0a6c12498d04fa",
+      "kind": "shell",
+      "surface_area_mm2": 112.633091,
+      "topology": {
+        "edges": 64,
+        "faces": 15,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 48
+      },
+      "valid": true,
+      "volume_mm3": 112.633091
+    },
+    {
+      "bbox_max_mm": [
+        -27.693558,
+        -64.991212,
+        -5.399261
+      ],
+      "bbox_min_mm": [
+        -30.557236,
+        -68.779406,
+        -6.157294
+      ],
+      "bbox_size_mm": [
+        2.863678,
+        3.788195,
+        0.758033
+      ],
+      "center_mm": [
+        -28.693559,
+        -66.507721,
+        -5.692377
+      ],
+      "component_id": "shell-0026-3d605fd34179",
+      "fingerprint_sha256": "3d605fd34179054c85050dace0d168ac693654b3e176f2e6e5ea26098daa231c",
+      "kind": "shell",
+      "surface_area_mm2": 7.601407,
+      "topology": {
+        "edges": 60,
+        "faces": 5,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 54
+      },
+      "valid": true,
+      "volume_mm3": 7.601407
+    },
+    {
+      "bbox_max_mm": [
+        24.7,
+        9.7,
+        24.7
+      ],
+      "bbox_min_mm": [
+        -24.7,
+        9.7,
+        -24.7
+      ],
+      "bbox_size_mm": [
+        49.4,
+        0.0,
+        49.4
+      ],
+      "center_mm": [
+        -0.0,
+        9.7,
+        -0.0
+      ],
+      "component_id": "shell-0027-42353ee966f9",
+      "fingerprint_sha256": "42353ee966f99c5121f58d25f72ba3e7461fced2f30fd778695baa2e7a124391",
+      "kind": "shell",
+      "surface_area_mm2": 416.399949,
+      "topology": {
+        "edges": 124,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 124
+      },
+      "valid": true,
+      "volume_mm3": 416.399949
+    },
+    {
+      "bbox_max_mm": [
+        -8.337164,
+        -66.391212,
+        18.098473
+      ],
+      "bbox_min_mm": [
+        -8.925635,
+        -68.391212,
+        17.981415
+      ],
+      "bbox_size_mm": [
+        0.58847,
+        2.0,
+        0.117057
+      ],
+      "center_mm": [
+        -8.598279,
+        -67.295868,
+        18.046532
+      ],
+      "component_id": "shell-0028-49d9a9baf068",
+      "fingerprint_sha256": "49d9a9baf068930890ce667e158833b859e068a448d554e64d496f554be5e8ba",
+      "kind": "shell",
+      "surface_area_mm2": 0.983812,
+      "topology": {
+        "edges": 7,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 7
+      },
+      "valid": true,
+      "volume_mm3": 0.983812
+    },
+    {
+      "bbox_max_mm": [
+        -16.653022,
+        -66.191212,
+        -25.570156
+      ],
+      "bbox_min_mm": [
+        -20.848497,
+        -69.071212,
+        -28.429961
+      ],
+      "bbox_size_mm": [
+        4.195475,
+        2.88,
+        2.859805
+      ],
+      "center_mm": [
+        -18.651685,
+        -67.631212,
+        -27.498122
+      ],
+      "component_id": "shell-0029-54a6c2ee8f49",
+      "fingerprint_sha256": "54a6c2ee8f49c49a636c55884ea84ee0ab0e8e421743651330b863c7d6d3c34a",
+      "kind": "shell",
+      "surface_area_mm2": 23.472002,
+      "topology": {
+        "edges": 10,
+        "faces": 3,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 8
+      },
+      "valid": true,
+      "volume_mm3": 23.472002
+    },
+    {
+      "bbox_max_mm": [
+        -11.257714,
+        -67.891212,
+        21.700285
+      ],
+      "bbox_min_mm": [
+        -11.296733,
+        -69.091212,
+        21.504128
+      ],
+      "bbox_size_mm": [
+        0.039019,
+        1.2,
+        0.196157
+      ],
+      "center_mm": [
+        -11.277223,
+        -68.491212,
+        21.602206
+      ],
+      "component_id": "shell-0030-5700152bc3a2",
+      "fingerprint_sha256": "5700152bc3a2cddec1b06b1217ce8640b76dd9bbdc9937cf3cad27cf1effc641",
+      "kind": "shell",
+      "surface_area_mm2": 0.24,
+      "topology": {
+        "edges": 4,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 4
+      },
+      "valid": true,
+      "volume_mm3": 0.24
+    },
+    {
+      "bbox_max_mm": [
+        39.0,
+        -39.7,
+        39.0
+      ],
+      "bbox_min_mm": [
+        -39.0,
+        -51.2,
+        -39.0
+      ],
+      "bbox_size_mm": [
+        78.0,
+        11.5,
+        78.0
+      ],
+      "center_mm": [
+        0.038391,
+        -44.200521,
+        -0.005831
+      ],
+      "component_id": "shell-0031-59c20de7e77a",
+      "fingerprint_sha256": "59c20de7e77a504b948928d6fe1d5d66bf7beea59eb443ac5074c03b8560e851",
+      "kind": "shell",
+      "surface_area_mm2": 4020.743808,
+      "topology": {
+        "edges": 87,
+        "faces": 17,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 72
+      },
+      "valid": true,
+      "volume_mm3": 4020.743808
+    },
+    {
+      "bbox_max_mm": [
+        -9.117547,
+        -66.891212,
+        22.021609
+      ],
+      "bbox_min_mm": [
+        -9.804096,
+        -69.291212,
+        21.885042
+      ],
+      "bbox_size_mm": [
+        0.686549,
+        2.4,
+        0.136567
+      ],
+      "center_mm": [
+        -9.460822,
+        -68.091212,
+        21.953326
+      ],
+      "component_id": "shell-0032-5ad1e7f5c52c",
+      "fingerprint_sha256": "5ad1e7f5c52cd8dc782bf287cf57de50e1956a894bf127358cfe5039309c76d2",
+      "kind": "shell",
+      "surface_area_mm2": 1.68,
+      "topology": {
+        "edges": 4,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 4
+      },
+      "valid": true,
+      "volume_mm3": 1.68
+    },
+    {
+      "bbox_max_mm": [
+        -19.133981,
+        -65.991212,
+        -27.764513
+      ],
+      "bbox_min_mm": [
+        -19.330138,
+        -68.359165,
+        -27.803532
+      ],
+      "bbox_size_mm": [
+        0.196157,
+        2.367954,
+        0.039019
+      ],
+      "center_mm": [
+        -19.23206,
+        -67.175188,
+        -27.784022
+      ],
+      "component_id": "shell-0033-614ba42e358f",
+      "fingerprint_sha256": "614ba42e358f440e7914f9b13ea3dd68a0334739e551cc9abd1c70113e0d817c",
+      "kind": "shell",
+      "surface_area_mm2": 0.473591,
+      "topology": {
+        "edges": 4,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 4
+      },
+      "valid": true,
+      "volume_mm3": 0.473591
+    },
+    {
+      "bbox_max_mm": [
+        -23.67909,
+        -61.686157,
+        7.893246
+      ],
+      "bbox_min_mm": [
+        -26.17909,
+        -68.653737,
+        5.393246
+      ],
+      "bbox_size_mm": [
+        2.5,
+        6.96758,
+        2.5
+      ],
+      "center_mm": [
+        -24.92909,
+        -65.464172,
+        6.643246
+      ],
+      "component_id": "shell-0034-676153d5b9dd",
+      "fingerprint_sha256": "676153d5b9ddc0d6300c733e870fcb50fce9f79e2246d3a9ed74a42a35840516",
+      "kind": "shell",
+      "surface_area_mm2": 83.256424,
+      "topology": {
+        "edges": 42,
+        "faces": 14,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 28
+      },
+      "valid": true,
+      "volume_mm3": 83.256424
+    },
+    {
+      "bbox_max_mm": [
+        -8.520902,
+        -65.691212,
+        30.0705
+      ],
+      "bbox_min_mm": [
+        -12.616536,
+        -69.391212,
+        23.360899
+      ],
+      "bbox_size_mm": [
+        4.095634,
+        3.7,
+        6.709601
+      ],
+      "center_mm": [
+        -10.582751,
+        -67.782441,
+        26.692202
+      ],
+      "component_id": "shell-0035-6aee3735bc8b",
+      "fingerprint_sha256": "6aee3735bc8bcdcf457aff6e25408b1e3f392da01a520f2537f0a6ca60f2882c",
+      "kind": "shell",
+      "surface_area_mm2": 115.68238,
+      "topology": {
+        "edges": 72,
+        "faces": 18,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 52
+      },
+      "valid": true,
+      "volume_mm3": 115.68238
+    },
+    {
+      "bbox_max_mm": [
+        20.618247,
+        7.0,
+        29.447028
+      ],
+      "bbox_min_mm": [
+        14.938247,
+        4.0,
+        23.767028
+      ],
+      "bbox_size_mm": [
+        5.68,
+        3.0,
+        5.68
+      ],
+      "center_mm": [
+        17.744837,
+        5.636377,
+        26.590551
+      ],
+      "component_id": "shell-0036-6f093a4cdca5",
+      "fingerprint_sha256": "6f093a4cdca5d7a968a68b93f9ba941f87f8d14ba4b337f411e6d7c471c96400",
+      "kind": "shell",
+      "surface_area_mm2": 103.162663,
+      "topology": {
+        "edges": 25,
+        "faces": 9,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 18
+      },
+      "valid": true,
+      "volume_mm3": 103.162663
+    },
+    {
+      "bbox_max_mm": [
+        -11.989869,
+        -66.191212,
+        -25.334022
+      ],
+      "bbox_min_mm": [
+        -12.136987,
+        -68.971212,
+        -25.363287
+      ],
+      "bbox_size_mm": [
+        0.147118,
+        2.78,
+        0.029264
+      ],
+      "center_mm": [
+        -12.063428,
+        -67.581212,
+        -25.348655
+      ],
+      "component_id": "shell-0037-6f34cc8c9cfe",
+      "fingerprint_sha256": "6f34cc8c9cfe1bf4cd02a75da5be58509ef867d366d00b9f6a78b5b69595df2b",
+      "kind": "shell",
+      "surface_area_mm2": 0.417,
+      "topology": {
+        "edges": 4,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 4
+      },
+      "valid": true,
+      "volume_mm3": 0.417
+    },
+    {
+      "bbox_max_mm": [
+        -28.583016,
+        -63.886157,
+        5.712359
+      ],
+      "bbox_min_mm": [
+        -29.597841,
+        -68.653737,
+        4.496625
+      ],
+      "bbox_size_mm": [
+        1.014825,
+        4.76758,
+        1.215733
+      ],
+      "center_mm": [
+        -29.259067,
+        -66.420878,
+        5.284293
+      ],
+      "component_id": "shell-0038-76e8367728a7",
+      "fingerprint_sha256": "76e8367728a7e1838723cc7438fd4042b8da6a23408dca1bdce984bb5f5343e3",
+      "kind": "shell",
+      "surface_area_mm2": 10.950137,
+      "topology": {
+        "edges": 8,
+        "faces": 3,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 6
+      },
+      "valid": true,
+      "volume_mm3": 10.950137
+    },
+    {
+      "bbox_max_mm": [
+        -21.098222,
+        -60.495605,
+        3.903308
+      ],
+      "bbox_min_mm": [
+        -31.659426,
+        -68.986157,
+        -2.729421
+      ],
+      "bbox_size_mm": [
+        10.561203,
+        8.490552,
+        6.632729
+      ],
+      "center_mm": [
+        -26.466332,
+        -65.272342,
+        0.630882
+      ],
+      "component_id": "shell-0039-7c1d8a1d00c6",
+      "fingerprint_sha256": "7c1d8a1d00c6879a3c83772f926b48d240503c97e9c94be3b8a7a51fc04ec05b",
+      "kind": "shell",
+      "surface_area_mm2": 424.802763,
+      "topology": {
+        "edges": 78,
+        "faces": 17,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 62
+      },
+      "valid": true,
+      "volume_mm3": 424.802763
+    },
+    {
+      "bbox_max_mm": [
+        -11.0,
+        16.5,
+        3.0
+      ],
+      "bbox_min_mm": [
+        -17.0,
+        15.5,
+        -3.0
+      ],
+      "bbox_size_mm": [
+        6.0,
+        1.0,
+        6.0
+      ],
+      "center_mm": [
+        -14.0,
+        16.198103,
+        0.0
+      ],
+      "component_id": "shell-0040-80bee62a3d33",
+      "fingerprint_sha256": "80bee62a3d3396ca306a28e6b2b11f54d455fd07b7f3cada39c94efa55064739",
+      "kind": "shell",
+      "surface_area_mm2": 51.719315,
+      "topology": {
+        "edges": 54,
+        "faces": 20,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 36
+      },
+      "valid": true,
+      "volume_mm3": 51.719315
+    },
+    {
+      "bbox_max_mm": [
+        16.987333,
+        -64.991212,
+        16.987333
+      ],
+      "bbox_min_mm": [
+        -16.987333,
+        -64.991212,
+        -16.987333
+      ],
+      "bbox_size_mm": [
+        33.974666,
+        0.0,
+        33.974666
+      ],
+      "center_mm": [
+        0.0,
+        -64.991212,
+        -0.0
+      ],
+      "component_id": "shell-0041-86a2f62be1fc",
+      "fingerprint_sha256": "86a2f62be1fced6d06b123fcfda1fe1b904a8af56098ecd7a0f42d590b454b60",
+      "kind": "shell",
+      "surface_area_mm2": 906.567766,
+      "topology": {
+        "edges": 2,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 2
+      },
+      "valid": true,
+      "volume_mm3": 906.567766
+    },
+    {
+      "bbox_max_mm": [
+        -27.958529,
+        -66.191212,
+        -5.653947
+      ],
+      "bbox_min_mm": [
+        -27.987794,
+        -68.971212,
+        -5.801064
+      ],
+      "bbox_size_mm": [
+        0.029264,
+        2.78,
+        0.147118
+      ],
+      "center_mm": [
+        -27.973161,
+        -67.581212,
+        -5.727505
+      ],
+      "component_id": "shell-0042-8dc442bdd975",
+      "fingerprint_sha256": "8dc442bdd975b7366348956f21ef5e8e6857c65e0f4cad3f95f42a58d76a6c52",
+      "kind": "shell",
+      "surface_area_mm2": 0.417,
+      "topology": {
+        "edges": 4,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 4
+      },
+      "valid": true,
+      "volume_mm3": 0.417
+    },
+    {
+      "bbox_max_mm": [
+        10.0,
+        16.5,
+        -9.124356
+      ],
+      "bbox_min_mm": [
+        4.0,
+        15.5,
+        -15.124356
+      ],
+      "bbox_size_mm": [
+        6.0,
+        1.0,
+        6.0
+      ],
+      "center_mm": [
+        7.0,
+        16.198103,
+        -12.124356
+      ],
+      "component_id": "shell-0043-8f7a514f69e0",
+      "fingerprint_sha256": "8f7a514f69e0a11e6023106b65d2288e21169d30fc809822c4d6a84c79234d4f",
+      "kind": "shell",
+      "surface_area_mm2": 51.719315,
+      "topology": {
+        "edges": 54,
+        "faces": 20,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 36
+      },
+      "valid": true,
+      "volume_mm3": 51.719315
+    },
+    {
+      "bbox_max_mm": [
+        -8.688337,
+        -66.391212,
+        19.863884
+      ],
+      "bbox_min_mm": [
+        -9.276807,
+        -68.391212,
+        19.746827
+      ],
+      "bbox_size_mm": [
+        0.58847,
+        2.0,
+        0.117057
+      ],
+      "center_mm": [
+        -8.949452,
+        -67.295868,
+        19.811944
+      ],
+      "component_id": "shell-0044-90d62900bb54",
+      "fingerprint_sha256": "90d62900bb54d7167527f9707693a066486da7af9b72dc45c69bec61820b8e64",
+      "kind": "shell",
+      "surface_area_mm2": 0.983812,
+      "topology": {
+        "edges": 7,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 7
+      },
+      "valid": true,
+      "volume_mm3": 0.983812
+    },
+    {
+      "bbox_max_mm": [
+        -12.85962,
+        -64.991212,
+        -25.312921
+      ],
+      "bbox_min_mm": [
+        -13.421496,
+        -68.779406,
+        -28.13758
+      ],
+      "bbox_size_mm": [
+        0.561876,
+        3.788195,
+        2.824659
+      ],
+      "center_mm": [
+        -13.222165,
+        -66.542596,
+        -26.381797
+      ],
+      "component_id": "shell-0045-9532cdc20679",
+      "fingerprint_sha256": "9532cdc206791d661248332ea7b80f476f538831624dd30ca4f224fd8786790f",
+      "kind": "shell",
+      "surface_area_mm2": 4.033627,
+      "topology": {
+        "edges": 33,
+        "faces": 3,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 31
+      },
+      "valid": true,
+      "volume_mm3": 4.033627
+    },
+    {
+      "bbox_max_mm": [
+        -15.599209,
+        -64.991212,
+        -23.810682
+      ],
+      "bbox_min_mm": [
+        -22.116915,
+        -69.121212,
+        -29.110571
+      ],
+      "bbox_size_mm": [
+        6.517706,
+        4.13,
+        5.299889
+      ],
+      "center_mm": [
+        -18.983574,
+        -67.442275,
+        -26.025028
+      ],
+      "component_id": "shell-0046-95d92fd12d81",
+      "fingerprint_sha256": "95d92fd12d8141a80b3c7aa8f1a95d81058cb0f577ffbc8f0b13530caa93d3c3",
+      "kind": "shell",
+      "surface_area_mm2": 131.463509,
+      "topology": {
+        "edges": 132,
+        "faces": 26,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 107
+      },
+      "valid": true,
+      "volume_mm3": 131.463509
+    },
+    {
+      "bbox_max_mm": [
+        -27.492849,
+        -61.686157,
+        1.437155
+      ],
+      "bbox_min_mm": [
+        -29.992849,
+        -68.653737,
+        -1.062845
+      ],
+      "bbox_size_mm": [
+        2.5,
+        6.96758,
+        2.5
+      ],
+      "center_mm": [
+        -28.742849,
+        -65.464172,
+        0.187155
+      ],
+      "component_id": "shell-0047-95ec381a7ee8",
+      "fingerprint_sha256": "95ec381a7ee8d0cfa4abb39838355bad62f325165e4e0e4d8af7620fa2e637d9",
+      "kind": "shell",
+      "surface_area_mm2": 83.256424,
+      "topology": {
+        "edges": 42,
+        "faces": 14,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 28
+      },
+      "valid": true,
+      "volume_mm3": 83.256424
+    },
+    {
+      "bbox_max_mm": [
+        -9.98916,
+        -66.391212,
+        26.403375
+      ],
+      "bbox_min_mm": [
+        -10.577631,
+        -68.391212,
+        26.286318
+      ],
+      "bbox_size_mm": [
+        0.58847,
+        2.0,
+        0.117057
+      ],
+      "center_mm": [
+        -10.250275,
+        -67.295868,
+        26.351435
+      ],
+      "component_id": "shell-0048-99a1279a05f0",
+      "fingerprint_sha256": "99a1279a05f0e69af94189db6eaffee3f2dbc065114465702754d693053e03f7",
+      "kind": "shell",
+      "surface_area_mm2": 0.983812,
+      "topology": {
+        "edges": 7,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 7
+      },
+      "valid": true,
+      "volume_mm3": 0.983812
+    },
+    {
+      "bbox_max_mm": [
+        -27.449689,
+        -64.991212,
+        -6.634983
+      ],
+      "bbox_min_mm": [
+        -30.274347,
+        -68.779406,
+        -7.383274
+      ],
+      "bbox_size_mm": [
+        2.824659,
+        3.788195,
+        0.748292
+      ],
+      "center_mm": [
+        -28.494323,
+        -66.568336,
+        -7.014844
+      ],
+      "component_id": "shell-0049-9a7d6e428357",
+      "fingerprint_sha256": "9a7d6e4283576342248d350a985c8125ae8801c6ea2f96fa23c696c0d842f56c",
+      "kind": "shell",
+      "surface_area_mm2": 4.082565,
+      "topology": {
+        "edges": 33,
+        "faces": 3,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 31
+      },
+      "valid": true,
+      "volume_mm3": 4.082565
+    },
+    {
+      "bbox_max_mm": [
+        35.0,
+        -4.0,
+        35.0
+      ],
+      "bbox_min_mm": [
+        -35.0,
+        -7.0,
+        -35.0
+      ],
+      "bbox_size_mm": [
+        70.0,
+        3.0,
+        70.0
+      ],
+      "center_mm": [
+        0.0,
+        -5.304742,
+        -0.0
+      ],
+      "component_id": "shell-0050-9aa7f3274f18",
+      "fingerprint_sha256": "9aa7f3274f184d97cafb7f490bc715f450cb115439a0c1a716d547e1eed4b64e",
+      "kind": "shell",
+      "surface_area_mm2": 3078.975981,
+      "topology": {
+        "edges": 136,
+        "faces": 6,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 132
+      },
+      "valid": true,
+      "volume_mm3": 3078.975981
+    },
+    {
+      "bbox_max_mm": [
+        -11.829796,
+        -64.991212,
+        -25.108071
+      ],
+      "bbox_min_mm": [
+        -12.391672,
+        -68.779406,
+        -27.932729
+      ],
+      "bbox_size_mm": [
+        0.561876,
+        3.788195,
+        2.824659
+      ],
+      "center_mm": [
+        -12.186054,
+        -66.427765,
+        -26.141754
+      ],
+      "component_id": "shell-0051-9f699f98340a",
+      "fingerprint_sha256": "9f699f98340a928ead513c909be6b4929939e255e320fa92811da35507646eb2",
+      "kind": "shell",
+      "surface_area_mm2": 3.50792,
+      "topology": {
+        "edges": 27,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 27
+      },
+      "valid": true,
+      "volume_mm3": 3.50792
+    },
+    {
+      "bbox_max_mm": [
+        -8.727356,
+        -66.391212,
+        20.060041
+      ],
+      "bbox_min_mm": [
+        -9.315826,
+        -68.391212,
+        19.942983
+      ],
+      "bbox_size_mm": [
+        0.58847,
+        2.0,
+        0.117057
+      ],
+      "center_mm": [
+        -8.988471,
+        -67.295868,
+        20.0081
+      ],
+      "component_id": "shell-0052-a2ddf2fcbd68",
+      "fingerprint_sha256": "a2ddf2fcbd68ae84c7c7697063a45adc9294387fe4d4b79fa201ff5d0f4175ef",
+      "kind": "shell",
+      "surface_area_mm2": 0.983812,
+      "topology": {
+        "edges": 7,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 7
+      },
+      "valid": true,
+      "volume_mm3": 0.983812
+    },
+    {
+      "bbox_max_mm": [
+        39.0,
+        -46.2,
+        39.0
+      ],
+      "bbox_min_mm": [
+        -39.0,
+        -69.0,
+        -39.0
+      ],
+      "bbox_size_mm": [
+        78.0,
+        22.8,
+        78.0
+      ],
+      "center_mm": [
+        0.275849,
+        -60.534092,
+        0.017041
+      ],
+      "component_id": "shell-0053-ab727f7cc439",
+      "fingerprint_sha256": "ab727f7cc43926f3e44bef88f6be0ca076e1288ea60a52e29adffb46c4dd2288",
+      "kind": "shell",
+      "surface_area_mm2": 16054.41283,
+      "topology": {
+        "edges": 168,
+        "faces": 62,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 108
+      },
+      "valid": true,
+      "volume_mm3": 16054.41283
+    },
+    {
+      "bbox_max_mm": [
+        -24.869984,
+        -64.991212,
+        -9.282412
+      ],
+      "bbox_min_mm": [
+        -29.057933,
+        -68.811212,
+        -10.115471
+      ],
+      "bbox_size_mm": [
+        4.187949,
+        3.82,
+        0.833059
+      ],
+      "center_mm": [
+        -27.512281,
+        -66.793607,
+        -9.808013
+      ],
+      "component_id": "shell-0054-af58ab6fedb0",
+      "fingerprint_sha256": "af58ab6fedb0e270ca3fa8661b3b7649f7d132c8d9dcf50ca4434f3feb85844e",
+      "kind": "shell",
+      "surface_area_mm2": 9.147655,
+      "topology": {
+        "edges": 24,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 24
+      },
+      "valid": true,
+      "volume_mm3": 9.147655
+    },
+    {
+      "bbox_max_mm": [
+        -19.304187,
+        -68.436143,
+        -26.538465
+      ],
+      "bbox_min_mm": [
+        -19.574022,
+        -68.771829,
+        -26.947874
+      ],
+      "bbox_size_mm": [
+        0.269834,
+        0.335686,
+        0.409409
+      ],
+      "center_mm": [
+        -19.439104,
+        -68.603986,
+        -26.743169
+      ],
+      "component_id": "shell-0055-b17409312567",
+      "fingerprint_sha256": "b17409312567faf004fd94a9e7a628b49ffc580955d78f5d252e72e644f2b128",
+      "kind": "shell",
+      "surface_area_mm2": 0.101055,
+      "topology": {
+        "edges": 4,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 4
+      },
+      "valid": true,
+      "volume_mm3": 0.101055
+    },
+    {
+      "bbox_max_mm": [
+        33.5,
+        3.0,
+        1.5
+      ],
+      "bbox_min_mm": [
+        30.5,
+        3.0,
+        -1.5
+      ],
+      "bbox_size_mm": [
+        3.0,
+        0.0,
+        3.0
+      ],
+      "center_mm": [
+        32.0,
+        3.0,
+        0.0
+      ],
+      "component_id": "shell-0056-b296eeaf1d5c",
+      "fingerprint_sha256": "b296eeaf1d5c1eebdd1250e70ffc46c503b5f6f2dce150cd9691f7996579679c",
+      "kind": "shell",
+      "surface_area_mm2": 7.068583,
+      "topology": {
+        "edges": 2,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 2
+      },
+      "valid": true,
+      "volume_mm3": 7.068583
+    },
+    {
+      "bbox_max_mm": [
+        35.0,
+        14.0,
+        35.0
+      ],
+      "bbox_min_mm": [
+        -35.0,
+        -4.0,
+        -35.0
+      ],
+      "bbox_size_mm": [
+        70.0,
+        18.0,
+        70.0
+      ],
+      "center_mm": [
+        0.0,
+        5.231505,
+        0.0
+      ],
+      "component_id": "shell-0057-b29bfa31f6f4",
+      "fingerprint_sha256": "b29bfa31f6f41d260fd511c6325540d88f7b25fd29d05471117baea55015397c",
+      "kind": "shell",
+      "surface_area_mm2": 7916.686925,
+      "topology": {
+        "edges": 256,
+        "faces": 47,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 212
+      },
+      "valid": true,
+      "volume_mm3": 7916.686925
+    },
+    {
+      "bbox_max_mm": [
+        -20.291989,
+        -64.991212,
+        10.621259
+      ],
+      "bbox_min_mm": [
+        -33.632545,
+        -64.991212,
+        -3.504985
+      ],
+      "bbox_size_mm": [
+        13.340556,
+        0.0,
+        14.126244
+      ],
+      "center_mm": [
+        -26.962267,
+        -64.991212,
+        3.558137
+      ],
+      "component_id": "shell-0058-b7124e620986",
+      "fingerprint_sha256": "b7124e62098643568e5b0e8be85c76a4301945849e9131986c34318ebff11d52",
+      "kind": "shell",
+      "surface_area_mm2": 142.304302,
+      "topology": {
+        "edges": 8,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 8
+      },
+      "valid": true,
+      "volume_mm3": 142.304302
+    },
+    {
+      "bbox_max_mm": [
+        29.447028,
+        7.0,
+        -14.938247
+      ],
+      "bbox_min_mm": [
+        23.767028,
+        4.0,
+        -20.618247
+      ],
+      "bbox_size_mm": [
+        5.68,
+        3.0,
+        5.68
+      ],
+      "center_mm": [
+        26.590551,
+        5.636377,
+        -17.744837
+      ],
+      "component_id": "shell-0059-b777a2f96ee0",
+      "fingerprint_sha256": "b777a2f96ee04855189f256c145db2a78dde8e2ef355ed734256a63a8d95fcd6",
+      "kind": "shell",
+      "surface_area_mm2": 103.162663,
+      "topology": {
+        "edges": 25,
+        "faces": 9,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 18
+      },
+      "valid": true,
+      "volume_mm3": 103.162663
+    },
+    {
+      "bbox_max_mm": [
+        -14.979375,
+        -64.991212,
+        -23.698358
+      ],
+      "bbox_min_mm": [
+        -15.812434,
+        -68.811212,
+        -27.886307
+      ],
+      "bbox_size_mm": [
+        0.833059,
+        3.82,
+        4.187949
+      ],
+      "center_mm": [
+        -15.286833,
+        -66.793607,
+        -26.340656
+      ],
+      "component_id": "shell-0060-bb0d045ee669",
+      "fingerprint_sha256": "bb0d045ee669d023a276e48ab5c03da0f6be25192b57c2effa5297a7f2d46fa2",
+      "kind": "shell",
+      "surface_area_mm2": 9.147655,
+      "topology": {
+        "edges": 24,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 24
+      },
+      "valid": true,
+      "volume_mm3": 9.147655
+    },
+    {
+      "bbox_max_mm": [
+        -23.805736,
+        -64.991212,
+        -8.944041
+      ],
+      "bbox_min_mm": [
+        -29.105625,
+        -69.121212,
+        -15.461747
+      ],
+      "bbox_size_mm": [
+        5.299889,
+        4.13,
+        6.517706
+      ],
+      "center_mm": [
+        -26.217999,
+        -67.481165,
+        -12.183361
+      ],
+      "component_id": "shell-0061-bd2c7945fae8",
+      "fingerprint_sha256": "bd2c7945fae8b69920161157b6a201b9691eaf12b9a01a929e2fe5fe8c788eee",
+      "kind": "shell",
+      "surface_area_mm2": 155.950066,
+      "topology": {
+        "edges": 148,
+        "faces": 33,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 115
+      },
+      "valid": true,
+      "volume_mm3": 155.950066
+    },
+    {
+      "bbox_max_mm": [
+        -28.607035,
+        -61.686157,
+        6.917794
+      ],
+      "bbox_min_mm": [
+        -31.083016,
+        -68.653737,
+        5.423931
+      ],
+      "bbox_size_mm": [
+        2.475982,
+        6.96758,
+        1.493863
+      ],
+      "center_mm": [
+        -29.958335,
+        -65.464172,
+        6.297815
+      ],
+      "component_id": "shell-0062-c28011cd052a",
+      "fingerprint_sha256": "c28011cd052a0a02fcc77911d3af11cdbf0e7261c99dd25958a5d3a3f12f842a",
+      "kind": "shell",
+      "surface_area_mm2": 41.628212,
+      "topology": {
+        "edges": 22,
+        "faces": 7,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 16
+      },
+      "valid": true,
+      "volume_mm3": 41.628212
+    },
+    {
+      "bbox_max_mm": [
+        -26.484547,
+        -64.991212,
+        -11.67335
+      ],
+      "bbox_min_mm": [
+        -29.309206,
+        -68.779406,
+        -12.235226
+      ],
+      "bbox_size_mm": [
+        2.824659,
+        3.788195,
+        0.561876
+      ],
+      "center_mm": [
+        -27.549257,
+        -66.516669,
+        -11.873013
+      ],
+      "component_id": "shell-0063-d048cfe69fc6",
+      "fingerprint_sha256": "d048cfe69fc60eb4c284939e79ed0727cad5c98c72ca13d8635b64dcdb059fd1",
+      "kind": "shell",
+      "surface_area_mm2": 3.98151,
+      "topology": {
+        "edges": 30,
+        "faces": 2,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 29
+      },
+      "valid": true,
+      "volume_mm3": 3.98151
+    },
+    {
+      "bbox_max_mm": [
+        17.5,
+        16.5,
+        17.5
+      ],
+      "bbox_min_mm": [
+        -17.5,
+        -49.0,
+        -17.5
+      ],
+      "bbox_size_mm": [
+        35.0,
+        65.5,
+        35.0
+      ],
+      "center_mm": [
+        -0.0,
+        -4.304696,
+        0.0
+      ],
+      "component_id": "shell-0064-d1f7cf597927",
+      "fingerprint_sha256": "d1f7cf5979275cce802a38c6b58b3afb6c70e87ec89cd5e9f5dc5d7707ba4973",
+      "kind": "shell",
+      "surface_area_mm2": 3265.218958,
+      "topology": {
+        "edges": 100,
+        "faces": 37,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 64
+      },
+      "valid": true,
+      "volume_mm3": 3265.218958
+    },
+    {
+      "bbox_max_mm": [
+        -22.588923,
+        -61.686157,
+        2.412607
+      ],
+      "bbox_min_mm": [
+        -25.088923,
+        -68.653737,
+        -0.087393
+      ],
+      "bbox_size_mm": [
+        2.5,
+        6.96758,
+        2.5
+      ],
+      "center_mm": [
+        -23.838923,
+        -65.464172,
+        1.162607
+      ],
+      "component_id": "shell-0065-d3264d758a43",
+      "fingerprint_sha256": "d3264d758a43c7fc2e0f4f6b80ed5c07aa25ebfd64a9b5617a0c780149d924a3",
+      "kind": "shell",
+      "surface_area_mm2": 83.256424,
+      "topology": {
+        "edges": 42,
+        "faces": 14,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 28
+      },
+      "valid": true,
+      "volume_mm3": 83.256424
+    },
+    {
+      "bbox_max_mm": [
+        1.5,
+        3.0,
+        -30.5
+      ],
+      "bbox_min_mm": [
+        -1.5,
+        3.0,
+        -33.5
+      ],
+      "bbox_size_mm": [
+        3.0,
+        0.0,
+        3.0
+      ],
+      "center_mm": [
+        -0.0,
+        3.0,
+        -32.0
+      ],
+      "component_id": "shell-0066-da27d300766c",
+      "fingerprint_sha256": "da27d300766c1e7596d2ce0c5777dfbbe48579088e9bdda41c6c9a1912652748",
+      "kind": "shell",
+      "surface_area_mm2": 7.068583,
+      "topology": {
+        "edges": 2,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 2
+      },
+      "valid": true,
+      "volume_mm3": 7.068583
+    },
+    {
+      "bbox_max_mm": [
+        34.84,
+        -7.0,
+        2.84
+      ],
+      "bbox_min_mm": [
+        29.16,
+        -10.0,
+        -2.84
+      ],
+      "bbox_size_mm": [
+        5.68,
+        3.0,
+        5.68
+      ],
+      "center_mm": [
+        32.0,
+        -8.168959,
+        0.0
+      ],
+      "component_id": "shell-0067-dcc100604bf8",
+      "fingerprint_sha256": "dcc100604bf8321a1f5b72ecaca26cff2c70b6768926e546c551d34453a8c604",
+      "kind": "shell",
+      "surface_area_mm2": 68.692808,
+      "topology": {
+        "edges": 8,
+        "faces": 3,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 6
+      },
+      "valid": true,
+      "volume_mm3": 68.692808
+    },
+    {
+      "bbox_max_mm": [
+        -10.239314,
+        -67.891212,
+        16.580591
+      ],
+      "bbox_min_mm": [
+        -10.278333,
+        -69.091212,
+        16.384435
+      ],
+      "bbox_size_mm": [
+        0.039019,
+        1.2,
+        0.196157
+      ],
+      "center_mm": [
+        -10.258823,
+        -68.491212,
+        16.482513
+      ],
+      "component_id": "shell-0068-ddf626635a81",
+      "fingerprint_sha256": "ddf626635a815cdebea6c994d5376d6a0bb26637882f45c888eecb1b5b5a1a37",
+      "kind": "shell",
+      "surface_area_mm2": 0.24,
+      "topology": {
+        "edges": 4,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 4
+      },
+      "valid": true,
+      "volume_mm3": 0.24
+    },
+    {
+      "bbox_max_mm": [
+        -8.883432,
+        -66.391212,
+        20.844668
+      ],
+      "bbox_min_mm": [
+        -9.471903,
+        -68.391212,
+        20.727611
+      ],
+      "bbox_size_mm": [
+        0.58847,
+        2.0,
+        0.117057
+      ],
+      "center_mm": [
+        -9.144547,
+        -67.295868,
+        20.792728
+      ],
+      "component_id": "shell-0069-ddfdbfec2ccb",
+      "fingerprint_sha256": "ddfdbfec2ccbca34bae5f89ed47fa1d067f4b3db8d88f30d997c04d7023f0919",
+      "kind": "shell",
+      "surface_area_mm2": 0.983812,
+      "topology": {
+        "edges": 7,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 7
+      },
+      "valid": true,
+      "volume_mm3": 0.983812
+    },
+    {
+      "bbox_max_mm": [
+        -8.939999,
+        -64.991212,
+        24.460733
+      ],
+      "bbox_min_mm": [
+        -11.735233,
+        -69.191212,
+        23.708553
+      ],
+      "bbox_size_mm": [
+        2.795235,
+        4.2,
+        0.75218
+      ],
+      "center_mm": [
+        -10.775849,
+        -66.336234,
+        24.094494
+      ],
+      "component_id": "shell-0070-e5c921a2e30c",
+      "fingerprint_sha256": "e5c921a2e30c6ad1e5d644e0f3f4332ae862fc55c5297550716bc15471ffc31f",
+      "kind": "shell",
+      "surface_area_mm2": 3.037298,
+      "topology": {
+        "edges": 26,
+        "faces": 2,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 25
+      },
+      "valid": true,
+      "volume_mm3": 3.037298
+    },
+    {
+      "bbox_max_mm": [
+        -20.945485,
+        -64.991212,
+        -24.87493
+      ],
+      "bbox_min_mm": [
+        -21.778544,
+        -68.811212,
+        -29.062879
+      ],
+      "bbox_size_mm": [
+        0.833059,
+        3.82,
+        4.187949
+      ],
+      "center_mm": [
+        -21.252943,
+        -66.793607,
+        -27.517228
+      ],
+      "component_id": "shell-0071-ee3a368d5c7e",
+      "fingerprint_sha256": "ee3a368d5c7e7a69a3c9c64c5fa9d090697973e1b11d43d2ebe88d534a3c563d",
+      "kind": "shell",
+      "surface_area_mm2": 9.147655,
+      "topology": {
+        "edges": 24,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 24
+      },
+      "valid": true,
+      "volume_mm3": 9.147655
+    },
+    {
+      "bbox_max_mm": [
+        -25.014748,
+        -64.991212,
+        -2.866109
+      ],
+      "bbox_min_mm": [
+        -30.314636,
+        -69.121212,
+        -9.383815
+      ],
+      "bbox_size_mm": [
+        5.299889,
+        4.13,
+        6.517706
+      ],
+      "center_mm": [
+        -27.464091,
+        -67.428669,
+        -6.244006
+      ],
+      "component_id": "shell-0072-f714aa1b5d72",
+      "fingerprint_sha256": "f714aa1b5d72ee69ae29deb8ad0065015729edfa709fe176c52f6997abc4e252",
+      "kind": "shell",
+      "surface_area_mm2": 166.058103,
+      "topology": {
+        "edges": 150,
+        "faces": 31,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 119
+      },
+      "valid": true,
+      "volume_mm3": 166.058103
+    },
+    {
+      "bbox_max_mm": [
+        -22.188389,
+        -60.495605,
+        9.383947
+      ],
+      "bbox_min_mm": [
+        -32.749592,
+        -68.986157,
+        2.751218
+      ],
+      "bbox_size_mm": [
+        10.561203,
+        8.490552,
+        6.632729
+      ],
+      "center_mm": [
+        -27.556499,
+        -65.272342,
+        6.111521
+      ],
+      "component_id": "shell-0073-f95f54dbdd42",
+      "fingerprint_sha256": "f95f54dbdd427d7157ffb6d4ab0a61c5a22d51a619fc6a95fdd1bc77ad391734",
+      "kind": "shell",
+      "surface_area_mm2": 424.802763,
+      "topology": {
+        "edges": 78,
+        "faces": 17,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 62
+      },
+      "valid": true,
+      "volume_mm3": 424.802763
+    },
+    {
+      "bbox_max_mm": [
+        -29.16,
+        -7.0,
+        2.84
+      ],
+      "bbox_min_mm": [
+        -34.84,
+        -10.0,
+        -2.84
+      ],
+      "bbox_size_mm": [
+        5.68,
+        3.0,
+        5.68
+      ],
+      "center_mm": [
+        -32.0,
+        -8.168959,
+        -0.0
+      ],
+      "component_id": "shell-0074-fa97592a1986",
+      "fingerprint_sha256": "fa97592a19863bde807c6a63bc9be16e07dc9e336bf9da1bff8e705067e0ff5f",
+      "kind": "shell",
+      "surface_area_mm2": 68.692808,
+      "topology": {
+        "edges": 8,
+        "faces": 3,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 6
+      },
+      "valid": true,
+      "volume_mm3": 68.692808
+    },
+    {
+      "bbox_max_mm": [
+        -17.59975,
+        -64.991212,
+        -26.245624
+      ],
+      "bbox_min_mm": [
+        -18.357783,
+        -68.779406,
+        -29.109301
+      ],
+      "bbox_size_mm": [
+        0.758033,
+        3.788195,
+        2.863678
+      ],
+      "center_mm": [
+        -18.05105,
+        -66.475028,
+        -27.314077
+      ],
+      "component_id": "shell-0075-fffc7926c481",
+      "fingerprint_sha256": "fffc7926c4818c3070beb8525bdb37c905fa9856ccc1a1bc70dd95e1665037c7",
+      "kind": "shell",
+      "surface_area_mm2": 7.48943,
+      "topology": {
+        "edges": 56,
+        "faces": 3,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 54
+      },
+      "valid": true,
+      "volume_mm3": 7.48943
+    }
+  ],
+  "housing_member_identified": false,
+  "images": {
+    "largest_component_sheet": {
+      "path": "generated/myactuator/cad/flattened_review_packets/step-016c88381bff534ed534/largest-component-sheet.png",
+      "sha256": "b7bfaff8cf745ff0abb84faa220d9d53bfc725f4630e1909475e7142bd0a2158"
+    },
+    "overview": {
+      "path": "generated/myactuator/cad/flattened_review_packets/step-016c88381bff534ed534/overview.png",
+      "sha256": "c0d5c1cdafe46574747e1970ecc0ebec870e4e89640805b5c49c9820b95d4b77"
+    }
+  },
+  "joint_axis_identified": false,
+  "model": "CEM-45",
+  "output_member_identified": false,
+  "partition_disposition": "blocked_shell_only_re_source_or_reviewed_healing_required",
+  "representative_component_ids": [
+    "shell-0053-ab727f7cc439",
+    "shell-0012-2b92c0f5082b",
+    "shell-0057-b29bfa31f6f4",
+    "shell-0031-59c20de7e77a",
+    "shell-0064-d1f7cf597927",
+    "shell-0002-065ac427b1f7",
+    "shell-0050-9aa7f3274f18",
+    "shell-0013-2ba922406fa0",
+    "shell-0041-86a2f62be1fc",
+    "shell-0039-7c1d8a1d00c6",
+    "shell-0073-f95f54dbdd42",
+    "shell-0027-42353ee966f9"
+  ],
+  "review_status": "candidate_partition_only",
+  "schema_version": "myactuator-flattened-partition-packet/1",
+  "series": "CEM",
+  "simulation_supported": false,
+  "stable_component_ids_are_semantic": false,
+  "step_sha256": "50a4db623d01704793c55c5ad57baab1108b705e989eaa5ee59c65acdb0a585d",
+  "variant_id": "step-016c88381bff534ed534",
+  "vendor_relative_path": "CEM/CEM-45/vendor/CEM-45-251014/2D3D/CEM-45-3D.STEP"
+}

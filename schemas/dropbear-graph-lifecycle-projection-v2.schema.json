@@ -1,0 +1,288 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.org/schemas/dropbear-graph-lifecycle-projection-v2.schema.json",
+  "title": "Lifecycle-aware Dropbear graph consumer projection V2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "view_kind",
+    "authority",
+    "subject",
+    "lifecycle",
+    "graph_summary",
+    "blockers",
+    "outputs",
+    "support_granted",
+    "physical_motion_authority",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": { "const": "dropbear-graph-lifecycle-projection/2" },
+    "artifact_id": {
+      "type": "string",
+      "pattern": "^dropbear-graph-lifecycle-projection-(host|ros|simulator|ui)$"
+    },
+    "view_kind": { "enum": ["host", "ros", "simulator", "ui"] },
+    "authority": { "const": "derived_graph_projection_only" },
+    "subject": { "$ref": "#/$defs/subject" },
+    "lifecycle": { "$ref": "#/$defs/lifecycle" },
+    "graph_summary": { "$ref": "#/$defs/graphSummary" },
+    "blockers": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "outputs": {
+      "oneOf": [
+        { "$ref": "#/$defs/hostOutputs" },
+        { "$ref": "#/$defs/rosOutputs" },
+        { "$ref": "#/$defs/simulatorOutputs" },
+        { "$ref": "#/$defs/uiOutputs" }
+      ]
+    },
+    "support_granted": { "const": false },
+    "physical_motion_authority": { "const": false },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record_sha256"],
+      "properties": {
+        "record_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "view_kind": { "const": "host" } } },
+      "then": {
+        "properties": {
+          "artifact_id": {
+            "const": "dropbear-graph-lifecycle-projection-host"
+          },
+          "outputs": { "$ref": "#/$defs/hostOutputs" }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "view_kind": { "const": "ros" } } },
+      "then": {
+        "properties": {
+          "artifact_id": {
+            "const": "dropbear-graph-lifecycle-projection-ros"
+          },
+          "outputs": { "$ref": "#/$defs/rosOutputs" }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "view_kind": { "const": "simulator" } } },
+      "then": {
+        "properties": {
+          "artifact_id": {
+            "const": "dropbear-graph-lifecycle-projection-simulator"
+          },
+          "outputs": { "$ref": "#/$defs/simulatorOutputs" }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "view_kind": { "const": "ui" } } },
+      "then": {
+        "properties": {
+          "artifact_id": {
+            "const": "dropbear-graph-lifecycle-projection-ui"
+          },
+          "outputs": { "$ref": "#/$defs/uiOutputs" }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "text": { "type": "string", "minLength": 1 },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "idArray": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_registry_generation_sha256",
+        "canonical_configuration_digest",
+        "graph_registry_path",
+        "graph_registry_sha256",
+        "graph_registry_generation_sha256",
+        "active_source_submission_id",
+        "active_graph_submission_id",
+        "active_graph_decision_id",
+        "active_graph_decision_sha256"
+      ],
+      "properties": {
+        "source_registry_generation_sha256": { "$ref": "#/$defs/sha256" },
+        "canonical_configuration_digest": { "$ref": "#/$defs/sha256" },
+        "graph_registry_path": {
+          "const": "generated/dropbear_graph_registry_v2/registry.json"
+        },
+        "graph_registry_sha256": { "$ref": "#/$defs/sha256" },
+        "graph_registry_generation_sha256": { "$ref": "#/$defs/sha256" },
+        "active_source_submission_id": {
+          "type": ["string", "null"],
+          "pattern": "^sourcesubmission-[0-9a-f]{20}$"
+        },
+        "active_graph_submission_id": {
+          "type": ["string", "null"],
+          "pattern": "^graphsubmission-[0-9a-f]{20}$"
+        },
+        "active_graph_decision_id": {
+          "type": ["string", "null"],
+          "pattern": "^graphv2decision-[0-9a-f]{20}$"
+        },
+        "active_graph_decision_sha256": {
+          "anyOf": [{ "$ref": "#/$defs/sha256" }, { "type": "null" }]
+        }
+      }
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "submitted_count",
+        "accepted_count",
+        "rejected_count",
+        "revoked_count",
+        "superseded_count"
+      ],
+      "properties": {
+        "submitted_count": { "type": "integer", "minimum": 0 },
+        "accepted_count": { "type": "integer", "minimum": 0, "maximum": 1 },
+        "rejected_count": { "type": "integer", "minimum": 0 },
+        "revoked_count": { "type": "integer", "minimum": 0 },
+        "superseded_count": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "lifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_active_state",
+        "source_counts",
+        "graph_active_state",
+        "graph_counts"
+      ],
+      "properties": {
+        "source_active_state": { "enum": ["absent", "accepted"] },
+        "source_counts": { "$ref": "#/$defs/counts" },
+        "graph_active_state": { "enum": ["absent", "accepted"] },
+        "graph_counts": { "$ref": "#/$defs/counts" }
+      }
+    },
+    "graphSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonical_graph_count",
+        "frame_count",
+        "link_count",
+        "joint_count",
+        "coordinate_count",
+        "independent_coordinate_count",
+        "coupling_count",
+        "closure_count",
+        "actuator_mapping_count",
+        "ros_mapping_count"
+      ],
+      "properties": {
+        "canonical_graph_count": { "type": "integer", "minimum": 0, "maximum": 1 },
+        "frame_count": { "type": "integer", "minimum": 0 },
+        "link_count": { "type": "integer", "minimum": 0 },
+        "joint_count": { "type": "integer", "minimum": 0 },
+        "coordinate_count": { "type": "integer", "minimum": 0 },
+        "independent_coordinate_count": { "type": "integer", "minimum": 0 },
+        "coupling_count": { "type": "integer", "minimum": 0 },
+        "closure_count": { "type": "integer", "minimum": 0 },
+        "actuator_mapping_count": { "type": "integer", "minimum": 0, "maximum": 12 },
+        "ros_mapping_count": { "type": "integer", "minimum": 0, "maximum": 12 }
+      }
+    },
+    "hostOutputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status_only",
+        "frame_ids",
+        "actuator_ids",
+        "command_coordinate_ids",
+        "command_handle_count"
+      ],
+      "properties": {
+        "status_only": { "type": "boolean" },
+        "frame_ids": { "$ref": "#/$defs/idArray" },
+        "actuator_ids": { "$ref": "#/$defs/idArray" },
+        "command_coordinate_ids": { "$ref": "#/$defs/idArray" },
+        "command_handle_count": { "const": 0 }
+      }
+    },
+    "rosOutputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status_only",
+        "ros_joint_names",
+        "mapped_coordinate_ids",
+        "actuator_ids",
+        "materialized_urdf_fragment_count"
+      ],
+      "properties": {
+        "status_only": { "type": "boolean" },
+        "ros_joint_names": { "$ref": "#/$defs/idArray" },
+        "mapped_coordinate_ids": { "$ref": "#/$defs/idArray" },
+        "actuator_ids": { "$ref": "#/$defs/idArray" },
+        "materialized_urdf_fragment_count": { "const": 0 }
+      }
+    },
+    "simulatorOutputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status_only",
+        "authoritative_graph_ids",
+        "coupling_ids",
+        "closure_ids",
+        "physical_plant_count"
+      ],
+      "properties": {
+        "status_only": { "type": "boolean" },
+        "authoritative_graph_ids": { "$ref": "#/$defs/idArray" },
+        "coupling_ids": { "$ref": "#/$defs/idArray" },
+        "closure_ids": { "$ref": "#/$defs/idArray" },
+        "physical_plant_count": { "const": 0 }
+      }
+    },
+    "uiOutputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status_only",
+        "canonical_graph_count",
+        "actuator_mapping_count",
+        "ros_mapping_count",
+        "revoked_count",
+        "superseded_count",
+        "exposed_local_path_count"
+      ],
+      "properties": {
+        "status_only": { "type": "boolean" },
+        "canonical_graph_count": { "type": "integer", "minimum": 0, "maximum": 1 },
+        "actuator_mapping_count": { "type": "integer", "minimum": 0, "maximum": 12 },
+        "ros_mapping_count": { "type": "integer", "minimum": 0, "maximum": 12 },
+        "revoked_count": { "type": "integer", "minimum": 0 },
+        "superseded_count": { "type": "integer", "minimum": 0 },
+        "exposed_local_path_count": { "const": 0 }
+      }
+    }
+  }
+}

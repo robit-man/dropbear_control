@@ -1,0 +1,179 @@
+{
+  "accepted_asset": false,
+  "articulation": {
+    "housing_fixed": true,
+    "output_only_rigid_rotation": true,
+    "poses": [
+      {
+        "angle_degrees": -30.0,
+        "max_vertex_deviation_mm": 0.001,
+        "output_centroid_mm": [
+          0.0,
+          -0.0,
+          -1.078649995
+        ],
+        "rigid_rotation_matches": true,
+        "triangles": 109818
+      },
+      {
+        "angle_degrees": 0.0,
+        "max_vertex_deviation_mm": 0.0,
+        "output_centroid_mm": [
+          0.0,
+          0.0,
+          -1.078649995
+        ],
+        "rigid_rotation_matches": true,
+        "triangles": 109818
+      },
+      {
+        "angle_degrees": 30.0,
+        "max_vertex_deviation_mm": 0.001,
+        "output_centroid_mm": [
+          0.0,
+          0.0,
+          -1.078649995
+        ],
+        "rigid_rotation_matches": true,
+        "triangles": 109818
+      }
+    ],
+    "vertex_comparison_tolerance_mm": 0.002
+  },
+  "artifacts": {
+    "collision_glb": {
+      "bytes": 31447008,
+      "coordinate_abs_max_m": 0.0765,
+      "meshes": 1,
+      "nodes": 2,
+      "path": "generated/myactuator/cad/candidate_exports/step-e7d99e7e0d9683017c1a/collision-zero-candidate.glb",
+      "sha256": "799db60ab988a17a797d8837db1018a760020e622a2e2f30e299ca21735cf4b5"
+    },
+    "housing_glb": {
+      "bytes": 24280276,
+      "coordinate_abs_max_m": 0.0765,
+      "meshes": 1,
+      "nodes": 2,
+      "path": "generated/myactuator/cad/candidate_exports/step-e7d99e7e0d9683017c1a/housing-candidate.glb",
+      "sha256": "1e18c14f49113d5d831b56a5c35e129420c6e443d599867154b7dffc7241868e"
+    },
+    "housing_step": {
+      "bytes": 7594269,
+      "path": "generated/myactuator/cad/candidate_exports/step-e7d99e7e0d9683017c1a/housing-candidate.step",
+      "sha256": "c9f635862b70bbf58af79c576d9b08ce9fb7e3425b7bdda134ae28b79d79727c"
+    },
+    "output_glb": {
+      "bytes": 7230328,
+      "coordinate_abs_max_m": 0.063,
+      "meshes": 1,
+      "nodes": 2,
+      "path": "generated/myactuator/cad/candidate_exports/step-e7d99e7e0d9683017c1a/output-candidate.glb",
+      "sha256": "a801cec4a342c325adb833ecbedbaa80dc6b03362913870d195aff836006a5b5"
+    },
+    "output_step": {
+      "bytes": 1288188,
+      "path": "generated/myactuator/cad/candidate_exports/step-e7d99e7e0d9683017c1a/output-candidate.step",
+      "sha256": "26377e9c94400baee86e34ed2e8b328bf560b4b4bb6afcbe1f439cb3391773cb"
+    },
+    "pose_images": [
+      {
+        "bytes": 145557,
+        "path": "generated/myactuator/cad/candidate_exports/step-e7d99e7e0d9683017c1a/pose--30deg.png",
+        "sha256": "5aa40334696ebc6c3d2b34606606354ccb57b32a34a9b06893bfccbd0c13a739"
+      },
+      {
+        "bytes": 145377,
+        "path": "generated/myactuator/cad/candidate_exports/step-e7d99e7e0d9683017c1a/pose-+0deg.png",
+        "sha256": "4605d8d3bef3e9dd059390fba93200c64ae84ffd8c91d793c058554fbe632aed"
+      },
+      {
+        "bytes": 145700,
+        "path": "generated/myactuator/cad/candidate_exports/step-e7d99e7e0d9683017c1a/pose-+30deg.png",
+        "sha256": "0d0d35e4231ae8401e8f27a06536ac08f70f65e77299a9431400bae4b0d899d4"
+      }
+    ]
+  },
+  "canonical_joint": {
+    "axis_unit": [
+      0.0,
+      0.0,
+      1.0
+    ],
+    "origin_m": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "positive_direction": "right-hand rotation about canonical +Z; physical motor/encoder sign unresolved",
+    "zero_definition": "exact vendor STEP assembly placement under the candidate partition"
+  },
+  "evidence_class": "offline-real-cad-candidate-not-reviewed",
+  "geometry": {
+    "housing_step_roundtrip_relative_volume_error": 0.0,
+    "housing_step_roundtrip_valid_leaves": 12,
+    "housing_triangles": 314848,
+    "housing_volume_mm3": 238773.287053671,
+    "output_step_roundtrip_relative_volume_error": 0.0,
+    "output_step_roundtrip_valid_leaves": 6,
+    "output_triangles": 109818,
+    "output_volume_mm3": 39630.790246719
+  },
+  "housing_occurrences": [
+    "NAUO1",
+    "NAUO2",
+    "NAUO4",
+    "NAUO6",
+    "NAUO7",
+    "NAUO8",
+    "NAUO9",
+    "NAUO10",
+    "NAUO11",
+    "NAUO12",
+    "NAUO13",
+    "NAUO18"
+  ],
+  "hypothesis_path": "assets/myactuator/cad_hypotheses/x12-320-step-e7d99e7e0d9683017c1a.json",
+  "hypothesis_sha256": "bc354162c0654fec7a0c9cf1e9ce0a61bf2c9a730684a30875ddfb6ec929a0b1",
+  "inspection_sha256": "f898802c65256c33836358af826e27462660e41975422c272b9f85a2f4acc3f9",
+  "model": "X12-320",
+  "output_occurrences": [
+    "NAUO3",
+    "NAUO5",
+    "NAUO14",
+    "NAUO15",
+    "NAUO16",
+    "NAUO17"
+  ],
+  "schema_version": "myactuator-cad-candidate-export/1",
+  "semantic_review_complete": false,
+  "series": "RMD-X",
+  "source_to_canonical": [
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    -1.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0
+  ],
+  "step_sha256": "9b1710aef09916c8da02b4e6b750da6bbfe2ba44cad6ba03cd1b53e3858e5eea",
+  "support_granted": false,
+  "toolchain_lock_sha256": "46b5e4e568fbdd31ea0cb4614add55c33d16873337d50350371b1e53a22ea0fc",
+  "unresolved_questions": [
+    "Confirm whether NAUO4 and its eight M3 fasteners are stationary housing geometry or co-rotate with the output.",
+    "Confirm whether NAUO14 through NAUO17 and NAUO5 co-rotate with the externally accessible output.",
+    "Confirm the exact output reference plane and therefore the source-axis origin rather than assuming source Y equals zero.",
+    "Confirm the physical encoder-positive direction separately from the geometry-only right-hand +Z simulator convention.",
+    "Confirm the hypothesis for this exact no-brake/brake/package selector before merging any duplicate or sibling source."
+  ],
+  "variant_id": "step-e7d99e7e0d9683017c1a"
+}

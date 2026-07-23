@@ -1,0 +1,226 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.org/schemas/dropbear-graph-decision.schema.json",
+  "title": "Independent reviewed Dropbear canonical graph decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "record_state", "record_revision", "decision_id", "supersedes_decision_id", "subject", "source_authority", "reviewer", "disposition", "graph", "question_responses", "decision_complete", "canonical_graph_admissible", "support_granted", "physical_motion_authority", "integrity"],
+  "properties": {
+    "schema_version": { "const": "dropbear-graph-decision/1" },
+    "record_state": { "enum": ["draft", "submitted"] },
+    "record_revision": { "const": 1 },
+    "decision_id": { "type": "string", "pattern": "^graphdecision-[0-9a-f]{20}$" },
+    "supersedes_decision_id": { "type": ["string", "null"], "pattern": "^graphdecision-[0-9a-f]{20}$" },
+    "subject": { "$ref": "#/$defs/subject" },
+    "source_authority": { "$ref": "#/$defs/sourceAuthority" },
+    "reviewer": { "$ref": "#/$defs/reviewer" },
+    "disposition": { "enum": [null, "accept_graph", "needs_more_evidence", "reject_candidate_graph"] },
+    "graph": { "$ref": "#/$defs/graph" },
+    "question_responses": {
+      "type": "array", "minItems": 161, "maxItems": 161,
+      "items": { "$ref": "#/$defs/questionResponse" }
+    },
+    "decision_complete": { "type": "boolean" },
+    "canonical_graph_admissible": { "type": "boolean" },
+    "support_granted": { "const": false },
+    "physical_motion_authority": { "const": false },
+    "integrity": {
+      "type": "object", "additionalProperties": false, "required": ["record_sha256"],
+      "properties": { "record_sha256": { "$ref": "#/$defs/sha256" } }
+    }
+  },
+  "$defs": {
+    "text": { "type": "string", "minLength": 1 },
+    "nullableText": { "type": ["string", "null"], "minLength": 1 },
+    "sha1": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]{2,127}$" },
+    "refs": {
+      "type": "array", "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1, "maxLength": 1024 }
+    },
+    "vec3": {
+      "type": "array", "minItems": 3, "maxItems": 3,
+      "items": { "type": "number" }
+    },
+    "nullableVec3": {
+      "anyOf": [{ "$ref": "#/$defs/vec3" }, { "type": "null" }]
+    },
+    "subject": {
+      "type": "object", "additionalProperties": false,
+      "required": ["repository_commit", "repository_tree_id", "inventory_path", "inventory_sha256", "inventory_schema_version", "source_authority_status_path", "source_authority_status_sha256", "canonical_configuration_digest", "reconciliation_path", "reconciliation_sha256"],
+      "properties": {
+        "repository_commit": { "$ref": "#/$defs/sha1" },
+        "repository_tree_id": { "$ref": "#/$defs/sha1" },
+        "inventory_path": { "const": "generated/dropbear_description/inventory.json" },
+        "inventory_sha256": { "$ref": "#/$defs/sha256" },
+        "inventory_schema_version": { "const": "dropbear-description-inventory/1" },
+        "source_authority_status_path": { "const": "generated/dropbear_source_authority/status.json" },
+        "source_authority_status_sha256": { "$ref": "#/$defs/sha256" },
+        "canonical_configuration_digest": { "$ref": "#/$defs/sha256" },
+        "reconciliation_path": { "const": "generated/dropbear_reconciliation/reconciliation.json" },
+        "reconciliation_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "sourceAuthority": {
+      "type": "object", "additionalProperties": false,
+      "required": ["decision_id", "decision_sha256", "admitted"],
+      "properties": {
+        "decision_id": { "type": ["string", "null"], "pattern": "^sourceauthority-[0-9a-f]{20}$" },
+        "decision_sha256": { "anyOf": [{ "$ref": "#/$defs/sha256" }, { "type": "null" }] },
+        "admitted": { "type": "boolean" }
+      }
+    },
+    "reviewer": {
+      "type": "object", "additionalProperties": false,
+      "required": ["reviewer_id", "organization_or_team", "mechanical_graph_competence_attested", "independence_attested", "reviewed_at", "review_assertion", "signature_evidence_refs"],
+      "properties": {
+        "reviewer_id": { "$ref": "#/$defs/nullableText" },
+        "organization_or_team": { "$ref": "#/$defs/nullableText" },
+        "mechanical_graph_competence_attested": { "type": ["boolean", "null"] },
+        "independence_attested": { "type": ["boolean", "null"] },
+        "reviewed_at": { "type": ["string", "null"], "format": "date-time" },
+        "review_assertion": { "$ref": "#/$defs/nullableText" },
+        "signature_evidence_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "link": {
+      "type": "object", "additionalProperties": false,
+      "required": ["link_id", "canonical_name", "source_observation_refs"],
+      "properties": {
+        "link_id": { "$ref": "#/$defs/id" },
+        "canonical_name": { "$ref": "#/$defs/text" },
+        "source_observation_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "mimic": {
+      "type": "object", "additionalProperties": false,
+      "required": ["driver_joint_id", "multiplier", "offset_rad"],
+      "properties": {
+        "driver_joint_id": { "$ref": "#/$defs/id" },
+        "multiplier": { "type": "number" },
+        "offset_rad": { "type": "number" }
+      }
+    },
+    "joint": {
+      "type": "object", "additionalProperties": false,
+      "required": ["joint_id", "canonical_name", "joint_type", "activity", "parent_link_id", "child_link_id", "origin_xyz_m", "origin_rpy_rad", "axis_unit", "positive_direction", "zero_definition", "mimic", "source_observation_refs"],
+      "properties": {
+        "joint_id": { "$ref": "#/$defs/id" },
+        "canonical_name": { "$ref": "#/$defs/text" },
+        "joint_type": { "enum": ["fixed", "revolute", "continuous", "prismatic"] },
+        "activity": { "enum": ["active", "passive", "mimic", "coupled", "fixed", "simulator_only"] },
+        "parent_link_id": { "$ref": "#/$defs/id" },
+        "child_link_id": { "$ref": "#/$defs/id" },
+        "origin_xyz_m": { "$ref": "#/$defs/vec3" },
+        "origin_rpy_rad": { "$ref": "#/$defs/vec3" },
+        "axis_unit": { "$ref": "#/$defs/nullableVec3" },
+        "positive_direction": { "$ref": "#/$defs/nullableText" },
+        "zero_definition": { "$ref": "#/$defs/nullableText" },
+        "mimic": { "anyOf": [{ "$ref": "#/$defs/mimic" }, { "type": "null" }] },
+        "source_observation_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "constraint": {
+      "type": "object", "additionalProperties": false,
+      "required": ["constraint_id", "kind", "joint_ids", "independent_joint_ids", "equation", "solver_owner", "physical_counterpart_status", "source_observation_refs"],
+      "properties": {
+        "constraint_id": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["mimic", "coupling", "closed_chain", "simulator_only_closure"] },
+        "joint_ids": { "type": "array", "minItems": 2, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+        "independent_joint_ids": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+        "equation": { "$ref": "#/$defs/text" },
+        "solver_owner": { "enum": ["physical_mechanism", "rigid_body_simulator", "controller", "estimator"] },
+        "physical_counterpart_status": { "enum": ["reviewed", "missing", "not_applicable"] },
+        "source_observation_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "ownership": {
+      "type": "object", "additionalProperties": false,
+      "required": ["ownership_id", "command_owner", "state_policy_id", "diagnostic_bypass_allowed"],
+      "properties": {
+        "ownership_id": { "$ref": "#/$defs/id" },
+        "command_owner": { "$ref": "#/$defs/text" },
+        "state_policy_id": { "$ref": "#/$defs/text" },
+        "diagnostic_bypass_allowed": { "const": false }
+      }
+    },
+    "actuatorBinding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["actuator_id", "canonical_joint_name", "joint_ids", "command_coordinate_joint_id", "coupling_constraint_id", "ownership_id", "source_evidence_refs"],
+      "properties": {
+        "actuator_id": { "type": "string", "pattern": "^actuator-(left|right)-(hip-yaw|hip-roll|hip-pitch|knee|inner-calf|outer-calf)$" },
+        "canonical_joint_name": { "type": "string", "pattern": "^(left|right)_(hip_yaw|hip_roll|hip_pitch|knee|inner_calf|outer_calf)$" },
+        "joint_ids": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+        "command_coordinate_joint_id": { "$ref": "#/$defs/id" },
+        "coupling_constraint_id": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+        "ownership_id": { "$ref": "#/$defs/id" },
+        "source_evidence_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "observationBinding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["canonical_joint_name", "external_sensor_status", "external_sensor_id", "native_telemetry_status", "reconciliation_policy_status", "source_evidence_refs"],
+      "properties": {
+        "canonical_joint_name": { "type": "string", "pattern": "^(left|right)_(hip_yaw|hip_roll|hip_pitch|knee|inner_calf|outer_calf)$" },
+        "external_sensor_status": { "enum": ["unverified_observation", "mapped", "missing", "not_required"] },
+        "external_sensor_id": { "type": ["string", "null"], "minLength": 1 },
+        "native_telemetry_status": { "enum": ["required", "optional", "unknown", "not_required"] },
+        "reconciliation_policy_status": { "enum": ["reviewed", "missing"] },
+        "source_evidence_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "rosBinding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["canonical_joint_name", "status", "ros_joint_id", "rationale", "source_evidence_refs"],
+      "properties": {
+        "canonical_joint_name": { "type": "string", "pattern": "^(left|right)_(hip_yaw|hip_roll|hip_pitch|knee|inner_calf|outer_calf)$" },
+        "status": { "enum": ["mapped", "uncommanded", "passive"] },
+        "ros_joint_id": { "type": ["string", "null"], "minLength": 1 },
+        "rationale": { "$ref": "#/$defs/text" },
+        "source_evidence_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "dependencies": {
+      "type": "object", "additionalProperties": false,
+      "required": ["cad_binding_ids", "calibration_record_ids", "limit_snapshot_ids", "route_ids"],
+      "properties": {
+        "cad_binding_ids": { "$ref": "#/$defs/refs" },
+        "calibration_record_ids": { "$ref": "#/$defs/refs" },
+        "limit_snapshot_ids": { "$ref": "#/$defs/refs" },
+        "route_ids": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "graph": {
+      "type": "object", "additionalProperties": false,
+      "required": ["graph_id", "graph_revision", "base_link_id", "links", "joints", "constraints", "ownership", "actuator_bindings", "observation_bindings", "ros_command_bindings", "dependencies"],
+      "properties": {
+        "graph_id": { "type": "string", "pattern": "^dropbeargraph-[0-9a-f]{20}$" },
+        "graph_revision": { "const": 1 },
+        "base_link_id": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+        "links": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/link" } },
+        "joints": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/joint" } },
+        "constraints": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/constraint" } },
+        "ownership": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/ownership" } },
+        "actuator_bindings": { "type": "array", "maxItems": 12, "items": { "$ref": "#/$defs/actuatorBinding" } },
+        "observation_bindings": { "type": "array", "maxItems": 12, "items": { "$ref": "#/$defs/observationBinding" } },
+        "ros_command_bindings": { "type": "array", "maxItems": 12, "items": { "$ref": "#/$defs/rosBinding" } },
+        "dependencies": { "$ref": "#/$defs/dependencies" }
+      }
+    },
+    "questionResponse": {
+      "type": "object", "additionalProperties": false,
+      "required": ["question_id", "question_sha256", "kind", "question", "resolution", "answer", "evidence_refs", "graph_fact_ids"],
+      "properties": {
+        "question_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]+$" },
+        "question_sha256": { "$ref": "#/$defs/sha256" },
+        "kind": { "enum": ["actuator_mapping", "cardinality_and_coupling", "mimic_or_coupling", "gazebo_loop_closure_candidate"] },
+        "question": { "$ref": "#/$defs/text" },
+        "resolution": { "enum": ["unanswered", "resolved_as_graph_fact", "resolved_not_in_graph", "unresolved_needs_evidence"] },
+        "answer": { "$ref": "#/$defs/nullableText" },
+        "evidence_refs": { "$ref": "#/$defs/refs" },
+        "graph_fact_ids": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } }
+      }
+    }
+  }
+}

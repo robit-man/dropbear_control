@@ -1,0 +1,45 @@
+{
+  "active_source_facts": [],
+  "artifact_id": "myactuator-plant-candidate-decision-registry",
+  "authority": "independently_reviewed_candidate_fact_materialization_only",
+  "blockers": [
+    "reviewer_assignments_incomplete",
+    "no_accepted_candidate_decisions"
+  ],
+  "events": [],
+  "integrity": {
+    "record_sha256": "aaa02a2cf0a7b8abe0f17eed080099faca76c303789eea0dcd60e2ac4852f371"
+  },
+  "physical_motion_authority": false,
+  "registry_generation_sha256": "69b12f54960e817379ae375752cfb3b4ce6b00a390b074e3d4da978b13de8405",
+  "schema_version": "myactuator-plant-candidate-decision-registry/1",
+  "sources": {
+    "candidate_registry_artifact_id": "myactuator-plant-spec-candidate-registry",
+    "candidate_registry_path": "generated/myactuator/plant/spec_candidates/registry.json",
+    "candidate_registry_sha256": "4159e9582e22dda51248b6bd30c01d5d04bdd81ba65e116ee08b9dac9cf7dfa7",
+    "event_schema_sha256": "bb457201eaef1b655741ca026c9f2eeec180a1a47d6bacb8f50312f4c0cbc3a6",
+    "generator_sha256": "ff9a8a6317c0a93cbcc803b6f203808fdffca9c5ceec314f6e2c77c9ba15962f",
+    "reviewer_assignment_path": "assets/myactuator/reviewer_assignments.json",
+    "reviewer_assignment_revision": 1,
+    "reviewer_assignment_sha256": "c6f43d9aea143e65a0f4b30f37dc547fb22aed5ce9b6fd7c8fc541fb627bf9f1",
+    "reviewer_assignment_state": "draft",
+    "source_fact_schema_sha256": "befac102e7aba3fb6bd3d96bcd8fee63f1b8296f8f71fb68fdc839981185e837",
+    "submission_schema_sha256": "bf5fd1e4a80f1d41c47ce9feb7066b8186959dfb9cd6feebc58637a02e98da9f"
+  },
+  "submissions": [],
+  "summary": {
+    "accepted_count": 0,
+    "active_source_fact_count": 0,
+    "candidate_count": 531,
+    "deferred_count": 0,
+    "event_count": 0,
+    "model_with_active_source_fact_count": 0,
+    "rejected_count": 0,
+    "reviewer_assignment_complete": false,
+    "revoked_count": 0,
+    "submission_count": 0,
+    "submitted_count": 0,
+    "superseded_count": 0
+  },
+  "support_granted": false
+}

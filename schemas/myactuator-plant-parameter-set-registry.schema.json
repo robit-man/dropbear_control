@@ -1,0 +1,292 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.dev/schemas/myactuator-plant-parameter-set-registry.schema.json",
+  "title": "Deterministically assembled exact-model MYACTUATOR plant parameter sets",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "authority",
+    "sources",
+    "policy",
+    "registry_generation_sha256",
+    "models",
+    "parameter_sets",
+    "summary",
+    "support_granted",
+    "physical_motion_authority",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "myactuator-plant-parameter-set-registry/1"
+    },
+    "artifact_id": {
+      "const": "myactuator-plant-parameter-set-registry"
+    },
+    "authority": {
+      "const": "deterministic_reviewed_fact_and_applicability_assembly_only"
+    },
+    "sources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "catalog_sha256",
+        "protocol_applicability_registry_sha256",
+        "candidate_decision_registry_sha256",
+        "candidate_decision_registry_generation_sha256",
+        "source_fact_schema_sha256",
+        "plant_registry_schema_sha256",
+        "materializer_sha256",
+        "source_fact_file_sha256"
+      ],
+      "properties": {
+        "catalog_sha256": {"$ref": "#/$defs/sha256"},
+        "protocol_applicability_registry_sha256": {"$ref": "#/$defs/sha256"},
+        "candidate_decision_registry_sha256": {"$ref": "#/$defs/sha256"},
+        "candidate_decision_registry_generation_sha256": {"$ref": "#/$defs/sha256"},
+        "source_fact_schema_sha256": {"$ref": "#/$defs/sha256"},
+        "plant_registry_schema_sha256": {"$ref": "#/$defs/sha256"},
+        "materializer_sha256": {"$ref": "#/$defs/sha256"},
+        "source_fact_file_sha256": {
+          "type": "object",
+          "propertyNames": {"pattern": "^plantfact-[0-9a-f]{20}$"},
+          "additionalProperties": {"$ref": "#/$defs/sha256"}
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "exactly_one_active_fact_per_required_field",
+        "all_34_parameters_and_4_envelopes_required",
+        "parameter_observations_must_be_scalar",
+        "envelope_observations_must_be_ranges",
+        "bounded_uncertainty_required",
+        "operating_conditions_must_fit_selected_envelope",
+        "accepted_exact_protocol_applicability_required",
+        "no_family_default_or_manual_parameter_file",
+        "source_revocation_removes_materialization",
+        "assembly_never_grants_motor_support_or_motion"
+      ],
+      "properties": {
+        "exactly_one_active_fact_per_required_field": {"const": true},
+        "all_34_parameters_and_4_envelopes_required": {"const": true},
+        "parameter_observations_must_be_scalar": {"const": true},
+        "envelope_observations_must_be_ranges": {"const": true},
+        "bounded_uncertainty_required": {"const": true},
+        "operating_conditions_must_fit_selected_envelope": {"const": true},
+        "accepted_exact_protocol_applicability_required": {"const": true},
+        "no_family_default_or_manual_parameter_file": {"const": true},
+        "source_revocation_removes_materialization": {"const": true},
+        "assembly_never_grants_motor_support_or_motion": {"const": true}
+      }
+    },
+    "registry_generation_sha256": {"$ref": "#/$defs/sha256"},
+    "models": {
+      "type": "array",
+      "minItems": 44,
+      "maxItems": 44,
+      "items": {"$ref": "#/$defs/model"}
+    },
+    "parameter_sets": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/parameterSetEntry"}
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model_count",
+        "required_parameter_field_count",
+        "required_operating_envelope_field_count",
+        "active_source_fact_count",
+        "source_fact_complete_model_count",
+        "accepted_protocol_applicability_count",
+        "accepted_protocol_applicability_model_count",
+        "assembled_parameter_set_count",
+        "assembled_model_count",
+        "runtime_loadable_parameter_set_count",
+        "physically_correlated_parameter_set_count",
+        "supported_model_count"
+      ],
+      "properties": {
+        "model_count": {"const": 44},
+        "required_parameter_field_count": {"const": 34},
+        "required_operating_envelope_field_count": {"const": 4},
+        "active_source_fact_count": {"type": "integer", "minimum": 0},
+        "source_fact_complete_model_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 44
+        },
+        "accepted_protocol_applicability_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "accepted_protocol_applicability_model_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 44
+        },
+        "assembled_parameter_set_count": {"type": "integer", "minimum": 0},
+        "assembled_model_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 44
+        },
+        "runtime_loadable_parameter_set_count": {"const": 0},
+        "physically_correlated_parameter_set_count": {"const": 0},
+        "supported_model_count": {"const": 0}
+      }
+    },
+    "support_granted": {"const": false},
+    "physical_motion_authority": {"const": false},
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record_sha256"],
+      "properties": {
+        "record_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "idText": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model_key",
+        "series",
+        "model",
+        "package_revision",
+        "source_fact_ids",
+        "missing_field_ids",
+        "accepted_protocol_decision_ids",
+        "plant_ids",
+        "assembly_status",
+        "blockers",
+        "support_granted"
+      ],
+      "properties": {
+        "model_key": {
+          "type": "string",
+          "pattern": "^model-[0-9a-f]{20}$"
+        },
+        "series": {"type": "string", "minLength": 1},
+        "model": {"type": "string", "minLength": 1},
+        "package_revision": {"type": "string", "minLength": 1},
+        "source_fact_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^plantfact-[0-9a-f]{20}$"}
+        },
+        "missing_field_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*$"
+          }
+        },
+        "accepted_protocol_decision_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^protocoldecision-[0-9a-f]{20}$"
+          }
+        },
+        "plant_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^plant-[a-z0-9][a-z0-9-]*$"}
+        },
+        "assembly_status": {
+          "enum": ["blocked", "assembled_source_only"]
+        },
+        "blockers": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/idText"}
+        },
+        "support_granted": {"const": false}
+      }
+    },
+    "parameterSetEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "plant_id",
+        "parameter_set_path",
+        "parameter_set_sha256",
+        "model_key",
+        "accepted_protocol_decision_ids",
+        "source_fact_ids",
+        "applicability",
+        "runtime_loadable"
+      ],
+      "properties": {
+        "plant_id": {"type": "string", "pattern": "^plant-[a-z0-9][a-z0-9-]*$"},
+        "parameter_set_path": {
+          "type": "string",
+          "pattern": "^generated/myactuator/plant/parameter_sets/sets/plant-[a-z0-9][a-z0-9-]*\\.json$"
+        },
+        "parameter_set_sha256": {"$ref": "#/$defs/sha256"},
+        "model_key": {
+          "type": "string",
+          "pattern": "^model-[0-9a-f]{20}$"
+        },
+        "accepted_protocol_decision_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^protocoldecision-[0-9a-f]{20}$"
+          }
+        },
+        "source_fact_ids": {
+          "type": "array",
+          "minItems": 38,
+          "maxItems": 38,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^plantfact-[0-9a-f]{20}$"}
+        },
+        "runtime_loadable": {"const": false},
+        "applicability": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "series",
+            "model",
+            "hardware_revision",
+            "drive_firmware",
+            "protocol_version",
+            "transport",
+            "control_mode"
+          ],
+          "properties": {
+            "series": {"type": "string", "minLength": 1},
+            "model": {"type": "string", "minLength": 1},
+            "hardware_revision": {"type": "string", "minLength": 1},
+            "drive_firmware": {"type": "string", "minLength": 1},
+            "protocol_version": {"type": "string", "minLength": 1},
+            "transport": {"type": "string", "minLength": 1},
+            "control_mode": {"type": "string", "minLength": 1}
+          }
+        }
+      }
+    }
+  }
+}

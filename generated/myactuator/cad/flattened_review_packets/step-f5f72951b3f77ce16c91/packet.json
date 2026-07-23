@@ -1,0 +1,103 @@
+{
+  "component_count": 2,
+  "component_kind": "solid",
+  "components": [
+    {
+      "bbox_max_mm": [
+        19.0,
+        13.107157,
+        19.0
+      ],
+      "bbox_min_mm": [
+        -19.0,
+        -3.5,
+        -19.0
+      ],
+      "bbox_size_mm": [
+        38.0,
+        16.607157,
+        38.0
+      ],
+      "center_mm": [
+        0.001076,
+        4.272357,
+        -0.010675
+      ],
+      "component_id": "solid-0001-477020699072",
+      "fingerprint_sha256": "4770206990726eeff416c8c1d8815078df591b28fdef46b327ae4741d84b74f8",
+      "kind": "solid",
+      "surface_area_mm2": 4529.329507,
+      "topology": {
+        "edges": 3064,
+        "faces": 1121,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 2008
+      },
+      "valid": true,
+      "volume_mm3": 9667.310552
+    },
+    {
+      "bbox_max_mm": [
+        11.65,
+        15.55,
+        11.65
+      ],
+      "bbox_min_mm": [
+        -11.65,
+        -0.55,
+        -11.65
+      ],
+      "bbox_size_mm": [
+        23.3,
+        16.1,
+        23.3
+      ],
+      "center_mm": [
+        0.0,
+        7.5,
+        0.0
+      ],
+      "component_id": "solid-0002-81a9c9e28edb",
+      "fingerprint_sha256": "81a9c9e28edb8fde1d71fa1210e3f94270da7ba94bc1649e6221a494d4dd02de",
+      "kind": "solid",
+      "surface_area_mm2": 2416.370751,
+      "topology": {
+        "edges": 20,
+        "faces": 10,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 12
+      },
+      "valid": true,
+      "volume_mm3": 2764.277427
+    }
+  ],
+  "housing_member_identified": false,
+  "images": {
+    "largest_component_sheet": {
+      "path": "generated/myactuator/cad/flattened_review_packets/step-f5f72951b3f77ce16c91/largest-component-sheet.png",
+      "sha256": "c206adee77968e040de9a8fc19ca30359e9e894eb9284974944859cad7cc67ad"
+    },
+    "overview": {
+      "path": "generated/myactuator/cad/flattened_review_packets/step-f5f72951b3f77ce16c91/overview.png",
+      "sha256": "5eb7419bb1f2be932261b148141e0f235fb7a83f1e3f7b5607834925dbbc7ff4"
+    }
+  },
+  "joint_axis_identified": false,
+  "model": "FL-38-08",
+  "output_member_identified": false,
+  "partition_disposition": "candidate_disconnected_solids_manual_partition_required",
+  "representative_component_ids": [
+    "solid-0001-477020699072",
+    "solid-0002-81a9c9e28edb"
+  ],
+  "review_status": "candidate_partition_only",
+  "schema_version": "myactuator-flattened-partition-packet/1",
+  "series": "FL-FLO",
+  "simulation_supported": false,
+  "stable_component_ids_are_semantic": false,
+  "step_sha256": "f1abae74d6bf7cbb9a336c03066cd10bd1369019b78643384a2855b67fd82ea1",
+  "variant_id": "step-f5f72951b3f77ce16c91",
+  "vendor_relative_path": "FL-FLO/FL-38-08/vendor/FL-38-08-250403/FL-38-08.STEP"
+}

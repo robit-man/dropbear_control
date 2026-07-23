@@ -1,0 +1,567 @@
+{
+  "heuristic_selects_output": false,
+  "housing_member_identified": false,
+  "images": {
+    "member_sheet": {
+      "path": "generated/myactuator/cad/review_packets/step-a445ee72b425d35404f4/member-sheet.png",
+      "sha256": "7bfebd1b9f5070f1358e12e73ce1b0c3e0a02a9ce90ef871defff8e2861a4867"
+    },
+    "overview": {
+      "path": "generated/myactuator/cad/review_packets/step-a445ee72b425d35404f4/overview.png",
+      "sha256": "17da4ddef75b3ed9d4e42273797c89c8bc68118c803349267352ef6656b7e708"
+    }
+  },
+  "joint_axis_identified": false,
+  "members": [
+    {
+      "bbox_size_mm": [
+        55.0,
+        21.5,
+        55.0
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        -0.342567,
+        15.183053,
+        0.035851
+      ],
+      "occurrence": "NAUO1",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#14014",
+      "related_product_name": "8MT.034.008",
+      "same_product_occurrences": [
+        "NAUO1"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 7758.187747
+    },
+    {
+      "bbox_size_mm": [
+        55.000006,
+        41.0,
+        55.000006
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        0.000168,
+        31.269708,
+        -2.7e-05
+      ],
+      "occurrence": "NAUO2",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#12248",
+      "related_product_name": "XMT.105.003",
+      "same_product_occurrences": [
+        "NAUO2"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 14650.995093
+    },
+    {
+      "bbox_size_mm": [
+        54.688748,
+        8.0,
+        55.0
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        0.000236,
+        50.948887,
+        -0.000482
+      ],
+      "occurrence": "NAUO3",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#10878",
+      "related_product_name": "XMT.105.019",
+      "same_product_occurrences": [
+        "NAUO3"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 6398.575162
+    },
+    {
+      "bbox_size_mm": [
+        18.0,
+        4.7,
+        18.0
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        -0.0,
+        56.065048,
+        -0.0
+      ],
+      "occurrence": "NAUO4",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#16211",
+      "related_product_name": "XMT.105.027",
+      "same_product_occurrences": [
+        "NAUO4"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 525.660108
+    },
+    {
+      "bbox_size_mm": [
+        55.0,
+        12.0,
+        55.0
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        -0.080129,
+        -0.14591,
+        -1.03965
+      ],
+      "occurrence": "NAUO5",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#23339",
+      "related_product_name": "8MT.013.030",
+      "same_product_occurrences": [
+        "NAUO5"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 3837.779387
+    },
+    {
+      "bbox_size_mm": [
+        35.0,
+        8.5,
+        35.0
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        0.0,
+        53.635941,
+        -0.0
+      ],
+      "occurrence": "NAUO6",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#21549",
+      "related_product_name": "XMT.105.011_Default<\u6309\u52a0\u5de5>",
+      "same_product_occurrences": [
+        "NAUO6"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 5441.268542
+    },
+    {
+      "bbox_size_mm": [
+        5.5,
+        15.0,
+        5.5
+      ],
+      "candidate_terms": [
+        "screw"
+      ],
+      "center_mm": [
+        -10.771387,
+        48.64056,
+        22.005164
+      ],
+      "occurrence": "NAUO7",
+      "output_candidate_score": -8,
+      "product_entity_ref": "#9110",
+      "related_product_name": "GB_FASTENER_SCREWS_HSHCS M3X12-C_GB_FASTENER_SCREWS_HSHCS M3X12-C",
+      "same_product_occurrences": [
+        "NAUO7",
+        "NAUO8",
+        "NAUO9",
+        "NAUO10",
+        "NAUO11",
+        "NAUO12"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 147.328931
+    },
+    {
+      "bbox_size_mm": [
+        5.5,
+        15.0,
+        5.5
+      ],
+      "candidate_terms": [
+        "screw"
+      ],
+      "center_mm": [
+        13.671338,
+        48.64056,
+        20.330876
+      ],
+      "occurrence": "NAUO8",
+      "output_candidate_score": -8,
+      "product_entity_ref": "#9110",
+      "related_product_name": "GB_FASTENER_SCREWS_HSHCS M3X12-C_GB_FASTENER_SCREWS_HSHCS M3X12-C",
+      "same_product_occurrences": [
+        "NAUO7",
+        "NAUO8",
+        "NAUO9",
+        "NAUO10",
+        "NAUO11",
+        "NAUO12"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 147.328931
+    },
+    {
+      "bbox_size_mm": [
+        5.5,
+        15.0,
+        5.5
+      ],
+      "candidate_terms": [
+        "screw"
+      ],
+      "center_mm": [
+        24.442724,
+        48.64056,
+        -1.674287
+      ],
+      "occurrence": "NAUO9",
+      "output_candidate_score": -8,
+      "product_entity_ref": "#9110",
+      "related_product_name": "GB_FASTENER_SCREWS_HSHCS M3X12-C_GB_FASTENER_SCREWS_HSHCS M3X12-C",
+      "same_product_occurrences": [
+        "NAUO7",
+        "NAUO8",
+        "NAUO9",
+        "NAUO10",
+        "NAUO11",
+        "NAUO12"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 147.328931
+    },
+    {
+      "bbox_size_mm": [
+        5.5,
+        15.0,
+        5.5
+      ],
+      "candidate_terms": [
+        "screw"
+      ],
+      "center_mm": [
+        10.771387,
+        48.64056,
+        -22.005164
+      ],
+      "occurrence": "NAUO10",
+      "output_candidate_score": -8,
+      "product_entity_ref": "#9110",
+      "related_product_name": "GB_FASTENER_SCREWS_HSHCS M3X12-C_GB_FASTENER_SCREWS_HSHCS M3X12-C",
+      "same_product_occurrences": [
+        "NAUO7",
+        "NAUO8",
+        "NAUO9",
+        "NAUO10",
+        "NAUO11",
+        "NAUO12"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 147.328931
+    },
+    {
+      "bbox_size_mm": [
+        5.5,
+        15.0,
+        5.5
+      ],
+      "candidate_terms": [
+        "screw"
+      ],
+      "center_mm": [
+        -13.671338,
+        48.64056,
+        -20.330876
+      ],
+      "occurrence": "NAUO11",
+      "output_candidate_score": -8,
+      "product_entity_ref": "#9110",
+      "related_product_name": "GB_FASTENER_SCREWS_HSHCS M3X12-C_GB_FASTENER_SCREWS_HSHCS M3X12-C",
+      "same_product_occurrences": [
+        "NAUO7",
+        "NAUO8",
+        "NAUO9",
+        "NAUO10",
+        "NAUO11",
+        "NAUO12"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 147.328931
+    },
+    {
+      "bbox_size_mm": [
+        5.5,
+        15.0,
+        5.5
+      ],
+      "candidate_terms": [
+        "screw"
+      ],
+      "center_mm": [
+        -24.442724,
+        48.64056,
+        1.674287
+      ],
+      "occurrence": "NAUO12",
+      "output_candidate_score": -8,
+      "product_entity_ref": "#9110",
+      "related_product_name": "GB_FASTENER_SCREWS_HSHCS M3X12-C_GB_FASTENER_SCREWS_HSHCS M3X12-C",
+      "same_product_occurrences": [
+        "NAUO7",
+        "NAUO8",
+        "NAUO9",
+        "NAUO10",
+        "NAUO11",
+        "NAUO12"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 147.328931
+    },
+    {
+      "bbox_size_mm": [
+        4.0,
+        12.0,
+        4.0
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        24.442724,
+        1.929152,
+        -1.674287
+      ],
+      "occurrence": "NAUO13",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#1000",
+      "related_product_name": "M2X12",
+      "same_product_occurrences": [
+        "NAUO13",
+        "NAUO14"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 42.689521
+    },
+    {
+      "bbox_size_mm": [
+        4.0,
+        12.0,
+        4.0
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        -24.442724,
+        1.929152,
+        1.674287
+      ],
+      "occurrence": "NAUO14",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#1000",
+      "related_product_name": "M2X12",
+      "same_product_occurrences": [
+        "NAUO13",
+        "NAUO14"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 42.689521
+    },
+    {
+      "bbox_size_mm": [
+        4.175162,
+        4.0,
+        4.01115
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        25.589861,
+        13.1,
+        -1.752865
+      ],
+      "occurrence": "NAUO15",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#14625",
+      "related_product_name": "M2X4",
+      "same_product_occurrences": [
+        "NAUO15",
+        "NAUO16",
+        "NAUO17",
+        "NAUO18",
+        "NAUO19",
+        "NAUO20"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 17.556815
+    },
+    {
+      "bbox_size_mm": [
+        4.01115,
+        4.0,
+        4.175162
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        -1.752865,
+        13.1,
+        -25.589861
+      ],
+      "occurrence": "NAUO16",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#14625",
+      "related_product_name": "M2X4",
+      "same_product_occurrences": [
+        "NAUO15",
+        "NAUO16",
+        "NAUO17",
+        "NAUO18",
+        "NAUO19",
+        "NAUO20"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 17.556815
+    },
+    {
+      "bbox_size_mm": [
+        4.175162,
+        4.0,
+        4.01115
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        -25.589861,
+        13.1,
+        1.752865
+      ],
+      "occurrence": "NAUO17",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#14625",
+      "related_product_name": "M2X4",
+      "same_product_occurrences": [
+        "NAUO15",
+        "NAUO16",
+        "NAUO17",
+        "NAUO18",
+        "NAUO19",
+        "NAUO20"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 17.556815
+    },
+    {
+      "bbox_size_mm": [
+        4.01115,
+        4.0,
+        4.175162
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        1.752865,
+        13.1,
+        25.589861
+      ],
+      "occurrence": "NAUO18",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#14625",
+      "related_product_name": "M2X4",
+      "same_product_occurrences": [
+        "NAUO15",
+        "NAUO16",
+        "NAUO17",
+        "NAUO18",
+        "NAUO19",
+        "NAUO20"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 17.556815
+    },
+    {
+      "bbox_size_mm": [
+        4.0,
+        4.0,
+        4.0
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        0.0,
+        55.849825,
+        -6.0
+      ],
+      "occurrence": "NAUO19",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#14625",
+      "related_product_name": "M2X4",
+      "same_product_occurrences": [
+        "NAUO15",
+        "NAUO16",
+        "NAUO17",
+        "NAUO18",
+        "NAUO19",
+        "NAUO20"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 17.556815
+    },
+    {
+      "bbox_size_mm": [
+        4.0,
+        4.0,
+        4.0
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        -0.0,
+        55.849825,
+        6.0
+      ],
+      "occurrence": "NAUO20",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#14625",
+      "related_product_name": "M2X4",
+      "same_product_occurrences": [
+        "NAUO15",
+        "NAUO16",
+        "NAUO17",
+        "NAUO18",
+        "NAUO19",
+        "NAUO20"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 17.556815
+    }
+  ],
+  "model": "X4-36",
+  "output_member_identified": false,
+  "representative_product_views": 9,
+  "review_status": "candidate_visuals_only",
+  "schema_version": "myactuator-cad-review-packet/1",
+  "series": "RMD-X",
+  "simulation_supported": false,
+  "step_sha256": "c20260bf8faf780d9bdd4599f7cc973bf42951f683b1b953af6082ff7c5ef51c",
+  "tool": {
+    "angular_deflection_radians": 0.12,
+    "cadquery": "2.8.0",
+    "camera": "orthographic isometric candidate-review view",
+    "linear_deflection_mm": 0.08
+  },
+  "variant_id": "step-a445ee72b425d35404f4",
+  "vendor_relative_path": "RMD-X/X4-36/vendor/RMD-X4-P36-36 \u7535\u673a\u7ec4\u5408\u56fe-A0.STEP"
+}

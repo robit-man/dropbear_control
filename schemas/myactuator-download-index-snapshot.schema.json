@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.dev/schemas/myactuator-download-index-snapshot.schema.json",
+  "title": "Pinned MYACTUATOR vendor download-index observation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "snapshot_id",
+    "observed_at_utc",
+    "authority",
+    "sources",
+    "pages",
+    "summary",
+    "support_granted",
+    "physical_motion_authority",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "myactuator-download-index-snapshot/1"
+    },
+    "snapshot_id": {
+      "type": "string",
+      "pattern": "^downloadindex-[0-9a-f]{20}$"
+    },
+    "observed_at_utc": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "authority": {
+      "const": "vendor_download_navigation_and_drift_evidence_only"
+    },
+    "sources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "catalog_sha256",
+        "documents_sha256"
+      ],
+      "properties": {
+        "catalog_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "documents_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "pages": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "items": {
+        "$ref": "#/$defs/page"
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "page_count",
+        "archive_url_count",
+        "cad_archive_url_count",
+        "document_archive_url_count",
+        "live_only_url_count",
+        "tracked_only_url_count",
+        "tracked_exact_match"
+      ],
+      "properties": {
+        "page_count": {
+          "const": 6
+        },
+        "archive_url_count": {
+          "const": 53
+        },
+        "cad_archive_url_count": {
+          "const": 44
+        },
+        "document_archive_url_count": {
+          "const": 9
+        },
+        "live_only_url_count": {
+          "const": 0
+        },
+        "tracked_only_url_count": {
+          "const": 0
+        },
+        "tracked_exact_match": {
+          "const": true
+        }
+      }
+    },
+    "support_granted": {
+      "const": false
+    },
+    "physical_motion_authority": {
+      "const": false
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "record_sha256"
+      ],
+      "properties": {
+        "record_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "exactText": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512,
+      "pattern": "^[^\\r\\n\\t]+$"
+    },
+    "archiveUrl": {
+      "type": "string",
+      "pattern": "^https://www\\.myactuator\\.com/_files/archives/[A-Za-z0-9_%-]+\\.zip\\?dn=.+$"
+    },
+    "page": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "page_id",
+        "series",
+        "page_url",
+        "archive_url_set_sha256",
+        "archive_urls"
+      ],
+      "properties": {
+        "page_id": {
+          "type": "string",
+          "pattern": "^downloadpage-[0-9a-f]{20}$"
+        },
+        "series": {
+          "enum": [
+            "RMD-X",
+            "RH",
+            "RMD-L",
+            "CEM",
+            "RMD-H",
+            "FL-FLO"
+          ]
+        },
+        "page_url": {
+          "$ref": "#/$defs/exactText"
+        },
+        "archive_url_set_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "archive_urls": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/archiveUrl"
+          }
+        }
+      }
+    }
+  }
+}

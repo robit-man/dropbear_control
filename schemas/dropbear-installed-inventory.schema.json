@@ -1,0 +1,333 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.org/schemas/dropbear-installed-inventory.schema.json",
+  "title": "Unpowered Dropbear installed-hardware inventory",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_state",
+    "capture_id",
+    "scope",
+    "subject",
+    "authorization",
+    "personnel",
+    "controller_path",
+    "motors",
+    "conflicts",
+    "evidence",
+    "record_complete",
+    "support_granted",
+    "physical_motion_authority",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": { "const": "dropbear-installed-inventory/1" },
+    "record_state": { "enum": ["template", "submitted"] },
+    "capture_id": {
+      "type": "string",
+      "pattern": "^installed-inventory-[0-9a-f]{20}$"
+    },
+    "scope": { "const": "unpowered_identification_only" },
+    "subject": { "$ref": "#/$defs/subject" },
+    "authorization": { "$ref": "#/$defs/authorization" },
+    "personnel": { "$ref": "#/$defs/personnel" },
+    "controller_path": { "$ref": "#/$defs/controllerPath" },
+    "motors": {
+      "type": "array",
+      "minItems": 12,
+      "maxItems": 12,
+      "items": { "$ref": "#/$defs/motor" }
+    },
+    "conflicts": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/conflict" }
+    },
+    "evidence": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/evidence" }
+    },
+    "record_complete": { "type": "boolean" },
+    "support_granted": { "const": false },
+    "physical_motion_authority": { "const": false },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record_sha256"],
+      "properties": {
+        "record_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    }
+  },
+  "$defs": {
+    "text": { "type": "string", "minLength": 1, "maxLength": 1024 },
+    "nullableText": {
+      "anyOf": [{ "$ref": "#/$defs/text" }, { "type": "null" }]
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{2,127}$"
+    },
+    "refs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/id" }
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonical_configuration_digest",
+        "robot_revision",
+        "physical_asset_tag",
+        "captured_at"
+      ],
+      "properties": {
+        "canonical_configuration_digest": { "$ref": "#/$defs/sha256" },
+        "robot_revision": { "$ref": "#/$defs/nullableText" },
+        "physical_asset_tag": { "$ref": "#/$defs/nullableText" },
+        "captured_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        }
+      }
+    },
+    "authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "granted",
+        "authorization_id",
+        "allowed_actions",
+        "valid_from",
+        "valid_until",
+        "evidence_refs"
+      ],
+      "properties": {
+        "granted": { "type": "boolean" },
+        "authorization_id": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+        "allowed_actions": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "visual_label_inspection",
+              "label_photography",
+              "pcb_silkscreen_inspection",
+              "connector_mapping",
+              "deenergized_continuity_measurement",
+              "documentation_transcription"
+            ]
+          }
+        },
+        "valid_from": { "type": ["string", "null"], "format": "date-time" },
+        "valid_until": { "type": ["string", "null"], "format": "date-time" },
+        "evidence_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "personnel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["operator_id", "hardware_owner_id", "safety_reviewer_id"],
+      "properties": {
+        "operator_id": { "$ref": "#/$defs/nullableText" },
+        "hardware_owner_id": { "$ref": "#/$defs/nullableText" },
+        "safety_reviewer_id": { "$ref": "#/$defs/nullableText" }
+      }
+    },
+    "pinObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["signal", "pin", "evidence_refs"],
+      "properties": {
+        "signal": { "$ref": "#/$defs/text" },
+        "pin": { "$ref": "#/$defs/text" },
+        "evidence_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "controllerPath": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "observation_status",
+        "board_manufacturer",
+        "board_model",
+        "board_revision",
+        "board_serial",
+        "controller_kind",
+        "controller_part",
+        "controller_oscillator_hz",
+        "transceiver_part",
+        "transceiver_isolation",
+        "transceiver_silent_or_standby_control",
+        "physically_enforced_tx_disable",
+        "termination_ohm",
+        "connector_id",
+        "ground_reference",
+        "pin_observations",
+        "evidence_refs"
+      ],
+      "properties": {
+        "observation_status": {
+          "enum": ["unobserved", "observed_partial", "observed_complete"]
+        },
+        "board_manufacturer": { "$ref": "#/$defs/nullableText" },
+        "board_model": { "$ref": "#/$defs/nullableText" },
+        "board_revision": { "$ref": "#/$defs/nullableText" },
+        "board_serial": { "$ref": "#/$defs/nullableText" },
+        "controller_kind": {
+          "enum": ["unknown", "esp32_twai", "mcp2515", "other_exact"]
+        },
+        "controller_part": { "$ref": "#/$defs/nullableText" },
+        "controller_oscillator_hz": {
+          "type": ["integer", "null"],
+          "minimum": 1
+        },
+        "transceiver_part": { "$ref": "#/$defs/nullableText" },
+        "transceiver_isolation": {
+          "enum": ["unknown", "isolated", "nonisolated"]
+        },
+        "transceiver_silent_or_standby_control": { "$ref": "#/$defs/nullableText" },
+        "physically_enforced_tx_disable": { "$ref": "#/$defs/nullableText" },
+        "termination_ohm": {
+          "type": ["number", "null"],
+          "exclusiveMinimum": 0
+        },
+        "connector_id": { "$ref": "#/$defs/nullableText" },
+        "ground_reference": { "$ref": "#/$defs/nullableText" },
+        "pin_observations": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/pinObservation" }
+        },
+        "evidence_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "motor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonical_actuator_id",
+        "observation_status",
+        "manufacturer",
+        "series",
+        "model",
+        "hardware_revision",
+        "drive_firmware",
+        "serial_number",
+        "protocol_name",
+        "protocol_revision",
+        "native_node_id",
+        "brake_observation",
+        "bus_connector_observation",
+        "evidence_refs"
+      ],
+      "properties": {
+        "canonical_actuator_id": {
+          "type": "string",
+          "pattern": "^actuator-(left|right)-(hip-yaw|hip-roll|hip-pitch|knee|inner-calf|outer-calf)$"
+        },
+        "observation_status": {
+          "enum": ["unobserved", "observed_partial", "observed_complete"]
+        },
+        "manufacturer": { "$ref": "#/$defs/nullableText" },
+        "series": { "$ref": "#/$defs/nullableText" },
+        "model": { "$ref": "#/$defs/nullableText" },
+        "hardware_revision": { "$ref": "#/$defs/nullableText" },
+        "drive_firmware": { "$ref": "#/$defs/nullableText" },
+        "serial_number": { "$ref": "#/$defs/nullableText" },
+        "protocol_name": { "$ref": "#/$defs/nullableText" },
+        "protocol_revision": { "$ref": "#/$defs/nullableText" },
+        "native_node_id": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 32
+        },
+        "brake_observation": { "$ref": "#/$defs/nullableText" },
+        "bus_connector_observation": { "$ref": "#/$defs/nullableText" },
+        "evidence_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "conflict": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "conflict_id",
+        "kind",
+        "subject_ids",
+        "disposition",
+        "rationale",
+        "evidence_refs"
+      ],
+      "properties": {
+        "conflict_id": { "$ref": "#/$defs/id" },
+        "kind": {
+          "enum": [
+            "duplicate_native_node",
+            "duplicate_serial",
+            "conflicting_label",
+            "inaccessible_label",
+            "unknown_applicability"
+          ]
+        },
+        "subject_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^(controller-path|actuator-(left|right)-(hip-yaw|hip-roll|hip-pitch|knee|inner-calf|outer-calf))$"
+          }
+        },
+        "disposition": {
+          "enum": [
+            "unresolved",
+            "reviewed_distinct_devices",
+            "repair_before_later_capture",
+            "documented_unknown"
+          ]
+        },
+        "rationale": { "$ref": "#/$defs/nullableText" },
+        "evidence_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_id",
+        "capture_method",
+        "captured_at",
+        "operator_id",
+        "relative_path",
+        "sha256"
+      ],
+      "properties": {
+        "evidence_id": { "$ref": "#/$defs/id" },
+        "capture_method": {
+          "enum": [
+            "label_photo",
+            "pcb_silkscreen_photo",
+            "connector_photo",
+            "deenergized_continuity_log",
+            "manual_transcription",
+            "document_reference"
+          ]
+        },
+        "captured_at": { "type": "string", "format": "date-time" },
+        "operator_id": { "$ref": "#/$defs/text" },
+        "relative_path": {
+          "type": "string",
+          "pattern": "^assets/dropbear/installed_inventory_evidence/[A-Za-z0-9._/-]+$"
+        },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    }
+  }
+}

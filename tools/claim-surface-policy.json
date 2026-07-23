@@ -1,0 +1,116 @@
+{
+  "authority": "static_claim_surface_scope_only",
+  "binary_suffixes": [
+    ".glb",
+    ".png",
+    ".step"
+  ],
+  "excluded_directory_names": [
+    ".mypy_cache",
+    ".pio",
+    ".pytest_cache",
+    "__pycache__",
+    "node_modules"
+  ],
+  "excluded_paths": [
+    {
+      "path": "generated/myactuator/claim_surface",
+      "reason": "The generated report cannot scan or hash itself."
+    },
+    {
+      "path": "generated/verification/offline_gate_report.json",
+      "reason": "The live gate report changes while the gate runs and is independently schema and artifact checked."
+    },
+    {
+      "path": "tools/audit_claim_surfaces.py",
+      "reason": "The scanner necessarily contains the forbidden lexical patterns it executes."
+    },
+    {
+      "path": "tools/claim-surface-policy.json",
+      "reason": "The scope policy is independently hash-bound as verifier input."
+    }
+  ],
+  "roots": [
+    {
+      "path": ".aiwg/architecture",
+      "surface": "controlled_documentation"
+    },
+    {
+      "path": ".aiwg/gates",
+      "surface": "controlled_documentation"
+    },
+    {
+      "path": ".aiwg/intake",
+      "surface": "controlled_documentation"
+    },
+    {
+      "path": ".aiwg/iterations",
+      "surface": "controlled_documentation"
+    },
+    {
+      "path": ".aiwg/planning",
+      "surface": "controlled_documentation"
+    },
+    {
+      "path": ".aiwg/reports",
+      "surface": "controlled_documentation"
+    },
+    {
+      "path": ".aiwg/requirements",
+      "surface": "controlled_documentation"
+    },
+    {
+      "path": ".aiwg/risks",
+      "surface": "controlled_documentation"
+    },
+    {
+      "path": ".aiwg/security",
+      "surface": "controlled_documentation"
+    },
+    {
+      "path": ".aiwg/testing",
+      "surface": "controlled_documentation"
+    },
+    {
+      "path": "README.md",
+      "surface": "public_documentation"
+    },
+    {
+      "path": "contracts",
+      "surface": "public_documentation"
+    },
+    {
+      "path": "docs",
+      "surface": "public_documentation"
+    },
+    {
+      "path": "firmware",
+      "surface": "embedded_api"
+    },
+    {
+      "path": "generated",
+      "surface": "generated_consumer"
+    },
+    {
+      "path": "host",
+      "surface": "host_api"
+    },
+    {
+      "path": "ros2_control",
+      "surface": "ros_api"
+    },
+    {
+      "path": "schemas",
+      "surface": "machine_contract"
+    },
+    {
+      "path": "tools",
+      "surface": "tool_api"
+    },
+    {
+      "path": "web",
+      "surface": "web_ui"
+    }
+  ],
+  "schema_version": "myactuator-claim-surface-policy/1"
+}

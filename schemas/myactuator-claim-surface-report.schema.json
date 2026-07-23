@@ -1,0 +1,270 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.dev/schemas/myactuator-claim-surface-report.schema.json",
+  "title": "MYACTUATOR static claim-surface audit report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "audit_id",
+    "authority",
+    "verifier_sources",
+    "provenance",
+    "scope",
+    "scanned_sources",
+    "binary_assets",
+    "findings",
+    "summary",
+    "support_granted",
+    "physical_motion_authority",
+    "physical_action_permitted",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": {"const": "myactuator-claim-surface-report/1"},
+    "audit_id": {"type": "string", "pattern": "^claimaudit-[0-9a-f]{20}$"},
+    "authority": {"const": "deterministic_static_lint_evidence_only"},
+    "verifier_sources": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {"$ref": "#/$defs/sourceIdentity"}
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "entity_ids",
+        "activity_id",
+        "activity_type",
+        "agent_id",
+        "was_generated_by"
+      ],
+      "properties": {
+        "entity_ids": {
+          "const": [
+            "entity:claim-surface-policy",
+            "entity:claim-surface-input-manifest"
+          ]
+        },
+        "activity_id": {
+          "type": "string",
+          "pattern": "^activity:[0-9a-f]{24}$"
+        },
+        "activity_type": {
+          "const": "deterministic_static_claim_surface_scan"
+        },
+        "agent_id": {"const": "agent:audit-claim-surfaces-py"},
+        "was_generated_by": {
+          "type": "string",
+          "pattern": "^activity:[0-9a-f]{24}$"
+        }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "root_count",
+        "excluded_path_count",
+        "excluded_directory_name_count",
+        "binary_suffix_count",
+        "source_manifest_sha256",
+        "roots",
+        "excluded_paths",
+        "excluded_directory_names",
+        "binary_suffixes"
+      ],
+      "properties": {
+        "root_count": {"const": 20},
+        "excluded_path_count": {"const": 4},
+        "excluded_directory_name_count": {"const": 5},
+        "binary_suffix_count": {"const": 3},
+        "source_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "roots": {
+          "type": "array",
+          "minItems": 20,
+          "maxItems": 20,
+          "items": {"$ref": "#/$defs/root"}
+        },
+        "excluded_paths": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "reason"],
+            "properties": {
+              "path": {"$ref": "#/$defs/path"},
+              "reason": {"type": "string", "minLength": 24, "maxLength": 512}
+            }
+          }
+        },
+        "excluded_directory_names": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": {"type": "string", "minLength": 1, "maxLength": 64}
+        },
+        "binary_suffixes": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {"type": "string", "pattern": "^\\.[a-z0-9]+$"}
+        }
+      }
+    },
+    "scanned_sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/scopedFile"}
+    },
+    "binary_assets": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/scopedFile"}
+    },
+    "findings": {
+      "type": "array",
+      "maxItems": 0,
+      "items": {"$ref": "#/$defs/finding"}
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scanned_file_count",
+        "scanned_byte_count",
+        "binary_asset_count",
+        "binary_asset_byte_count",
+        "surface_file_counts",
+        "content_kind_counts",
+        "lexical_rule_count",
+        "structured_rule_count",
+        "finding_count",
+        "exception_count",
+        "passed"
+      ],
+      "properties": {
+        "scanned_file_count": {"type": "integer", "minimum": 1},
+        "scanned_byte_count": {"type": "integer", "minimum": 1},
+        "binary_asset_count": {"type": "integer", "minimum": 0},
+        "binary_asset_byte_count": {"type": "integer", "minimum": 0},
+        "surface_file_counts": {
+          "type": "object",
+          "minProperties": 8,
+          "additionalProperties": {"type": "integer", "minimum": 1}
+        },
+        "content_kind_counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["binary_nonsemantic", "structured_json", "utf8_text"],
+          "properties": {
+            "binary_nonsemantic": {"type": "integer", "minimum": 0},
+            "structured_json": {"type": "integer", "minimum": 0},
+            "utf8_text": {"type": "integer", "minimum": 0}
+          }
+        },
+        "lexical_rule_count": {"const": 9},
+        "structured_rule_count": {"const": 3},
+        "finding_count": {"const": 0},
+        "exception_count": {"const": 0},
+        "passed": {"const": true}
+      }
+    },
+    "support_granted": {"const": false},
+    "physical_motion_authority": {"const": false},
+    "physical_action_permitted": {"const": false},
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record_sha256"],
+      "properties": {
+        "record_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[^\\r\\n\\t]+$"
+    },
+    "surface": {
+      "enum": [
+        "controlled_documentation",
+        "public_documentation",
+        "embedded_api",
+        "generated_consumer",
+        "host_api",
+        "ros_api",
+        "machine_contract",
+        "tool_api",
+        "web_ui"
+      ]
+    },
+    "contentKind": {
+      "enum": ["binary_nonsemantic", "structured_json", "utf8_text"]
+    },
+    "sourceIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"$ref": "#/$defs/path"},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "root": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "surface"],
+      "properties": {
+        "path": {"$ref": "#/$defs/path"},
+        "surface": {"$ref": "#/$defs/surface"}
+      }
+    },
+    "scopedFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "byte_count", "surface", "content_kind"],
+      "properties": {
+        "path": {"$ref": "#/$defs/path"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "byte_count": {"type": "integer", "minimum": 0},
+        "surface": {"$ref": "#/$defs/surface"},
+        "content_kind": {"$ref": "#/$defs/contentKind"}
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "finding_id",
+        "rule_id",
+        "path",
+        "surface",
+        "location",
+        "excerpt",
+        "finding_kind"
+      ],
+      "properties": {
+        "finding_id": {
+          "type": "string",
+          "pattern": "^claimfinding-[0-9a-f]{20}$"
+        },
+        "rule_id": {"type": "string", "pattern": "^CLM-[A-Z0-9-]+$"},
+        "path": {"$ref": "#/$defs/path"},
+        "surface": {"$ref": "#/$defs/surface"},
+        "location": {"type": "string", "minLength": 1, "maxLength": 4096},
+        "excerpt": {"type": "string", "minLength": 1, "maxLength": 240},
+        "finding_kind": {"enum": ["lexical", "structured"]}
+      }
+    }
+  }
+}

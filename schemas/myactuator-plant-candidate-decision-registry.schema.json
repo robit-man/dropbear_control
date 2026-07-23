@@ -1,0 +1,367 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.dev/schemas/myactuator-plant-candidate-decision-registry.schema.json",
+  "title": "MYACTUATOR plant specification candidate decision registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "authority",
+    "sources",
+    "registry_generation_sha256",
+    "submissions",
+    "events",
+    "active_source_facts",
+    "summary",
+    "blockers",
+    "support_granted",
+    "physical_motion_authority",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "myactuator-plant-candidate-decision-registry/1"
+    },
+    "artifact_id": {
+      "const": "myactuator-plant-candidate-decision-registry"
+    },
+    "authority": {
+      "const": "independently_reviewed_candidate_fact_materialization_only"
+    },
+    "sources": {
+      "$ref": "#/$defs/sources"
+    },
+    "registry_generation_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "submissions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/submissionEntry"
+      }
+    },
+    "events": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/eventEntry"
+      }
+    },
+    "active_source_facts": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/factEntry"
+      }
+    },
+    "summary": {
+      "$ref": "#/$defs/summary"
+    },
+    "blockers": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/text"
+      }
+    },
+    "support_granted": {
+      "const": false
+    },
+    "physical_motion_authority": {
+      "const": false
+    },
+    "integrity": {
+      "$ref": "#/$defs/integrity"
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096,
+      "pattern": "^[^\\r\\n\\t]+$"
+    },
+    "sources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_registry_path",
+        "candidate_registry_sha256",
+        "candidate_registry_artifact_id",
+        "reviewer_assignment_path",
+        "reviewer_assignment_sha256",
+        "reviewer_assignment_revision",
+        "reviewer_assignment_state",
+        "submission_schema_sha256",
+        "event_schema_sha256",
+        "source_fact_schema_sha256",
+        "generator_sha256"
+      ],
+      "properties": {
+        "candidate_registry_path": {
+          "const": "generated/myactuator/plant/spec_candidates/registry.json"
+        },
+        "candidate_registry_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "candidate_registry_artifact_id": {
+          "const": "myactuator-plant-spec-candidate-registry"
+        },
+        "reviewer_assignment_path": {
+          "const": "assets/myactuator/reviewer_assignments.json"
+        },
+        "reviewer_assignment_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "reviewer_assignment_revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "reviewer_assignment_state": {
+          "enum": ["draft", "submitted"]
+        },
+        "submission_schema_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "event_schema_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "source_fact_schema_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "generator_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "submissionEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "submission_id",
+        "submission_path",
+        "submission_sha256",
+        "candidate_id",
+        "candidate_sha256",
+        "model_key",
+        "target_field_id",
+        "requested_disposition",
+        "lifecycle_state",
+        "superseded_by_submission_id",
+        "last_event_id"
+      ],
+      "properties": {
+        "submission_id": {
+          "type": "string",
+          "pattern": "^plantcandidatesubmission-[0-9a-f]{20}$"
+        },
+        "submission_path": {
+          "$ref": "#/$defs/text"
+        },
+        "submission_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "candidate_id": {
+          "type": "string",
+          "pattern": "^plantspeccandidate-[0-9a-f]{20}$"
+        },
+        "candidate_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "model_key": {
+          "type": "string",
+          "pattern": "^model-[0-9a-f]{20}$"
+        },
+        "target_field_id": {
+          "type": ["string", "null"],
+          "pattern": "^[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*$"
+        },
+        "requested_disposition": {
+          "enum": ["accept_source_fact", "reject_candidate", "defer_candidate"]
+        },
+        "lifecycle_state": {
+          "enum": [
+            "submitted",
+            "accepted",
+            "rejected",
+            "deferred",
+            "revoked",
+            "superseded"
+          ]
+        },
+        "superseded_by_submission_id": {
+          "type": ["string", "null"],
+          "pattern": "^plantcandidatesubmission-[0-9a-f]{20}$"
+        },
+        "last_event_id": {
+          "type": ["string", "null"],
+          "pattern": "^plantcandidateevent-[0-9a-f]{20}$"
+        }
+      }
+    },
+    "eventEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sequence",
+        "event_id",
+        "event_path",
+        "event_sha256",
+        "event_type",
+        "submission_id"
+      ],
+      "properties": {
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "event_id": {
+          "type": "string",
+          "pattern": "^plantcandidateevent-[0-9a-f]{20}$"
+        },
+        "event_path": {
+          "$ref": "#/$defs/text"
+        },
+        "event_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "event_type": {
+          "enum": ["accept", "reject", "defer", "revoke", "supersede"]
+        },
+        "submission_id": {
+          "type": "string",
+          "pattern": "^plantcandidatesubmission-[0-9a-f]{20}$"
+        }
+      }
+    },
+    "factEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fact_id",
+        "fact_path",
+        "fact_sha256",
+        "candidate_id",
+        "submission_id",
+        "acceptance_event_id",
+        "model_key",
+        "target_field_id"
+      ],
+      "properties": {
+        "fact_id": {
+          "type": "string",
+          "pattern": "^plantfact-[0-9a-f]{20}$"
+        },
+        "fact_path": {
+          "$ref": "#/$defs/text"
+        },
+        "fact_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "candidate_id": {
+          "type": "string",
+          "pattern": "^plantspeccandidate-[0-9a-f]{20}$"
+        },
+        "submission_id": {
+          "type": "string",
+          "pattern": "^plantcandidatesubmission-[0-9a-f]{20}$"
+        },
+        "acceptance_event_id": {
+          "type": "string",
+          "pattern": "^plantcandidateevent-[0-9a-f]{20}$"
+        },
+        "model_key": {
+          "type": "string",
+          "pattern": "^model-[0-9a-f]{20}$"
+        },
+        "target_field_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*$"
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_count",
+        "submission_count",
+        "event_count",
+        "submitted_count",
+        "accepted_count",
+        "rejected_count",
+        "deferred_count",
+        "revoked_count",
+        "superseded_count",
+        "active_source_fact_count",
+        "model_with_active_source_fact_count",
+        "reviewer_assignment_complete"
+      ],
+      "properties": {
+        "candidate_count": {
+          "const": 531
+        },
+        "submission_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "event_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "submitted_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "accepted_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rejected_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "deferred_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "revoked_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "superseded_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "active_source_fact_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "model_with_active_source_fact_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 44
+        },
+        "reviewer_assignment_complete": {
+          "type": "boolean"
+        }
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record_sha256"],
+      "properties": {
+        "record_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  }
+}

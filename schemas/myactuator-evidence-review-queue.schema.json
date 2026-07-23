@@ -1,0 +1,313 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.dev/schemas/myactuator-evidence-review-queue.schema.json",
+  "title": "Unified MYACTUATOR and Dropbear evidence review queue",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "queue_id",
+    "authority",
+    "sources",
+    "policy",
+    "assignments",
+    "workstreams",
+    "items",
+    "summary",
+    "support_granted",
+    "physical_motion_authority",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "myactuator-evidence-review-queue/1"
+    },
+    "queue_id": {
+      "type": "string",
+      "pattern": "^reviewqueue-[0-9a-f]{20}$"
+    },
+    "authority": {
+      "const": "review_navigation_and_dependency_status_only"
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": {
+        "$ref": "#/$defs/source"
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "assignment_is_not_approval",
+        "candidate_is_not_accepted",
+        "independent_review_required",
+        "source_drift_revokes",
+        "physical_actions_require_separate_authorization",
+        "queue_never_grants_support_or_motion"
+      ],
+      "properties": {
+        "assignment_is_not_approval": {"const": true},
+        "candidate_is_not_accepted": {"const": true},
+        "independent_review_required": {"const": true},
+        "source_drift_revokes": {"const": true},
+        "physical_actions_require_separate_authorization": {"const": true},
+        "queue_never_grants_support_or_motion": {"const": true}
+      }
+    },
+    "assignments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "register_id",
+        "record_state",
+        "role_count",
+        "assigned_role_count",
+        "assignment_complete"
+      ],
+      "properties": {
+        "register_id": {"const": "dropbear-myactuator-evidence-review"},
+        "record_state": {"enum": ["draft", "submitted"]},
+        "role_count": {"const": 17},
+        "assigned_role_count": {"type": "integer", "minimum": 0, "maximum": 17},
+        "assignment_complete": {"type": "boolean"}
+      }
+    },
+    "workstreams": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "items": {
+        "$ref": "#/$defs/workstream"
+      }
+    },
+    "items": {
+      "type": "array",
+      "minItems": 145,
+      "maxItems": 145,
+      "items": {
+        "$ref": "#/$defs/item"
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "item_count",
+        "workstream_count",
+        "protocol_item_count",
+        "cad_item_count",
+        "plant_item_count",
+        "governance_item_count",
+        "accepted_item_count",
+        "assigned_item_count",
+        "physical_action_permitted_count",
+        "state_counts"
+      ],
+      "properties": {
+        "item_count": {"const": 145},
+        "workstream_count": {"const": 7},
+        "protocol_item_count": {"const": 44},
+        "cad_item_count": {"const": 53},
+        "plant_item_count": {"const": 44},
+        "governance_item_count": {"const": 4},
+        "accepted_item_count": {"type": "integer", "minimum": 0},
+        "assigned_item_count": {"type": "integer", "minimum": 0},
+        "physical_action_permitted_count": {"const": 0},
+        "state_counts": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "support_granted": {"const": false},
+    "physical_motion_authority": {"const": false},
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record_sha256"],
+      "properties": {
+        "record_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "exact": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "pattern": "^[^\\r\\n\\t]+$"
+    },
+    "nullableExact": {
+      "oneOf": [{"$ref": "#/$defs/exact"}, {"type": "null"}]
+    },
+    "domain": {
+      "enum": [
+        "protocol_applicability",
+        "cad_articulation",
+        "plant_evidence",
+        "dropbear_source_authority",
+        "dropbear_graph_authority",
+        "installed_inventory",
+        "can_adapter"
+      ]
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"$ref": "#/$defs/exact"},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "workstream": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "workstream_id",
+        "domain",
+        "dependency_workstream_ids",
+        "item_count",
+        "state_counts",
+        "next_gate"
+      ],
+      "properties": {
+        "workstream_id": {
+          "type": "string",
+          "pattern": "^reviewstream-[0-9a-f]{20}$"
+        },
+        "domain": {"$ref": "#/$defs/domain"},
+        "dependency_workstream_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^reviewstream-[0-9a-f]{20}$"
+          }
+        },
+        "item_count": {"type": "integer", "minimum": 1},
+        "state_counts": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "next_gate": {"$ref": "#/$defs/exact"}
+      }
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "subject_id",
+        "series",
+        "model",
+        "variant_id"
+      ],
+      "properties": {
+        "subject_id": {"$ref": "#/$defs/exact"},
+        "series": {"$ref": "#/$defs/nullableExact"},
+        "model": {"$ref": "#/$defs/nullableExact"},
+        "variant_id": {"$ref": "#/$defs/nullableExact"}
+      }
+    },
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "item_id",
+        "workstream_id",
+        "domain",
+        "priority",
+        "subject",
+        "state",
+        "assignment_role_ids",
+        "assignment_status",
+        "decision_input_ref",
+        "review_surface_refs",
+        "required_evidence",
+        "blockers",
+        "metrics",
+        "next_action",
+        "accepted",
+        "support_granted",
+        "physical_motion_authority",
+        "physical_action_permitted"
+      ],
+      "properties": {
+        "item_id": {
+          "type": "string",
+          "pattern": "^reviewitem-[0-9a-f]{20}$"
+        },
+        "workstream_id": {
+          "type": "string",
+          "pattern": "^reviewstream-[0-9a-f]{20}$"
+        },
+        "domain": {"$ref": "#/$defs/domain"},
+        "priority": {"enum": ["P0", "P1", "P2"]},
+        "subject": {"$ref": "#/$defs/subject"},
+        "state": {
+          "enum": [
+            "accepted_evidence",
+            "exact_tuple_evidence_needed",
+            "source_acquisition_needed",
+            "ready_for_review",
+            "source_or_partition_needed",
+            "ready_for_extraction",
+            "reviewer_assignment_needed",
+            "authorization_needed",
+            "dependency_blocked"
+          ]
+        },
+        "assignment_role_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/exact"}
+        },
+        "assignment_status": {"enum": ["assigned", "unassigned"]},
+        "decision_input_ref": {"$ref": "#/$defs/nullableExact"},
+        "review_surface_refs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/exact"}
+        },
+        "required_evidence": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/exact"}
+        },
+        "blockers": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/exact"}
+        },
+        "metrics": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "next_action": {"$ref": "#/$defs/exact"},
+        "accepted": {"type": "boolean"},
+        "support_granted": {"const": false},
+        "physical_motion_authority": {"const": false},
+        "physical_action_permitted": {"const": false}
+      }
+    }
+  }
+}

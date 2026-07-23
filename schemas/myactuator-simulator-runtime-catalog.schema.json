@@ -1,0 +1,605 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.dev/schemas/myactuator-simulator-runtime-catalog.schema.json",
+  "title": "Evidence-aware MYACTUATOR simulator runtime catalog",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "authority",
+    "sources",
+    "policy",
+    "summary",
+    "backends",
+    "models",
+    "dropbear",
+    "support_granted",
+    "physical_motion_authority",
+    "physical_io_enabled",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "myactuator-simulator-runtime-catalog/1"
+    },
+    "artifact_id": {
+      "const": "myactuator-simulator-runtime-catalog"
+    },
+    "authority": {
+      "const": "derived_runtime_admission_only"
+    },
+    "sources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "catalog_sha256",
+        "protocol_applicability_registry_sha256",
+        "cad_runtime_registry_sha256",
+        "plant_runtime_registry_sha256",
+        "dropbear_simulator_projection_sha256",
+        "source_registry_generation_sha256",
+        "graph_registry_generation_sha256"
+      ],
+      "properties": {
+        "catalog_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "protocol_applicability_registry_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "cad_runtime_registry_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "plant_runtime_registry_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "dropbear_simulator_projection_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "source_registry_generation_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "graph_registry_generation_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "exact_model_and_configuration_required",
+        "backend_kind_and_use_case_required",
+        "source_step_is_never_runtime_geometry",
+        "candidate_is_never_runtime_geometry",
+        "synthetic_execution_is_never_model_fidelity",
+        "protocol_emulation_is_never_plant_fidelity",
+        "replay_is_read_only",
+        "whole_robot_requires_active_graph_cad_and_plant",
+        "generation_rechecked_at_every_use",
+        "browser_projection_contains_no_paths",
+        "simulator_never_grants_hardware_support"
+      ],
+      "properties": {
+        "exact_model_and_configuration_required": {
+          "const": true
+        },
+        "backend_kind_and_use_case_required": {
+          "const": true
+        },
+        "source_step_is_never_runtime_geometry": {
+          "const": true
+        },
+        "candidate_is_never_runtime_geometry": {
+          "const": true
+        },
+        "synthetic_execution_is_never_model_fidelity": {
+          "const": true
+        },
+        "protocol_emulation_is_never_plant_fidelity": {
+          "const": true
+        },
+        "replay_is_read_only": {
+          "const": true
+        },
+        "whole_robot_requires_active_graph_cad_and_plant": {
+          "const": true
+        },
+        "generation_rechecked_at_every_use": {
+          "const": true
+        },
+        "browser_projection_contains_no_paths": {
+          "const": true
+        },
+        "simulator_never_grants_hardware_support": {
+          "const": true
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model_count",
+        "source_variant_count",
+        "geometry_configuration_count",
+        "backend_descriptor_count",
+        "runtime_loadable_backend_count",
+        "exact_model_geometry_ready_count",
+        "exact_model_plant_ready_count",
+        "exact_model_simulation_ready_count",
+        "physically_correlated_plant_count",
+        "browser_articulated_asset_ready_count",
+        "dropbear_whole_robot_ready_count"
+      ],
+      "properties": {
+        "model_count": {
+          "const": 44
+        },
+        "source_variant_count": {
+          "const": 53
+        },
+        "geometry_configuration_count": {
+          "const": 53
+        },
+        "backend_descriptor_count": {
+          "type": "integer",
+          "minimum": 5
+        },
+        "runtime_loadable_backend_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "exact_model_geometry_ready_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 44
+        },
+        "exact_model_plant_ready_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 44
+        },
+        "exact_model_simulation_ready_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 44
+        },
+        "physically_correlated_plant_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 44
+        },
+        "browser_articulated_asset_ready_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 44
+        },
+        "dropbear_whole_robot_ready_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "backends": {
+      "type": "array",
+      "minItems": 5,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/backend"
+      }
+    },
+    "models": {
+      "type": "array",
+      "minItems": 44,
+      "maxItems": 44,
+      "items": {
+        "$ref": "#/$defs/model"
+      }
+    },
+    "dropbear": {
+      "$ref": "#/$defs/dropbear"
+    },
+    "support_granted": {
+      "const": false
+    },
+    "physical_motion_authority": {
+      "const": false
+    },
+    "physical_io_enabled": {
+      "const": false
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "record_sha256"
+      ],
+      "properties": {
+        "record_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{2,127}$"
+    },
+    "backend": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "backend_id",
+        "kind",
+        "evidence_class",
+        "substitution_scope",
+        "runtime_loadable",
+        "command_capable",
+        "deterministic_virtual_time",
+        "models_protocol_state",
+        "models_actuator_dynamics",
+        "models_rigid_body",
+        "exact_model_applicability_verified",
+        "physically_validated",
+        "physical_io",
+        "parameter_set_id",
+        "runtime_contract_id",
+        "allowed_use_cases",
+        "blockers"
+      ],
+      "properties": {
+        "backend_id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "enum": [
+            "recorded_replay",
+            "protocol_emulator",
+            "toy_demo",
+            "synthetic_actuator_plant",
+            "actuator_plant",
+            "rigid_body",
+            "physical_adapter"
+          ]
+        },
+        "evidence_class": {
+          "type": "string",
+          "minLength": 1
+        },
+        "substitution_scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "runtime_loadable": {
+          "type": "boolean"
+        },
+        "command_capable": {
+          "type": "boolean"
+        },
+        "deterministic_virtual_time": {
+          "type": "boolean"
+        },
+        "models_protocol_state": {
+          "type": "boolean"
+        },
+        "models_actuator_dynamics": {
+          "type": "boolean"
+        },
+        "models_rigid_body": {
+          "type": "boolean"
+        },
+        "exact_model_applicability_verified": {
+          "type": "boolean"
+        },
+        "physically_validated": {
+          "type": "boolean"
+        },
+        "physical_io": {
+          "const": false
+        },
+        "parameter_set_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^plant-[a-z0-9][a-z0-9-]*$"
+        },
+        "runtime_contract_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^(?:plantruntime|plantruntimev2)-[0-9a-f]{20}$"
+        },
+        "allowed_use_cases": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "recorded_replay",
+              "protocol_state_sil",
+              "catalog_demo",
+              "synthetic_plant_sil",
+              "exact_model_plant_sil",
+              "whole_robot_rigid_body",
+              "physical_hil"
+            ]
+          }
+        },
+        "blockers": {
+          "$ref": "#/$defs/blockers"
+        }
+      }
+    },
+    "cadState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "review_status",
+        "accepted_configuration_count",
+        "local_runtime_loadable_configuration_count",
+        "browser_loadable_configuration_count",
+        "candidate_report_count"
+      ],
+      "properties": {
+        "review_status": {
+          "enum": [
+            "unsupported",
+            "partially_supported_local",
+            "supported_local",
+            "supported_redistributable"
+          ]
+        },
+        "accepted_configuration_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "local_runtime_loadable_configuration_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "browser_loadable_configuration_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "candidate_report_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "plantState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "plant_ids"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "unsupported",
+            "sourced",
+            "partially_validated",
+            "validated"
+          ]
+        },
+        "plant_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^plant-[a-z0-9][a-z0-9-]*$"
+          }
+        }
+      }
+    },
+    "fidelity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "exact_model_geometry_ready",
+        "exact_model_plant_ready",
+        "physically_correlated_plant_ready",
+        "exact_model_simulation_ready",
+        "browser_articulated_asset_ready"
+      ],
+      "properties": {
+        "exact_model_geometry_ready": {
+          "type": "boolean"
+        },
+        "exact_model_plant_ready": {
+          "type": "boolean"
+        },
+        "physically_correlated_plant_ready": {
+          "type": "boolean"
+        },
+        "exact_model_simulation_ready": {
+          "type": "boolean"
+        },
+        "browser_articulated_asset_ready": {
+          "type": "boolean"
+        }
+      }
+    },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model_key",
+        "series",
+        "model",
+        "package_revision",
+        "configuration_ids",
+        "source_variant_ids",
+        "source_step_evidence_present",
+        "source_step_runtime_asset",
+        "cad",
+        "plant",
+        "protocol_model_firmware_applicability_verified",
+        "fidelity",
+        "admitted_exact_model_backend_ids",
+        "blockers"
+      ],
+      "properties": {
+        "model_key": {
+          "type": "string",
+          "pattern": "^model-[0-9a-f]{20}$"
+        },
+        "series": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "package_revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "configuration_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^cadcfg-[0-9a-f]{20}$"
+          }
+        },
+        "source_variant_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^step-[0-9a-f]{20}$"
+          }
+        },
+        "source_step_evidence_present": {
+          "const": true
+        },
+        "source_step_runtime_asset": {
+          "const": false
+        },
+        "cad": {
+          "$ref": "#/$defs/cadState"
+        },
+        "plant": {
+          "$ref": "#/$defs/plantState"
+        },
+        "protocol_model_firmware_applicability_verified": {
+          "type": "boolean"
+        },
+        "fidelity": {
+          "$ref": "#/$defs/fidelity"
+        },
+        "admitted_exact_model_backend_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "blockers": {
+          "$ref": "#/$defs/blockers"
+        }
+      }
+    },
+    "dropbear": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonical_configuration_digest",
+        "source_active_state",
+        "graph_active_state",
+        "canonical_graph_count",
+        "actuator_mapping_count",
+        "ros_mapping_count",
+        "frame_count",
+        "physical_plant_count",
+        "bound_cad_asset_count",
+        "whole_robot_graph_ready",
+        "whole_robot_cad_ready",
+        "whole_robot_plant_ready",
+        "whole_robot_runtime_ready",
+        "blockers"
+      ],
+      "properties": {
+        "canonical_configuration_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "source_active_state": {
+          "enum": [
+            "absent",
+            "accepted"
+          ]
+        },
+        "graph_active_state": {
+          "enum": [
+            "absent",
+            "accepted"
+          ]
+        },
+        "canonical_graph_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "actuator_mapping_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 12
+        },
+        "ros_mapping_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 12
+        },
+        "frame_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "physical_plant_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "bound_cad_asset_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "whole_robot_graph_ready": {
+          "type": "boolean"
+        },
+        "whole_robot_cad_ready": {
+          "type": "boolean"
+        },
+        "whole_robot_plant_ready": {
+          "type": "boolean"
+        },
+        "whole_robot_runtime_ready": {
+          "type": "boolean"
+        },
+        "blockers": {
+          "$ref": "#/$defs/blockers"
+        }
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

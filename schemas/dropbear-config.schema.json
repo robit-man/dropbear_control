@@ -1,0 +1,1065 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.org/schemas/dropbear-config.schema.json",
+  "title": "Canonical Dropbear robot configuration",
+  "description": "Schema for the reviewed cross-layer Dropbear registry. JSON Schema validation is structural; schemas/validate_dropbear_config.py enforces cross-record and fail-closed semantic invariants without third-party dependencies.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "configuration_id",
+    "configuration_revision",
+    "configuration_state",
+    "robot",
+    "controller_nodes",
+    "buses",
+    "joints",
+    "actuators",
+    "sensors",
+    "cad_assets",
+    "calibrations",
+    "boundary_aliases",
+    "provenance_sources",
+    "safety_admission",
+    "configuration_integrity"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "configuration_id": {
+      "$ref": "#/$defs/stableId"
+    },
+    "configuration_revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "configuration_state": {
+      "enum": [
+        "incomplete_observation",
+        "complete_verified"
+      ]
+    },
+    "robot": {
+      "$ref": "#/$defs/robot"
+    },
+    "controller_nodes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/controllerNode"
+      }
+    },
+    "buses": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/bus"
+      }
+    },
+    "joints": {
+      "type": "array",
+      "minItems": 12,
+      "maxItems": 12,
+      "items": {
+        "$ref": "#/$defs/joint"
+      }
+    },
+    "actuators": {
+      "type": "array",
+      "minItems": 12,
+      "maxItems": 12,
+      "items": {
+        "$ref": "#/$defs/actuator"
+      }
+    },
+    "sensors": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/sensor"
+      }
+    },
+    "cad_assets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/cadAsset"
+      }
+    },
+    "calibrations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/calibration"
+      }
+    },
+    "boundary_aliases": {
+      "description": "The only location in which non-canonical names are permitted.",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/boundaryAlias"
+      }
+    },
+    "provenance_sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/provenanceSource"
+      }
+    },
+    "safety_admission": {
+      "$ref": "#/$defs/safetyAdmission"
+    },
+    "configuration_integrity": {
+      "$ref": "#/$defs/configurationIntegrity"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "safety_admission": {
+            "properties": {
+              "motion_enable_allowed": {
+                "const": true
+              }
+            },
+            "required": [
+              "motion_enable_allowed"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "configuration_state": {
+            "const": "complete_verified"
+          },
+          "safety_admission": {
+            "properties": {
+              "enable_authority_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "enable_authority_status": {
+                "const": "verified"
+              },
+              "independent_power_removal_status": {
+                "const": "verified"
+              },
+              "blockers": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "stableId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"
+    },
+    "canonicalJointName": {
+      "enum": [
+        "left_hip_yaw",
+        "left_hip_roll",
+        "left_hip_pitch",
+        "left_knee",
+        "left_inner_calf",
+        "left_outer_calf",
+        "right_hip_yaw",
+        "right_hip_roll",
+        "right_hip_pitch",
+        "right_knee",
+        "right_inner_calf",
+        "right_outer_calf"
+      ]
+    },
+    "semanticJoint": {
+      "enum": [
+        "hip_yaw",
+        "hip_roll",
+        "hip_pitch",
+        "knee",
+        "inner_calf",
+        "outer_calf"
+      ]
+    },
+    "chirality": {
+      "enum": [
+        "left",
+        "right",
+        "center",
+        "shared",
+        "none"
+      ]
+    },
+    "verificationStatus": {
+      "enum": [
+        "unknown",
+        "unverified_observation",
+        "verified"
+      ]
+    },
+    "nullableNumber": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "nullableStableId": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/stableId"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "sourceRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/stableId"
+      },
+      "uniqueItems": true
+    },
+    "robot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonical_name",
+        "hardware_revision",
+        "hardware_revision_status",
+        "source_refs"
+      ],
+      "properties": {
+        "canonical_name": {
+          "const": "dropbear"
+        },
+        "hardware_revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "hardware_revision_status": {
+          "$ref": "#/$defs/verificationStatus"
+        },
+        "source_refs": {
+          "$ref": "#/$defs/sourceRefs"
+        }
+      }
+    },
+    "controllerNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "controller_node_id",
+        "runtime_node_id",
+        "role",
+        "chirality",
+        "hardware_identity",
+        "firmware_revision",
+        "identity_status",
+        "candidate_bus_ids",
+        "source_refs"
+      ],
+      "properties": {
+        "controller_node_id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "runtime_node_id": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "role": {
+          "enum": [
+            "actuator_gateway",
+            "sensor_gateway",
+            "central_gateway"
+          ]
+        },
+        "chirality": {
+          "$ref": "#/$defs/chirality"
+        },
+        "hardware_identity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "firmware_revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "identity_status": {
+          "$ref": "#/$defs/verificationStatus"
+        },
+        "candidate_bus_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/stableId"
+          },
+          "uniqueItems": true
+        },
+        "source_refs": {
+          "$ref": "#/$defs/sourceRefs"
+        }
+      }
+    },
+    "bus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bus_id",
+        "transport",
+        "physical_interface",
+        "bitrate_bps",
+        "timing_status",
+        "owner_controller_node_id",
+        "ownership_status",
+        "source_refs"
+      ],
+      "properties": {
+        "bus_id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "transport": {
+          "enum": [
+            "can_classic",
+            "can_fd",
+            "rs485",
+            "ethercat"
+          ]
+        },
+        "physical_interface": {
+          "type": "string",
+          "minLength": 1
+        },
+        "bitrate_bps": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "timing_status": {
+          "$ref": "#/$defs/verificationStatus"
+        },
+        "owner_controller_node_id": {
+          "$ref": "#/$defs/nullableStableId"
+        },
+        "ownership_status": {
+          "$ref": "#/$defs/verificationStatus"
+        },
+        "source_refs": {
+          "$ref": "#/$defs/sourceRefs"
+        }
+      }
+    },
+    "joint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonical_name",
+        "chirality",
+        "semantic_joint",
+        "actuator_id",
+        "actuation",
+        "feedback",
+        "cad_binding",
+        "calibration_id",
+        "calibration_status",
+        "source_refs"
+      ],
+      "properties": {
+        "canonical_name": {
+          "$ref": "#/$defs/canonicalJointName"
+        },
+        "chirality": {
+          "enum": [
+            "left",
+            "right"
+          ]
+        },
+        "semantic_joint": {
+          "$ref": "#/$defs/semanticJoint"
+        },
+        "actuator_id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "actuation": {
+          "$ref": "#/$defs/actuation"
+        },
+        "feedback": {
+          "$ref": "#/$defs/jointFeedback"
+        },
+        "cad_binding": {
+          "$ref": "#/$defs/cadBinding"
+        },
+        "calibration_id": {
+          "$ref": "#/$defs/nullableStableId"
+        },
+        "calibration_status": {
+          "$ref": "#/$defs/verificationStatus"
+        },
+        "source_refs": {
+          "$ref": "#/$defs/sourceRefs"
+        }
+      }
+    },
+    "actuation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "motor_to_joint_sign",
+        "output_per_motor_ratio",
+        "coordinate_status",
+        "limits"
+      ],
+      "properties": {
+        "motor_to_joint_sign": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "enum": [
+            -1,
+            1,
+            null
+          ]
+        },
+        "output_per_motor_ratio": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "exclusiveMinimum": 0
+        },
+        "coordinate_status": {
+          "$ref": "#/$defs/verificationStatus"
+        },
+        "limits": {
+          "$ref": "#/$defs/jointLimits"
+        }
+      }
+    },
+    "jointLimits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "position_lower_rad",
+        "position_upper_rad",
+        "max_velocity_rad_s",
+        "max_qaxis_current_a",
+        "max_effort_nm",
+        "max_temperature_c",
+        "status",
+        "source_refs"
+      ],
+      "properties": {
+        "position_lower_rad": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "position_upper_rad": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "max_velocity_rad_s": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "max_qaxis_current_a": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "max_effort_nm": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "max_temperature_c": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "status": {
+          "$ref": "#/$defs/verificationStatus"
+        },
+        "source_refs": {
+          "$ref": "#/$defs/sourceRefs"
+        }
+      }
+    },
+    "jointFeedback": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "native_drive_status",
+        "external_sensor_id",
+        "external_sensor_status"
+      ],
+      "properties": {
+        "native_drive_status": {
+          "$ref": "#/$defs/verificationStatus"
+        },
+        "external_sensor_id": {
+          "$ref": "#/$defs/nullableStableId"
+        },
+        "external_sensor_status": {
+          "enum": [
+            "missing",
+            "unknown",
+            "unverified_observation",
+            "verified"
+          ]
+        }
+      }
+    },
+    "cadBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "asset_id",
+        "housing_member",
+        "output_member",
+        "joint_origin_xyz_m",
+        "joint_axis_xyz",
+        "status"
+      ],
+      "properties": {
+        "asset_id": {
+          "$ref": "#/$defs/nullableStableId"
+        },
+        "housing_member": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "output_member": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "joint_origin_xyz_m": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/vector3"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "joint_axis_xyz": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/vector3"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "$ref": "#/$defs/verificationStatus"
+        }
+      }
+    },
+    "vector3": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "number"
+      }
+    },
+    "actuator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actuator_id",
+        "canonical_joint_name",
+        "chirality",
+        "bus_id",
+        "owner_controller_node_id",
+        "ownership_status",
+        "address",
+        "exact_tuple",
+        "source_refs"
+      ],
+      "properties": {
+        "actuator_id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "canonical_joint_name": {
+          "$ref": "#/$defs/canonicalJointName"
+        },
+        "chirality": {
+          "enum": [
+            "left",
+            "right"
+          ]
+        },
+        "bus_id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "owner_controller_node_id": {
+          "$ref": "#/$defs/nullableStableId"
+        },
+        "ownership_status": {
+          "$ref": "#/$defs/verificationStatus"
+        },
+        "address": {
+          "$ref": "#/$defs/actuatorAddress"
+        },
+        "exact_tuple": {
+          "$ref": "#/$defs/exactTuple"
+        },
+        "source_refs": {
+          "$ref": "#/$defs/sourceRefs"
+        }
+      }
+    },
+    "actuatorAddress": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "legacy_full_command_can_id",
+        "native_node_id",
+        "status"
+      ],
+      "properties": {
+        "legacy_full_command_can_id": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 2047
+        },
+        "native_node_id": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 127
+        },
+        "status": {
+          "$ref": "#/$defs/verificationStatus"
+        }
+      }
+    },
+    "exactTuple": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "manufacturer",
+        "model",
+        "hardware_revision",
+        "drive_firmware",
+        "protocol_name",
+        "protocol_revision",
+        "transport",
+        "control_mode",
+        "support_state",
+        "source_refs"
+      ],
+      "properties": {
+        "manufacturer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "hardware_revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "drive_firmware": {
+          "type": "string",
+          "minLength": 1
+        },
+        "protocol_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "protocol_revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "transport": {
+          "type": "string",
+          "minLength": 1
+        },
+        "control_mode": {
+          "type": "string",
+          "minLength": 1
+        },
+        "support_state": {
+          "enum": [
+            "unsupported",
+            "catalogued",
+            "specified_offline",
+            "codec_conformant_offline",
+            "sil_validated",
+            "bench_validated",
+            "hil_validated",
+            "robot_released"
+          ]
+        },
+        "source_refs": {
+          "$ref": "#/$defs/sourceRefs"
+        }
+      }
+    },
+    "sensor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sensor_id",
+        "sensor_type",
+        "canonical_joint_name",
+        "controller_node_id",
+        "interface",
+        "calibration_id",
+        "calibration_status",
+        "source_refs"
+      ],
+      "properties": {
+        "sensor_id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "sensor_type": {
+          "enum": [
+            "external_absolute_encoder",
+            "imu",
+            "load_cell",
+            "native_drive_feedback"
+          ]
+        },
+        "canonical_joint_name": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/canonicalJointName"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "controller_node_id": {
+          "$ref": "#/$defs/nullableStableId"
+        },
+        "interface": {
+          "$ref": "#/$defs/sensorInterface"
+        },
+        "calibration_id": {
+          "$ref": "#/$defs/nullableStableId"
+        },
+        "calibration_status": {
+          "$ref": "#/$defs/verificationStatus"
+        },
+        "source_refs": {
+          "$ref": "#/$defs/sourceRefs"
+        }
+      }
+    },
+    "sensorInterface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "interface_type",
+        "channel",
+        "sample_units",
+        "status"
+      ],
+      "properties": {
+        "interface_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "channel": {
+          "type": [
+            "string",
+            "integer",
+            "null"
+          ]
+        },
+        "sample_units": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "$ref": "#/$defs/verificationStatus"
+        }
+      }
+    },
+    "cadAsset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "asset_id",
+        "model",
+        "source_step_sha256",
+        "housing_member",
+        "output_member",
+        "source_to_robot_transform",
+        "review_status",
+        "source_refs"
+      ],
+      "properties": {
+        "asset_id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_step_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "housing_member": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "output_member": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_to_robot_transform": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "minItems": 16,
+          "maxItems": 16,
+          "items": {
+            "type": "number"
+          }
+        },
+        "review_status": {
+          "$ref": "#/$defs/verificationStatus"
+        },
+        "source_refs": {
+          "$ref": "#/$defs/sourceRefs"
+        }
+      }
+    },
+    "calibration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "calibration_id",
+        "canonical_joint_name",
+        "device_identity",
+        "method",
+        "units",
+        "author",
+        "utc_time",
+        "source_revision",
+        "content_sha256",
+        "status",
+        "source_refs"
+      ],
+      "properties": {
+        "calibration_id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "canonical_joint_name": {
+          "$ref": "#/$defs/canonicalJointName"
+        },
+        "device_identity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "method": {
+          "type": "string",
+          "minLength": 1
+        },
+        "units": {
+          "type": "string",
+          "minLength": 1
+        },
+        "author": {
+          "type": "string",
+          "minLength": 1
+        },
+        "utc_time": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "content_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "status": {
+          "$ref": "#/$defs/verificationStatus"
+        },
+        "source_refs": {
+          "$ref": "#/$defs/sourceRefs"
+        }
+      }
+    },
+    "boundaryAlias": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "boundary",
+        "alias",
+        "canonical_name",
+        "direction",
+        "status",
+        "source_refs"
+      ],
+      "properties": {
+        "boundary": {
+          "enum": [
+            "dropbear_prototype_import",
+            "legacy_ui_import",
+            "legacy_ros_import",
+            "diagnostic_export"
+          ]
+        },
+        "alias": {
+          "type": "string",
+          "minLength": 1
+        },
+        "canonical_name": {
+          "$ref": "#/$defs/canonicalJointName"
+        },
+        "direction": {
+          "enum": [
+            "import_only",
+            "export_only"
+          ]
+        },
+        "status": {
+          "$ref": "#/$defs/verificationStatus"
+        },
+        "source_refs": {
+          "$ref": "#/$defs/sourceRefs"
+        }
+      }
+    },
+    "provenanceSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_id",
+        "kind",
+        "locator",
+        "revision",
+        "evidence_class",
+        "assertion_scope"
+      ],
+      "properties": {
+        "source_id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "kind": {
+          "enum": [
+            "legacy_source",
+            "audit",
+            "vendor_manual",
+            "vendor_asset",
+            "physical_inventory",
+            "bench_record"
+          ]
+        },
+        "locator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_class": {
+          "enum": [
+            "observation",
+            "official_specification",
+            "offline",
+            "sil",
+            "bench",
+            "hil",
+            "robot"
+          ]
+        },
+        "assertion_scope": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "safetyAdmission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "motion_enable_allowed",
+        "enable_authority_id",
+        "enable_authority_status",
+        "independent_power_removal_status",
+        "blockers"
+      ],
+      "properties": {
+        "motion_enable_allowed": {
+          "type": "boolean"
+        },
+        "enable_authority_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "enable_authority_status": {
+          "enum": [
+            "none",
+            "unknown",
+            "unverified_observation",
+            "verified"
+          ]
+        },
+        "independent_power_removal_status": {
+          "$ref": "#/$defs/verificationStatus"
+        },
+        "blockers": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "configurationIntegrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "canonicalization",
+        "digest"
+      ],
+      "properties": {
+        "algorithm": {
+          "const": "sha256"
+        },
+        "canonicalization": {
+          "const": "json-sort-keys-utf8-omit-digest-v1"
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    }
+  }
+}

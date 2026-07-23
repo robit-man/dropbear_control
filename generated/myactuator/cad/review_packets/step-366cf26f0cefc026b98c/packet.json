@@ -1,0 +1,194 @@
+{
+  "heuristic_selects_output": false,
+  "housing_member_identified": false,
+  "images": {
+    "member_sheet": {
+      "path": "generated/myactuator/cad/review_packets/step-366cf26f0cefc026b98c/member-sheet.png",
+      "sha256": "ee022a0f39e83946e0048033015d1493ff265a7f4147551d9e8e165fbbffbadc"
+    },
+    "overview": {
+      "path": "generated/myactuator/cad/review_packets/step-366cf26f0cefc026b98c/overview.png",
+      "sha256": "72e256a7d9471f5dbd1a2a548029a90bffc98182b1baabb041fb56327644342f"
+    }
+  },
+  "joint_axis_identified": false,
+  "members": [
+    {
+      "bbox_size_mm": [
+        90.0,
+        43.3,
+        90.0
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        0.0,
+        2.155109,
+        0.0
+      ],
+      "occurrence": "NAUO1",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#6743",
+      "related_product_name": "MT-H9015-0001-V1_Default<\u6309\u52a0\u5de5>",
+      "same_product_occurrences": [
+        "NAUO1"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 27785.926966
+    },
+    {
+      "bbox_size_mm": [
+        90.0,
+        30.3,
+        90.0
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        -0.0,
+        8.753671,
+        -0.0
+      ],
+      "occurrence": "NAUO2",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#13058",
+      "related_product_name": "MT-H9015-0002_Default<\u6309\u52a0\u5de5>",
+      "same_product_occurrences": [
+        "NAUO2"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 15792.027051
+    },
+    {
+      "bbox_size_mm": [
+        90.0,
+        5.8,
+        90.0
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        0.809211,
+        40.737371,
+        -0.357345
+      ],
+      "occurrence": "NAUO3",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#5466",
+      "related_product_name": "MT-H9015-0004-V1_Default<\u6309\u52a0\u5de5>",
+      "same_product_occurrences": [
+        "NAUO3"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 7847.871267
+    },
+    {
+      "bbox_size_mm": [
+        35.0,
+        3.0,
+        35.0
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        0.0,
+        31.0,
+        0.0
+      ],
+      "occurrence": "NAUO4",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#5349",
+      "related_product_name": "H9015 \u78c1\u73af_Default<\u6309\u52a0\u5de5>",
+      "same_product_occurrences": [
+        "NAUO4"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 316.278793
+    },
+    {
+      "bbox_size_mm": [
+        90.0,
+        16.6,
+        90.0
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        0.229502,
+        31.870399,
+        1.280745
+      ],
+      "occurrence": "NAUO5",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#4187",
+      "related_product_name": "MT-H9015-0006-V1_Default<\u6309\u52a0\u5de5>",
+      "same_product_occurrences": [
+        "NAUO5"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 5977.324705
+    },
+    {
+      "bbox_size_mm": [
+        35.0,
+        3.5,
+        35.0
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        0.0,
+        26.85,
+        0.0
+      ],
+      "occurrence": "NAUO6",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#9613",
+      "related_product_name": "MT-H9015-0005_Default<\u6309\u52a0\u5de5>",
+      "same_product_occurrences": [
+        "NAUO6"
+      ],
+      "shape_type": "Solid",
+      "valid": true,
+      "volume_mm3": 189.673656
+    },
+    {
+      "bbox_size_mm": [
+        15.517288,
+        5.199999,
+        3.156606
+      ],
+      "candidate_terms": [],
+      "center_mm": [
+        -3.820833,
+        33.254367,
+        -43.379723
+      ],
+      "occurrence": "NAUO7",
+      "output_candidate_score": 0,
+      "product_entity_ref": "#11015",
+      "related_product_name": "3D_H-90\u7535\u6e90\u8f6c\u63a5\u677f_2024-09-27",
+      "same_product_occurrences": [
+        "NAUO7"
+      ],
+      "shape_type": "Compound",
+      "valid": true,
+      "volume_mm3": 47.014275
+    }
+  ],
+  "model": "H-90-15",
+  "output_member_identified": false,
+  "representative_product_views": 7,
+  "review_status": "candidate_visuals_only",
+  "schema_version": "myactuator-cad-review-packet/1",
+  "series": "RMD-H",
+  "simulation_supported": false,
+  "step_sha256": "139c8d63a6021976f748c559b9744858a1ce09b8b5212777a153cedd272f698e",
+  "tool": {
+    "angular_deflection_radians": 0.12,
+    "cadquery": "2.8.0",
+    "camera": "orthographic isometric candidate-review view",
+    "linear_deflection_mm": 0.08
+  },
+  "variant_id": "step-366cf26f0cefc026b98c",
+  "vendor_relative_path": "RMD-H/H-90-15/vendor/H-90-15-241210/RMD-H-90-15.STEP"
+}

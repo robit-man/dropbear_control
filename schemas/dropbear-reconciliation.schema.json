@@ -1,0 +1,373 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.org/schemas/dropbear-reconciliation.schema.json",
+  "title": "Fail-closed Dropbear cross-layer reconciliation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "authority",
+    "generated_from",
+    "summary",
+    "actuators",
+    "ros_leg_groups",
+    "layer_interfaces",
+    "conflicts",
+    "admission"
+  ],
+  "properties": {
+    "schema_version": { "const": "dropbear-reconciliation/1" },
+    "artifact_id": { "const": "dropbear-cross-layer-reconciliation" },
+    "authority": { "const": "derived_observation_only" },
+    "generated_from": { "$ref": "#/$defs/generatedFrom" },
+    "summary": { "$ref": "#/$defs/summary" },
+    "actuators": {
+      "type": "array",
+      "minItems": 12,
+      "maxItems": 12,
+      "items": { "$ref": "#/$defs/actuator" }
+    },
+    "ros_leg_groups": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": { "$ref": "#/$defs/rosLegGroup" }
+    },
+    "layer_interfaces": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 10,
+      "items": { "$ref": "#/$defs/layerInterface" }
+    },
+    "conflicts": {
+      "type": "array",
+      "minItems": 7,
+      "items": { "$ref": "#/$defs/conflict" }
+    },
+    "admission": { "$ref": "#/$defs/admission" }
+  },
+  "$defs": {
+    "nullableString": { "type": ["string", "null"] },
+    "nullableNumber": { "type": ["number", "null"] },
+    "nonemptyString": { "type": "string", "minLength": 1 },
+    "stringList": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/nonemptyString" },
+      "uniqueItems": true
+    },
+    "sourceRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_id", "repository_commit", "path", "sha256", "authority"],
+      "properties": {
+        "source_id": { "pattern": "^[a-z][a-z0-9_]+$", "type": "string" },
+        "repository_commit": { "pattern": "^[0-9a-f]{40}$", "type": "string" },
+        "path": { "$ref": "#/$defs/nonemptyString" },
+        "sha256": { "pattern": "^[0-9a-f]{64}$", "type": "string" },
+        "authority": { "const": "upstream_observation_only" }
+      }
+    },
+    "generatedFrom": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dropbear_repository_commit",
+        "canonical_configuration_id",
+        "canonical_configuration_revision",
+        "canonical_configuration_digest",
+        "canonical_config_file_sha256",
+        "source_files",
+        "tool_id",
+        "tool_version"
+      ],
+      "properties": {
+        "dropbear_repository_commit": { "pattern": "^[0-9a-f]{40}$", "type": "string" },
+        "canonical_configuration_id": { "$ref": "#/$defs/nonemptyString" },
+        "canonical_configuration_revision": { "type": "integer", "minimum": 1 },
+        "canonical_configuration_digest": { "pattern": "^[0-9a-f]{64}$", "type": "string" },
+        "canonical_config_file_sha256": { "pattern": "^[0-9a-f]{64}$", "type": "string" },
+        "source_files": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 7,
+          "items": { "$ref": "#/$defs/sourceRecord" }
+        },
+        "tool_id": { "const": "generate-dropbear-reconciliation" },
+        "tool_version": { "const": "1.0.0" }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonical_actuator_count",
+        "low_level_command_address_observation_count",
+        "external_sensor_observation_count",
+        "ros_leg_command_joint_count",
+        "evidence_backed_ros_actuator_mapping_count",
+        "installed_identity_count",
+        "runtime_route_count",
+        "valid_calibration_count",
+        "accepted_cad_binding_count",
+        "physical_hardware_plugin_count",
+        "motion_enable_allowed"
+      ],
+      "properties": {
+        "canonical_actuator_count": { "const": 12 },
+        "low_level_command_address_observation_count": { "const": 12 },
+        "external_sensor_observation_count": { "const": 10 },
+        "ros_leg_command_joint_count": { "const": 10 },
+        "evidence_backed_ros_actuator_mapping_count": { "const": 0 },
+        "installed_identity_count": { "const": 0 },
+        "runtime_route_count": { "const": 0 },
+        "valid_calibration_count": { "const": 0 },
+        "accepted_cad_binding_count": { "const": 0 },
+        "physical_hardware_plugin_count": { "const": 0 },
+        "motion_enable_allowed": { "const": false }
+      }
+    },
+    "lowLevelObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "legacy_request_arbitration_id",
+        "arithmetic_candidate_node_id",
+        "evidence_status",
+        "candidate_is_installed_route",
+        "source_id"
+      ],
+      "properties": {
+        "legacy_request_arbitration_id": { "type": "integer", "minimum": 0, "maximum": 2047 },
+        "arithmetic_candidate_node_id": { "type": "integer", "minimum": 1, "maximum": 32 },
+        "evidence_status": { "const": "unverified_command_address_observation" },
+        "candidate_is_installed_route": { "const": false },
+        "source_id": { "const": "legacy_low_level" }
+      }
+    },
+    "installedIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "manufacturer",
+        "series",
+        "model",
+        "hardware_revision",
+        "drive_firmware",
+        "protocol_name",
+        "protocol_revision",
+        "transport",
+        "control_mode",
+        "status"
+      ],
+      "properties": {
+        "manufacturer": { "type": "null" },
+        "series": { "type": "null" },
+        "model": { "type": "null" },
+        "hardware_revision": { "type": "null" },
+        "drive_firmware": { "type": "null" },
+        "protocol_name": { "type": "null" },
+        "protocol_revision": { "type": "null" },
+        "transport": { "type": "null" },
+        "control_mode": { "type": "null" },
+        "status": { "const": "unresolved" }
+      }
+    },
+    "route": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["bus_id", "native_node_id", "owner_controller_node_id", "status"],
+      "properties": {
+        "bus_id": { "type": "null" },
+        "native_node_id": { "type": "null" },
+        "owner_controller_node_id": { "type": "null" },
+        "status": { "const": "unresolved" }
+      }
+    },
+    "limitProvenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["vendor_rating", "software_limit", "measured_safe_limit", "runtime_derate", "effective_limit", "status"],
+      "properties": {
+        "vendor_rating": { "type": "null" },
+        "software_limit": { "type": "null" },
+        "measured_safe_limit": { "type": "null" },
+        "runtime_derate": { "type": "null" },
+        "effective_limit": { "type": "null" },
+        "status": { "const": "missing" }
+      }
+    },
+    "calibration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "calibration_id",
+        "zero_reference_rad",
+        "motor_to_joint_sign",
+        "output_per_motor_ratio",
+        "home_or_hard_stop_procedure",
+        "recorded_at",
+        "tool_id",
+        "operator_id",
+        "invalidation_conditions",
+        "status"
+      ],
+      "properties": {
+        "calibration_id": { "type": "null" },
+        "zero_reference_rad": { "type": "null" },
+        "motor_to_joint_sign": { "type": "null" },
+        "output_per_motor_ratio": { "type": "null" },
+        "home_or_hard_stop_procedure": { "type": "null" },
+        "recorded_at": { "type": "null" },
+        "tool_id": { "type": "null" },
+        "operator_id": { "type": "null" },
+        "invalidation_conditions": { "type": "array", "maxItems": 0 },
+        "status": { "const": "missing" }
+      }
+    },
+    "feedback": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["native_drive_status", "external_sensor_id", "external_sensor_status"],
+      "properties": {
+        "native_drive_status": { "const": "unknown" },
+        "external_sensor_id": { "$ref": "#/$defs/nullableString" },
+        "external_sensor_status": { "enum": ["missing", "unverified_observation"] }
+      }
+    },
+    "cadBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["asset_id", "housing_member", "output_member", "joint_origin_xyz_m", "joint_axis_xyz", "status"],
+      "properties": {
+        "asset_id": { "type": "null" },
+        "housing_member": { "type": "null" },
+        "output_member": { "type": "null" },
+        "joint_origin_xyz_m": { "type": "null" },
+        "joint_axis_xyz": { "type": "null" },
+        "status": { "const": "unknown" }
+      }
+    },
+    "actuator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actuator_id",
+        "canonical_joint_name",
+        "chirality",
+        "semantic_joint",
+        "low_level_observation",
+        "installed_identity",
+        "route",
+        "limit_provenance",
+        "calibration",
+        "feedback",
+        "cad_binding",
+        "ros_joint_ids",
+        "mapping_status",
+        "motion_ready",
+        "blockers"
+      ],
+      "properties": {
+        "actuator_id": { "$ref": "#/$defs/nonemptyString" },
+        "canonical_joint_name": { "pattern": "^(left|right)_(hip_yaw|hip_roll|hip_pitch|knee|inner_calf|outer_calf)$", "type": "string" },
+        "chirality": { "enum": ["left", "right"] },
+        "semantic_joint": { "enum": ["hip_yaw", "hip_roll", "hip_pitch", "knee", "inner_calf", "outer_calf"] },
+        "low_level_observation": { "$ref": "#/$defs/lowLevelObservation" },
+        "installed_identity": { "$ref": "#/$defs/installedIdentity" },
+        "route": { "$ref": "#/$defs/route" },
+        "limit_provenance": { "$ref": "#/$defs/limitProvenance" },
+        "calibration": { "$ref": "#/$defs/calibration" },
+        "feedback": { "$ref": "#/$defs/feedback" },
+        "cad_binding": { "$ref": "#/$defs/cadBinding" },
+        "ros_joint_ids": { "type": "array", "maxItems": 0 },
+        "mapping_status": { "const": "unresolved_no_guess" },
+        "motion_ready": { "const": false },
+        "blockers": {
+          "type": "array",
+          "minItems": 8,
+          "items": { "$ref": "#/$defs/nonemptyString" },
+          "uniqueItems": true
+        }
+      }
+    },
+    "rosLegGroup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "controller_id",
+        "chirality",
+        "joint_ids",
+        "canonical_actuator_ids",
+        "mapping_status",
+        "command_interface",
+        "state_interface",
+        "open_loop_control",
+        "controller_manager_rate_hz",
+        "hardware_plugin",
+        "physical_hardware_plugin_present",
+        "active_limit_observation"
+      ],
+      "properties": {
+        "controller_id": { "enum": ["left_leg_controller", "right_leg_controller"] },
+        "chirality": { "enum": ["left", "right"] },
+        "joint_ids": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": { "$ref": "#/$defs/nonemptyString" },
+          "uniqueItems": true
+        },
+        "canonical_actuator_ids": { "type": "array", "maxItems": 0 },
+        "mapping_status": { "const": "unresolved_no_guess" },
+        "command_interface": { "const": "position" },
+        "state_interface": { "const": "position" },
+        "open_loop_control": { "const": true },
+        "controller_manager_rate_hz": { "const": 10 },
+        "hardware_plugin": { "const": "gazebo_ros2_control/GazeboSystem" },
+        "physical_hardware_plugin_present": { "const": false },
+        "active_limit_observation": { "const": "min_equals_max_equals_negative_pi" }
+      }
+    },
+    "layerInterface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["layer_id", "authority_status", "input_contract", "output_contract", "rate_hz", "units_and_frame", "owner", "failure_propagation", "physical_motion_authority", "blockers"],
+      "properties": {
+        "layer_id": { "pattern": "^[a-z][a-z0-9_]+$", "type": "string" },
+        "authority_status": { "enum": ["missing", "demonstration_only", "simulation_only", "offline_unbound", "offline_core", "offline_no_physical_driver", "unverified_observation", "incomplete_observation"] },
+        "input_contract": { "$ref": "#/$defs/nonemptyString" },
+        "output_contract": { "$ref": "#/$defs/nonemptyString" },
+        "rate_hz": { "$ref": "#/$defs/nullableNumber" },
+        "units_and_frame": { "$ref": "#/$defs/nonemptyString" },
+        "owner": { "$ref": "#/$defs/nullableString" },
+        "failure_propagation": { "$ref": "#/$defs/nonemptyString" },
+        "physical_motion_authority": { "const": false },
+        "blockers": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/nonemptyString" }, "uniqueItems": true }
+      }
+    },
+    "conflict": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["conflict_id", "severity", "observation", "unsafe_inference_prohibited", "required_resolution", "source_ids"],
+      "properties": {
+        "conflict_id": { "pattern": "^[a-z][a-z0-9-]+$", "type": "string" },
+        "severity": { "enum": ["critical", "high", "medium"] },
+        "observation": { "$ref": "#/$defs/nonemptyString" },
+        "unsafe_inference_prohibited": { "$ref": "#/$defs/nonemptyString" },
+        "required_resolution": { "$ref": "#/$defs/nonemptyString" },
+        "source_ids": { "type": "array", "minItems": 1, "items": { "pattern": "^[a-z][a-z0-9_]+$", "type": "string" }, "uniqueItems": true }
+      }
+    },
+    "admission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["motion_enable_allowed", "generation_policy", "required_hold_points"],
+      "properties": {
+        "motion_enable_allowed": { "const": false },
+        "generation_policy": { "const": "incomplete entries emit explicit denial and never generate runtime routes or guessed mappings" },
+        "required_hold_points": { "type": "array", "minItems": 9, "items": { "$ref": "#/$defs/nonemptyString" }, "uniqueItems": true }
+      }
+    }
+  }
+}

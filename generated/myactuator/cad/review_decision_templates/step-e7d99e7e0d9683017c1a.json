@@ -1,0 +1,173 @@
+{
+  "configuration_id": "cadcfg-a1d2e03798f1e51ebbdb",
+  "decision_id": "caddecision-7201eb1ae77673ed653f",
+  "disposition": null,
+  "frame_review": {
+    "evidence_refs": [
+      "assets/myactuator/cad_hypotheses/x12-320-step-e7d99e7e0d9683017c1a.json",
+      "generated/myactuator/cad/candidate_export_reports/step-e7d99e7e0d9683017c1a.json",
+      "generated/myactuator/cad/review_packet_manifest.json#step-e7d99e7e0d9683017c1a",
+      "generated/myactuator/cad/review_packets/step-e7d99e7e0d9683017c1a/overview.png",
+      "generated/myactuator/cad/review_packets/step-e7d99e7e0d9683017c1a/member-sheet.png"
+    ],
+    "origin_reference": "candidate assumption: source-axis intersection at source coordinate origin; reviewer must identify the physical reference plane",
+    "origin_source_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "rationale": null,
+    "source_axis_unit": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "source_to_canonical": [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      -1.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "status": "candidate"
+  },
+  "joint_review": {
+    "axis_unit": [
+      0.0,
+      0.0,
+      1.0
+    ],
+    "evidence_refs": [
+      "assets/myactuator/cad_hypotheses/x12-320-step-e7d99e7e0d9683017c1a.json",
+      "generated/myactuator/cad/candidate_export_reports/step-e7d99e7e0d9683017c1a.json",
+      "generated/myactuator/cad/review_packet_manifest.json#step-e7d99e7e0d9683017c1a",
+      "generated/myactuator/cad/review_packets/step-e7d99e7e0d9683017c1a/overview.png",
+      "generated/myactuator/cad/review_packets/step-e7d99e7e0d9683017c1a/member-sheet.png"
+    ],
+    "joint_type": "continuous",
+    "origin_m": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "physical_sign_resolved": false,
+    "positive_direction": "right-hand rotation about canonical +Z; physical motor/encoder sign unresolved",
+    "rationale": null,
+    "status": "candidate",
+    "zero_definition": "exact vendor STEP assembly placement under the candidate partition"
+  },
+  "member_review": {
+    "evidence_refs": [
+      "assets/myactuator/cad_hypotheses/x12-320-step-e7d99e7e0d9683017c1a.json",
+      "generated/myactuator/cad/candidate_export_reports/step-e7d99e7e0d9683017c1a.json",
+      "generated/myactuator/cad/review_packet_manifest.json#step-e7d99e7e0d9683017c1a",
+      "generated/myactuator/cad/review_packets/step-e7d99e7e0d9683017c1a/overview.png",
+      "generated/myactuator/cad/review_packets/step-e7d99e7e0d9683017c1a/member-sheet.png"
+    ],
+    "housing_occurrences": [
+      "NAUO1",
+      "NAUO2",
+      "NAUO4",
+      "NAUO6",
+      "NAUO7",
+      "NAUO8",
+      "NAUO9",
+      "NAUO10",
+      "NAUO11",
+      "NAUO12",
+      "NAUO13",
+      "NAUO18"
+    ],
+    "output_occurrences": [
+      "NAUO3",
+      "NAUO5",
+      "NAUO14",
+      "NAUO15",
+      "NAUO16",
+      "NAUO17"
+    ],
+    "rationale": null,
+    "status": "candidate"
+  },
+  "question_responses": [
+    {
+      "evidence_refs": [],
+      "question": "Confirm whether NAUO4 and its eight M3 fasteners are stationary housing geometry or co-rotate with the output.",
+      "question_sha256": "5202cf94118a0fcc9294e47f190667ae03af7bb1c7c261c70b2c3eeab00b7c4e",
+      "resolution": "unanswered",
+      "response": null
+    },
+    {
+      "evidence_refs": [],
+      "question": "Confirm whether NAUO14 through NAUO17 and NAUO5 co-rotate with the externally accessible output.",
+      "question_sha256": "04168e766b9b86553113b00312ad4c9b0a2209ae9ea328737c74db78dc91e1e5",
+      "resolution": "unanswered",
+      "response": null
+    },
+    {
+      "evidence_refs": [],
+      "question": "Confirm the exact output reference plane and therefore the source-axis origin rather than assuming source Y equals zero.",
+      "question_sha256": "3e6ea64c4c80f3d9b17f00a0e77ed5cf80d6a3bd2f60856fc8aa2d89e6b19af3",
+      "resolution": "unanswered",
+      "response": null
+    },
+    {
+      "evidence_refs": [],
+      "question": "Confirm the physical encoder-positive direction separately from the geometry-only right-hand +Z simulator convention.",
+      "question_sha256": "b90af292764732bbaecd0213f30b0c381ead21b7e57dc0786f23f715120673b0",
+      "resolution": "unanswered",
+      "response": null
+    },
+    {
+      "evidence_refs": [],
+      "question": "Confirm the hypothesis for this exact no-brake/brake/package selector before merging any duplicate or sibling source.",
+      "question_sha256": "ea5040221731eff82818302c008f5524eb84aeafb28c811b8e8d7126292531b6",
+      "resolution": "unanswered",
+      "response": null
+    }
+  ],
+  "record_state": "draft",
+  "redistribution_review": {
+    "evidence_refs": [],
+    "rationale": null,
+    "status": "license_review_required"
+  },
+  "reviewer": {
+    "independence_attested": null,
+    "review_assertion": null,
+    "reviewed_at": null,
+    "reviewer_id": null,
+    "signature_evidence_refs": []
+  },
+  "schema_version": "myactuator-cad-review-decision/1",
+  "semantic_review_complete": false,
+  "source_hashes": {
+    "candidate_export_report_sha256": "7a71bab526f784dee6ca498c251191dd11a03f9e540c62e589213a3fc3d63239",
+    "candidate_hypothesis_sha256": "bc354162c0654fec7a0c9cf1e9ce0a61bf2c9a730684a30875ddfb6ec929a0b1",
+    "inspection_sha256": "f898802c65256c33836358af826e27462660e41975422c272b9f85a2f4acc3f9",
+    "review_packet_manifest_sha256": "472ef40fd99e02239bd4ba2992732fd4241afa1041ac8e1de65320cafc9585d0",
+    "step_sha256": "9b1710aef09916c8da02b4e6b750da6bbfe2ba44cad6ba03cd1b53e3858e5eea"
+  },
+  "support_granted": false,
+  "unit_review": {
+    "evidence_refs": [
+      "generated/myactuator/cad/step_inspection.json#step-e7d99e7e0d9683017c1a"
+    ],
+    "override_rationale": null,
+    "scale_to_m": 0.001,
+    "source_length_unit": "millimetre",
+    "status": "candidate"
+  },
+  "variant_id": "step-e7d99e7e0d9683017c1a"
+}

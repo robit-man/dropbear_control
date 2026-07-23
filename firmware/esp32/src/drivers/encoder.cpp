@@ -67,7 +67,7 @@ void Encoder::resetPosition() {
     _lastPosition = 0;
 }
 
-void Encoder::setResolution(uint16_t resolution) {
+void Encoder::setResolution(uint32_t resolution) {
     _resolution = resolution;
 }
 
