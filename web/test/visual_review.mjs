@@ -53,7 +53,8 @@ async function main() {
   // ---- 2. Start simulation ----
   await page.click("#btn-sim");
   await sleep(600);
-  // First motor is auto-selected by startSim(); just enable + drive it.
+  // First motor is auto-selected by startSim(); open its module, then drive it.
+  await page.click('[data-module="detail"]');
   await page.click("#c-enable");
   // Drive a sustained torque command so the bridge pins show real current.
   await page.selectOption("#c-mode", "torque");
@@ -85,7 +86,9 @@ async function main() {
   console.log("FAULT_LED active:", faultLed?.active, "metric:", faultLed?.metric);
 
   // ---- 4. Close-up of hardware panel only ----
-  const hw = await page.$(".hardware");
+  await page.click('[data-module="hardware"]');
+  await sleep(300);
+  const hw = await page.$('[data-view="hardware"]');
   if (hw) await hw.screenshot({ path: `${OUT}/04-hardware-closeup.png` });
 
   // ---- 5. Switch board to S3 and re-capture ----

@@ -59,6 +59,7 @@ check("css no longer uses 5-col layout", !css.body.includes("240px 1fr 240px 320
 const app = await get(base + "/js/app.js");
 check("app.js wires sidebar nav", app.body.includes("setupSidebar"));
 check("app.js has showModule switcher", app.body.includes("function showModule"));
+check("app.js ID helper calls omit CSS prefixes", !app.body.includes('$("#'));
 
 // Command catalog: the dashboard must serve the full MyActuator command array
 // (COMMANDS + NATIVE_RMDX_COMMANDS 0x30–0xDA) so operators can issue commands.

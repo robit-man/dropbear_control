@@ -213,19 +213,19 @@ function wireControls() {
     log(`Clear fault motor ${state.selected.id}`, "ok");
     renderDetail();
   };
-      $("c-send").onclick  =  () => {
-        if (!state.selected) return;
-        const mode = $("#c-mode").value;
-        const v = parseFloat($("#c-target").value) || 0;
-        const useDeg = $("#c-unit-deg").checked;
-        if (mode === "position") {
-          if (useDeg) v = v * Math.PI / 180;
-          state.selected.setPosition(v);
-        } else if (mode === "velocity") state.selected.setVelocity(v);
-        else state.selected.setTorque(v);
-        log(`Motor ${state.selected.id} ${mode} -> ${v}`);
-        renderDetail();
-      };
+  $("c-send").onclick = () => {
+    if (!state.selected) return;
+    const mode = $("c-mode").value;
+    let v = parseFloat($("c-target").value) || 0;
+    const useDeg = $("c-unit-deg").checked;
+    if (mode === "position") {
+      if (useDeg) v = v * Math.PI / 180;
+      state.selected.setPosition(v);
+    } else if (mode === "velocity") state.selected.setVelocity(v);
+    else state.selected.setTorque(v);
+    log(`Motor ${state.selected.id} ${mode} -> ${v}`);
+    renderDetail();
+  };
   $("c-overtemp").onclick = () => {
     if (!state.selected) return;
     state.selected.temperature = 130;
