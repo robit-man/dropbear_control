@@ -19,11 +19,6 @@ await page.waitForFunction(() => window.dropbearTwin?.robot?.ready === true);
 await page.waitForFunction(() => window.dropbearTwin?.robot?.poseVersion > 2);
 await page.waitForFunction(() => window.dropbearTwin?.robot?.groundContact?.valid === true);
 await page.waitForFunction(() => window.dropbearTwin?.sim?.loadCells?.reduce((sum, value) => sum + value, 0) > 41);
-await page.locator("#usd-resolution").fill("150");
-await page.waitForFunction(() => window.dropbearTwin.robot.resolutionScale === 1.5);
-if ((await page.locator("#usd-resolution-output").textContent()) !== "150%") {
-  throw new Error("USD resolution output did not update");
-}
 await page.evaluate(() => {
   window.dropbearTwin.robot.fit();
   window.dropbearTwin.robot.renderer.render(
@@ -31,9 +26,16 @@ await page.evaluate(() => {
     window.dropbearTwin.robot.camera,
   );
 });
-await page.waitForTimeout(250);
-
+// Chromium may restore the large USD WebGL context after the loader has
+// completed; wait for that first stable rendered frame before capturing.
+await page.waitForTimeout(3500);
 await page.screenshot({ path: `${OUT}/01-guarded-sim.png` });
+
+await page.locator("#usd-resolution").fill("150");
+await page.waitForFunction(() => window.dropbearTwin.robot.resolutionScale === 1.5);
+if ((await page.locator("#usd-resolution-output").textContent()) !== "150%") {
+  throw new Error("USD resolution output did not update");
+}
 if ((await page.locator(".joint-card").count()) !== 12) throw new Error("Expected twelve joint cards");
 if ((await page.locator("#system-state").textContent())?.trim() !== "GUARDED PAUSE") throw new Error("Guarded pause missing");
 if (!(await page.locator("#robot-load-status").textContent())?.includes("294,204")) throw new Error("Full USD model did not load");
@@ -44,7 +46,7 @@ const guardedContact = await page.evaluate(() => ({
 }));
 if (guardedContact.contact.guide !== "Z_ONLY") throw new Error("Expected Z-only root guide");
 if (guardedContact.markerCount !== 4) throw new Error("Expected heel/toe markers for both feet");
-if (Math.abs(guardedContact.loadCellTotal - 42) > 0.01) {
+if (Math.abs(guardedContact.loadCellTotal - 56.2289776) > 0.01) {
   throw new Error(`Contact loads do not resolve robot mass: ${guardedContact.loadCellTotal}`);
 }
 if (Math.min(
@@ -56,10 +58,9 @@ if (Math.min(
   throw new Error("Unilateral ground constraint allowed foot penetration");
 }
 
-await page.locator("#scenario").selectOption("rl-policy");
 await page.locator("#vertical-constraint").uncheck({ force: true });
 await page.waitForFunction(
-  () => window.dropbearTwin.robot.groundContact?.guide === "FREE_ROOT_GRAVITY",
+  () => window.dropbearTwin.robot.groundContact?.guide === "FREE_ROOT_FORCE_CONTACT",
 );
 await page.waitForTimeout(1300);
 const freeRoot = await page.evaluate(() => ({
@@ -161,7 +162,8 @@ if (await page.locator("#fault-sensor").isDisabled() || await page.locator("#fau
   throw new Error("Leg fault controls did not restore after category switch");
 }
 
-await page.click("#run-demo");
+await page.locator("#scenario").selectOption("walk");
+await page.click("#sim-toggle");
 await page.waitForTimeout(900);
 await page.waitForFunction(
   () => Math.max(
@@ -208,6 +210,23 @@ if (!(await page.locator("#left-calf-pair").textContent())?.includes("/")) {
 }
 await page.screenshot({ path: `${OUT}/02-running-sim.png` });
 
+await page.click("#sim-toggle");
+await page.click("#playback-mode");
+await page.waitForFunction(
+  () => window.dropbearTwin.policyPlayer.policy?.frames?.length > 0,
+  null,
+  { timeout: 10000 },
+);
+await page.click("#sim-toggle");
+await page.waitForFunction(
+  () => window.dropbearTwin.policyPlayer.playing
+    && window.dropbearTwin.policyPlayer.elapsed > 0.2,
+);
+if ((await page.locator("#system-state").textContent())?.trim() !== "CONTROL ACTIVE") {
+  throw new Error("Unified Play button did not start trained-policy playback");
+}
+await page.click("#sim-toggle");
+
 await page.locator(".joint-card").nth(4).click();
 if (await page.locator("#position-target").getAttribute("min") !== "180") {
   throw new Error("Knee lock did not set the 180° browser lower bound");
@@ -217,10 +236,16 @@ await page.click("#fault-sensor");
 await page.waitForFunction(() => document.querySelector("#fault-sensor")?.textContent === "RELEASE SENSOR");
 
 await page.click('[data-view-target="cad"]');
-await page.waitForFunction(() => document.querySelector("#cad-status")?.textContent?.includes("96,640"));
+await page.waitForFunction(() => window.dropbearTwin.cad?.ready === true);
+if (await page.locator("#cad-model").inputValue() !== "x10-s2") {
+  throw new Error("Selected knee did not switch the CAD view to its X10 motor");
+}
+if (await page.evaluate(() => window.dropbearTwin.cad.model.axis) !== "z") {
+  throw new Error("X10 output shaft is not using the source +Z axis");
+}
 if (!(await page.locator("#cad-lines").isChecked())) throw new Error("Technical CAD lines should default on");
 await page.locator("#cad-explode").check({ force: true });
-await page.locator("#cad-angle").fill("215");
+await page.locator("#cad-angle").fill("35");
 await page.waitForTimeout(350);
 await page.screenshot({ path: `${OUT}/03-step-cad.png` });
 
@@ -244,6 +269,7 @@ await page.click("#fault-can");
 
 await page.click('[data-view-target="rl"]');
 await page.locator('[data-view="rl"] h1').waitFor({ state: "visible" });
+await page.waitForTimeout(350);
 if (!(await page.locator('[data-view="rl"]').textContent())?.includes("EPOCHS / UPDATE")) {
   throw new Error("RL epoch controls missing");
 }

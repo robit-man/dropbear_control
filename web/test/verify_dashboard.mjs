@@ -54,17 +54,44 @@ check(
     && index.body.includes('id="root-z-offset"'),
 );
 check(
+  "force-contact physics status is visible",
+  index.body.includes('id="physics-runtime-status"')
+    && index.body.includes("<b>117</b> PHYSICS JOINTS")
+    && index.body.includes("<b>56.23</b> KG"),
+);
+check(
   "separate leg and arm motor categories present",
   index.body.includes('data-motor-category="legs"')
     && index.body.includes('data-motor-category="arms"'),
 );
 check(
-  "local RL lab exposes free-root and epoch controls",
+  "RL training, global epoch state, and unified playback controls are present",
   index.body.includes('data-view="rl"')
     && index.body.includes('id="rl-epochs"')
     && index.body.includes('id="rl-vertical-constraint"')
-    && index.body.includes('id="rl-load-authored"')
-    && index.body.includes('id="rl-policy-play"'),
+    && index.body.includes('id="playback-mode"')
+    && index.body.includes('<button id="playback-mode"')
+    && !index.body.includes('<input id="playback-mode"')
+    && index.body.includes('id="sim-training-panel"')
+    && index.body.includes('id="global-training-strip"')
+    && !index.body.includes('id="run-demo"'),
+);
+check(
+  "RL horizon reaches 10,000 updates with explicit reward tuning",
+  index.body.includes('id="rl-updates" type="number" min="1" max="10000"')
+    && index.body.includes('id="sim-rl-updates" type="number" min="1" max="10000"')
+    && index.body.includes('id="rl-weight-arm-swing"')
+    && index.body.includes('id="sim-rl-weight-arm-swing"')
+    && index.body.includes('id="rl-weight-closure"')
+    && index.body.includes("10 COEFFICIENTS"),
+);
+check(
+  "persistent RL session controls are present",
+  index.body.includes('id="rl-session-list"')
+    && index.body.includes('id="rl-session-new"')
+    && index.body.includes('id="rl-session-copy"')
+    && index.body.includes('id="rl-session-replay"')
+    && index.body.includes('id="rl-session-warm-start"'),
 );
 
 const dropbear = await request(`${base}/js/dropbear.js`);
@@ -95,6 +122,19 @@ check(
     && app.body.includes('sim.scenario = "rl-policy"')
     && app.body.includes("policyEpochsComplete"),
 );
+check(
+  "dashboard submits the selected reward profile",
+  app.body.includes("rewardWeightDefaults")
+    && app.body.includes('rewardWeights: readRewardWeights("rl")')
+    && app.body.includes('rewardWeights: readRewardWeights("sim-rl")'),
+);
+check(
+  "dashboard can recall, warm-start, and replay stored sessions",
+  app.body.includes('requestJson("/api/rl/sessions")')
+    && app.body.includes("applyRLSessionConfig")
+    && app.body.includes("warmStartConfig")
+    && app.body.includes("replaySelectedRLSession"),
+);
 
 const rlStatus = await request(`${base}/api/rl/status`);
 let rlState;
@@ -108,6 +148,19 @@ check(
   rlStatus.status === 200
     && Boolean(rlState)
     && Array.isArray(rlState.events),
+);
+const rlSessionsResponse = await request(`${base}/api/rl/sessions`);
+let rlSessions;
+try {
+  rlSessions = JSON.parse(rlSessionsResponse.body);
+} catch {
+  rlSessions = null;
+}
+check(
+  "persistent RL session index API served",
+  rlSessionsResponse.status === 200
+    && rlSessions?.schema === "dropbear-rl-session-index-v1"
+    && Array.isArray(rlSessions.sessions),
 );
 const rlPolicy = await request(`${base}/js/rl_policy.js`);
 check(
@@ -140,7 +193,7 @@ check(
     && robotModule.body.includes("_rawFootPatches")
     && robotModule.body.includes("setVerticalConstraintEnabled")
     && robotModule.body.includes('"FREE_ROOT_POLICY"')
-    && robotModule.body.includes('"FREE_ROOT_GRAVITY"'),
+    && robotModule.body.includes('"FREE_ROOT_FORCE_CONTACT"'),
 );
 
 const groundConstraint = await request(`${base}/js/vertical_ground_constraint.js`);
@@ -151,9 +204,37 @@ check(
     && groundConstraint.body.includes("heelLoadKg")
     && groundConstraint.body.includes("toeLoadKg"),
 );
+const forceContact = await request(`${base}/js/force_ground_contact.js`);
+check(
+  "free-root force contact integrates gravity and unilateral normal force",
+  forceContact.status === 200
+    && forceContact.body.includes("stiffnessNpm")
+    && forceContact.body.includes("normalForceN")
+    && forceContact.body.includes("verticalAccelerationMps2")
+    && forceContact.body.includes("correctionZ"),
+);
+
+const physicsStatusResponse = await request(`${base}/api/physics/status`);
+let physicsStatus;
+try {
+  physicsStatus = JSON.parse(physicsStatusResponse.body);
+} catch {
+  physicsStatus = null;
+}
+check(
+  "verified source-USD physics admission status served",
+  physicsStatusResponse.status === 200
+    && physicsStatus?.sourceUsd?.verified === true
+    && physicsStatus?.groundTruth?.rigidBodies === 93
+    && physicsStatus?.groundTruth?.authoredMasses === 93
+    && physicsStatus?.groundTruth?.collisionGroups === 93
+    && physicsStatus?.groundTruth?.physicsJoints === 117
+    && physicsStatus?.groundTruth?.forceDrives === 29,
+);
 
 const robotGlb = await request(`${base}/assets/robot/dropbear-usd-browser.glb`, "HEAD");
 const robotManifestResponse = await request(`${base}/assets/robot/dropbear-articulation.json`);
+const physicsManifestResponse = await request(`${base}/assets/robot/dropbear-physics-manifest.json`);
 check("optimized Dropbear USD cache served", robotGlb.status === 200 && Number(robotGlb.headers["content-length"]) > 2_500_000);
 let robotManifest;
 try {
@@ -162,6 +243,15 @@ try {
   robotManifest = null;
 }
 check("USD articulation manifest is valid JSON", robotManifestResponse.status === 200 && Boolean(robotManifest));
+const physicsManifest = JSON.parse(physicsManifestResponse.body);
+check(
+  "source-USD mass, inertia, collision, drive contract is retained",
+  physicsManifestResponse.status === 200
+    && physicsManifest.statistics.totalAuthoredMassKg > 56.22
+    && physicsManifest.bodies.length === 93
+    && physicsManifest.joints.length === 117
+    && physicsManifest.admission.exactCollisionGeometryRequired === true,
+);
 check(
   "USD topology statistics retained",
   robotManifest?.statistics?.rigidBodies === 93
@@ -208,15 +298,28 @@ check(
 );
 check("ground-truth RL revision retained", robotManifest?.source?.commit === "3c37aedce6d445205671d5714d05ae28b8c90e2c");
 
-const housing = await request(`${base}/assets/cad/housing-step-preview.glb`, "HEAD");
-const output = await request(`${base}/assets/cad/output-step-preview.glb`, "HEAD");
-check("housing STEP preview cache served", housing.status === 200 && Number(housing.headers["content-length"]) > 1_000_000);
-check("output STEP preview cache served", output.status === 200 && Number(output.headers["content-length"]) > 400_000);
-
-const housingStep = await request(`${base}/cad-candidate/step-e7d99e7e0d9683017c1a/housing-candidate.step`, "HEAD");
-const outputStep = await request(`${base}/cad-candidate/step-e7d99e7e0d9683017c1a/output-candidate.step`, "HEAD");
-check("full housing STEP cache served", housingStep.status === 200 && Number(housingStep.headers["content-length"]) > 0);
-check("full output STEP cache served", outputStep.status === 200 && Number(outputStep.headers["content-length"]) > 0);
+const motorCadManifestResponse = await request(`${base}/assets/cad/dropbear-motor-cad.json`);
+const motorCadManifest = JSON.parse(motorCadManifestResponse.body);
+check(
+  "X8 and X10 Dropbear motor CAD manifest served",
+  motorCadManifestResponse.status === 200
+    && motorCadManifest.motors["x8-pro"].axis === "y"
+    && motorCadManifest.motors["x10-s2"].axis === "z",
+);
+for (const key of ["x8-pro", "x10-s2"]) {
+  const housing = await request(`${base}/assets/cad/${key}/housing.glb`, "HEAD");
+  const output = await request(`${base}/assets/cad/${key}/output.glb`, "HEAD");
+  check(`${key} housing/output STEP previews served`, housing.status === 200
+    && output.status === 200
+    && Number(housing.headers["content-length"]) > 50_000
+    && Number(output.headers["content-length"]) > 10_000);
+}
+const x8Step = await request(`${base}/cad-source/dropbear-x8-pro.step`, "HEAD");
+const x10Step = await request(`${base}/cad-source/dropbear-x10-s2.step`, "HEAD");
+check("full X8/X10 source STEP caches served", x8Step.status === 200
+  && x10Step.status === 200
+  && Number(x8Step.headers["content-length"]) > 0
+  && Number(x10Step.headers["content-length"]) > 0);
 
 const three = await request(`${base}/node_modules/three/build/three.module.js`, "HEAD");
 check("local Three.js dependency served", three.status === 200);

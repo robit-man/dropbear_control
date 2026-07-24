@@ -24,7 +24,6 @@ page.on("pageerror", (error) => errors.push(`page: ${error.message}`));
 
 await page.goto(BASE, { waitUntil: "networkidle" });
 await page.waitForFunction(() => window.dropbearTwin?.robot?.ready === true);
-await page.locator("#scenario").selectOption("rl-policy");
 
 async function reviewPolicy(url, label, screenshotName) {
   await page.evaluate(async ({ policyUrl, policyLabel }) => {

@@ -36,20 +36,20 @@ progress.
 
 | Area | Implemented now | Boundary |
 |---|---|---|
-| Browser USD twin | 90 rendered bodies from a 294,204-triangle cache; manifest retains 93 rigid bodies, 116 physical joints, and 27 closures | Kinematic SIL visualization, not rigid-body dynamics |
+| Browser USD twin | 90 rendered bodies from a 294,204-triangle cache; the source-physics manifest retains 93 rigid bodies, 93 masses/inertias, 93 collision groups, 117 physical joints, 29 force drives, and 27 retained closures | Browser articulation is kinematic; full-body dynamics remain an external backend |
 | Leg motor map | Twelve low-level CAN nodes, `0x141`–`0x14C`, bound to the corresponding USD motor axes | Source-grounded simulation; no physical CAN authority |
 | Arm motor map | Ten selectable USD shafts: eight RMD-X8 arm drives and two torso-mounted RMD-X10 shoulder-pitch drives | Arm CAN IDs are not present in the observed leg firmware and remain deliberately unmapped |
 | Elbow linkage | `LH/RH_Revolute41` actuator input drives five passive joints against three retained loop constraints on each arm | Kinematic DLS closure; Isaac/PhysX remains dynamics-authoritative |
 | Calf/ankle linkage | Four X8 crank axes, tie rods, ankle contacts, foot pivot, and damped least-squares closure projection | Isaac/PhysX remains dynamics-authoritative |
-| Foot-ground contact | Actual foot-body bounds produce left/right heel and toe patches, unilateral no-penetration projection, gravity settling, and four load-cell values | Browser contact remains a teaching approximation without friction or impact dynamics |
+| Foot-ground contact | Actual foot-body bounds produce four patches; free-root mode integrates gravity and compliant unilateral normal force using the USD-authored `56.229 kg` mass, reports newtons/load, and enforces a non-penetration barrier | Force-based root contact is real but is not a 93-body collision solve; friction, self-collision, and full PhysX dynamics remain external |
 | Root modes | Switchable Z guide plus free-root gravity/policy playback with visible height, roll, and pitch failure | Simplified browser free body; not a rigid-body solver |
 | Knee safety datum | Both knees are limited to encoder `180°`–`360°`; ROS/RL use `0`–`π` rad from the same lock datum | Software constraint; not a certified physical stop |
 | Walking demo | Forward alternating gait with loading, rearward push-off, early swing, moderated knee lift, advance, and placement | Demonstration trajectory, not a learned or dynamically stable gait |
-| Actuator CAD | STEP-derived housing/output GLB previews, technical lines, explode control, and original STEP downloads | Browser previews are simplified visualization caches |
+| Actuator CAD | Automatic X8/X10 selection from the active Dropbear axis; exact source STEP-derived housing/output previews articulate coaxially about X8 `+Y` and X10 `+Z`, with technical lines, explode control, and original STEP downloads | Visual B-Rep partitions, not calibrated dynamics/support authority |
 | Controller lab | Dimensional ESP32 DevKit reference with 19 source/inferred signal routes | Board-level visualization, not circuit simulation |
 | Firmware console | Source-shaped serial grammar, task cadence, CAN traffic, sensor stream, and fault injection | Clean-room behavioral twin, not instruction-set emulation |
 | ROS 2 | Jazzy bringup, `joint_trajectory_controller`, mock hardware, action/topic demo, validation, and local WebSocket bridge | ROS side is SIL; the dashboard does not yet auto-switch to WebSocket state |
-| Walking RL | Local 22-action/88-observation PPO experiments, update-by-update USD replay, free-root balance, COM stability, baseline-gait bias, arm swing, contacts, four closed-chain mechanisms, and a tracked 1,000-epoch reference policy | Teaching plant and policy-generation lab; not Isaac/PhysX validation |
+| Walking RL | Local 22-action/88-observation PPO experiments launched from Robot Sim or RL Lab; up to 10,000 training updates, ten adjustable reward/penalty coefficients, persistent run sessions, exact parameter recall, checkpoint warm-start, prior-policy replay, update-by-update USD replay, site-wide epoch/state telemetry, free-root balance, contacts, four closed-chain mechanisms, and a tracked 1,000-epoch reference policy | Teaching plant and policy-generation lab; every session identifies its backend and is not promoted to Isaac/PhysX validation |
 | Physical hardware path | Existing host, firmware, evidence, and fail-closed admission scaffolding | Deliberately disabled pending reviewed hardware evidence and HIL gates |
 
 ## Ground-truth revisions
@@ -61,10 +61,24 @@ The browser control twin is pinned to:
 | [`Hyperspawn/Dropbear`](https://github.com/Hyperspawn/Dropbear/tree/main/Control%20System/Low%20Level%20Control) | `13cf5ecaa39b8b89c794fe905dcea0490cfa7726` | ESP32 task, pin, serial, sensor, and CAN behavior |
 | [`Hyperspawn/dropbear_rl`](https://github.com/Hyperspawn/dropbear_rl) | `3c37aedce6d445205671d5714d05ae28b8c90e2c` | `dropbear.usd`, articulation topology, visual meshes, and closed-loop leg geometry |
 
-The 402 MB source USD is not vendored. The tracked GLB is a decimated visual
-cache, and `web/assets/robot/dropbear-articulation.json` retains the source
-identity, body transforms, motor bindings, closure anchors, and browser
-kinematic adaptations.
+The 421,104,436-byte source USD is locally cached at
+`artifacts/usd/dropbear.usd` and ignored by Git. Its SHA-256 is verified at
+runtime. The tracked GLB is a decimated visual cache;
+`web/assets/robot/dropbear-articulation.json` retains browser kinematics, while
+`web/assets/robot/dropbear-physics-manifest.json` is extracted directly from
+the source USD and retains its mass, inertia, collision, gravity, joint, and
+force-drive contract.
+
+Rebuild the local cache and tracked physics manifest with:
+
+```bash
+python3 tools/cache_dropbear_usd.py
+python3 -m venv .physics-venv
+.physics-venv/bin/pip install -r requirements-physics-lock.txt
+.physics-venv/bin/python tools/export_dropbear_physics_manifest.py \
+  artifacts/usd/dropbear.usd \
+  web/assets/robot/dropbear-physics-manifest.json
+```
 
 ## System architecture
 
@@ -75,7 +89,7 @@ flowchart LR
     CAN --> USD[Dropbear USD articulation]
     ARM[10 arm shafts: 8 X8 + 2 X10] --> USD
     USD --> CLS[Leg and elbow closure solvers]
-    CLS --> GND[Heel/toe patches and switchable root mode]
+    CLS --> GND[Heel/toe force contact and switchable root mode]
     GND --> UI[Contact, load, ankle, motor and residual telemetry]
 
     ROS[ROS 2 joint trajectory controller] --> WS[Loopback WebSocket bridge]
@@ -155,12 +169,14 @@ input is solved together with `Revolute42`, the passive elbow, `Revolute32`,
 ## Foot contact and vertical constraint
 
 The browser derives heel and toe patches from the lowest vertices of each
-actual foot body in the current USD pose. A small software plant then:
+actual foot body in the current USD pose. Free-root contact then:
 
-1. integrates gravity along the world Z axis;
-2. projects any ground penetration back to the plane;
-3. detects heel and toe contact within a 4 mm band; and
-4. distributes the 42 kg simulated mass across the active patches.
+1. integrates the USD-authored `9.80665 m/s²` gravity;
+2. solves compliant unilateral spring/damper normal forces at each patch;
+3. uses the exact `56.2289776 kg` sum of all 93 authored body masses;
+4. converts normal force to four inspectable load-cell values; and
+5. applies a final non-penetration safety barrier so no rendered foot can pass
+   through the floor.
 
 Those four patch loads feed the dashboard’s optional load-cell channels, and
 the root-Z offset and contact state remain inspectable in the robot view. This
@@ -174,9 +190,12 @@ roll, and pitch. An untrained or failed policy therefore falls instead of
 being held upright. Exported policies can drive the same root state from their
 recorded height/attitude/contact sequence.
 
-This mode still does not simulate friction, tangential impulses,
-self-collision, or authoritative center-of-pressure dynamics. Isaac/PhysX
-remains required for dynamically reliable walking and contact validation.
+This root-contact kernel is force based, but it still does not solve all 93
+rigid bodies, authored collision meshes, friction, tangential impulses, or
+self-collision. `/api/physics/status` therefore reports the verified source
+USD and browser force contact separately from the high-fidelity
+`isaac-physx-usd` backend. The latter is admitted only when Isaac Sim is
+installed; it is currently offline on the bundled local Python runtime.
 
 ## Walking demonstration
 
@@ -221,20 +240,29 @@ python3 web/serve.py 8000
 Open <http://localhost:8000>.
 
 The dashboard starts in guarded pause even though the observed source firmware
-sets `playMode=true` during setup. Press **RUN FULL DEMO** to start the forward
-alternating gait.
+sets `playMode=true` during setup. Choose either **Presets** or **RL Policies**
+in the Robot Sim source switch, select one source, and use the single top-bar
+**Play/Stop** control. Selecting a source arms it without starting motion.
+The Robot Sim training drawer can launch PPO and replay each completed update
+on the same full USD stage; the global training strip retains experiment,
+epoch, reward, and upright state while navigating among views.
+The RL Lab’s **Training sessions** panel indexes every retained experiment.
+Select any run to copy its exact optimizer, curriculum, guide, arm, and reward
+parameters; optionally warm-start from its checkpoint; or replay its policy.
+**New run** clears only the selection—stored history is never deleted.
 
 The six engineering views are:
 
 - **Robot Sim** — complete USD visualization, motor selection, live gait and
   linkage/contact telemetry, separate leg and arm motor categories, faults,
   and configurable 50–200% render resolution;
-- **Actuator CAD** — STEP-derived actuator solids with technical lines and
-  articulation controls;
+- **Actuator CAD** — Dropbear-bound RMD-X8-25 Pro V2 and RMD-X10-100 S2 V3
+  source STEP solids, correct source shaft axes, automatic selected-motor
+  switching, technical lines, and articulation controls;
 - **Controller Lab** — ESP32 board and pin/signal inspection;
 - **Firmware** — two-controller serial/CAN behavioral console;
-- **RL Lab** — local PPO configuration, live epoch/update metrics,
-  update-by-update full-USD policy replay, and final policy loading; and
+- **RL Lab** — advanced local PPO configuration and experiment diagnostics;
+  source selection and playback remain unified on Robot Sim; and
 - **Evidence** — source revisions, provenance, adaptations, and limitations.
 
 ## ROS 2 Jazzy SIL
@@ -276,7 +304,9 @@ for endpoints, inspection commands, and the hardware boundary.
 
 ## PyTorch walking lab
 
-Use **RL Lab** in the dashboard for live update-by-update replay, or run:
+Use **Train RL** on Robot Sim for a compact live run, or **RL Lab** for the
+complete experiment configuration. Both feed the same site-wide training state
+and update-by-update full-USD replay. For a command-line run:
 
 ```bash
 python3 -m rl.train_walk \
@@ -289,6 +319,23 @@ terms hold torso attitude/angular rate stable and minimize COM height/lateral
 variation; the authored alternating walk supplies a smooth reference bias.
 Speed, contact timing, contralateral arm swing, energy, action smoothness, and
 all leg/elbow closure residuals remain explicit secondary terms.
+The dashboard accepts `1`–`10,000` training updates. Expand **Reward / Penalty
+Bias** on either training form to set the ten coefficients independently:
+torso, COM, gait/contact, speed, height, arm swing, energy, smoothness, closure,
+and fall. The current proven coefficients remain the defaults, zero disables a
+term, and the exact profile is written into the experiment state, checkpoint,
+and exported browser policy.
+
+The same profile is available from the CLI, for example:
+
+```bash
+python3 -m rl.train_walk \
+  --updates 1000 --steps 256 --envs 128 --epochs 5 \
+  --reward-torso 1.5 --reward-com 1.0 \
+  --reward-gait-contact 0.7 --reward-speed 0.8 \
+  --penalty-arm-swing 0.65 --penalty-energy 0.015 \
+  --device cuda --no-vertical-constraint --arm-swing
+```
 
 The actor mean is initialized to zero residual, so update zero is exactly the
 working authored gait instead of a random corruption of it. Each deterministic
@@ -346,6 +393,16 @@ The reproducible artifacts are
 and
 [`dropbear-rendered-walk-review.json`](web/assets/rl/dropbear-rendered-walk-review.json).
 Load the two policies with **LOAD PPO REFERENCE** and
+
+### Natural-language whole-body control direction
+
+GR00T/SONIC is planned as a high-level task and motion teacher rather than a
+direct source of Dropbear motor commands. The released runtime targets the
+Unitree G1; Dropbear needs constrained pose retargeting, a native 22-axis
+embodiment, and a whole-body ROS interface before language-conditioned output
+can safely reach its controller. The staged architecture, closed-loop
+retargeting objective, runtime boundary, and acceptance gates are documented in
+[`docs/GR00T_WBC_INTEGRATION.md`](docs/GR00T_WBC_INTEGRATION.md).
 **LOAD AUTHORED BASELINE** for the same-view comparison.
 
 This is a research baseline only. A policy must be trained and evaluated in
@@ -384,7 +441,8 @@ Run the ROS protocol and RL unit tests from the repository root:
 PYTHONPATH=.:ros2_control/dropbear_trajectory_bringup \
 python3 -m pytest -q \
   ros2_control/dropbear_trajectory_bringup/test/test_protocol.py \
-  tests/rl/test_dropbear_ppo.py
+  tests/rl/test_dropbear_ppo.py \
+  tests/rl/test_rl_service.py
 ```
 
 For the much broader offline evidence, firmware, host, native, CAD, and safety

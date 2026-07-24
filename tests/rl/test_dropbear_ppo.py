@@ -7,6 +7,7 @@ from rl.dropbear_ppo import (
     DropbearWalkEnv,
     FourBarLeg,
     PPO,
+    RewardWeights,
 )
 from rl.train_walk import policy_selection_score
 from rl.validate_walk import authored_reference_rollout
@@ -40,6 +41,28 @@ def test_environment_observation_and_step_shapes():
     assert info["baseline_walk_bias"].shape == (4,)
     assert info["calf_manifold_error"].shape == (4,)
     assert info["com_height"].shape == (4,)
+    assert info["reward_weights"]["armSwing"] == 0.42
+
+
+def test_arm_swing_penalty_weight_changes_the_actual_reward():
+    default_env = DropbearWalkEnv(num_envs=2, seed=19)
+    no_arm_penalty_env = DropbearWalkEnv(
+        num_envs=2,
+        seed=19,
+        reward_weights=RewardWeights(arm_swing_penalty=0.0),
+    )
+    default_env.reset()
+    no_arm_penalty_env.reset()
+    action = torch.zeros(2, default_env.action_dim)
+    _, default_reward, _, default_info = default_env.step(action)
+    _, no_arm_reward, _, _ = no_arm_penalty_env.step(action)
+    expected_difference = 0.42 * default_info["arm_swing_error"]
+    assert torch.all(expected_difference > 0)
+    assert torch.allclose(
+        no_arm_reward - default_reward,
+        expected_difference,
+        atol=1e-6,
+    )
 
 
 def test_initial_deterministic_policy_is_authored_gait_residual_zero():

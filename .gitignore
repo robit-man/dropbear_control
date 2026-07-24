@@ -25,6 +25,7 @@ references/Dropbear/
 
 # Local RL experiment outputs (the small tracked reference policy lives in web/assets/rl/)
 artifacts/rl/experiments/
+artifacts/usd/*.usd
 
 # OS / editor
 .DS_Store

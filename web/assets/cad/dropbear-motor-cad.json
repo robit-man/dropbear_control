@@ -1,0 +1,142 @@
+{
+  "generatedFromTrackedSource": true,
+  "motors": {
+    "x10-s2": {
+      "acceptedDynamicsAuthority": false,
+      "axis": "z",
+      "axisOriginM": [
+        0,
+        0,
+        0
+      ],
+      "axisVector": [
+        0,
+        0,
+        1
+      ],
+      "componentFingerprintsSha256": [
+        "03bb429f3768e9dfe0867dba910da06f32a9516755629ba7e6877b410c4f87cc",
+        "1f1f241dabeacc81e45be49aa39ed8067c14122654890be0dfbd63276986f240",
+        "30e7484c265c3ad3a9462a7b2d2128998946ac4cdd0fa79b4ad3ab1ab7db47e2",
+        "9b3546d9034a0bf8d8e2a8a25632e0c6b1b79552b46a36680e9e1028b42a226f",
+        "e4f737b24aaf40d0020e6d6f16f914c9202697d2c51a49229a54c897bd0ac79b"
+      ],
+      "dimensionsMm": [
+        122.061,
+        122.028,
+        74.022
+      ],
+      "dropbearClass": "RMD-X10",
+      "explodeDirection": [
+        0,
+        0,
+        1
+      ],
+      "explodeDistanceM": 0.045,
+      "housingBytes": 12375708,
+      "housingGlb": {
+        "coordinate_abs_max_m": 0.061,
+        "meshes": 1,
+        "nodes": 2
+      },
+      "housingSolidCount": 4,
+      "housingTriangles": 193674,
+      "housingUrl": "/assets/cad/x10-s2/housing.glb",
+      "key": "x10-s2",
+      "model": "RMD-X10-100 S2 V3",
+      "note": "Exact source STEP-derived visual partition. Output member selected by measured B-Rep fingerprint; not a calibrated dynamics/support model.",
+      "outputBytes": 703344,
+      "outputFingerprintSha256": "9b3546d9034a0bf8d8e2a8a25632e0c6b1b79552b46a36680e9e1028b42a226f",
+      "outputGlb": {
+        "coordinate_abs_max_m": 0.0651,
+        "meshes": 1,
+        "nodes": 2
+      },
+      "outputSolidCount": 1,
+      "outputTriangles": 7762,
+      "outputUrl": "/assets/cad/x10-s2/output.glb",
+      "sourceRelativePath": "assets/vendor/myactuator/RMD-X/X10-100/vendor/X10-100/(RMD-X10-S2 V3)Product information 240220/2D 3D/RMD-X10-S2 V3.step",
+      "sourceSolidCount": 5,
+      "sourceStepSha256": "81304836d486734067048fb8130e1cfd7043c1a70496f2d180ce768ed2618ade",
+      "sourceUrl": "/cad-source/dropbear-x10-s2.step",
+      "visualPartitionOnly": true
+    },
+    "x8-pro": {
+      "acceptedDynamicsAuthority": false,
+      "axis": "y",
+      "axisOriginM": [
+        0,
+        0,
+        0
+      ],
+      "axisVector": [
+        0,
+        1,
+        0
+      ],
+      "componentFingerprintsSha256": [
+        "125d141a1390008a0184da69224b0baf2c8170dd796ff0e493b626e4665bdf76",
+        "2ab17cf963ac9616635aeb9e24746ae87f5ca60892c494f7a5d6a100cfdc66c3",
+        "38e47cc8836962d2147cd64f6c7f9856f09729e1209a6046a279f9d5deb9b4b8",
+        "3f66cacd4f63168ebff3d98eab3db1bf42932df1091d8d81d3f7e5d864a3578c",
+        "5079d81273308b15396d3fb44b209d3bc12a2d7d44dc4a136654870546559cdf",
+        "5cbf39c8a54135aafaacdf1f6355c06fa6d855fac76df0a94f5bdeb43f8531ae",
+        "631fd7562fe69bd509280214b0d40eb37a6936c59fd27eeee703f82f33332b1c",
+        "66bc2c81da7aac1e8283dd89acbae2f6257c19d89e7c694a8c62bcca6e980af6",
+        "6d3f58cc3e69869ab64fc9ddc38ffc54bc8c3a672ce6de30c2b8f8426d03a9c2",
+        "7958b83f9ffd01d6d07145785fd54db481547b3fa3066147dfc239f16327b30f",
+        "832d1b4bb43f2cf6db6e630a928e87d70c4fa2f6f8eca527e6bf8fd9cb796738",
+        "94d42bfedcaa77e5d37c1fe927d0acef2b975fd7875e74af41c79aae89272f90",
+        "9cb051434f2a244430ed6d3cf381ad5d57a17900757346967227301e54147c77",
+        "a4891ba144e9777e010fee11f38496891e5f6c7de33e8962ebf73bf62f521930",
+        "b27ffecbea4950281a987bcd5330cfdf2d6a6a87378b237e937040ebb2e43ed9",
+        "b9f43801e5e600272665333d53fb0cdb4ead7b311d7fcde47381e46c4164ebfa",
+        "c440de87a27870a2dd86b1fbc6857b3cafcab095d08f13f4d05970089aadf203",
+        "cecbbaa214876592966351d29ae8050f97ca44ea92e78bfe865c2a2008b644d3",
+        "e2f8b8fa540196cb0aa1b8027bbc3eb73ad9c087f1d4cb476505ecbb1ccbb15d",
+        "e7b0524183dc5ba00c6490b0ac85fc937f1a9f5b02ffa98a9ac8a05a4944790e",
+        "f16ac5ff1f9e6e7940df1c5f2d6d1249be5d1c85530f2fbea2b2f3d8abba1bd9"
+      ],
+      "dimensionsMm": [
+        98.03,
+        51.014,
+        98.052
+      ],
+      "dropbearClass": "RMD-X8",
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceM": 0.035,
+      "housingBytes": 25439176,
+      "housingGlb": {
+        "coordinate_abs_max_m": 0.049,
+        "meshes": 1,
+        "nodes": 2
+      },
+      "housingSolidCount": 20,
+      "housingTriangles": 322318,
+      "housingUrl": "/assets/cad/x8-pro/housing.glb",
+      "key": "x8-pro",
+      "model": "RMD-X8-25 Pro V2",
+      "note": "Exact source STEP-derived visual partition. Output member selected by measured B-Rep fingerprint; not a calibrated dynamics/support model.",
+      "outputBytes": 479108,
+      "outputFingerprintSha256": "66bc2c81da7aac1e8283dd89acbae2f6257c19d89e7c694a8c62bcca6e980af6",
+      "outputGlb": {
+        "coordinate_abs_max_m": 0.046,
+        "meshes": 1,
+        "nodes": 2
+      },
+      "outputSolidCount": 1,
+      "outputTriangles": 6058,
+      "outputUrl": "/assets/cad/x8-pro/output.glb",
+      "sourceRelativePath": "assets/vendor/myactuator/RMD-X/X8-25/vendor/X8-25 Product information 240814/2D 3D/X8-25 (RMD-X8 PRO 1\uff1a9 V2).step",
+      "sourceSolidCount": 21,
+      "sourceStepSha256": "751dcbccb675b6ac1ee2d745dea1e158857f459fe21ae3ca11c054c6931677c9",
+      "sourceUrl": "/cad-source/dropbear-x8-pro.step",
+      "visualPartitionOnly": true
+    }
+  },
+  "schema": "dropbear-motor-cad-v1"
+}

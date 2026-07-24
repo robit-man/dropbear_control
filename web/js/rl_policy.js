@@ -77,6 +77,15 @@ export class RLPolicyPlayer {
     this.onState(this.snapshot());
   }
 
+  clear() {
+    this.policy = null;
+    this.source = null;
+    this.elapsed = 0;
+    this.playing = false;
+    this.loop = false;
+    this.onState(this.snapshot());
+  }
+
   seek(seconds) {
     this.elapsed = clamp(Number(seconds) || 0, 0, this.duration);
     this._emitFrame();

@@ -57,6 +57,12 @@ the deterministic update-zero policy is exactly that baseline. Every live
 preview is ranked on the same seed, and the final checkpoint restores the
 best stable preview after all requested updates finish.
 
+All ten top-level coefficients are configurable and serialized into each
+policy as `config.rewardWeights`: torso, COM, gait/contact, speed, height, arm
+swing, energy, smoothness, closure, and fall. Reward coefficients favor their
+behavior; penalty coefficients suppress their error. Zero disables a term.
+The checked-in behavior remains the default profile.
+
 For a reproducible fine-tune, add:
 
 ```bash
@@ -76,14 +82,28 @@ python3 web/serve.py 8000
 ```
 
 Open <http://localhost:8000>, select **RL Lab**, configure updates, rollout
-steps, parallel environments, and epochs, then start training. The process
-control endpoints accept mutations only from loopback.
+steps, parallel environments, epochs, and the expandable reward profile, then
+start training. The same tuning controls are available in the Robot Sim
+training drawer. Training accepts up to 10,000 updates; the process-control
+endpoints accept mutations only from loopback.
 
 Every PPO update atomically exports a deterministic live policy. With
 **AUTO-REPLAY EACH UPDATE** enabled, **WATCH TRAINING LIVE** replays the newest
 rollout on the complete browser USD and overlays reward, upright rate, torso
 tilt, COM variation, speed, and falls. Final experiments are written beneath
 `artifacts/rl/experiments/` and are intentionally ignored by Git.
+
+Each experiment is also a persistent `dropbear-rl-session-v1`. The
+`/api/rl/sessions` index survives dashboard restarts and exposes only
+experiment-scoped artifacts. From the RL Lab, a stored run can be selected to:
+
+- replay its exported policy on the browser USD;
+- copy its exact training and reward parameters into the form; or
+- warm-start a new run from its dimension- and joint-order-checked checkpoint.
+
+Starting a new run never overwrites or deletes an older session. Session
+configuration records `physicsBackend`; current local PPO runs are explicitly
+`teaching-plant-v2`, not PhysX.
 
 ## Command line
 
@@ -93,6 +113,16 @@ python3 -m rl.train_walk \
   --steps 256 \
   --envs 128 \
   --epochs 5 \
+  --reward-torso 1.25 \
+  --reward-com 0.75 \
+  --reward-gait-contact 0.85 \
+  --reward-speed 0.60 \
+  --penalty-height 7.0 \
+  --penalty-arm-swing 0.42 \
+  --penalty-energy 0.012 \
+  --penalty-smoothness 0.035 \
+  --penalty-closure 250 \
+  --penalty-fall 5 \
   --device cuda \
   --no-vertical-constraint \
   --arm-swing

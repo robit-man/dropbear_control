@@ -14,33 +14,38 @@ plant. Do not use it as the sole safety basis for powered hardware.
 ## What is included
 
 - **Robot Sim** — the tracked `dropbear.usd`, adapted into a 294,204-triangle
-  browser cache while retaining a manifest of 93 rigid bodies, 116 physical
-  joints, and 27 loop-closure constraints. All 12 RMD CAN axes (`0x141`
+  browser cache while retaining source manifests for 93 rigid bodies, 93
+  authored masses/inertias, 93 collision groups, 117 physical joints, 29
+  force drives, and 27 retained loop-closure constraints. All 12 RMD CAN axes (`0x141`
   through `0x14C`) bind to their actual USD joints and anchors. Eight
   non-calf motors and four X8 calf cranks drive browser forward kinematics;
   the retained passive rods and ankle/foot pivots are projected against the
   true USD closure anchors. A separate arm category exposes ten installed
   shafts: eight RMD-X8 arm motors and the two torso-mounted RMD-X10
   shoulder-pitch motors. Arm firmware IDs remain unmapped rather than guessed.
-  Heel and toe patches derived from the rendered foot bodies feed a
-  gravity-settled, Z-only no-penetration guide and four load-cell channels.
-  Isaac/PhysX remains authoritative for dynamics.
+  Heel and toe patches derived from the rendered foot bodies feed either the
+  Z guide or a free-root, force-based vertical contact solver using the exact
+  authored 56.229 kg total mass and four load-cell channels. Isaac/PhysX
+  remains authoritative for full-body dynamics.
   The alternating-step demo uses explicit loading, stance, extended rearward
   push-off, moderated knee lift, continued forward advance during knee
   extension, peak forward hip pitch at near-lock heel placement, and a loaded
   backward stance pull rather than phase-shifted sine waves. Live per-leg
   cards correlate foot-pivot clearance and solved ankle angle with the
   outer/inner X8 positions.
-- **Actuator CAD** — interactive housing and output solids derived from the
-  cached STEP candidates, with technical edges, visibility controls,
-  articulation, and exploded output. Full-resolution STEP files stay
-  downloadable; browser previews are simplified caches.
+- **Actuator CAD** — selected-axis-aware RMD-X8-25 Pro V2 and RMD-X10-100 S2
+  V3 housing/output solids derived from the exact cached STEP sources, with
+  correct source shaft axes, technical edges, articulation, and exploded
+  output. Full-resolution STEP files stay downloadable.
 - **Controller Lab** — a nominal 51.5 × 28.5 mm ESP32 DevKit V1 model with
   active CAN, SPI, ADC, I2C, UART, and optional HX711 routes. The 19-route pin
   table distinguishes values stated in source from inferred default VSPI pins.
 - **Firmware** — two-controller serial console, exact command grammar,
   1 kHz/100 Hz task telemetry, five-value CSV stream, and CAN/serial/IMU
   fault controls.
+- **RL Lab** — local 22-action PPO configuration, ten independent reward and
+  penalty coefficients, live update replay on Robot Sim, persistent sessions,
+  exact parameter recall, checkpoint warm-start, and prior-policy replay.
 - **Evidence** — firmware and RL/USD revisions, CAD provenance, license and
   attribution, simulation boundaries, and observed firmware hazards.
 
@@ -96,17 +101,19 @@ be exercised without implying low-level CAN authority.
 
 ## Foot contact model
 
-`VerticalGroundConstraint` samples the lowest heel and toe vertices on both
-foot bodies after forward kinematics. It integrates gravity on the root Z
-coordinate, projects penetration out of the ground, and distributes the
-simulated 42 kg mass across patches within a 4 mm contact band. The four
-resulting loads are routed to the optional left-heel, left-toe, right-heel,
-and right-toe load-cell channels.
+The guided mode uses `VerticalGroundConstraint`; free-root mode uses
+`ForceGroundContact`. Both sample the lowest heel and toe vertices after
+forward kinematics. The free-root solver integrates authored gravity, computes
+unilateral spring/damper normal force in newtons, applies it to the exact
+56.2289776 kg source-USD mass, and routes per-patch force-derived loads to the
+left-heel, left-toe, right-heel, and right-toe channels. A final position
+projection is retained only as a no-penetration safety barrier.
 
-This is a unilateral vertical software constraint. It adds useful contact
-sensing and natural vertical settling, but does not model friction, impacts,
-lateral motion, body rotation, center-of-pressure stability, self-collision,
-or full rigid-body dynamics.
+This is real vertical force interaction at the browser root, not a 93-body
+rigid-body solve. It does not model friction, tangential impulses,
+self-collision, or authoritative center-of-pressure dynamics. The
+`/api/physics/status` endpoint keeps this boundary explicit and admits the
+source USD to Isaac/PhysX only when that runtime is actually installed.
 
 ## Run it
 
@@ -139,14 +146,18 @@ Set `DASHBOARD_BASE`, `BASE_URL`, or `VISUAL_OUT` to override their defaults.
 
 | Path | Purpose |
 |---|---|
-| `index.html` | Five-view engineering workspace |
+| `index.html` | Six-view engineering workspace |
 | `js/dropbear.js` | Source map, task scheduler, serial grammar, load-cell state, and simplified joint plant |
 | `js/dropbear_usd.js` | Auditable 12-leg-CAN and 10-arm-motor USD binding maps |
 | `js/vertical_ground_constraint.js` | Heel/toe sensing, gravity settling, and Z-only no-penetration projection |
+| `js/force_ground_contact.js` | Free-root gravity and unilateral normal-force integration |
 | `js/robot_3d.js` | Full USD body renderer, leg/arm motor shafts, contact patches, and browser forward kinematics |
 | `js/board_3d.js` | Interactive dimensional ESP32 controller and signal routes |
 | `js/cad_viewer.js` | STEP-derived GLB rendering and articulation |
 | `js/app.js` | Dashboard interaction and live telemetry wiring |
+| `rl_service.py` | Loopback-only persistent PPO-session process manager |
+| `physics_service.py` | Verified source-USD and backend-admission status |
+| `assets/robot/dropbear-physics-manifest.json` | Source-extracted masses, inertias, joints, collision groups, and drives |
 | `assets/cad/*.glb` | Optimized browser caches derived from the exact candidate solids |
 | `assets/robot/dropbear-usd-browser.glb` | Decimated visual cache of the actual Dropbear USD |
 | `assets/robot/dropbear-articulation.json` | Body, joint, closure, source, leg-CAN, and arm-motor binding manifest |

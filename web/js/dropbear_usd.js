@@ -12,14 +12,14 @@ export const DROPBEAR_USD_BINDINGS = Object.freeze([
   { canId: 0x142, canLabel: "0x142", side: "left", firmwareJoint: "inner_calf", usdJoint: "LL_Revolute67", closure: false, motor: "RMD-X8" },
   { canId: 0x143, canLabel: "0x143", side: "right", firmwareJoint: "inner_calf", usdJoint: "RL_Revolute67", closure: false, motor: "RMD-X8" },
   { canId: 0x144, canLabel: "0x144", side: "right", firmwareJoint: "outer_calf", usdJoint: "RL_Revolute81", closure: false, motor: "RMD-X8" },
-  { canId: 0x145, canLabel: "0x145", side: "left", firmwareJoint: "knee", usdJoint: "LL_knee_actuator_joint", closure: false },
-  { canId: 0x146, canLabel: "0x146", side: "left", firmwareJoint: "hip_pitch", usdJoint: "LL_hip_joint", closure: false },
-  { canId: 0x147, canLabel: "0x147", side: "right", firmwareJoint: "hip_pitch", usdJoint: "RL_hip_joint", closure: false },
-  { canId: 0x148, canLabel: "0x148", side: "right", firmwareJoint: "knee", usdJoint: "RL_knee_actuator_joint", closure: false },
-  { canId: 0x149, canLabel: "0x149", side: "left", firmwareJoint: "hip_yaw", usdJoint: "PG_left_leg_roll", closure: false },
-  { canId: 0x14A, canLabel: "0x14A", side: "left", firmwareJoint: "hip_roll", usdJoint: "PG_left_leg_pitch", closure: false },
-  { canId: 0x14B, canLabel: "0x14B", side: "right", firmwareJoint: "hip_roll", usdJoint: "PG_right_leg_pitch", closure: false },
-  { canId: 0x14C, canLabel: "0x14C", side: "right", firmwareJoint: "hip_yaw", usdJoint: "PG_right_leg_roll", closure: false },
+  { canId: 0x145, canLabel: "0x145", side: "left", firmwareJoint: "knee", usdJoint: "LL_knee_actuator_joint", closure: false, motor: "RMD-X10" },
+  { canId: 0x146, canLabel: "0x146", side: "left", firmwareJoint: "hip_pitch", usdJoint: "LL_hip_joint", closure: false, motor: "RMD-X10" },
+  { canId: 0x147, canLabel: "0x147", side: "right", firmwareJoint: "hip_pitch", usdJoint: "RL_hip_joint", closure: false, motor: "RMD-X10" },
+  { canId: 0x148, canLabel: "0x148", side: "right", firmwareJoint: "knee", usdJoint: "RL_knee_actuator_joint", closure: false, motor: "RMD-X10" },
+  { canId: 0x149, canLabel: "0x149", side: "left", firmwareJoint: "hip_yaw", usdJoint: "PG_left_leg_roll", closure: false, motor: "RMD-X10" },
+  { canId: 0x14A, canLabel: "0x14A", side: "left", firmwareJoint: "hip_roll", usdJoint: "PG_left_leg_pitch", closure: false, motor: "RMD-X10" },
+  { canId: 0x14B, canLabel: "0x14B", side: "right", firmwareJoint: "hip_roll", usdJoint: "PG_right_leg_pitch", closure: false, motor: "RMD-X10" },
+  { canId: 0x14C, canLabel: "0x14C", side: "right", firmwareJoint: "hip_yaw", usdJoint: "PG_right_leg_roll", closure: false, motor: "RMD-X10" },
 ]);
 
 // Arm axes are present in the ground-truth USD but are not assigned CAN IDs by

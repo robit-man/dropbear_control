@@ -2,21 +2,18 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
-const PREVIEW_ROOT = "/assets/cad";
+const MANIFEST_URL = "/assets/cad/dropbear-motor-cad.json";
 
 export const CAD_EVIDENCE = Object.freeze({
-  model: "RMD-X12-320 source candidate",
-  sourceStepSha256: "9b1710aef09916c8da02b4e6b750da6bbfe2ba44cad6ba03cd1b53e3858e5eea",
-  housingTriangles: 314848,
-  outputTriangles: 109818,
-  previewTriangles: 96640,
-  acceptedAsset: false,
-  semanticReviewComplete: false,
-  note: "Exact tracked STEP-derived geometry; installed Dropbear joint binding remains unresolved.",
+  manifest: MANIFEST_URL,
+  models: ["RMD-X8-25 Pro V2", "RMD-X10-100 S2 V3"],
+  visualPartitionOnly: true,
+  acceptedDynamicsAuthority: false,
+  note: "Exact source STEP-derived X8/X10 visual partitions with declared coaxial output axes.",
 });
 
 function cloneMaterial(source, fallback) {
-  if (Array.isArray(source)) return source.map((m) => cloneMaterial(m, fallback));
+  if (Array.isArray(source)) return source.map((material) => cloneMaterial(material, fallback));
   const next = source?.clone?.() || new THREE.MeshStandardMaterial({ color: fallback });
   if (next.color) next.color.set(fallback);
   next.metalness = 0.52;
@@ -24,13 +21,24 @@ function cloneMaterial(source, fallback) {
   return next;
 }
 
+function disposeObject(root) {
+  root.traverse((node) => {
+    if (!node.isMesh) return;
+    node.geometry?.dispose?.();
+    const materials = Array.isArray(node.material) ? node.material : [node.material];
+    materials.filter(Boolean).forEach((material) => material.dispose?.());
+  });
+  root.clear();
+}
+
 export class CadViewer {
-  constructor(canvas, { onStatus = () => {} } = {}) {
+  constructor(canvas, { onStatus = () => {}, onModel = () => {} } = {}) {
     this.canvas = canvas;
     this.onStatus = onStatus;
+    this.onModel = onModel;
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color("#0a0a0b");
-    this.scene.fog = new THREE.Fog("#0a0a0b", 0.25, 0.55);
+    this.scene.fog = new THREE.Fog("#0a0a0b", 0.25, 0.7);
     this.camera = new THREE.PerspectiveCamera(30, 1, 0.0005, 5);
     this.camera.position.set(0.15, 0.11, 0.15);
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
@@ -44,13 +52,17 @@ export class CadViewer {
     this.controls.enableDamping = true;
     this.controls.target.set(0, 0, 0);
     this.controls.minDistance = 0.055;
-    this.controls.maxDistance = 0.7;
+    this.controls.maxDistance = 0.8;
 
     this.root = new THREE.Group();
     this.housingGroup = new THREE.Group();
     this.outputGroup = new THREE.Group();
     this.root.add(this.housingGroup, this.outputGroup);
     this.scene.add(this.root);
+    this.manifest = null;
+    this.model = null;
+    this.modelKey = null;
+    this.loadGeneration = 0;
     this.wireframe = true;
     this.exploded = false;
     this.outputAngle = 0;
@@ -63,7 +75,7 @@ export class CadViewer {
     this.resizeObserver.observe(canvas.parentElement);
     this.resize();
     this._animate();
-    this.load();
+    this.loadManifest();
   }
 
   _buildStage() {
@@ -81,40 +93,83 @@ export class CadViewer {
     this.scene.add(fill);
 
     const floor = new THREE.Mesh(
-      new THREE.CircleGeometry(0.19, 96),
+      new THREE.CircleGeometry(0.22, 96),
       new THREE.MeshStandardMaterial({ color: "#0d0d0f", roughness: 0.9, metalness: 0.12 }),
     );
     floor.rotation.x = -Math.PI / 2;
-    floor.position.y = -0.065;
+    floor.position.y = -0.075;
     floor.receiveShadow = true;
     this.scene.add(floor);
-    const grid = new THREE.GridHelper(0.34, 34, "#3a3a42", "#17171a");
-    grid.position.y = -0.064;
+    const grid = new THREE.GridHelper(0.4, 40, "#3a3a42", "#17171a");
+    grid.position.y = -0.074;
     this.scene.add(grid);
   }
 
-  async load() {
+  async loadManifest() {
+    this.onStatus("Loading Dropbear motor manifest…", "loading");
+    try {
+      const response = await fetch(MANIFEST_URL);
+      if (!response.ok) throw new Error(`manifest HTTP ${response.status}`);
+      const manifest = await response.json();
+      if (manifest.schema !== "dropbear-motor-cad-v1" || !manifest.motors) {
+        throw new Error("unsupported motor CAD manifest");
+      }
+      this.manifest = manifest;
+      this.modelKey ||= "x8-pro";
+      this.onModel(this.manifest.motors[this.modelKey]);
+      if (this.active) {
+        await this.setModel(this.modelKey);
+      } else {
+        this.onStatus(`${this.manifest.motors[this.modelKey].model} selected · open CAD to load`, "ok");
+      }
+    } catch (error) {
+      this.onStatus(`CAD manifest failed: ${error.message}`, "error");
+    }
+  }
+
+  async setModel(key) {
+    this.modelKey = key;
+    if (!this.manifest) return;
+    const model = this.manifest.motors[key];
+    if (!model) throw new Error(`unknown motor CAD model: ${key}`);
+    this.onModel(model);
+    if (!this.active) {
+      this.ready = false;
+      this.onStatus(`${model.model} selected · open CAD to load`, "ok");
+      return;
+    }
+    if (this.ready && this.model?.key === key) {
+      return;
+    }
+    const generation = ++this.loadGeneration;
+    this.ready = false;
+    this.onStatus(`Loading ${model.model} source geometry…`, "loading");
     const loader = new GLTFLoader();
-    this.onStatus("Loading exact STEP-derived housing…", "loading");
     try {
       const [housing, output] = await Promise.all([
-        loader.loadAsync(`${PREVIEW_ROOT}/housing-step-preview.glb`),
-        loader.loadAsync(`${PREVIEW_ROOT}/output-step-preview.glb`),
+        loader.loadAsync(model.housingUrl),
+        loader.loadAsync(model.outputUrl),
       ]);
+      if (generation !== this.loadGeneration) return;
+      disposeObject(this.housingGroup);
+      disposeObject(this.outputGroup);
       this._prepare(housing.scene, this.housingGroup, "#48545f", "housing");
       this._prepare(output.scene, this.outputGroup, "#b77a19", "output");
+      this.model = model;
       this.ready = true;
       this._applyOutputPose();
       this.fit();
-      this.onStatus("STEP-derived preview loaded · 96,640 triangles", "ok");
+      this.onModel(model);
+      const triangles = model.housingTriangles + model.outputTriangles;
+      this.onStatus(`${model.model} loaded · ${triangles.toLocaleString()} triangles`, "ok");
     } catch (error) {
-      this.onStatus(`CAD load failed: ${error.message}`, "error");
+      if (generation === this.loadGeneration) {
+        this.onStatus(`CAD load failed: ${error.message}`, "error");
+      }
     }
   }
 
   _prepare(scene, parent, fallbackColor, role) {
-    // Snapshot source meshes before adding child overlays. Mutating the scene
-    // during traverse would cause each overlay mesh to receive another overlay.
     const meshes = [];
     scene.traverse((node) => {
       if (node.isMesh && node.name !== "technical-line-overlay") meshes.push(node);
@@ -124,8 +179,6 @@ export class CadViewer {
       node.castShadow = true;
       node.receiveShadow = true;
       node.userData.role = role;
-
-      // Share the original geometry for a cheap technical-line overlay.
       const overlay = new THREE.Mesh(
         node.geometry,
         new THREE.MeshBasicMaterial({
@@ -150,7 +203,12 @@ export class CadViewer {
 
   setActive(on) {
     this.active = Boolean(on);
-    if (this.active) this.resize();
+    if (this.active) {
+      this.resize();
+      if (this.modelKey && (!this.ready || this.model?.key !== this.modelKey)) {
+        this.setModel(this.modelKey);
+      }
+    }
   }
 
   setWireframe(on) {
@@ -174,8 +232,17 @@ export class CadViewer {
   }
 
   _applyOutputPose() {
-    this.outputGroup.rotation.z = THREE.MathUtils.degToRad(this.outputAngle - 180);
-    this.outputGroup.position.z = this.exploded ? 0.055 : 0;
+    const axis = this.model?.axis || "z";
+    const angle = THREE.MathUtils.degToRad(this.outputAngle);
+    this.outputGroup.rotation.set(0, 0, 0);
+    this.outputGroup.rotation[axis] = angle;
+    const direction = this.model?.explodeDirection || [0, 0, 1];
+    const distance = this.exploded ? Number(this.model?.explodeDistanceM || 0.04) : 0;
+    this.outputGroup.position.set(
+      direction[0] * distance,
+      direction[1] * distance,
+      direction[2] * distance,
+    );
   }
 
   fit() {

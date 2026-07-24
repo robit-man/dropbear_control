@@ -8,6 +8,7 @@ import {
   dropbearUsdBinding,
 } from "./dropbear_usd.js";
 import { VerticalGroundConstraint } from "./vertical_ground_constraint.js";
+import { ForceGroundContact } from "./force_ground_contact.js";
 
 const ROBOT_ROOT = "/assets/robot";
 const AXES = Object.freeze({
@@ -148,7 +149,13 @@ export class Robot3D {
     this.armClosureResidualMm = 0;
     this.closureResidualMm = 0;
     this.neutralFootZ = new Map();
-    this.groundConstraint = new VerticalGroundConstraint({ massKg: 42 });
+    this.authoredMassKg = 56.2289776;
+    this.groundConstraint = new VerticalGroundConstraint({
+      massKg: this.authoredMassKg,
+    });
+    this.forceGroundContact = new ForceGroundContact({
+      massKg: this.authoredMassKg,
+    });
     this.groundContact = this.groundConstraint.lastState;
     this.verticalConstraintEnabled = true;
     this.externalRootPose = null;
@@ -554,7 +561,15 @@ export class Robot3D {
       const policyDriven = Boolean(this.externalRootPose);
       const pose = policyDriven ? this.externalRootPose : this.freeRootState;
       if (!policyDriven && dt > 0) {
-        pose.velocityZ = Math.max(-3.5, pose.velocityZ - 9.80665 * dt);
+        const verticalAcceleration = Number.isFinite(
+          this.forceGroundContact.lastState.verticalAccelerationMps2,
+        )
+          ? this.forceGroundContact.lastState.verticalAccelerationMps2
+          : -9.80665;
+        pose.velocityZ = Math.max(
+          -3.5,
+          Math.min(2.5, pose.velocityZ + verticalAcceleration * dt),
+        );
         pose.height += pose.velocityZ * dt;
         const rollAcceleration = 4.2 * pose.roll + 0.92 - 0.28 * pose.rollRate;
         const pitchAcceleration = 3.8 * pose.pitch - 0.54 - 0.28 * pose.pitchRate;
@@ -592,30 +607,31 @@ export class Robot3D {
       let transformed = transformPose();
       let feet = this._rawFootPatches(transformed);
       let collisionLift = 0;
+      let forceState = null;
       if (!policyDriven) {
-        const minimumFootZ = Math.min(
-          ...["left", "right"].flatMap((side) => [
-            feet[side]?.heelZ ?? Infinity,
-            feet[side]?.toeZ ?? Infinity,
-          ]),
+        forceState = this.forceGroundContact.solve(
+          feet,
+          pose.velocityZ,
+          dt,
         );
-        collisionLift = Number.isFinite(minimumFootZ) ? Math.max(0, -minimumFootZ) : 0;
+        collisionLift = forceState.correctionZ;
         if (collisionLift > 0) {
           pose.height += collisionLift;
-          pose.velocityZ = Math.max(0, pose.velocityZ);
-          transformed = transformPose(collisionLift);
+          if (pose.velocityZ < 0 && forceState.normalForceN > 0) {
+            pose.velocityZ *= -0.04;
+          }
+          transformed = transformPose();
           feet = this._rawFootPatches(transformed);
         }
       }
       let loads = this.externalContactLoadsKg || [0, 0, 0, 0];
       if (!policyDriven) {
-        const heights = ["left", "right"].flatMap((side) => [
-          Math.max(0, feet[side]?.heelZ ?? 1),
-          Math.max(0, feet[side]?.toeZ ?? 1),
-        ]);
-        const weights = heights.map((height) => Math.max(0, 1 - height / 0.008));
-        const weightTotal = weights.reduce((sum, weight) => sum + weight, 0);
-        loads = weights.map((weight) => weightTotal > 0 ? 42 * weight / weightTotal : 0);
+        loads = [
+          forceState.left.heelLoadKg,
+          forceState.left.toeLoadKg,
+          forceState.right.heelLoadKg,
+          forceState.right.toeLoadKg,
+        ];
       }
       const makeFoot = (side, loadOffset) => {
         const heelHeight = Math.max(0, feet[side]?.heelZ || 0);
@@ -636,9 +652,13 @@ export class Robot3D {
       };
       this.groundContact = {
         valid: true,
-        guide: policyDriven ? "FREE_ROOT_POLICY" : "FREE_ROOT_GRAVITY",
+        guide: policyDriven ? "FREE_ROOT_POLICY" : "FREE_ROOT_FORCE_CONTACT",
         offsetZ: this.neutralGroundOffsetZ + heightDelta + collisionLift,
         velocityZ: Number(pose.velocityZ) || 0,
+        normalForceN: policyDriven
+          ? loads.reduce((sum, load) => sum + load, 0) * 9.80665
+          : forceState.normalForceN,
+        penetrationM: policyDriven ? 0 : forceState.penetrationM,
         constrained: false,
         left: makeFoot("left", 0),
         right: makeFoot("right", 2),
@@ -958,6 +978,7 @@ export class Robot3D {
 
   resetGroundConstraint() {
     this.groundConstraint.reset();
+    this.forceGroundContact.reset();
     this.groundContact = this.groundConstraint.lastState;
   }
 
@@ -970,6 +991,7 @@ export class Robot3D {
       this.externalContactLoadsKg = null;
       this.resetGroundConstraint();
     } else {
+      this.forceGroundContact.reset();
       this.freeRootState = {
         height: 0.80,
         velocityZ: 0,

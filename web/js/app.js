@@ -18,6 +18,19 @@ import { Robot3D } from "./robot_3d.js";
 
 const $ = (id) => document.getElementById(id);
 const sim = new DropbearSim();
+const PRESET_SOURCES = Object.freeze([
+  { value: "neutral", label: "Neutral hold" },
+  { value: "walk", label: "Alternating step" },
+  { value: "balance", label: "Balance transfer" },
+  { value: "sensor-sweep", label: "Sensor sweep" },
+  { value: "manual", label: "Manual torque" },
+]);
+const RL_SOURCES = Object.freeze([
+  { value: "reference", label: "Tracked PPO reference" },
+  { value: "authored", label: "Authored walking baseline" },
+  { value: "latest", label: "Latest completed local policy" },
+  { value: "live", label: "Live policy from active training" },
+]);
 const armMotorStates = DROPBEAR_ARM_MOTOR_BINDINGS.map((binding) => ({
   id: binding.id,
   angleDeg: 0,
@@ -45,6 +58,14 @@ const ui = {
   watchTraining: false,
   previewLoadedKey: null,
   previewLoading: false,
+  playbackMode: "preset",
+  autoReplayTraining: true,
+  latestRLStatus: null,
+  loadedPolicySource: null,
+  rlSessions: [],
+  selectedRLSessionId: null,
+  rlSessionsSignature: "",
+  physicsRuntime: null,
 };
 
 function selectedJoint() {
@@ -81,6 +102,20 @@ const cad = new CadViewer($("cad-canvas"), {
     $("cad-status").className = `load-status ${kind}`;
     $("cad-status").innerHTML = "<span></span>";
     $("cad-status").append(document.createTextNode(message));
+  },
+  onModel: (model) => {
+    $("cad-model").value = model.key;
+    $("cad-model-name").textContent = model.model.toUpperCase();
+    $("cad-model-dimensions").textContent = `${model.dimensionsMm.map((value) => Number(value).toFixed(0)).join(" × ")} MM`;
+    $("cad-model-axis").textContent = `METRES · +${model.axis.toUpperCase()} SHAFT`;
+    $("cad-evidence-model").textContent = model.model;
+    $("cad-evidence-sha").textContent = `${model.sourceStepSha256.slice(0, 10)}…${model.sourceStepSha256.slice(-6)}`;
+    $("cad-evidence-sha").title = model.sourceStepSha256;
+    $("cad-evidence-housing").textContent = `${model.housingTriangles.toLocaleString()} tris · ${model.housingSolidCount} solids`;
+    $("cad-evidence-output").textContent = `${model.outputTriangles.toLocaleString()} tris · ${model.outputSolidCount} solid`;
+    $("cad-evidence-axis").textContent = `Source +${model.axis.toUpperCase()} · coaxial`;
+    $("cad-evidence-note").textContent = model.note;
+    $("cad-source-download").href = model.sourceUrl;
   },
 });
 
@@ -150,13 +185,12 @@ function applyPolicyFrame(frame, policy) {
 const policyPlayer = new RLPolicyPlayer({
   onFrame: applyPolicyFrame,
   onState: (state) => {
-    if (!$("rl-policy-play")) return;
-    $("rl-policy-play").disabled = !state.loaded;
-    $("rl-policy-play").textContent = state.playing ? "PAUSE POLICY" : "PLAY ON USD";
-    $("rl-timeline").disabled = !state.loaded;
-    $("rl-timeline").max = String(Math.max(0.01, state.duration));
-    $("rl-timeline").value = String(state.elapsed);
-    $("rl-time-output").textContent = `${state.elapsed.toFixed(2)} / ${state.duration.toFixed(2)} s`;
+    if ($("rl-timeline")) {
+      $("rl-timeline").disabled = !state.loaded;
+      $("rl-timeline").max = String(Math.max(0.01, state.duration));
+      $("rl-timeline").value = String(state.elapsed);
+      $("rl-time-output").textContent = `${state.elapsed.toFixed(2)} / ${state.duration.toFixed(2)} s`;
+    }
     if (state.loaded) {
       $("rl-policy-mode").textContent = state.config?.verticalConstraint ? "Z GUIDE" : "FREE ROOT";
       $("rl-root-summary").textContent = state.config?.verticalConstraint ? "GUIDE ENABLED" : "GUIDE DISABLED";
@@ -250,6 +284,9 @@ function selectJoint(id) {
   $("selected-name").textContent = target.label;
   $("selected-can").textContent = target.canId;
   const usdBinding = dropbearUsdBinding(target.id);
+  const cadModelKey = usdBinding?.motor === "RMD-X8" ? "x8-pro" : "x10-s2";
+  cad.setModel(cadModelKey);
+  $("cad-model").value = cadModelKey;
   $("selected-usd").textContent = usdBinding
     ? `USD ${usdBinding.usdJoint}${usdBinding.closure ? " · CLOSURE" : " · FK"}`
     : "USD BINDING UNRESOLVED";
@@ -274,8 +311,12 @@ function selectArmMotor(id) {
   const state = armMotorStates.find((entry) => entry.id === id);
   if (!binding || !state) return;
   ui.axisCategory = "arm";
+  ui.cadManual = false;
   ui.selectedArmMotorId = id;
   robot.setArmSelection(id);
+  const cadModelKey = binding.motor === "RMD-X8" ? "x8-pro" : "x10-s2";
+  cad.setModel(cadModelKey);
+  $("cad-model").value = cadModelKey;
   $("selected-name").textContent = binding.label;
   $("selected-can").textContent = `${binding.motor} · AUX`;
   $("selected-usd").textContent = [
@@ -318,6 +359,90 @@ function setupMotorCategories() {
   });
 }
 
+function populatePlaybackSources(mode, selectedValue = null) {
+  const sessionSources = ui.rlSessions
+    .filter((session) => session.policyUrl)
+    .map((session) => ({
+      value: `session:${session.experimentId}`,
+      label: `Run ${session.experimentId.slice(-8).toUpperCase()}`,
+    }));
+  const sources = mode === "rl"
+    ? [...RL_SOURCES, ...sessionSources]
+    : PRESET_SOURCES;
+  const select = $("scenario");
+  select.innerHTML = "";
+  for (const source of sources) {
+    const option = document.createElement("option");
+    option.value = source.value;
+    option.textContent = source.label;
+    if (source.value === "latest" && !ui.latestPolicyUrl) option.disabled = true;
+    if (source.value === "live" && !ui.latestRLStatus?.livePolicyUrl) {
+      option.textContent += " · waiting";
+    }
+    select.appendChild(option);
+  }
+  const fallback = mode === "rl" ? "reference" : "neutral";
+  select.value = sources.some((source) => source.value === selectedValue) ? selectedValue : fallback;
+  $("playback-source-label").textContent = mode === "rl" ? "POLICY" : "MOTION PRESET";
+}
+
+function setPlaybackMode(mode, selectedValue = null) {
+  ui.playbackMode = mode === "rl" ? "rl" : "preset";
+  $("playback-mode").dataset.mode = ui.playbackMode === "rl" ? "trained" : "preset";
+  $("playback-mode").textContent = ui.playbackMode === "rl" ? "TRAINED" : "PRESET";
+  populatePlaybackSources(ui.playbackMode, selectedValue);
+}
+
+async function configurePlaybackSource(value, { preserveLiveWatch = false } = {}) {
+  policyPlayer.pause();
+  if (ui.playbackMode === "preset") {
+    ui.policyMode = false;
+    ui.loadedPolicySource = null;
+    ui.watchTraining = preserveLiveWatch && ui.watchTraining;
+    robot.setExternalRootPose(null, null);
+    robot.setVerticalConstraintEnabled($("vertical-constraint").checked);
+    sim.setScenario(value);
+    sim.setPlay(false);
+    if (value === "manual") $("impedance-toggle").checked = false;
+    appendTerminal(`[dashboard] preset armed · ${value} · press Play to run`, "ok");
+    return;
+  }
+
+  ui.policyMode = true;
+  sim.scenario = "rl-policy";
+  sim.setPlay(false);
+  ui.watchTraining = value === "live";
+  if (value === "reference") {
+    await loadPolicy("/assets/rl/dropbear-walk-reference.json", "Tracked reference walking policy");
+  } else if (value === "authored") {
+    await loadPolicy("/assets/rl/dropbear-authored-reference.json", "Authored residual-zero walking baseline");
+  } else if (value === "latest" && ui.latestPolicyUrl) {
+    await loadPolicy(ui.latestPolicyUrl, "Latest completed local walking policy");
+  } else if (value === "live") {
+    ui.previewLoadedKey = null;
+    await pollRLStatus();
+    if (!ui.latestRLStatus?.livePolicyUrl) {
+      policyPlayer.clear();
+      robot.setExternalRootPose(null, null);
+      robot.setVerticalConstraintEnabled($("vertical-constraint").checked);
+    }
+    appendTerminal("[rl] live training policy selected; each completed update will replace playback", "ok");
+  } else if (value.startsWith("session:")) {
+    const experimentId = value.slice("session:".length);
+    const session = ui.rlSessions.find(
+      (candidate) => candidate.experimentId === experimentId,
+    );
+    if (!session?.policyUrl) {
+      throw new Error("selected session does not have a replayable policy");
+    }
+    await loadPolicy(
+      session.policyUrl,
+      `Stored run · ${experimentId.slice(-8).toUpperCase()}`,
+    );
+  }
+  ui.loadedPolicySource = value;
+}
+
 function setupSimControls() {
   const savedResolution = Number(localStorage.getItem("dropbear-usd-resolution") || 100);
   const resolutionPercent = Math.max(50, Math.min(200, savedResolution));
@@ -330,19 +455,57 @@ function setupSimControls() {
     $("usd-resolution-output").textContent = `${percent}%`;
     localStorage.setItem("dropbear-usd-resolution", String(percent));
   });
-  $("sim-toggle").addEventListener("click", () => {
-    if (ui.policyMode) {
-      if (policyPlayer.playing) policyPlayer.pause();
-      else policyPlayer.play();
+  setPlaybackMode("preset", "neutral");
+  $("sim-toggle").addEventListener("click", async () => {
+    // The visible mode switch is the playback authority.  Reconcile against it
+    // on every click so stale policy/training state can never consume a preset
+    // Play command and leave the dashboard in guarded pause.
+    const visibleMode = $("playback-mode").dataset.mode === "trained" ? "rl" : "preset";
+    if (visibleMode === "preset") {
+      const selectedPreset = $("scenario").value;
+      if (!ui.policyMode && sim.playMode) {
+        sim.setPlay(false);
+        return;
+      }
+      // This is intentionally the former RUN EXAMPLE sequence: reload the
+      // selected trajectory to reset its phase, then explicitly start it.
+      policyPlayer.pause();
+      ui.policyMode = false;
+      ui.playbackMode = "preset";
+      ui.watchTraining = false;
+      robot.setExternalRootPose(null, null);
+      robot.setVerticalConstraintEnabled($("vertical-constraint").checked);
+      sim.setScenario(selectedPreset);
+      sim.setPlay(true);
+      switchView("sim");
+      appendTerminal(`[dashboard] selected preset started · ${selectedPreset}`, "ok");
       return;
     }
-    sim.setPlay(!sim.playMode);
+    if (policyPlayer.playing) {
+      policyPlayer.pause();
+      return;
+    }
+    const selectedPolicy = $("scenario").value;
+    ui.policyMode = true;
+    if (!policyPlayer.policy || ui.loadedPolicySource !== selectedPolicy) {
+      await configurePlaybackSource(selectedPolicy);
+    }
+    if (policyPlayer.policy) {
+      policyPlayer.seek(0);
+      policyPlayer.play();
+      switchView("sim");
+      appendTerminal(`[rl] selected policy started · ${selectedPolicy}`, "ok");
+    } else {
+      appendTerminal(`[rl] ${selectedPolicy} has no policy frames yet`, "warn");
+    }
   });
   $("sim-reset").addEventListener("click", () => {
     policyPlayer.pause();
     ui.policyMode = false;
+    ui.loadedPolicySource = null;
+    ui.watchTraining = false;
     sim.reset();
-    $("scenario").value = "neutral";
+    setPlaybackMode("preset", "neutral");
     robot.setVerticalConstraintEnabled(true);
     robot.setExternalRootPose(null, null);
     $("vertical-constraint").checked = true;
@@ -363,35 +526,12 @@ function setupSimControls() {
     appendTerminal("[dashboard] simulation reset", "warn");
   });
   $("sim-speed").addEventListener("change", (event) => { sim.speed = Number(event.target.value); });
-  $("scenario").addEventListener("change", (event) => {
-    if (event.target.value === "rl-policy") {
-      ui.policyMode = true;
-      sim.scenario = "rl-policy";
-      sim.playMode = true;
-      if (policyPlayer.policy) {
-        policyPlayer.play();
-      } else {
-        robot.setExternalRootPose(null, null);
-        robot.setVerticalConstraintEnabled($("vertical-constraint").checked);
-      }
-      return;
-    }
-    policyPlayer.pause();
-    ui.policyMode = false;
-    robot.setExternalRootPose(null, null);
-    robot.setVerticalConstraintEnabled($("vertical-constraint").checked);
-    sim.setScenario(event.target.value);
-    if (event.target.value === "manual") $("impedance-toggle").checked = false;
+  $("playback-mode").addEventListener("click", async () => {
+    setPlaybackMode(ui.playbackMode === "rl" ? "preset" : "rl");
+    await configurePlaybackSource($("scenario").value);
   });
-  $("run-demo").addEventListener("click", () => {
-    policyPlayer.pause();
-    ui.policyMode = false;
-    robot.setExternalRootPose(null, null);
-    robot.setVerticalConstraintEnabled($("vertical-constraint").checked);
-    $("scenario").value = "walk";
-    sim.setScenario("walk");
-    switchView("sim");
-    appendTerminal("[dashboard] full alternating-step demo started", "ok");
+  $("scenario").addEventListener("change", async (event) => {
+    await configurePlaybackSource(event.target.value);
   });
   $("robot-fit").addEventListener("click", () => robot.fit());
   $("vertical-constraint").addEventListener("change", (event) => {
@@ -427,6 +567,10 @@ function setupSimControls() {
 }
 
 function setupCadControls() {
+  $("cad-model").addEventListener("change", (event) => {
+    ui.cadManual = true;
+    cad.setModel(event.target.value);
+  });
   $("cad-lines").addEventListener("change", (event) => cad.setWireframe(event.target.checked));
   $("cad-explode").addEventListener("change", (event) => cad.setExploded(event.target.checked));
   $("cad-housing").addEventListener("change", (event) => cad.setHousingVisible(event.target.checked));
@@ -542,7 +686,33 @@ async function requestJson(url, options = {}) {
   return payload;
 }
 
+async function pollPhysicsRuntime() {
+  try {
+    const status = await requestJson("/api/physics/status");
+    ui.physicsRuntime = status;
+    const chip = $("physics-runtime-status");
+    const sourceVerified = Boolean(status.sourceUsd?.verified);
+    const physx = status.backends?.find(
+      (backend) => backend.id === "isaac-physx-usd",
+    );
+    chip.classList.toggle("verified", sourceVerified);
+    chip.querySelector("span").textContent = sourceVerified
+      ? "SOURCE USD VERIFIED"
+      : "SOURCE USD NOT VERIFIED";
+    chip.querySelector("b").textContent = [
+      `${Number(status.groundTruth?.totalAuthoredMassKg || 0).toFixed(3)} KG`,
+      "FORCE CONTACT",
+      physx?.available ? "PHYSX READY" : "PHYSX OFFLINE",
+    ].join(" · ");
+  } catch (error) {
+    const chip = $("physics-runtime-status");
+    chip.querySelector("span").textContent = "PHYSICS STATUS OFFLINE";
+    chip.querySelector("b").textContent = error.message;
+  }
+}
+
 function renderRLStatus(status) {
+  ui.latestRLStatus = status;
   const running = ["running", "stopping"].includes(status.state);
   $("rl-server-state").className = `load-status ${status.state === "error" ? "error" : running ? "loading" : "ok"}`;
   $("rl-server-state").innerHTML = "<span></span>";
@@ -551,6 +721,9 @@ function renderRLStatus(status) {
   ));
   $("rl-start").disabled = running;
   $("rl-stop").disabled = !running;
+  $("sim-rl-start").disabled = running;
+  $("sim-rl-stop").disabled = !running;
+  $("global-training-stop").disabled = !running;
   const policyEpochsComplete = status.progress && status.config
     ? status.progress.update * status.config.epochs
     : 0;
@@ -573,6 +746,21 @@ function renderRLStatus(status) {
   $("rl-closure").textContent = Number.isFinite(metric.closure_max_m) ? `${(metric.closure_max_m * 1000).toFixed(3)} mm` : "—";
   $("rl-torso-tilt").textContent = Number.isFinite(metric.torso_tilt_degrees) ? `${metric.torso_tilt_degrees.toFixed(2)}°` : "—";
   $("rl-com-variation").textContent = Number.isFinite(metric.com_variation_m) ? `${(metric.com_variation_m * 1000).toFixed(2)} mm` : "—";
+  const strip = $("global-training-strip");
+  const hasExperiment = Boolean(status.experimentId);
+  strip.hidden = !hasExperiment;
+  strip.className = `global-training-strip ${status.state}`;
+  document.body.classList.toggle("training-active", hasExperiment);
+  $("rl-rail-state").hidden = !hasExperiment;
+  $("global-training-state").textContent = status.state.toUpperCase();
+  $("global-training-id").textContent = status.experimentId?.slice(-8).toUpperCase() || "LOCAL";
+  $("global-training-epoch").textContent = `EPOCH ${policyEpochsComplete} / ${policyEpochsTotal}`;
+  $("global-training-fill").style.width = `${progress}%`;
+  $("global-training-reward").textContent = Number.isFinite(metric.reward) ? metric.reward.toFixed(3) : "—";
+  $("global-training-upright").textContent = Number.isFinite(metric.upright_percent) ? `${metric.upright_percent.toFixed(1)}%` : "—";
+  $("global-training-phase").textContent = status.state === "complete"
+    ? "POLICY READY"
+    : metric.update ? `UPDATE ${metric.update}/${metric.updates}` : "INITIALIZING";
   const overlay = $("training-live-overlay");
   overlay.hidden = !ui.watchTraining || !status.experimentId;
   $("training-live-update").textContent = metric.update
@@ -587,7 +775,8 @@ function renderRLStatus(status) {
 
   if (status.policyUrl) {
     ui.latestPolicyUrl = status.policyUrl;
-    $("rl-load-latest").disabled = status.state !== "complete";
+    const latestOption = $("scenario").querySelector('option[value="latest"]');
+    if (latestOption) latestOption.disabled = status.state !== "complete";
   }
   const signature = JSON.stringify(status.events || []);
   if (signature !== ui.rlStatusSignature) {
@@ -625,7 +814,7 @@ function renderRLStatus(status) {
 async function refreshLivePreview(status) {
   if (
     !ui.watchTraining
-    || !$("rl-auto-replay").checked
+    || !ui.autoReplayTraining
     || !status.livePolicyUrl
     || !status.previewUpdate
     || ui.previewLoading
@@ -637,9 +826,10 @@ async function refreshLivePreview(status) {
     await policyPlayer.load(`${status.livePolicyUrl}?update=${status.previewUpdate}`);
     ui.previewLoadedKey = key;
     ui.policyMode = true;
+    ui.loadedPolicySource = "live";
     policyPlayer.loop = true;
     policyPlayer.play();
-    $("scenario").value = "rl-policy";
+    setPlaybackMode("rl", "live");
     $("rl-policy-title").textContent = `Live policy · update ${status.previewUpdate} / ${status.progress?.updates || "?"}`;
   } catch (error) {
     appendTerminal(`[rl] live preview ${status.previewUpdate} unavailable: ${error.message}`, "warn");
@@ -663,9 +853,7 @@ async function loadPolicy(url, label, { play = false, loop = false } = {}) {
     const policy = await policyPlayer.load(url);
     ui.policyMode = true;
     policyPlayer.loop = loop;
-    $("scenario").value = "rl-policy";
     $("rl-policy-title").textContent = label;
-    $("rl-policy-play").disabled = false;
     if (play) policyPlayer.play();
     appendTerminal(`[rl] loaded ${policy.frames.length} policy frames from ${url}`, "ok");
   } catch (error) {
@@ -674,82 +862,354 @@ async function loadPolicy(url, label, { play = false, loop = false } = {}) {
   }
 }
 
-function setupRLLab() {
-  $("rl-form").addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const config = {
-      updates: Number($("rl-updates").value),
-      steps: Number($("rl-steps").value),
-      envs: Number($("rl-envs").value),
-      epochs: Number($("rl-epochs").value),
-      batchSize: Number($("rl-batch-size").value),
-      targetSpeed: Number($("rl-target-speed").value),
-      episodeSeconds: Number($("rl-episode-seconds").value),
-      seed: Number($("rl-seed").value),
-      device: $("rl-device").value,
-      verticalConstraint: $("rl-vertical-constraint").checked,
-      armSwing: $("rl-arm-swing").checked,
-    };
-    try {
-      const status = await requestJson("/api/rl/train", {
-        method: "POST",
-        body: JSON.stringify(config),
-      });
-      ui.watchTraining = true;
-      ui.previewLoadedKey = null;
-      $("rl-watch-live").textContent = "STOP LIVE VIEW";
-      renderRLStatus(status);
-      switchView("sim");
-      appendTerminal(`[rl] experiment started · ${config.updates} updates × ${config.epochs} epochs`, "ok");
-    } catch (error) {
-      appendTerminal(`[rl] start rejected: ${error.message}`, "err");
+const rewardWeightDefaults = Object.freeze({
+  torso: 1.25,
+  com: 0.75,
+  gaitContact: 0.85,
+  speed: 0.60,
+  height: 7.0,
+  armSwing: 0.42,
+  energy: 0.012,
+  smoothness: 0.035,
+  closure: 250.0,
+  fall: 5.0,
+});
+
+const rewardWeightInputSuffix = Object.freeze({
+  torso: "torso",
+  com: "com",
+  gaitContact: "gait-contact",
+  speed: "speed",
+  height: "height",
+  armSwing: "arm-swing",
+  energy: "energy",
+  smoothness: "smoothness",
+  closure: "closure",
+  fall: "fall",
+});
+
+function readRewardWeights(prefix) {
+  return Object.fromEntries(Object.entries(rewardWeightInputSuffix).map(([key, suffix]) => [
+    key,
+    Number($(`${prefix}-weight-${suffix}`).value),
+  ]));
+}
+
+function writeRewardWeights(prefix, weights = rewardWeightDefaults) {
+  for (const [key, suffix] of Object.entries(rewardWeightInputSuffix)) {
+    $(`${prefix}-weight-${suffix}`).value = weights[key] ?? rewardWeightDefaults[key];
+  }
+}
+
+function selectedRLSession() {
+  return ui.rlSessions.find(
+    (session) => session.experimentId === ui.selectedRLSessionId,
+  ) || null;
+}
+
+function warmStartConfig() {
+  const session = selectedRLSession();
+  return $("rl-session-warm-start").checked && session?.checkpointPath
+    ? { initCheckpoint: session.checkpointPath }
+    : {};
+}
+
+function advancedRLConfig() {
+  return {
+    updates: Number($("rl-updates").value),
+    steps: Number($("rl-steps").value),
+    envs: Number($("rl-envs").value),
+    epochs: Number($("rl-epochs").value),
+    batchSize: Number($("rl-batch-size").value),
+    targetSpeed: Number($("rl-target-speed").value),
+    episodeSeconds: Number($("rl-episode-seconds").value),
+    seed: Number($("rl-seed").value),
+    device: $("rl-device").value,
+    physicsBackend: $("rl-physics-backend").value,
+    verticalConstraint: $("rl-vertical-constraint").checked,
+    armSwing: $("rl-arm-swing").checked,
+    rewardWeights: readRewardWeights("rl"),
+    ...warmStartConfig(),
+  };
+}
+
+function quickRLConfig() {
+  return {
+    ...advancedRLConfig(),
+    updates: Number($("sim-rl-updates").value),
+    epochs: Number($("sim-rl-epochs").value),
+    targetSpeed: Number($("sim-rl-target-speed").value),
+    device: $("sim-rl-device").value,
+    verticalConstraint: $("sim-rl-vertical-constraint").checked,
+    armSwing: $("sim-rl-arm-swing").checked,
+    rewardWeights: readRewardWeights("sim-rl"),
+  };
+}
+
+function selectRLSession(experimentId) {
+  ui.selectedRLSessionId = experimentId || null;
+  const session = selectedRLSession();
+  document.querySelectorAll(".rl-session-card").forEach((card) => {
+    const selected = card.dataset.experimentId === ui.selectedRLSessionId;
+    card.classList.toggle("selected", selected);
+    card.setAttribute("aria-selected", String(selected));
+  });
+  $("rl-session-copy").disabled = !session?.config;
+  $("rl-session-replay").disabled = !session?.policyUrl;
+  $("rl-session-warm-start").disabled = !session?.checkpointAvailable;
+  if (!session?.checkpointAvailable) $("rl-session-warm-start").checked = false;
+  const selection = $("rl-session-selection");
+  selection.querySelector("b").textContent = session
+    ? `RUN ${session.experimentId.slice(-8).toUpperCase()}`
+    : "NEW RUN";
+  selection.querySelector("span").textContent = session
+    ? `${String(session.state).toUpperCase()} · select copy, replay, or warm-start`
+    : "Edit the parameters above and start training. Existing runs are retained.";
+}
+
+function applyRLSessionConfig(session) {
+  const config = session?.config;
+  if (!config) return;
+  const values = {
+    "rl-updates": config.updates,
+    "rl-steps": config.steps,
+    "rl-envs": config.envs,
+    "rl-epochs": config.epochs,
+    "rl-batch-size": config.batchSize,
+    "rl-target-speed": config.targetSpeed,
+    "rl-episode-seconds": config.episodeSeconds,
+    "rl-seed": config.seed,
+    "rl-device": config.device,
+    "rl-physics-backend": config.physicsBackend || "teaching-plant-v2",
+    "sim-rl-updates": config.updates,
+    "sim-rl-epochs": config.epochs,
+    "sim-rl-target-speed": config.targetSpeed,
+    "sim-rl-device": config.device,
+  };
+  for (const [id, value] of Object.entries(values)) {
+    if (value != null && $(id)) $(id).value = String(value);
+  }
+  $("rl-vertical-constraint").checked = Boolean(config.verticalConstraint);
+  $("rl-arm-swing").checked = Boolean(config.armSwing);
+  $("sim-rl-vertical-constraint").checked = Boolean(config.verticalConstraint);
+  $("sim-rl-arm-swing").checked = Boolean(config.armSwing);
+  writeRewardWeights("rl", config.rewardWeights);
+  writeRewardWeights("sim-rl", config.rewardWeights);
+  appendTerminal(
+    `[rl] copied exact parameters from ${session.experimentId}; history remains unchanged`,
+    "ok",
+  );
+}
+
+function formatSessionValue(value, digits = 2, suffix = "") {
+  return Number.isFinite(Number(value))
+    ? `${Number(value).toFixed(digits)}${suffix}`
+    : "—";
+}
+
+function renderRLSessions(payload) {
+  const sessions = Array.isArray(payload.sessions) ? payload.sessions : [];
+  ui.rlSessions = sessions;
+  $("rl-session-count").textContent = `${sessions.length} RUN${sessions.length === 1 ? "" : "S"}`;
+  const signature = JSON.stringify(sessions.map((session) => [
+    session.experimentId,
+    session.state,
+    session.progress?.update,
+    session.evaluation?.meanReward,
+    session.checkpointAvailable,
+  ]));
+  if (signature !== ui.rlSessionsSignature) {
+    ui.rlSessionsSignature = signature;
+    const list = $("rl-session-list");
+    list.innerHTML = "";
+    for (const session of sessions) {
+      const config = session.config || {};
+      const evaluation = session.evaluation || {};
+      const progress = session.progress || {};
+      const card = document.createElement("button");
+      card.type = "button";
+      card.className = "rl-session-card";
+      card.dataset.experimentId = session.experimentId;
+      card.setAttribute("role", "option");
+      card.innerHTML = `
+        <div class="rl-session-card-head">
+          <b>${session.experimentId.slice(-8).toUpperCase()}</b>
+          <span class="rl-session-state ${session.state}">${String(session.state).toUpperCase()}</span>
+        </div>
+        <div class="rl-session-card-time">${new Date(session.createdAt).toLocaleString()}</div>
+        <div class="rl-session-card-config">
+          <span>UPDATES<b>${config.updates ?? "—"}</b></span>
+          <span>EPOCHS<b>${config.epochs ?? "—"} / U</b></span>
+          <span>TARGET<b>${formatSessionValue(config.targetSpeed, 2, " M/S")}</b></span>
+        </div>
+        <div class="rl-session-card-metrics">
+          <span>REWARD<b>${formatSessionValue(evaluation.meanReward ?? progress.reward, 3)}</b></span>
+          <span>UPRIGHT<b>${formatSessionValue(evaluation.uprightPercent ?? progress.upright_percent, 1, "%")}</b></span>
+          <span>BACKEND<b>${config.physicsBackend === "teaching-plant-v2" ? "PREVIEW" : config.physicsBackend || "—"}</b></span>
+        </div>`;
+      card.addEventListener("click", () => selectRLSession(session.experimentId));
+      list.appendChild(card);
     }
-  });
-  $("rl-stop").addEventListener("click", async () => {
-    try {
-      renderRLStatus(await requestJson("/api/rl/stop", {
-        method: "POST",
-        body: "{}",
-      }));
-    } catch (error) {
-      appendTerminal(`[rl] stop failed: ${error.message}`, "err");
+    if (!sessions.length) {
+      const empty = document.createElement("div");
+      empty.className = "rl-session-empty";
+      empty.textContent = "No stored sessions yet.";
+      list.appendChild(empty);
     }
-  });
-  $("rl-load-reference").addEventListener("click", () => {
-    loadPolicy("/assets/rl/dropbear-walk-reference.json", "Tracked reference walking policy");
-  });
-  $("rl-load-authored").addEventListener("click", () => {
-    loadPolicy("/assets/rl/dropbear-authored-reference.json", "Authored residual-zero walking baseline");
-  });
-  $("rl-load-latest").addEventListener("click", () => {
-    if (ui.latestPolicyUrl) loadPolicy(ui.latestPolicyUrl, "Latest local walking policy");
-  });
-  $("rl-watch-live").addEventListener("click", () => {
-    ui.watchTraining = !ui.watchTraining;
+  }
+  if (
+    ui.selectedRLSessionId
+    && !sessions.some((session) => session.experimentId === ui.selectedRLSessionId)
+  ) {
+    ui.selectedRLSessionId = null;
+  }
+  if (!ui.selectedRLSessionId && payload.selectedExperimentId) {
+    ui.selectedRLSessionId = payload.selectedExperimentId;
+  }
+  selectRLSession(ui.selectedRLSessionId);
+  if (ui.playbackMode === "rl") {
+    populatePlaybackSources("rl", $("scenario").value);
+  }
+}
+
+async function pollRLSessions() {
+  try {
+    renderRLSessions(await requestJson("/api/rl/sessions"));
+  } catch (error) {
+    appendTerminal(`[rl] session index unavailable: ${error.message}`, "warn");
+  }
+}
+
+async function replaySelectedRLSession() {
+  const session = selectedRLSession();
+  if (!session?.policyUrl) return;
+  const source = `session:${session.experimentId}`;
+  setPlaybackMode("rl", source);
+  await configurePlaybackSource(source);
+  policyPlayer.loop = true;
+  policyPlayer.seek(0);
+  policyPlayer.play();
+  switchView("sim");
+  appendTerminal(`[rl] replaying stored run ${session.experimentId}`, "ok");
+}
+
+async function startRLTraining(config) {
+  try {
+    const status = await requestJson("/api/rl/train", {
+      method: "POST",
+      body: JSON.stringify(config),
+    });
+    ui.watchTraining = true;
     ui.previewLoadedKey = null;
-    $("rl-watch-live").textContent = ui.watchTraining ? "STOP LIVE VIEW" : "WATCH TRAINING LIVE";
-    if (ui.watchTraining) {
-      switchView("sim");
-      pollRLStatus();
-    } else {
-      $("training-live-overlay").hidden = true;
-      policyPlayer.loop = false;
-    }
-  });
-  $("rl-policy-play").addEventListener("click", () => {
+    $("rl-auto-replay").checked = ui.autoReplayTraining;
+    $("sim-rl-auto-replay").checked = ui.autoReplayTraining;
+    setPlaybackMode("rl", "live");
     ui.policyMode = true;
-    policyPlayer.loop = false;
-    $("scenario").value = "rl-policy";
-    if (policyPlayer.playing) policyPlayer.pause();
-    else policyPlayer.play();
+    sim.scenario = "rl-policy";
+    renderRLStatus(status);
+    pollRLSessions();
+    switchView("sim");
+    appendTerminal(`[rl] experiment started · ${config.updates} updates × ${config.epochs} epochs · live USD replay armed`, "ok");
+  } catch (error) {
+    appendTerminal(`[rl] start rejected: ${error.message}`, "err");
+  }
+}
+
+async function stopRLTraining() {
+  try {
+    renderRLStatus(await requestJson("/api/rl/stop", {
+      method: "POST",
+      body: "{}",
+    }));
+  } catch (error) {
+    appendTerminal(`[rl] stop failed: ${error.message}`, "err");
+  }
+}
+
+function watchTrainingOnSim() {
+  ui.watchTraining = true;
+  ui.autoReplayTraining = true;
+  ui.previewLoadedKey = null;
+  $("rl-auto-replay").checked = true;
+  $("sim-rl-auto-replay").checked = true;
+  setPlaybackMode("rl", "live");
+  ui.policyMode = true;
+  sim.scenario = "rl-policy";
+  switchView("sim");
+  pollRLStatus();
+}
+
+function setupRLLab() {
+  for (const [key, suffix] of Object.entries(rewardWeightInputSuffix)) {
+    const advanced = $(`rl-weight-${suffix}`);
+    const quick = $(`sim-rl-weight-${suffix}`);
+    advanced.addEventListener("change", () => { quick.value = advanced.value; });
+    quick.addEventListener("change", () => { advanced.value = quick.value; });
+  }
+  $("rl-reset-weights").addEventListener("click", () => {
+    writeRewardWeights("rl");
+    writeRewardWeights("sim-rl");
   });
-  $("rl-open-sim").addEventListener("click", () => switchView("sim"));
+  $("sim-rl-reset-weights").addEventListener("click", () => {
+    writeRewardWeights("rl");
+    writeRewardWeights("sim-rl");
+  });
+  $("rl-session-new").addEventListener("click", () => {
+    ui.selectedRLSessionId = null;
+    $("rl-session-warm-start").checked = false;
+    selectRLSession(null);
+    appendTerminal("[rl] new run armed; stored sessions were not changed", "ok");
+  });
+  $("rl-session-copy").addEventListener("click", () => {
+    applyRLSessionConfig(selectedRLSession());
+  });
+  $("rl-session-replay").addEventListener("click", () => {
+    replaySelectedRLSession().catch((error) => {
+      appendTerminal(`[rl] session replay failed: ${error.message}`, "err");
+    });
+  });
+  $("rl-form").addEventListener("submit", (event) => {
+    event.preventDefault();
+    ui.autoReplayTraining = $("rl-auto-replay").checked;
+    startRLTraining(advancedRLConfig());
+  });
+  $("sim-training-toggle").addEventListener("click", () => {
+    const panel = $("sim-training-panel");
+    panel.hidden = !panel.hidden;
+    $("sim-training-toggle").setAttribute("aria-expanded", String(!panel.hidden));
+    $("sim-training-toggle").textContent = panel.hidden ? "TRAIN RL" : "CLOSE TRAINING";
+  });
+  $("sim-training-panel").addEventListener("submit", (event) => {
+    event.preventDefault();
+    ui.autoReplayTraining = $("sim-rl-auto-replay").checked;
+    startRLTraining(quickRLConfig());
+  });
+  $("rl-stop").addEventListener("click", stopRLTraining);
+  $("sim-rl-stop").addEventListener("click", stopRLTraining);
+  $("global-training-stop").addEventListener("click", stopRLTraining);
+  $("sim-rl-advanced").addEventListener("click", () => switchView("rl"));
+  $("global-training-lab").addEventListener("click", () => switchView("rl"));
+  $("global-training-live").addEventListener("click", watchTrainingOnSim);
+  $("rl-open-sim").addEventListener("click", () => {
+    setPlaybackMode("rl", policyPlayer.policy ? $("scenario").value : "reference");
+    switchView("sim");
+    if (!policyPlayer.policy) configurePlaybackSource("reference");
+  });
+  for (const id of ["rl-auto-replay", "sim-rl-auto-replay"]) {
+    $(id).addEventListener("change", (event) => {
+      ui.autoReplayTraining = event.target.checked;
+      $("rl-auto-replay").checked = ui.autoReplayTraining;
+      $("sim-rl-auto-replay").checked = ui.autoReplayTraining;
+    });
+  }
   $("rl-timeline").addEventListener("input", (event) => {
     ui.policyMode = true;
     policyPlayer.seek(Number(event.target.value));
   });
   pollRLStatus();
+  pollRLSessions();
   window.setInterval(pollRLStatus, 800);
+  window.setInterval(pollRLSessions, 3000);
 }
 
 function drawScope() {
@@ -864,7 +1324,9 @@ function renderLive() {
   const closureText = $("closure-status-text");
   if (closureText && robot.ready) {
     const guide = robot.verticalConstraintEnabled ? "Z GUIDE" : "FREE ROOT";
-    closureText.textContent = `${guide} ${signed(robot.groundContact.offsetZ * 1000, 0)} mm · LEG ${robot.legClosureResidualMm.toFixed(3)} mm · ARM ${robot.armClosureResidualMm.toFixed(3)} mm · MAX ${robot.closureResidualMm.toFixed(3)} mm`;
+    const normalForce = Number(robot.groundContact.normalForceN);
+    const force = Number.isFinite(normalForce) ? ` · N ${normalForce.toFixed(0)} N` : "";
+    closureText.textContent = `${guide} ${signed(robot.groundContact.offsetZ * 1000, 0)} mm${force} · LEG ${robot.legClosureResidualMm.toFixed(3)} mm · ARM ${robot.armClosureResidualMm.toFixed(3)} mm · MAX ${robot.closureResidualMm.toFixed(3)} mm`;
   }
   $("root-z-offset").textContent = `${signed(robot.groundContact.offsetZ * 1000, 0)} mm`;
   drawScope();
@@ -875,9 +1337,12 @@ function renderLive() {
     time: sim.time,
   });
   if (!ui.cadManual) {
-    cad.setJointAngle(target.angle);
-    $("cad-angle").value = String(Math.max(120, Math.min(240, target.angle)));
-    $("cad-angle-output").textContent = `${target.angle.toFixed(1)}°`;
+    const outputRotation = ui.axisCategory === "arm"
+      ? (selectedArm?.angleDeg || 0)
+      : target.angle - 180;
+    cad.setJointAngle(outputRotation);
+    $("cad-angle").value = String(Math.max(-180, Math.min(180, outputRotation)));
+    $("cad-angle-output").textContent = `${signed(outputRotation)}°`;
   }
   $("csv-output").textContent = sim.controllers[ui.consoleController].csv;
   $("fault-can").textContent = sim.faults.canDrop ? "RESTORE CAN" : "DROP CAN";
@@ -911,6 +1376,7 @@ setupCadControls();
 setupBoardControls();
 setupFirmware();
 setupRLLab();
+pollPhysicsRuntime();
 selectJoint(0x141);
 renderLive();
 requestAnimationFrame(frame);
@@ -926,4 +1392,5 @@ window.dropbearTwin = {
   source: DROPBEAR_SOURCE,
   usdSource: DROPBEAR_USD_SOURCE,
   cadEvidence: CAD_EVIDENCE,
+  get physicsRuntime() { return ui.physicsRuntime; },
 };

@@ -16,10 +16,12 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import unquote, urlsplit
 
 from rl_service import RLTrainingManager
+from physics_service import PhysicsRuntimeRegistry
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(HERE)
 RL_MANAGER = RLTrainingManager(Path(PROJECT_ROOT))
+PHYSICS_REGISTRY = PhysicsRuntimeRegistry(Path(PROJECT_ROOT))
 ALIASES = {
     "/node_modules/": os.path.join(HERE, "node_modules"),
     "/cad-candidate/": os.path.join(
@@ -27,14 +29,37 @@ ALIASES = {
     ),
     "/artifacts/": os.path.join(PROJECT_ROOT, "artifacts"),
 }
+SOURCE_FILES = {
+    "/cad-source/dropbear-x8-pro.step": os.path.join(
+        PROJECT_ROOT,
+        "assets", "vendor", "myactuator", "RMD-X", "X8-25", "vendor",
+        "X8-25 Product information 240814", "2D 3D",
+        "X8-25 (RMD-X8 PRO 1：9 V2).step",
+    ),
+    "/cad-source/dropbear-x10-s2.step": os.path.join(
+        PROJECT_ROOT,
+        "assets", "vendor", "myactuator", "RMD-X", "X10-100", "vendor", "X10-100",
+        "(RMD-X10-S2 V3)Product information 240220", "2D 3D",
+        "RMD-X10-S2 V3.step",
+    ),
+}
 
 
 class Handler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=HERE, **kwargs)
 
+    def end_headers(self):
+        # This is a live engineering dev server; stale ES modules can leave the
+        # visible controls out of sync with the current HTML during iteration.
+        if urlsplit(self.path).path.endswith((".html", ".js", ".css")) or self.path == "/":
+            self.send_header("Cache-Control", "no-store")
+        super().end_headers()
+
     def translate_path(self, path):
         request_path = unquote(urlsplit(path).path)
+        if request_path in SOURCE_FILES:
+            return os.path.realpath(SOURCE_FILES[request_path])
         for prefix, root in ALIASES.items():
             if request_path.startswith(prefix):
                 relative = request_path[len(prefix):].lstrip("/")
@@ -68,8 +93,15 @@ class Handler(SimpleHTTPRequestHandler):
         return self.client_address[0] in {"127.0.0.1", "::1"}
 
     def do_GET(self):
-        if urlsplit(self.path).path == "/api/rl/status":
+        request_path = urlsplit(self.path).path
+        if request_path == "/api/rl/status":
             self._send_json(200, RL_MANAGER.snapshot())
+            return
+        if request_path == "/api/rl/sessions":
+            self._send_json(200, RL_MANAGER.list_sessions())
+            return
+        if request_path == "/api/physics/status":
+            self._send_json(200, PHYSICS_REGISTRY.snapshot())
             return
         super().do_GET()
 

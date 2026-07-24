@@ -12,7 +12,7 @@ from typing import Any, Dict
 
 import torch
 
-from .dropbear_ppo import ACTION_NAMES, DropbearWalkEnv, PPO
+from .dropbear_ppo import ACTION_NAMES, DropbearWalkEnv, PPO, RewardWeights
 
 
 FIRMWARE_COMMIT = "13cf5ecaa39b8b89c794fe905dcea0490cfa7726"
@@ -88,6 +88,21 @@ def gae_returns(
     return advantages + values, advantages
 
 
+def reward_weights_from_args(args: argparse.Namespace) -> RewardWeights:
+    return RewardWeights(
+        torso_stability=args.reward_torso,
+        com_stability=args.reward_com,
+        gait_contact=args.reward_gait_contact,
+        speed_tracking=args.reward_speed,
+        height_penalty=args.penalty_height,
+        arm_swing_penalty=args.penalty_arm_swing,
+        energy_penalty=args.penalty_energy,
+        smoothness_penalty=args.penalty_smoothness,
+        closure_penalty=args.penalty_closure,
+        fall_penalty=args.penalty_fall,
+    )
+
+
 @torch.no_grad()
 def export_policy(
     agent: PPO,
@@ -102,6 +117,7 @@ def export_policy(
         arm_swing=args.arm_swing,
         target_speed=args.target_speed,
         episode_seconds=args.episode_seconds,
+        reward_weights=reward_weights_from_args(args),
         seed=args.seed + 1000,
     )
     obs = env.reset()
@@ -193,13 +209,16 @@ def export_policy(
             "rolloutSteps": args.steps,
             "parallelEnvs": args.envs,
             "ppoEpochs": args.epochs,
+            "batchSize": args.batch_size,
             "policyEpochs": args.updates * args.epochs,
             "seed": args.seed,
             "targetSpeed": args.target_speed,
             "episodeSeconds": args.episode_seconds,
             "verticalConstraint": args.vertical_constraint,
             "armSwing": args.arm_swing,
+            "rewardWeights": reward_weights_from_args(args).as_dict(),
             "device": args.device,
+            "physicsBackend": "teaching-plant-v2",
             "dt": env.dt,
         },
         "jointOrder": list(ACTION_NAMES),
@@ -223,6 +242,16 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=7)
     parser.add_argument("--target-speed", type=float, default=0.35)
     parser.add_argument("--episode-seconds", type=float, default=8.0)
+    parser.add_argument("--reward-torso", type=float, default=1.25)
+    parser.add_argument("--reward-com", type=float, default=0.75)
+    parser.add_argument("--reward-gait-contact", type=float, default=0.85)
+    parser.add_argument("--reward-speed", type=float, default=0.60)
+    parser.add_argument("--penalty-height", type=float, default=7.0)
+    parser.add_argument("--penalty-arm-swing", type=float, default=0.42)
+    parser.add_argument("--penalty-energy", type=float, default=0.012)
+    parser.add_argument("--penalty-smoothness", type=float, default=0.035)
+    parser.add_argument("--penalty-closure", type=float, default=250.0)
+    parser.add_argument("--penalty-fall", type=float, default=5.0)
     parser.add_argument(
         "--vertical-constraint",
         action=argparse.BooleanOptionalAction,
@@ -241,6 +270,27 @@ def main() -> None:
     parser.add_argument("--jsonl", action="store_true")
     args = parser.parse_args()
 
+    if not 1 <= args.updates <= 10_000:
+        parser.error("--updates must be in [1, 10000]")
+    coefficient_limits = {
+        "reward_torso": 20.0,
+        "reward_com": 20.0,
+        "reward_gait_contact": 20.0,
+        "reward_speed": 20.0,
+        "penalty_height": 100.0,
+        "penalty_arm_swing": 20.0,
+        "penalty_energy": 20.0,
+        "penalty_smoothness": 20.0,
+        "penalty_closure": 5000.0,
+        "penalty_fall": 100.0,
+    }
+    for name, maximum in coefficient_limits.items():
+        value = float(getattr(args, name))
+        if not math.isfinite(value) or not 0.0 <= value <= maximum:
+            parser.error(
+                f"--{name.replace('_', '-')} must be in [0, {maximum:g}]"
+            )
+
     if args.device == "auto":
         args.device = "cuda" if torch.cuda.is_available() else "cpu"
     random.seed(args.seed)
@@ -255,6 +305,7 @@ def main() -> None:
         arm_swing=args.arm_swing,
         target_speed=args.target_speed,
         episode_seconds=args.episode_seconds,
+        reward_weights=reward_weights_from_args(args),
         seed=args.seed,
     )
     agent = PPO(env.observation_dim, env.action_dim, args.device)
@@ -287,6 +338,7 @@ def main() -> None:
             "actionDim": env.action_dim,
             "verticalConstraint": args.vertical_constraint,
             "armSwing": args.arm_swing,
+            "rewardWeights": reward_weights_from_args(args).as_dict(),
             "initCheckpoint": args.init_checkpoint,
         },
         args.jsonl,

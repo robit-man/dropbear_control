@@ -49,6 +49,29 @@
     </div>
   </header>
 
+  <section id="global-training-strip" class="global-training-strip" aria-live="polite" hidden>
+    <div class="global-training-identity">
+      <i></i>
+      <span>RL TRAINING</span>
+      <b id="global-training-state">IDLE</b>
+      <code id="global-training-id">LOCAL</code>
+    </div>
+    <div class="global-training-progress">
+      <span id="global-training-epoch">EPOCH 0 / 0</span>
+      <div><i id="global-training-fill"></i></div>
+    </div>
+    <dl>
+      <div><dt>REWARD</dt><dd id="global-training-reward">—</dd></div>
+      <div><dt>UPRIGHT</dt><dd id="global-training-upright">—</dd></div>
+      <div><dt>STATE</dt><dd id="global-training-phase">WAITING</dd></div>
+    </dl>
+    <div class="global-training-actions">
+      <button id="global-training-live" class="button subtle">VIEW LIVE</button>
+      <button id="global-training-lab" class="button subtle">RL LAB</button>
+      <button id="global-training-stop" class="button danger" disabled>STOP</button>
+    </div>
+  </section>
+
   <div class="app-shell">
     <aside class="rail">
       <nav aria-label="Workspace">
@@ -65,7 +88,7 @@
           <span class="rail-icon">›_</span><span>Firmware</span>
         </button>
         <button class="rail-item" data-view-target="rl">
-          <span class="rail-icon">λ</span><span>RL Lab</span>
+          <span class="rail-icon">λ</span><span>RL Lab</span><i id="rl-rail-state" class="rail-state" hidden></i>
         </button>
         <button class="rail-item" data-view-target="evidence">
           <span class="rail-icon">◎</span><span>Evidence</span>
@@ -81,30 +104,69 @@
     <main class="workspace">
       <section class="view active" data-view="sim">
         <div class="view-heading">
-          <div>
-            <div class="eyebrow">DIGITAL TWIN / ROBOT</div>
-            <h1>Dropbear low-level control room</h1>
-            <p>Source-routed firmware loops, joint state, CAN traffic, sensor feedback, and guarded motion in one interactive workspace.</p>
-          </div>
           <div class="scenario-bar">
-            <label>
-              <span>SCENARIO</span>
+            <div class="playback-mode-control">
+              <span>PLAYBACK SOURCE</span>
+              <button id="playback-mode" class="playback-mode-button" type="button" data-mode="preset" aria-label="Toggle playback source between preset and trained policy">PRESET</button>
+            </div>
+            <label class="playback-source-select">
+              <span id="playback-source-label">MOTION PRESET</span>
               <select id="scenario">
                 <option value="neutral">Neutral hold</option>
                 <option value="walk">Alternating step</option>
                 <option value="balance">Balance transfer</option>
                 <option value="sensor-sweep">Sensor sweep</option>
                 <option value="manual">Manual torque</option>
-                <option value="rl-policy">RL policy playback</option>
               </select>
             </label>
             <label class="switch stage-constraint-switch">
               <input id="vertical-constraint" type="checkbox" checked>
               <span></span>Z GUIDE
             </label>
-            <button id="run-demo" class="button accent">RUN FULL DEMO</button>
+            <button id="sim-training-toggle" class="button subtle" aria-expanded="false">TRAIN RL</button>
           </div>
         </div>
+
+        <form id="sim-training-panel" class="panel sim-training-panel" hidden>
+          <div>
+            <span class="panel-kicker">LIVE PPO / CURRENT FULL USD STAGE</span>
+            <h2>Train while policy updates replay here</h2>
+            <p>Training runs in the local teaching plant. Each exported update is loaded into this full model with root state, all 22 motor axes, and retained leg/elbow closures.</p>
+          </div>
+          <label><span>TRAINING UPDATES</span><input id="sim-rl-updates" type="number" min="1" max="10000" value="12"></label>
+          <label><span>EPOCHS / UPDATE</span><input id="sim-rl-epochs" type="number" min="1" max="20" value="4"></label>
+          <label><span>TARGET M/S</span><input id="sim-rl-target-speed" type="number" min="0" max="1.2" step="0.05" value="0.35"></label>
+          <label><span>DEVICE</span>
+            <select id="sim-rl-device"><option value="auto">Auto</option><option value="cpu">CPU</option><option value="cuda">CUDA</option></select>
+          </label>
+          <div class="sim-training-switches">
+            <label class="switch"><input id="sim-rl-vertical-constraint" type="checkbox"><span></span>VERTICAL GUIDE</label>
+            <label class="switch"><input id="sim-rl-arm-swing" type="checkbox" checked><span></span>ARM SWING</label>
+            <label class="switch"><input id="sim-rl-auto-replay" type="checkbox" checked><span></span>REPLAY EACH UPDATE</label>
+          </div>
+          <details class="reward-tuning">
+            <summary>REWARD / PENALTY BIAS <span>10 COEFFICIENTS</span></summary>
+            <p>Higher reward weights favor a behavior; higher penalty weights suppress it. Arm swing must also be enabled above.</p>
+            <div class="reward-weight-grid">
+              <label><span>TORSO REWARD</span><input id="sim-rl-weight-torso" type="number" min="0" max="20" step="0.05" value="1.25"></label>
+              <label><span>COM REWARD</span><input id="sim-rl-weight-com" type="number" min="0" max="20" step="0.05" value="0.75"></label>
+              <label><span>GAIT + CONTACT</span><input id="sim-rl-weight-gait-contact" type="number" min="0" max="20" step="0.05" value="0.85"></label>
+              <label><span>SPEED REWARD</span><input id="sim-rl-weight-speed" type="number" min="0" max="20" step="0.05" value="0.60"></label>
+              <label><span>HEIGHT PENALTY</span><input id="sim-rl-weight-height" type="number" min="0" max="100" step="0.1" value="7.0"></label>
+              <label><span>ARM SWING PENALTY</span><input id="sim-rl-weight-arm-swing" type="number" min="0" max="20" step="0.01" value="0.42"></label>
+              <label><span>ENERGY PENALTY</span><input id="sim-rl-weight-energy" type="number" min="0" max="20" step="0.001" value="0.012"></label>
+              <label><span>SMOOTHNESS PENALTY</span><input id="sim-rl-weight-smoothness" type="number" min="0" max="20" step="0.001" value="0.035"></label>
+              <label><span>CLOSURE PENALTY</span><input id="sim-rl-weight-closure" type="number" min="0" max="5000" step="10" value="250"></label>
+              <label><span>FALL PENALTY</span><input id="sim-rl-weight-fall" type="number" min="0" max="100" step="0.5" value="5.0"></label>
+            </div>
+            <button id="sim-rl-reset-weights" type="button" class="reward-reset">RESET PROVEN DEFAULTS</button>
+          </details>
+          <div class="sim-training-actions">
+            <button id="sim-rl-start" type="submit" class="button accent">START + WATCH</button>
+            <button id="sim-rl-stop" type="button" class="button danger" disabled>STOP</button>
+            <button id="sim-rl-advanced" type="button" class="button subtle">ADVANCED RL LAB</button>
+          </div>
+        </form>
 
         <div class="sim-grid">
           <article class="panel robot-panel">
@@ -115,8 +177,9 @@
               </div>
               <div class="usd-statline">
                 <span><b>93</b> BODIES</span>
-                <span><b>116</b> JOINTS</span>
+                <span><b>117</b> PHYSICS JOINTS</span>
                 <span class="closure"><b>27</b> CLOSURES</span>
+                <span><b>56.23</b> KG</span>
               </div>
             </div>
             <div class="robot-stage">
@@ -147,6 +210,10 @@
               <div class="robot-asset-chip">
                 <span>DROPBEAR.USD</span>
                 <b>3c37aed · Z-UP · METRES</b>
+              </div>
+              <div id="physics-runtime-status" class="physics-runtime-chip">
+                <span>FORCE CONTACT</span>
+                <b>VERIFYING SOURCE USD…</b>
               </div>
               <button id="robot-fit" class="button subtle robot-fit">FIT USD</button>
               <div id="closure-status" class="robot-closure-note"><i></i><span id="closure-status-text">Z GUIDE · LEG + ARM CLOSED LOOPS · SOLVING…</span></div>
@@ -236,17 +303,25 @@
         <div class="view-heading">
           <div>
             <div class="eyebrow">GEOMETRY / EXACT SOURCE CACHE</div>
-            <h1>Tracked STEP actuator</h1>
-            <p>The cached housing and output solids rendered as a source-derived browser preview—not a decorative cylinder. Full-resolution STEP remains linked beside it.</p>
+            <h1>Installed Dropbear actuator CAD</h1>
+            <p>The selected Dropbear axis now chooses its actual X8 or X10 motor class. The source-derived output member rotates coaxially about the STEP model’s declared shaft axis.</p>
           </div>
-          <div id="cad-status" class="load-status loading"><span></span>Loading geometry…</div>
+          <div class="cad-heading-tools">
+            <label><span>ACTUATOR</span>
+              <select id="cad-model">
+                <option value="x8-pro">RMD-X8-25 Pro V2</option>
+                <option value="x10-s2">RMD-X10-100 S2 V3</option>
+              </select>
+            </label>
+            <div id="cad-status" class="load-status loading"><span></span>Loading geometry…</div>
+          </div>
         </div>
         <div class="cad-layout">
           <article class="panel cad-stage-panel">
             <div class="cad-canvas-wrap">
               <canvas id="cad-canvas" aria-label="Interactive STEP-derived MyActuator CAD model"></canvas>
-              <div class="cad-watermark"><span>RMD-X12-320</span><b>STEP CANDIDATE</b></div>
-              <div class="cad-dimensions"><span>WORLD UNITS</span><b>METRES · +Z ARTICULATION</b></div>
+              <div class="cad-watermark"><span id="cad-model-name">RMD-X8-25 PRO V2</span><b>DROPBEAR MOTOR · STEP SOURCE</b></div>
+              <div class="cad-dimensions"><span id="cad-model-dimensions">98 × 51 × 98 MM</span><b id="cad-model-axis">METRES · +Y SHAFT</b></div>
             </div>
             <div class="cad-toolbar">
               <label class="switch"><input id="cad-lines" type="checkbox" checked><span></span>TECHNICAL LINES</label>
@@ -259,25 +334,24 @@
           <aside class="cad-aside">
             <article class="panel evidence-card">
               <span class="panel-kicker">SOURCE INTEGRITY</span>
-              <h2>Exact cached export</h2>
+              <h2 id="cad-evidence-model">RMD-X8-25 Pro V2</h2>
               <dl>
-                <div><dt>Source SHA-256</dt><dd title="9b1710aef09916c8da02b4e6b750da6bbfe2ba44cad6ba03cd1b53e3858e5eea">9b1710ae…e5eea</dd></div>
-                <div><dt>Housing</dt><dd>314,848 tris</dd></div>
-                <div><dt>Output</dt><dd>109,818 tris</dd></div>
-                <div><dt>Axis</dt><dd>Canonical +Z</dd></div>
+                <div><dt>Source SHA-256</dt><dd id="cad-evidence-sha">Loading…</dd></div>
+                <div><dt>Housing</dt><dd id="cad-evidence-housing">—</dd></div>
+                <div><dt>Output</dt><dd id="cad-evidence-output">—</dd></div>
+                <div><dt>Shaft axis</dt><dd id="cad-evidence-axis">—</dd></div>
               </dl>
-              <div class="evidence-warning">The interactive preview is quantized and simplified from the exact cached solids for responsive browser rendering; the linked STEP files remain full-resolution. Installed Dropbear joint-to-product binding is still unresolved.</div>
+              <div id="cad-evidence-note" class="evidence-warning">The browser split is an exact source-derived visual partition selected by measured B-Rep fingerprint. It is not a calibrated dynamics or support model.</div>
               <div class="download-row">
-                <a href="/cad-candidate/step-e7d99e7e0d9683017c1a/housing-candidate.step">HOUSING STEP ↓</a>
-                <a href="/cad-candidate/step-e7d99e7e0d9683017c1a/output-candidate.step">OUTPUT STEP ↓</a>
+                <a id="cad-source-download" href="/cad-source/dropbear-x8-pro.step">FULL SOURCE STEP ↓</a>
               </div>
             </article>
             <article class="panel cad-control-card">
               <span class="panel-kicker">LIVE ARTICULATION</span>
               <h2 id="cad-joint-name">Left outer calf</h2>
               <label class="range-control">
-                <span>OUTPUT ANGLE <output id="cad-angle-output">180.0°</output></span>
-                <input id="cad-angle" type="range" min="120" max="240" step="0.5" value="180">
+                <span>OUTPUT ROTATION <output id="cad-angle-output">0.0°</output></span>
+                <input id="cad-angle" type="range" min="-180" max="180" step="0.5" value="0">
               </label>
               <p>The output solid follows the selected simulated joint. Drag to orbit, wheel to zoom, and enable explode to inspect the separation.</p>
             </article>
@@ -400,7 +474,7 @@
               <span class="count-chip">22 ACTIONS · 88 OBS</span>
             </div>
             <form id="rl-form" class="rl-config-grid">
-              <label><span>UPDATES</span><input id="rl-updates" type="number" min="1" max="200" value="12"></label>
+              <label><span>TRAINING UPDATES</span><input id="rl-updates" type="number" min="1" max="10000" value="12"></label>
               <label><span>ROLLOUT STEPS</span><input id="rl-steps" type="number" min="16" max="2048" value="128"></label>
               <label><span>PARALLEL ENVS</span><input id="rl-envs" type="number" min="1" max="512" value="32"></label>
               <label><span>EPOCHS / UPDATE</span><input id="rl-epochs" type="number" min="1" max="20" value="4"></label>
@@ -415,10 +489,32 @@
                   <option value="cuda">CUDA</option>
                 </select>
               </label>
+              <label><span>PHYSICS BACKEND</span>
+                <select id="rl-physics-backend">
+                  <option value="teaching-plant-v2">Teaching preview · PyTorch</option>
+                </select>
+              </label>
               <div class="rl-switches">
                 <label class="switch"><input id="rl-vertical-constraint" type="checkbox"><span></span>VERTICAL GUIDE</label>
                 <label class="switch"><input id="rl-arm-swing" type="checkbox" checked><span></span>ARM SWING</label>
               </div>
+              <details class="reward-tuning">
+                <summary>REWARD / PENALTY BIAS <span>10 COEFFICIENTS</span></summary>
+                <p>Coefficients are persisted with the checkpoint and browser policy. Zero disables a term.</p>
+                <div class="reward-weight-grid">
+                  <label><span>TORSO REWARD</span><input id="rl-weight-torso" type="number" min="0" max="20" step="0.05" value="1.25"></label>
+                  <label><span>COM REWARD</span><input id="rl-weight-com" type="number" min="0" max="20" step="0.05" value="0.75"></label>
+                  <label><span>GAIT + CONTACT</span><input id="rl-weight-gait-contact" type="number" min="0" max="20" step="0.05" value="0.85"></label>
+                  <label><span>SPEED REWARD</span><input id="rl-weight-speed" type="number" min="0" max="20" step="0.05" value="0.60"></label>
+                  <label><span>HEIGHT PENALTY</span><input id="rl-weight-height" type="number" min="0" max="100" step="0.1" value="7.0"></label>
+                  <label><span>ARM SWING PENALTY</span><input id="rl-weight-arm-swing" type="number" min="0" max="20" step="0.01" value="0.42"></label>
+                  <label><span>ENERGY PENALTY</span><input id="rl-weight-energy" type="number" min="0" max="20" step="0.001" value="0.012"></label>
+                  <label><span>SMOOTHNESS PENALTY</span><input id="rl-weight-smoothness" type="number" min="0" max="20" step="0.001" value="0.035"></label>
+                  <label><span>CLOSURE PENALTY</span><input id="rl-weight-closure" type="number" min="0" max="5000" step="10" value="250"></label>
+                  <label><span>FALL PENALTY</span><input id="rl-weight-fall" type="number" min="0" max="100" step="0.5" value="5.0"></label>
+                </div>
+                <button id="rl-reset-weights" type="button" class="reward-reset">RESET PROVEN DEFAULTS</button>
+              </details>
               <div class="rl-form-actions">
                 <button id="rl-start" type="submit" class="button accent">START TRAINING</button>
                 <button id="rl-stop" type="button" class="button danger" disabled>STOP</button>
@@ -462,12 +558,7 @@
               <span id="rl-policy-mode" class="count-chip warning">FREE ROOT</span>
             </div>
             <div class="rl-policy-actions">
-              <button id="rl-load-reference" class="button subtle">LOAD PPO REFERENCE</button>
-              <button id="rl-load-authored" class="button subtle">LOAD AUTHORED BASELINE</button>
-              <button id="rl-load-latest" class="button subtle" disabled>LOAD LATEST</button>
-              <button id="rl-watch-live" class="button subtle">WATCH TRAINING LIVE</button>
-              <button id="rl-policy-play" class="button accent" disabled>PLAY ON USD</button>
-              <button id="rl-open-sim" class="button subtle">OPEN ROBOT SIM</button>
+              <button id="rl-open-sim" class="button accent">CHOOSE POLICY + OPEN SIM</button>
             </div>
             <label class="switch rl-auto-replay"><input id="rl-auto-replay" type="checkbox" checked><span></span>AUTO-REPLAY EACH UPDATE</label>
             <label class="range-control rl-timeline">
@@ -479,6 +570,32 @@
               <div><span>ELBOW INPUT</span><b>LH/RH_REVOLUTE41</b></div>
               <div><span>PASSIVE ELBOWS</span><b>5 LINKS + 3 LOOPS / SIDE</b></div>
               <div><span>ROOT</span><b id="rl-root-summary">GUIDE DISABLED</b></div>
+            </div>
+          </article>
+
+          <article class="panel rl-sessions-panel">
+            <div class="panel-head">
+              <div>
+                <span class="panel-kicker">PERSISTENT EXPERIMENT HISTORY</span>
+                <h2>Training sessions</h2>
+              </div>
+              <span id="rl-session-count" class="count-chip">0 RUNS</span>
+            </div>
+            <div class="rl-session-toolbar">
+              <button id="rl-session-new" type="button" class="button accent">NEW RUN</button>
+              <button id="rl-session-copy" type="button" class="button subtle" disabled>COPY EXACT PARAMS</button>
+              <button id="rl-session-replay" type="button" class="button subtle" disabled>REPLAY POLICY</button>
+              <label class="switch">
+                <input id="rl-session-warm-start" type="checkbox" disabled>
+                <span></span>WARM-START FROM CHECKPOINT
+              </label>
+            </div>
+            <div id="rl-session-selection" class="rl-session-selection">
+              <b>NEW RUN</b>
+              <span>Edit the parameters above and start training. Existing runs are retained.</span>
+            </div>
+            <div id="rl-session-list" class="rl-session-list" role="listbox" aria-label="Stored reinforcement-learning sessions">
+              <div class="rl-session-empty">No stored sessions yet.</div>
             </div>
           </article>
         </div>
@@ -496,7 +613,7 @@
           <article class="panel provenance-panel usd-provenance">
             <span class="panel-kicker">ROBOT GEOMETRY / KINEMATICS</span>
             <h2>Actual Dropbear USD</h2>
-            <p>The browser renders the tracked <code>dropbear.usd</code> from Dropbear RL: 93 rigid bodies, 116 physical joints, 27 loop-closure constraints, and the exact 12 CAN-to-USD motor map derived from physical axes and body locations.</p>
+            <p>The browser renders the tracked <code>dropbear.usd</code> from Dropbear RL: 93 rigid bodies, 117 physical joints, 27 retained loop-closure constraints, and the exact 12 CAN-to-USD motor map derived from physical axes and body locations.</p>
             <a class="source-link" href="https://github.com/Hyperspawn/dropbear_rl" target="_blank" rel="noreferrer">OPEN DROPBEAR RL ↗</a>
             <code>3c37aedce6d445205671d5714d05ae28b8c90e2c · CC-BY-NC-SA-4.0</code>
           </article>
@@ -535,6 +652,6 @@
     </main>
   </div>
 
-  <script type="module" src="/js/app.js"></script>
+  <script type="module" src="/js/app.js?v=20260724-physics-sessions1"></script>
 </body>
 </html>

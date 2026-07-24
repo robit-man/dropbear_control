@@ -1,0 +1,4 @@
+# Optional source-USD inspection and force-dynamics environment.
+# Isaac Sim / Isaac Lab supply their own pinned Python runtime separately.
+mujoco==3.6.0
+usd-core==26.8

@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "node test/cad_support.test.mjs && node test/simulator_runtime.test.mjs && node test/plant_evidence.test.mjs && node test/vertical_ground_constraint.test.mjs && node test/rl_policy.test.mjs && node test/dropbear.test.mjs && node test/protocol.test.mjs && node test/sim.test.mjs && node test/harness.test.mjs && node test/e2e.test.mjs",
+    "test": "node test/cad_support.test.mjs && node test/motor_cad.test.mjs && node test/simulator_runtime.test.mjs && node test/plant_evidence.test.mjs && node test/vertical_ground_constraint.test.mjs && node test/force_ground_contact.test.mjs && node test/rl_policy.test.mjs && node test/dropbear.test.mjs && node test/protocol.test.mjs && node test/sim.test.mjs && node test/harness.test.mjs && node test/e2e.test.mjs",
     "test:dropbear": "node test/dropbear.test.mjs",
     "test:walk-policy": "node test/walk_policy_review.mjs",
     "test:visual": "node test/visual_review.mjs",

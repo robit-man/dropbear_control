@@ -63,15 +63,47 @@ class FourBarGeometry:
 
 
 @dataclass(frozen=True)
+class RewardWeights:
+    """User-tunable coefficients for every top-level walking objective."""
+
+    torso_stability: float = 1.25
+    com_stability: float = 0.75
+    gait_contact: float = 0.85
+    speed_tracking: float = 0.60
+    height_penalty: float = 7.0
+    arm_swing_penalty: float = 0.42
+    energy_penalty: float = 0.012
+    smoothness_penalty: float = 0.035
+    closure_penalty: float = 250.0
+    fall_penalty: float = 5.0
+
+    def as_dict(self) -> Dict[str, float]:
+        return {
+            "torso": self.torso_stability,
+            "com": self.com_stability,
+            "gaitContact": self.gait_contact,
+            "speed": self.speed_tracking,
+            "height": self.height_penalty,
+            "armSwing": self.arm_swing_penalty,
+            "energy": self.energy_penalty,
+            "smoothness": self.smoothness_penalty,
+            "closure": self.closure_penalty,
+            "fall": self.fall_penalty,
+        }
+
+
+@dataclass(frozen=True)
 class WalkPlantConfig:
     vertical_constraint: bool = True
     arm_swing: bool = True
     target_speed: float = 0.35
     episode_seconds: float = 8.0
-    mass_kg: float = 42.0
+    # Sum of all 93 authored rigid-body masses in the verified source USD.
+    mass_kg: float = 56.22897759778425
     nominal_height_m: float = 0.80
     nominal_com_height_m: float = 0.72
     contact_band_m: float = 0.012
+    reward_weights: RewardWeights = RewardWeights()
 
 
 class FourBarLeg:
@@ -165,6 +197,7 @@ class DropbearWalkEnv:
         arm_swing: bool = True,
         target_speed: float = 0.35,
         episode_seconds: float = 8.0,
+        reward_weights: RewardWeights | None = None,
         seed: int = 7,
     ):
         self.device = torch.device(device)
@@ -175,6 +208,7 @@ class DropbearWalkEnv:
             arm_swing=bool(arm_swing),
             target_speed=float(target_speed),
             episode_seconds=float(episode_seconds),
+            reward_weights=reward_weights or RewardWeights(),
         )
         torch.manual_seed(int(seed))
         if self.device.type == "cuda":
@@ -620,17 +654,18 @@ class DropbearWalkEnv:
         com_stability_reward = torch.exp(-com_stability_error)
         baseline_walk_bias = torch.exp(-1.4 * gait_error)
         velocity_reward = torch.exp(-2.2 * speed_error)
+        weights = self.config.reward_weights
         reward = (
-            1.25 * torso_stability_reward
-            + 0.75 * com_stability_reward
-            + 0.85 * baseline_walk_bias
-            + 0.60 * velocity_reward
-            - 7.0 * height_error
-            - 0.42 * arm_error
-            - 0.012 * energy
-            - 0.035 * smoothness
-            - 250.0 * residual.square().mean(1)
-            - 250.0 * arm_residual.square().mean(1)
+            weights.torso_stability * torso_stability_reward
+            + weights.com_stability * com_stability_reward
+            + weights.gait_contact * baseline_walk_bias
+            + weights.speed_tracking * velocity_reward
+            - weights.height_penalty * height_error
+            - weights.arm_swing_penalty * arm_error
+            - weights.energy_penalty * energy
+            - weights.smoothness_penalty * smoothness
+            - weights.closure_penalty * residual.square().mean(1)
+            - weights.closure_penalty * arm_residual.square().mean(1)
         )
         fallen = (
             (self.base_height < 0.58)
@@ -644,7 +679,7 @@ class DropbearWalkEnv:
             | (residual.max(1).values > 0.02)
             | (arm_residual.max(1).values > 0.02)
         )
-        reward = reward - 5.0 * fallen.float()
+        reward = reward - weights.fall_penalty * fallen.float()
         upright = (
             (self.base_height > 0.68)
             & (self.base_roll.abs() < 0.28)
@@ -676,6 +711,7 @@ class DropbearWalkEnv:
             "gait_error": gait_error.detach(),
             "calf_manifold_error": calf_manifold_error.detach(),
             "vertical_constraint": self.config.vertical_constraint,
+            "reward_weights": weights.as_dict(),
         }
         return obs, reward, done, info
 
