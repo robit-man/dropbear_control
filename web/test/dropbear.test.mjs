@@ -1,10 +1,13 @@
 import assert from "node:assert/strict";
 import {
+  ALTERNATING_STEP_KEYFRAMES,
+  ALTERNATING_STEP_PERIOD_S,
   CONTROLLER_PINS,
   DROPBEAR_SOURCE,
   DropbearSim,
   JOINT_DEFINITIONS,
   TASKS,
+  sampleAlternatingStep,
 } from "../js/dropbear.js";
 import {
   DROPBEAR_USD_BINDINGS,
@@ -35,6 +38,23 @@ assert.deepEqual(
 assert.equal(pin(18)?.inferred, true);
 assert.equal(pin(32)?.optional, true);
 assert.deepEqual(TASKS.map((task) => task.periodMs), [1, 10, 10, 10]);
+assert.equal(ALTERNATING_STEP_PERIOD_S, 2.8);
+assert.equal(Math.max(...ALTERNATING_STEP_KEYFRAMES.map((frame) => frame.knee)), 52);
+const highKnee = sampleAlternatingStep(ALTERNATING_STEP_PERIOD_S * 0.68, "left");
+assert.equal(highKnee.mode, "high knee");
+assert.equal(highKnee.targets.knee, 232);
+assert.equal(highKnee.targets.hip_pitch, 151);
+assert.ok(highKnee.targets.outer_calf !== highKnee.targets.inner_calf);
+const opposingLeg = sampleAlternatingStep(ALTERNATING_STEP_PERIOD_S * 0.68, "right");
+assert.equal(highKnee.swing, true);
+assert.equal(opposingLeg.swing, false);
+for (let index = 0; index < 100; index += 1) {
+  for (const side of ["left", "right"]) {
+    const gait = sampleAlternatingStep(ALTERNATING_STEP_PERIOD_S * index / 100, side);
+    assert.ok(gait.targets.knee >= 180);
+    assert.ok(gait.targets.knee <= 360);
+  }
+}
 
 assert.equal(DROPBEAR_USD_SOURCE.commit, "3c37aedce6d445205671d5714d05ae28b8c90e2c");
 assert.equal(DROPBEAR_USD_SOURCE.license, "CC-BY-NC-SA-4.0");
@@ -78,7 +98,15 @@ assert.equal(sim.joints[0].angle, guardedAngle);
 assert.equal(sim.canUtilization, 0);
 
 sim.setScenario("walk");
-for (let index = 0; index < 220; index += 1) sim.step(0.01);
+let maxWalkKnee = 180;
+for (let index = 0; index < 220; index += 1) {
+  sim.step(0.01);
+  maxWalkKnee = Math.max(
+    maxWalkKnee,
+    sim.getJoint("knee", "left").angle,
+    sim.getJoint("knee", "right").angle,
+  );
+}
 assert.equal(sim.playMode, true);
 assert.ok(sim.joints.some((joint) => Math.abs(joint.angle - 180) > 0.5));
 assert.ok(sim.joints.some((joint) => Math.abs(joint.torque) > 0.01));
@@ -87,6 +115,7 @@ assert.ok(sim.controllers.left.adcReads > 0);
 assert.match(sim.controllers.left.csv, /^-?\d+\.\d(,-?\d+\.\d){4}$/);
 assert.ok(sim.getJoint("knee", "left").angle >= 180);
 assert.ok(sim.getJoint("knee", "right").angle >= 180);
+assert.ok(maxWalkKnee > 202);
 
 let response = sim.command("torque left hip_yaw 125");
 assert.equal(response.ok, true);

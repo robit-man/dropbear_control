@@ -133,6 +133,11 @@ export class Robot3D {
     this.pendingJoints = [];
     this.passiveAngles = new Map();
     this.closureResidualMm = 0;
+    this.neutralFootZ = new Map();
+    this.legTelemetry = {
+      left: { footHeightMm: 0, ankleDeg: 0, outerCalfDeg: 180, innerCalfDeg: 180 },
+      right: { footHeightMm: 0, ankleDeg: 0, outerCalfDeg: 180, innerCalfDeg: 180 },
+    };
 
     this._buildStage();
     this._bindPicking();
@@ -196,6 +201,7 @@ export class Robot3D {
       this._buildKinematicGraph();
       this._buildJointMarkers();
       this.setJointStates(this.pendingJoints, this.selectedCanId);
+      this._captureNeutralFootReferences();
       this.fit();
       if (this.renderer.compileAsync) await this.renderer.compileAsync(this.scene, this.camera);
       this.renderer.render(this.scene, this.camera);
@@ -337,9 +343,35 @@ export class Robot3D {
     this.currentMatrices = this._calculateMatrices(radiansByUsdJoint);
     for (const [path, group] of this.bodyGroups) group.matrix.copy(this.currentMatrices.get(path));
 
+    this._updateLegTelemetry();
     this._updateMarkers(radiansByUsdJoint);
     this._updateHighlight();
     this.poseVersion += 1;
+  }
+
+  _captureNeutralFootReferences() {
+    for (const [side, prefix] of [["left", "LL_"], ["right", "RL_"]]) {
+      const footMatrix = this.currentMatrices.get(`/humanoid/${prefix}skateboard_bearing_left_2`);
+      if (footMatrix) this.neutralFootZ.set(side, new THREE.Vector3().setFromMatrixPosition(footMatrix).z);
+    }
+    this._updateLegTelemetry();
+  }
+
+  _updateLegTelemetry() {
+    for (const [side, prefix] of [["left", "LL_"], ["right", "RL_"]]) {
+      const footMatrix = this.currentMatrices.get(`/humanoid/${prefix}skateboard_bearing_left_2`);
+      if (!footMatrix) continue;
+      const footPosition = new THREE.Vector3().setFromMatrixPosition(footMatrix);
+      const referenceZ = this.neutralFootZ.get(side) ?? footPosition.z;
+      const outerCalf = this.pendingJoints.find((joint) => joint.side === side && joint.key === "outer_calf");
+      const innerCalf = this.pendingJoints.find((joint) => joint.side === side && joint.key === "inner_calf");
+      this.legTelemetry[side] = {
+        footHeightMm: (footPosition.z - referenceZ) * 1000,
+        ankleDeg: THREE.MathUtils.radToDeg(this.passiveAngles.get(`${prefix}Revolute88`) || 0),
+        outerCalfDeg: outerCalf?.angle ?? 180,
+        innerCalfDeg: innerCalf?.angle ?? 180,
+      };
+    }
   }
 
   _calculateMatrices(commandedAngles) {

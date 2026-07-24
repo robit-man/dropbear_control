@@ -91,6 +91,65 @@ const DEFAULT_IMPEDANCE = Object.freeze({
 
 const clamp = (value, low, high) => Math.min(high, Math.max(low, value));
 const wrap360 = (value) => ((value % 360) + 360) % 360;
+const lerp = (start, end, amount) => start + (end - start) * amount;
+const smoothstep = (amount) => amount * amount * (3 - 2 * amount);
+
+export const ALTERNATING_STEP_PERIOD_S = 2.8;
+
+// One leg cycle. The first half is planted and the second half is swing.
+// Values are actuator offsets from the calibrated 180° datum. Calf common
+// motion drives the paired rods together; calf differential trims foot pitch.
+export const ALTERNATING_STEP_KEYFRAMES = Object.freeze([
+  Object.freeze({ phase: 0.00, mode: "heel strike", hipPitch: -16, knee: 10, calfCommon: 2, calfDiff: 0.4, hipRoll: 3.0, contact: 1.00 }),
+  Object.freeze({ phase: 0.12, mode: "loading", hipPitch: -8, knee: 5, calfCommon: 0, calfDiff: 0.2, hipRoll: 4.0, contact: 1.00 }),
+  Object.freeze({ phase: 0.32, mode: "mid stance", hipPitch: 4, knee: 3, calfCommon: 4, calfDiff: 0.0, hipRoll: 4.5, contact: 1.00 }),
+  Object.freeze({ phase: 0.48, mode: "toe off", hipPitch: 16, knee: 10, calfCommon: -15, calfDiff: 1.2, hipRoll: 3.0, contact: 0.72 }),
+  Object.freeze({ phase: 0.55, mode: "early swing", hipPitch: 7, knee: 28, calfCommon: -8, calfDiff: -0.8, hipRoll: -2.0, contact: 0.00 }),
+  Object.freeze({ phase: 0.68, mode: "high knee", hipPitch: -29, knee: 52, calfCommon: 10, calfDiff: -1.6, hipRoll: -3.5, contact: 0.00 }),
+  Object.freeze({ phase: 0.82, mode: "swing advance", hipPitch: -33, knee: 36, calfCommon: 14, calfDiff: -1.5, hipRoll: -2.5, contact: 0.00 }),
+  Object.freeze({ phase: 0.94, mode: "pre-contact", hipPitch: -21, knee: 14, calfCommon: 3, calfDiff: 0.3, hipRoll: 1.5, contact: 0.08 }),
+  Object.freeze({ phase: 1.00, mode: "heel strike", hipPitch: -16, knee: 10, calfCommon: 2, calfDiff: 0.4, hipRoll: 3.0, contact: 1.00 }),
+]);
+
+function interpolateStepKeyframes(phase) {
+  const wrapped = ((phase % 1) + 1) % 1;
+  let upperIndex = ALTERNATING_STEP_KEYFRAMES.findIndex((keyframe) => keyframe.phase >= wrapped);
+  if (upperIndex <= 0) upperIndex = 1;
+  const lower = ALTERNATING_STEP_KEYFRAMES[upperIndex - 1];
+  const upper = ALTERNATING_STEP_KEYFRAMES[upperIndex];
+  const span = Math.max(1e-6, upper.phase - lower.phase);
+  const amount = smoothstep((wrapped - lower.phase) / span);
+  const mode = amount < 0.5 ? lower.mode : upper.mode;
+  return {
+    phase: wrapped,
+    mode,
+    swing: wrapped >= 0.5,
+    hipPitch: lerp(lower.hipPitch, upper.hipPitch, amount),
+    knee: lerp(lower.knee, upper.knee, amount),
+    calfCommon: lerp(lower.calfCommon, upper.calfCommon, amount),
+    calfDiff: lerp(lower.calfDiff, upper.calfDiff, amount),
+    hipRoll: lerp(lower.hipRoll, upper.hipRoll, amount),
+    contact: lerp(lower.contact, upper.contact, amount),
+  };
+}
+
+export function sampleAlternatingStep(timeSeconds, side = "left") {
+  const sideOffset = side === "right" ? 0.5 : 0;
+  const sample = interpolateStepKeyframes(timeSeconds / ALTERNATING_STEP_PERIOD_S + sideOffset);
+  // The mirrored four-bar reverses differential ankle motion. Swapping the
+  // right calf differential keeps physical foot-pitch intent symmetric.
+  const differential = sample.calfDiff * (side === "right" ? -1 : 1);
+  return {
+    ...sample,
+    targets: {
+      hip_pitch: 180 + sample.hipPitch,
+      knee: 180 + sample.knee,
+      outer_calf: 180 + sample.calfCommon + differential,
+      inner_calf: 180 + sample.calfCommon - differential,
+      hip_roll: 180 + sample.hipRoll * (side === "left" ? 1 : -1),
+    },
+  };
+}
 
 function makeJoint(definition) {
   const gains = DEFAULT_IMPEDANCE[definition.key];
@@ -169,6 +228,10 @@ export class DropbearSim {
     }));
     this.loadCells = [0, 0, 0, 0];
     this.loadCellsEnabled = false;
+    this.gait = {
+      left: { phase: 0, mode: "hold", swing: false, contact: 1 },
+      right: { phase: 0.5, mode: "hold", swing: false, contact: 1 },
+    };
     this.faults = {
       canDrop: false,
       imuDrift: false,
@@ -202,6 +265,9 @@ export class DropbearSim {
   setScenario(name) {
     this.scenario = name;
     this.scenarioStartedAt = this.time;
+    this.loadCellsEnabled = false;
+    this.gait.left = { phase: 0, mode: "hold", swing: false, contact: 1 };
+    this.gait.right = { phase: 0.5, mode: "hold", swing: false, contact: 1 };
     if (name !== "neutral") this.setPlay(true);
     for (const j of this.joints) {
       j.impedanceEnabled = j.impedanceCapable && name !== "manual";
@@ -400,7 +466,17 @@ export class DropbearSim {
       target.torque += (commandedTorque - target.torque) * Math.min(1, dt * 30);
 
       // A stable, intentionally simplified joint plant in degree units.
-      const acceleration = target.torque * 45 - target.velocity * 2.8;
+      // Knee and calf channels retain enough bandwidth to follow the staged
+      // swing trajectory instead of visually averaging it into tiny steps.
+      const response = {
+        knee: 120,
+        outer_calf: 92,
+        inner_calf: 92,
+        hip_pitch: 96,
+        hip_roll: 82,
+        hip_yaw: 72,
+      }[target.key] || 82;
+      const acceleration = target.torque * response - target.velocity * 3.2;
       target.velocity = clamp(target.velocity + acceleration * dt, -180, 180);
       target.angle = clamp(target.angle + target.velocity * dt, target.minAngle, target.maxAngle);
       target.rawAngle = wrap360(target.angle);
@@ -450,9 +526,15 @@ export class DropbearSim {
         this.imu[i].gz = drift * 8;
       }
       const stepPhase = Math.sin(this.time * Math.PI * 2);
-      this.loadCells = this.loadCells.map((_, i) => this.loadCellsEnabled
-        ? Math.max(0, 18 + 14 * Math.sin(this.time * Math.PI * 2 + i * Math.PI / 2))
-        : 0);
+      if (this.loadCellsEnabled && this.scenario === "walk") {
+        const leftLoad = 42 * this.gait.left.contact;
+        const rightLoad = 42 * this.gait.right.contact;
+        this.loadCells = [leftLoad * 0.52, leftLoad * 0.48, rightLoad * 0.48, rightLoad * 0.52];
+      } else {
+        this.loadCells = this.loadCells.map((_, i) => this.loadCellsEnabled
+          ? Math.max(0, 18 + 14 * Math.sin(this.time * Math.PI * 2 + i * Math.PI / 2))
+          : 0);
+      }
       if (Math.abs(stepPhase) < 0.03 && this.scenario === "walk") this.log("Gait phase crossed neutral.", "");
     }
 
@@ -472,21 +554,22 @@ export class DropbearSim {
   _applyScenario() {
     const t = this.time - this.scenarioStartedAt;
     if (this.scenario === "walk") {
+      const samples = {
+        left: sampleAlternatingStep(t, "left"),
+        right: sampleAlternatingStep(t, "right"),
+      };
+      const future = {
+        left: sampleAlternatingStep(t + 0.01, "left"),
+        right: sampleAlternatingStep(t + 0.01, "right"),
+      };
+      this.gait.left = samples.left;
+      this.gait.right = samples.right;
       for (const target of this.joints) {
         if (!target.impedanceCapable) continue;
-        const sidePhase = target.side === "left" ? 0 : Math.PI;
-        const keyPhase = {
-          hip_pitch: 0,
-          knee: 0.6,
-          outer_calf: 1.15,
-          inner_calf: 1.25,
-          hip_roll: 1.8,
-        }[target.key] || 0;
-        const wave = Math.sin(t * Math.PI * 1.35 + sidePhase + keyPhase);
-        const amplitude = target.key.includes("calf") ? 15 : target.key === "knee" ? 22 : 9;
-        target.desiredPosition = target.key === "knee"
-          ? 180 + (wave + 1) * 0.5 * amplitude
-          : 180 + wave * amplitude;
+        const desired = samples[target.side].targets[target.key] ?? 180;
+        const nextDesired = future[target.side].targets[target.key] ?? desired;
+        target.desiredPosition = clamp(desired, target.minAngle, target.maxAngle);
+        target.desiredVelocity = clamp((nextDesired - desired) / 0.01, -140, 140);
       }
       this.loadCellsEnabled = true;
     } else if (this.scenario === "sensor-sweep") {

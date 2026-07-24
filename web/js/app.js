@@ -29,6 +29,11 @@ function selectedJoint() {
   return sim.getJoint(ui.selectedJointId) || sim.joints[0];
 }
 
+function signed(value, digits = 1) {
+  const number = Number(value) || 0;
+  return `${number >= 0 ? "+" : ""}${number.toFixed(digits)}`;
+}
+
 function appendTerminal(text, kind = "") {
   const output = $("terminal-output");
   const line = document.createElement("div");
@@ -355,6 +360,18 @@ function renderLive() {
   }
 
   robot.setJointStates(sim.joints, ui.selectedJointId);
+  for (const side of ["left", "right"]) {
+    const leg = robot.legTelemetry[side];
+    const gait = sim.gait[side];
+    const footHeight = $(`${side}-foot-height`);
+    $(`${side}-gait-phase`).textContent = sim.playMode && sim.scenario === "walk"
+      ? gait.mode.toUpperCase()
+      : "HOLD";
+    footHeight.textContent = `${signed(leg.footHeightMm, 0)} mm`;
+    footHeight.classList.toggle("lift", leg.footHeightMm > 15);
+    $(`${side}-ankle-angle`).textContent = `${signed(leg.ankleDeg)}°`;
+    $(`${side}-calf-pair`).textContent = `${signed(leg.outerCalfDeg - 180)}° / ${signed(leg.innerCalfDeg - 180)}°`;
+  }
   const closureText = $("closure-status-text");
   if (closureText && robot.ready) {
     closureText.textContent = `X8 CRANK → TIE ROD → ANKLE/FOOT PIVOT · MAX CLOSURE ${robot.closureResidualMm.toFixed(3)} mm`;

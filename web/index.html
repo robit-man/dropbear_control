@@ -114,6 +114,24 @@
             <div class="robot-stage">
               <canvas id="robot-canvas" aria-label="Interactive full Dropbear USD robot simulation"></canvas>
               <div id="robot-load-status" class="load-status robot-load-status loading"><span></span>Loading Dropbear USD…</div>
+              <div class="leg-telemetry" aria-label="Live foot and four-bar telemetry">
+                <div class="leg-telemetry-card left">
+                  <span>LEFT LEG</span><b id="left-gait-phase">HOLD</b>
+                  <dl>
+                    <div><dt>FOOT</dt><dd id="left-foot-height">+0 mm</dd></div>
+                    <div><dt>ANKLE</dt><dd id="left-ankle-angle">+0.0°</dd></div>
+                    <div><dt>X8 O / I</dt><dd id="left-calf-pair">+0.0° / +0.0°</dd></div>
+                  </dl>
+                </div>
+                <div class="leg-telemetry-card right">
+                  <span>RIGHT LEG</span><b id="right-gait-phase">HOLD</b>
+                  <dl>
+                    <div><dt>FOOT</dt><dd id="right-foot-height">+0 mm</dd></div>
+                    <div><dt>ANKLE</dt><dd id="right-ankle-angle">+0.0°</dd></div>
+                    <div><dt>X8 O / I</dt><dd id="right-calf-pair">+0.0° / +0.0°</dd></div>
+                  </dl>
+                </div>
+              </div>
               <div class="robot-asset-chip">
                 <span>DROPBEAR.USD</span>
                 <b>3c37aed · Z-UP · METRES</b>

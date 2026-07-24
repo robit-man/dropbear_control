@@ -46,12 +46,14 @@ check("separate dropbear_firmware repository is absent", !index.body.includes("d
 check("deprecated decorative brand mark removed", !index.body.includes('class="brand-mark"'));
 check("Hyperspawn identity applied", index.body.includes("HYPERSPAWN<em>_</em>"));
 check("configurable USD resolution control present", index.body.includes('id="usd-resolution"'));
+check("paired foot and X8 telemetry present", index.body.includes('id="left-foot-height"') && index.body.includes('id="right-calf-pair"'));
 
 const dropbear = await request(`${base}/js/dropbear.js`);
 check("Dropbear simulator module served", dropbear.status === 200);
 check("simulator declares exact CAN range", dropbear.body.includes("0x141") && dropbear.body.includes("0x14C"));
 check("simulator declares guarded pause", dropbear.body.includes("guarded PAUSE"));
 check("simulator implements firmware serial parser", dropbear.body.includes("command(text"));
+check("alternating gait has staged high-knee profile", dropbear.body.includes("high knee") && dropbear.body.includes("calfDiff"));
 
 const app = await request(`${base}/js/app.js`);
 check("dashboard instantiates CAD viewer", app.body.includes("new CadViewer"));

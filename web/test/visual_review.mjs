@@ -38,6 +38,14 @@ const initialCalfPose = await page.evaluate(() => Array.from(
 
 await page.click("#run-demo");
 await page.waitForTimeout(900);
+await page.waitForFunction(
+  () => Math.max(
+    window.dropbearTwin.robot.legTelemetry.left.footHeightMm,
+    window.dropbearTwin.robot.legTelemetry.right.footHeightMm,
+  ) > 60,
+  null,
+  { timeout: 3000 },
+);
 const runState = (await page.locator("#system-state").textContent())?.trim();
 const canLoad = Number.parseFloat(await page.locator("#can-load").textContent());
 if (runState !== "CONTROL ACTIVE") throw new Error(`Unexpected run state: ${runState}`);
@@ -60,6 +68,19 @@ const calfPoseDelta = await page.evaluate((before) => {
 if (!(calfPoseDelta > 0.0001)) throw new Error("Outer calf CAN state did not move the X8 driver");
 const closureResidualMm = await page.evaluate(() => window.dropbearTwin.robot.closureResidualMm);
 if (!(closureResidualMm < 0.5)) throw new Error(`Calf linkage did not close: ${closureResidualMm} mm`);
+const legTelemetry = await page.evaluate(() => ({
+  left: window.dropbearTwin.robot.legTelemetry.left,
+  right: window.dropbearTwin.robot.legTelemetry.right,
+  leftMode: window.dropbearTwin.sim.gait.left.mode,
+  rightMode: window.dropbearTwin.sim.gait.right.mode,
+}));
+if (legTelemetry.leftMode === legTelemetry.rightMode) throw new Error("Alternating gait legs are in the same phase");
+if (!(Math.max(legTelemetry.left.footHeightMm, legTelemetry.right.footHeightMm) > 40)) {
+  throw new Error(`Swing foot did not clear: ${JSON.stringify(legTelemetry)}`);
+}
+if (!(await page.locator("#left-calf-pair").textContent())?.includes("/")) {
+  throw new Error("Live paired X8 telemetry missing");
+}
 await page.screenshot({ path: `${OUT}/02-running-sim.png` });
 
 await page.locator(".joint-card").nth(4).click();

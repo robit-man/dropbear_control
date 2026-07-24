@@ -265,6 +265,52 @@ select:focus, input:focus { border-color: var(--cyan); outline: none; }
 #robot-canvas { display: block; width: 100%; height: 100%; cursor: grab; }
 #robot-canvas:active { cursor: grabbing; }
 .robot-load-status { position: absolute; top: 13px; left: 13px; background: rgba(7,11,16,.86); backdrop-filter: blur(10px); z-index: 3; pointer-events: none; }
+.leg-telemetry {
+  position: absolute;
+  top: 55px;
+  left: 13px;
+  z-index: 3;
+  display: flex;
+  gap: 5px;
+  pointer-events: none;
+}
+.leg-telemetry-card {
+  width: 174px;
+  padding: 7px 8px 8px;
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--quiet);
+  background: rgba(8,8,9,.84);
+  backdrop-filter: blur(9px);
+}
+.leg-telemetry-card.left { border-top-color: var(--left); }
+.leg-telemetry-card.right { border-top-color: var(--right); }
+.leg-telemetry-card > span {
+  color: var(--quiet);
+  font: 600 6px "IBM Plex Mono";
+  letter-spacing: .11em;
+}
+.leg-telemetry-card > b {
+  float: right;
+  color: var(--text);
+  font: 700 7px "IBM Plex Mono";
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.leg-telemetry-card.left > b { color: var(--left); }
+.leg-telemetry-card dl { clear: both; display: grid; gap: 4px; margin: 7px 0 0; }
+.leg-telemetry-card dl div { display: flex; align-items: baseline; justify-content: space-between; gap: 9px; }
+.leg-telemetry-card dt {
+  color: var(--quiet);
+  font: 600 6px "IBM Plex Mono";
+  letter-spacing: .08em;
+}
+.leg-telemetry-card dd {
+  margin: 0;
+  color: #d8d8dc;
+  font: 600 7px "IBM Plex Mono";
+  letter-spacing: .02em;
+}
+.leg-telemetry-card dd.lift { color: var(--amber); }
 .robot-asset-chip { position: absolute; top: 14px; right: 14px; z-index: 3; display: grid; gap: 3px; text-align: right; pointer-events: none; }
 .robot-asset-chip span { color: #dce7ef; font: 700 11px "IBM Plex Mono"; letter-spacing: .09em; }
 .robot-asset-chip b { color: var(--cyan); font: 600 7px "IBM Plex Mono"; letter-spacing: .1em; }
@@ -533,6 +579,8 @@ input[type="range"] { width: 100%; accent-color: var(--cyan); }
   .joint-list { grid-template-columns: 1fr; }
   .robot-stage, #robot-canvas { min-height: 470px; height: 470px; }
   .usd-statline { display: none; }
+  .leg-telemetry { left: 10px; right: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+  .leg-telemetry-card { width: auto; padding-inline: 6px; }
   .robot-closure-note { right: 80px; max-width: calc(100% - 105px); }
   .stage-readout div { min-width: 80px; }
   .metric-strip { grid-template-columns: 1fr; }

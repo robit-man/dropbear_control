@@ -17,9 +17,13 @@ plant. Do not use it as the sole safety basis for powered hardware.
   browser cache while retaining a manifest of 93 rigid bodies, 116 physical
   joints, and 27 loop-closure constraints. All 12 RMD CAN axes (`0x141`
   through `0x14C`) bind to their actual USD joints and anchors. Eight
-  spanning-tree motors drive browser forward kinematics; the four calf motors
-  are loop-closure axes whose live states are shown at the true constraints.
-  Isaac/PhysX remains authoritative for closure solving.
+  non-calf motors and four X8 calf cranks drive browser forward kinematics;
+  the retained passive rods and ankle/foot pivots are projected against the
+  true USD closure anchors. Isaac/PhysX remains authoritative for dynamics.
+  The alternating-step demo uses explicit stance, toe-off, high-knee swing,
+  advance, and heel-placement phases rather than phase-shifted sine waves.
+  Live per-leg cards correlate foot-pivot clearance and solved ankle angle
+  with the outer/inner X8 positions.
 - **Actuator CAD** — interactive housing and output solids derived from the
   cached STEP candidates, with technical edges, visibility controls,
   articulation, and exploded output. Full-resolution STEP files stay
