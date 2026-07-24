@@ -55,6 +55,24 @@ if (Math.min(
 ) < 0) {
   throw new Error("Unilateral ground constraint allowed foot penetration");
 }
+
+await page.locator("#scenario").selectOption("rl-policy");
+await page.locator("#vertical-constraint").uncheck({ force: true });
+await page.waitForFunction(
+  () => window.dropbearTwin.robot.groundContact?.guide === "FREE_ROOT_GRAVITY",
+);
+await page.waitForTimeout(1300);
+const freeRoot = await page.evaluate(() => ({
+  state: { ...window.dropbearTwin.robot.freeRootState },
+  guide: window.dropbearTwin.robot.groundContact.guide,
+}));
+if (!(Math.abs(freeRoot.state.roll) > 0.03 || Math.abs(freeRoot.state.pitch) > 0.03)) {
+  throw new Error(`Free torso did not tip under gravity: ${JSON.stringify(freeRoot)}`);
+}
+await page.screenshot({ path: `${OUT}/01a-free-root-fall.png` });
+await page.click("#sim-reset");
+await page.waitForFunction(() => window.dropbearTwin.robot.groundContact?.guide === "Z_ONLY");
+
 const initialUsdPose = await page.evaluate(() => Array.from(
   window.dropbearTwin.robot.bodyGroups
     .get("/humanoid/LL_RMD_X10_S2_MIR4__3_Stator_1").matrix.elements,
@@ -104,6 +122,36 @@ await page.evaluate(() => {
 });
 await page.waitForTimeout(250);
 await page.screenshot({ path: `${OUT}/01b-arm-motors.png` });
+await page.locator("#position-target").fill("0");
+await page.click('[data-arm-motor-id="arm-left-elbow-pitch"]');
+if (!(await page.locator("#selected-usd").textContent())?.includes("LH_Revolute41")) {
+  throw new Error("Elbow card is not bound to the actuated USD crank");
+}
+if (!(await page.locator("#selected-usd").textContent())?.includes("CLOSED LOOP")) {
+  throw new Error("Elbow closed-loop status is not visible");
+}
+const initialElbowOutput = await page.evaluate(() => Array.from(
+  window.dropbearTwin.robot.bodyGroups
+    .get("/humanoid/LH_6mm_bearing__4__1").matrix.elements,
+));
+await page.locator("#position-target").fill("45");
+await page.waitForTimeout(450);
+const elbowClosure = await page.evaluate((before) => {
+  const after = Array.from(
+    window.dropbearTwin.robot.bodyGroups
+      .get("/humanoid/LH_6mm_bearing__4__1").matrix.elements,
+  );
+  return {
+    delta: after.reduce((sum, value, index) => sum + Math.abs(value - before[index]), 0),
+    residualMm: window.dropbearTwin.robot.armClosureResidualMm,
+    passiveAngle: window.dropbearTwin.robot.passiveAngles.get("LH_elbow_joint"),
+  };
+}, initialElbowOutput);
+if (!(elbowClosure.delta > 0.0001)) throw new Error("Elbow loop output did not articulate");
+if (!(Math.abs(elbowClosure.passiveAngle) > 0.05)) throw new Error("Passive elbow linkage did not solve");
+if (!(elbowClosure.residualMm < 0.5)) {
+  throw new Error(`Elbow loop did not close: ${elbowClosure.residualMm} mm`);
+}
 await page.locator("#position-target").fill("0");
 await page.click('[data-motor-category="legs"]');
 if ((await page.locator(".joint-card[data-joint-id]").count()) !== 12) {
@@ -194,11 +242,21 @@ await page.waitForFunction(() => document.querySelector("#fault-can")?.textConte
 await page.screenshot({ path: `${OUT}/06-firmware-console.png` });
 await page.click("#fault-can");
 
+await page.click('[data-view-target="rl"]');
+await page.locator('[data-view="rl"] h1').waitFor({ state: "visible" });
+if (!(await page.locator('[data-view="rl"]').textContent())?.includes("EPOCHS / UPDATE")) {
+  throw new Error("RL epoch controls missing");
+}
+if (!(await page.locator("#rl-auto-replay").isChecked())) {
+  throw new Error("Live policy replay should default on");
+}
+await page.screenshot({ path: `${OUT}/07-rl-lab.png` });
+
 await page.click('[data-view-target="evidence"]');
 await page.locator('[data-view="evidence"] h1').waitFor({ state: "visible" });
 await page.waitForTimeout(350);
 if (!(await page.locator('[data-view="evidence"]').textContent())?.includes("Actual Dropbear USD")) throw new Error("USD provenance missing");
-await page.screenshot({ path: `${OUT}/07-evidence.png` });
+await page.screenshot({ path: `${OUT}/08-evidence.png` });
 
 await browser.close();
 

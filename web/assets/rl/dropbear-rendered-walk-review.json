@@ -1,0 +1,455 @@
+{
+  "schema": "dropbear-rendered-walk-review-v1",
+  "reference": {
+    "label": "Authored residual-zero reference",
+    "source": "/assets/rl/dropbear-authored-reference.json",
+    "duration": 5.38,
+    "evaluation": {
+      "meanReward": 2.656223053825832,
+      "uprightPercent": 46.09665427509294,
+      "fallPercent": 0.37174721189591076,
+      "meanSpeed": 0.33602968169043884,
+      "armSwingError": 0.00789457596788976,
+      "comHeightRangeM": 0.2612268924713135,
+      "comLateralPeakM": 0.007469352334737778,
+      "torsoTiltMeanDegrees": 18.24324084330211,
+      "torsoTiltPeakDegrees": 41.42905871391746,
+      "closureMaxM": 4.470348358154297e-8,
+      "durationSeconds": 5.38,
+      "frameCount": 135
+    },
+    "rootForwardTravelM": 1.8077245000000002,
+    "ranges": [
+      {
+        "name": "left_outer_calf",
+        "range": 0.2650194
+      },
+      {
+        "name": "left_inner_calf",
+        "range": 0.2393094
+      },
+      {
+        "name": "right_inner_calf",
+        "range": 0.233741
+      },
+      {
+        "name": "right_outer_calf",
+        "range": 0.2598469
+      },
+      {
+        "name": "left_knee",
+        "range": 0.9581845
+      },
+      {
+        "name": "left_hip_pitch",
+        "range": 1.0955522
+      },
+      {
+        "name": "right_hip_pitch",
+        "range": 1.0955522
+      },
+      {
+        "name": "right_knee",
+        "range": 0.9483656
+      },
+      {
+        "name": "left_hip_yaw",
+        "range": 0
+      },
+      {
+        "name": "left_hip_roll",
+        "range": 0.1704192
+      },
+      {
+        "name": "right_hip_roll",
+        "range": 0.1704192
+      },
+      {
+        "name": "right_hip_yaw",
+        "range": 0
+      },
+      {
+        "name": "left_shoulder_pitch",
+        "range": 1.2659714
+      },
+      {
+        "name": "left_shoulder_yaw",
+        "range": 0
+      },
+      {
+        "name": "left_shoulder_roll",
+        "range": 0
+      },
+      {
+        "name": "left_elbow_pitch",
+        "range": 0.028106799999999987
+      },
+      {
+        "name": "left_wrist_roll",
+        "range": 0
+      },
+      {
+        "name": "right_shoulder_pitch",
+        "range": 1.2659714
+      },
+      {
+        "name": "right_shoulder_yaw",
+        "range": 0
+      },
+      {
+        "name": "right_shoulder_roll",
+        "range": 0
+      },
+      {
+        "name": "right_elbow_pitch",
+        "range": 0.028106799999999987
+      },
+      {
+        "name": "right_wrist_roll",
+        "range": 0
+      }
+    ],
+    "frameCount": 135,
+    "maxClearanceMm": 603.0124326277124,
+    "alternatingSupport": true,
+    "samples": [
+      {
+        "fraction": 0.08,
+        "elapsed": 0.4304,
+        "guide": "FREE_ROOT_POLICY",
+        "closureResidualMm": 0.2039705098116249,
+        "legClosureResidualMm": 0.022432702130859173,
+        "armClosureResidualMm": 0.2039705098116249,
+        "leftFootHeightMm": 0,
+        "rightFootHeightMm": 0,
+        "leftLoadKg": 21,
+        "rightLoadKg": 21
+      },
+      {
+        "fraction": 0.2,
+        "elapsed": 1.076,
+        "guide": "FREE_ROOT_POLICY",
+        "closureResidualMm": 0.31152099756341944,
+        "legClosureResidualMm": 0.31152099756341944,
+        "armClosureResidualMm": 0.20264150093136263,
+        "leftFootHeightMm": 603.0124326277124,
+        "rightFootHeightMm": 124.8764950923393,
+        "leftLoadKg": 12.133123999999999,
+        "rightLoadKg": 4.66688
+      },
+      {
+        "fraction": 0.32,
+        "elapsed": 1.7216,
+        "guide": "FREE_ROOT_POLICY",
+        "closureResidualMm": 0.2024928635194741,
+        "legClosureResidualMm": 0.031853127061806284,
+        "armClosureResidualMm": 0.2024928635194741,
+        "leftFootHeightMm": 0,
+        "rightFootHeightMm": 20.595665444319565,
+        "leftLoadKg": 21.007878599999998,
+        "rightLoadKg": 20.9921268
+      },
+      {
+        "fraction": 0.44,
+        "elapsed": 2.3672,
+        "guide": "FREE_ROOT_POLICY",
+        "closureResidualMm": 0.2474437269285952,
+        "legClosureResidualMm": 0.2474437269285952,
+        "armClosureResidualMm": 0.20247765436708828,
+        "leftFootHeightMm": 159.14970606524153,
+        "rightFootHeightMm": 462.5831178164439,
+        "leftLoadKg": 14.669973600000004,
+        "rightLoadKg": 27.330023199999992
+      },
+      {
+        "fraction": 0.56,
+        "elapsed": 3.0128000000000004,
+        "guide": "FREE_ROOT_POLICY",
+        "closureResidualMm": 0.2024763577223298,
+        "legClosureResidualMm": 0.08482034114114544,
+        "armClosureResidualMm": 0.2024763577223298,
+        "leftFootHeightMm": 0,
+        "rightFootHeightMm": 0,
+        "leftLoadKg": 21,
+        "rightLoadKg": 21
+      },
+      {
+        "fraction": 0.68,
+        "elapsed": 3.6584000000000003,
+        "guide": "FREE_ROOT_POLICY",
+        "closureResidualMm": 0.2290159853547189,
+        "legClosureResidualMm": 0.2290159853547189,
+        "armClosureResidualMm": 0.20247624130886613,
+        "leftFootHeightMm": 137.55489179678554,
+        "rightFootHeightMm": 212.38777986631686,
+        "leftLoadKg": 28.399252799999942,
+        "rightLoadKg": 13.600747600000057
+      },
+      {
+        "fraction": 0.8,
+        "elapsed": 4.304,
+        "guide": "FREE_ROOT_POLICY",
+        "closureResidualMm": 0.20247624130916508,
+        "legClosureResidualMm": 0.17884929562225776,
+        "armClosureResidualMm": 0.20247624130916508,
+        "leftFootHeightMm": 124.96763227667252,
+        "rightFootHeightMm": 353.1232652676652,
+        "leftLoadKg": 0,
+        "rightLoadKg": 0
+      },
+      {
+        "fraction": 0.92,
+        "elapsed": 4.9496,
+        "guide": "FREE_ROOT_POLICY",
+        "closureResidualMm": 0.20247624130892836,
+        "legClosureResidualMm": 0.1272924816211091,
+        "armClosureResidualMm": 0.20247624130892836,
+        "leftFootHeightMm": 203.28691692713048,
+        "rightFootHeightMm": 0,
+        "leftLoadKg": 20.9984652,
+        "rightLoadKg": 21.0015248
+      }
+    ],
+    "checks": {
+      "fullUsdPolicyRoot": true,
+      "closedChains": true,
+      "visibleFootClearance": true,
+      "alternatingSupport": true,
+      "forwardTravel": true,
+      "hipsMove": true,
+      "kneesMove": true,
+      "armsMove": true
+    },
+    "passed": true
+  },
+  "trained": {
+    "label": "Selected 1,000-epoch PPO policy",
+    "source": "/assets/rl/dropbear-walk-reference.json",
+    "duration": 7.98,
+    "evaluation": {
+      "meanReward": 3.011657355427742,
+      "uprightPercent": 100,
+      "fallPercent": 0,
+      "meanSpeed": 0.2562075068615377,
+      "armSwingError": 0.07720485232188366,
+      "comHeightRangeM": 0.04397207498550415,
+      "comLateralPeakM": 0.025530695915222168,
+      "torsoTiltMeanDegrees": 8.664081123626794,
+      "torsoTiltPeakDegrees": 11.019499298312866,
+      "closureMaxM": 4.470348358154297e-8,
+      "durationSeconds": 7.98,
+      "frameCount": 200
+    },
+    "rootForwardTravelM": 2.0441586999999997,
+    "ranges": [
+      {
+        "name": "left_outer_calf",
+        "range": 0.2702194
+      },
+      {
+        "name": "left_inner_calf",
+        "range": 0.2912973
+      },
+      {
+        "name": "right_inner_calf",
+        "range": 0.247751
+      },
+      {
+        "name": "right_outer_calf",
+        "range": 0.2943697
+      },
+      {
+        "name": "left_knee",
+        "range": 0.8853523
+      },
+      {
+        "name": "left_hip_pitch",
+        "range": 1.174632
+      },
+      {
+        "name": "right_hip_pitch",
+        "range": 1.0968870000000002
+      },
+      {
+        "name": "right_knee",
+        "range": 0.6333339
+      },
+      {
+        "name": "left_hip_yaw",
+        "range": 0.1450435
+      },
+      {
+        "name": "left_hip_roll",
+        "range": 0.2681908
+      },
+      {
+        "name": "right_hip_roll",
+        "range": 0.2215647
+      },
+      {
+        "name": "right_hip_yaw",
+        "range": 0.0537678
+      },
+      {
+        "name": "left_shoulder_pitch",
+        "range": 1.3409475000000002
+      },
+      {
+        "name": "left_shoulder_yaw",
+        "range": 0.1514173
+      },
+      {
+        "name": "left_shoulder_roll",
+        "range": 0.1974991
+      },
+      {
+        "name": "left_elbow_pitch",
+        "range": 0.22411440000000005
+      },
+      {
+        "name": "left_wrist_roll",
+        "range": 0.1180574
+      },
+      {
+        "name": "right_shoulder_pitch",
+        "range": 1.4909763
+      },
+      {
+        "name": "right_shoulder_yaw",
+        "range": 0.07817030000000001
+      },
+      {
+        "name": "right_shoulder_roll",
+        "range": 0.0464323
+      },
+      {
+        "name": "right_elbow_pitch",
+        "range": 0.11468800000000001
+      },
+      {
+        "name": "right_wrist_roll",
+        "range": 0.2162888
+      }
+    ],
+    "frameCount": 200,
+    "maxClearanceMm": 623.046613578335,
+    "alternatingSupport": true,
+    "samples": [
+      {
+        "fraction": 0.08,
+        "elapsed": 0.6384000000000001,
+        "guide": "FREE_ROOT_POLICY",
+        "closureResidualMm": 0.3466231304893643,
+        "legClosureResidualMm": 0.3466231304893643,
+        "armClosureResidualMm": 0.14764479495553973,
+        "leftFootHeightMm": 117.14473655571479,
+        "rightFootHeightMm": 325.6136338968165,
+        "leftLoadKg": 41.9333518,
+        "rightLoadKg": 0.0666482000000002
+      },
+      {
+        "fraction": 0.2,
+        "elapsed": 1.596,
+        "guide": "FREE_ROOT_POLICY",
+        "closureResidualMm": 0.3859019447848399,
+        "legClosureResidualMm": 0.3859019447848399,
+        "armClosureResidualMm": 0.14249474687046151,
+        "leftFootHeightMm": 76.98476960037702,
+        "rightFootHeightMm": 177.58562154954504,
+        "leftLoadKg": 41.694802,
+        "rightLoadKg": 0.30519799999999997
+      },
+      {
+        "fraction": 0.32,
+        "elapsed": 2.5536000000000003,
+        "guide": "FREE_ROOT_POLICY",
+        "closureResidualMm": 0.3123928654924813,
+        "legClosureResidualMm": 0.3123928654924813,
+        "armClosureResidualMm": 0.14514074949023184,
+        "leftFootHeightMm": 18.92734825151468,
+        "rightFootHeightMm": 21.308767046796184,
+        "leftLoadKg": 17.687547399999932,
+        "rightLoadKg": 24.31244600000007
+      },
+      {
+        "fraction": 0.44,
+        "elapsed": 3.5112,
+        "guide": "FREE_ROOT_POLICY",
+        "closureResidualMm": 0.3009626152686156,
+        "legClosureResidualMm": 0.3009626152686156,
+        "armClosureResidualMm": 0.147541531819035,
+        "leftFootHeightMm": 623.046613578335,
+        "rightFootHeightMm": 96.37644007535617,
+        "leftLoadKg": 0.010111999999999972,
+        "rightLoadKg": 41.989888
+      },
+      {
+        "fraction": 0.56,
+        "elapsed": 4.468800000000001,
+        "guide": "FREE_ROOT_POLICY",
+        "closureResidualMm": 0.3612160460140562,
+        "legClosureResidualMm": 0.3612160460140562,
+        "armClosureResidualMm": 0.15156307429606689,
+        "leftFootHeightMm": 588.561743539019,
+        "rightFootHeightMm": 73.68516922096137,
+        "leftLoadKg": 0.13955920000001143,
+        "rightLoadKg": 41.86043299999999
+      },
+      {
+        "fraction": 0.68,
+        "elapsed": 5.426400000000001,
+        "guide": "FREE_ROOT_POLICY",
+        "closureResidualMm": 0.378278416180001,
+        "legClosureResidualMm": 0.378278416180001,
+        "armClosureResidualMm": 0.14936186044908512,
+        "leftFootHeightMm": 2.9461781408369885,
+        "rightFootHeightMm": 23.756573186387563,
+        "leftLoadKg": 17.824997200000244,
+        "rightLoadKg": 24.174994399999758
+      },
+      {
+        "fraction": 0.8,
+        "elapsed": 6.384,
+        "guide": "FREE_ROOT_POLICY",
+        "closureResidualMm": 0.4647977689535299,
+        "legClosureResidualMm": 0.4647977689535299,
+        "armClosureResidualMm": 0.1541284334712301,
+        "leftFootHeightMm": 77.09727251090314,
+        "rightFootHeightMm": 23.033283742859705,
+        "leftLoadKg": 41.91713199999999,
+        "rightLoadKg": 0.08286900000000808
+      },
+      {
+        "fraction": 0.92,
+        "elapsed": 7.341600000000001,
+        "guide": "FREE_ROOT_POLICY",
+        "closureResidualMm": 0.3700913694209331,
+        "legClosureResidualMm": 0.3700913694209331,
+        "armClosureResidualMm": 0.14404096618523907,
+        "leftFootHeightMm": 119.43443029850893,
+        "rightFootHeightMm": 408.5462671377977,
+        "leftLoadKg": 40.360164000000026,
+        "rightLoadKg": 1.63983599999997
+      }
+    ],
+    "checks": {
+      "fullUsdPolicyRoot": true,
+      "closedChains": true,
+      "visibleFootClearance": true,
+      "alternatingSupport": true,
+      "forwardTravel": true,
+      "hipsMove": true,
+      "kneesMove": true,
+      "armsMove": true
+    },
+    "passed": true
+  },
+  "comparison": {
+    "rewardDelta": 0.3554343016019099,
+    "uprightDeltaPercent": 53.90334572490706,
+    "torsoTiltDeltaDegrees": -9.579159719675317,
+    "comHeightRangeDeltaM": -0.21725481748580933
+  },
+  "passed": true,
+  "browserErrors": []
+}

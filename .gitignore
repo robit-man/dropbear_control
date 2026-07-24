@@ -23,6 +23,9 @@ references/Dropbear/
 # Web dependency/install outputs
 **/node_modules/
 
+# Local RL experiment outputs (the small tracked reference policy lives in web/assets/rl/)
+artifacts/rl/experiments/
+
 # OS / editor
 .DS_Store
 *.swp

@@ -1,42 +1,142 @@
 # Dropbear PyTorch walking RL
 
-This package is a small, dependency-light PPO baseline for walking policy
-experiments. It is deliberately a constrained plant, not a second robot
-model: the browser USD and Isaac asset remain the visual/physics authority.
+This package provides a compact PPO teaching plant for local walking-policy
+experiments. It uses the exact dashboard motor order—12 leg sources followed
+by 10 arm sources—and exports deterministic rollouts that the full browser USD
+can replay while training continues.
 
-The leg state uses the installed motor sources directly:
+It is intentionally not a replacement for the Dropbear USD in Isaac/PhysX.
+The local plant makes policy iteration, reward shaping, falling, contact
+timing, closure violations, and arm counter-swing observable; authoritative
+contact dynamics and final validation remain in Isaac/PhysX.
 
-- hip pitch motor (`LL_hip_joint` / `RL_hip_joint`)
-- knee motor (`LL_knee_actuator_joint` / `RL_knee_actuator_joint`)
+## Modelled state
 
-The knee is not treated as an independent open-chain revolute. `FourBarLeg`
-projects both motor coordinates through a planar four-bar closure and exposes
-the resulting coupler angle and closure residual. The policy is penalized for
-residual error and receives the residual in its observation, so invalid knee
-motion cannot silently become a successful training sample.
+- 22 motor positions, velocities, and actions;
+- optional free-root height, vertical velocity, forward velocity, torso
+  roll/pitch, and angular rates;
+- left/right heel and toe contact weights and load;
+- the authored baseline walking phase;
+- two leg closed-chain projections;
+- two USD-sampled elbow linkages; and
+- whole-body center-of-mass height, lateral excursion, and vertical velocity.
 
-The knee motor datum is also mechanically bounded: browser `180°` maps to
-policy/ROS `0 rad` (locked), and `360°` maps to `π rad`. Negative knee
-coordinates are clamped before the closed-chain plant is evaluated.
+The knee is never treated as an independent open-chain shortcut.
+`FourBarLeg` projects the adjacent hip-pitch and knee actuator coordinates
+through the leg closure. Browser `180°` maps to policy/ROS `0 rad` at knee
+lock, and the plant clamps both knees to `0`–`π rad`.
 
-## Current status
+The elbow input is likewise the actuator, not the conveniently named passive
+joint:
 
-The policy network, rollout buffer, generalized advantage estimation, clipped
-PPO update, checkpoint path, four-bar projection, and knee-bound regressions
-are implemented and unit-tested. This package does not currently roll out
-against the full Dropbear USD, Isaac/PhysX contacts, the browser simulator, or
-the ROS 2 trajectory controller. It should be treated as a reproducible
-algorithm and constraint smoke test, not a trained walking policy.
-
-## Run a smoke-training job
-
-```bash
-python3 -m rl.train_walk --updates 20 --steps 256 --device cpu
+```text
+LH/RH_Revolute41 motor
+  → five passive revolute coordinates
+  → three retained USD closure constraints
+  → passive LH/RH_elbow_joint output
 ```
 
-The checkpoint is written to `artifacts/rl/dropbear_ppo.pt` unless `--out` is
-provided. For a GPU run, use `--device cuda`.
+`ArmElbowLoop` is interpolated from the browser closure solver across the
+validated motor range. It exposes the resulting passive elbow angle and
+closure residual to training.
 
-This is a research baseline. Before hardware passthrough, validate a policy in
-the Isaac/PhysX Dropbear USD, replay the exact 12-joint trajectory through the
-ROS 2 controller, and keep the existing guarded admission path enabled.
+## Reward hierarchy
+
+The reward is led by:
+
+1. low torso roll/pitch and low torso angular rate;
+2. low center-of-mass height/lateral variation and vertical COM speed;
+3. a smooth reference-motion bias toward the hand-authored alternating walk;
+4. target forward speed and heel/toe timing;
+5. realistic contralateral arm swing; and
+6. low energy, action variation, and leg/arm closure residual.
+
+The baseline gait is a bias, not a hard script. PPO can depart from it when
+that improves torso and COM stability. The actor mean is zero-initialized, so
+the deterministic update-zero policy is exactly that baseline. Every live
+preview is ranked on the same seed, and the final checkpoint restores the
+best stable preview after all requested updates finish.
+
+For a reproducible fine-tune, add:
+
+```bash
+--init-checkpoint artifacts/rl/experiments/<source>/checkpoint.pt
+```
+
+The checkpoint must match the 88-observation, 22-action dimensions and exact
+joint order. Its deterministic corrected-plant rollout becomes protected
+update zero before the requested optimization epochs begin.
+
+## Dashboard training
+
+Start the dashboard:
+
+```bash
+python3 web/serve.py 8000
+```
+
+Open <http://localhost:8000>, select **RL Lab**, configure updates, rollout
+steps, parallel environments, and epochs, then start training. The process
+control endpoints accept mutations only from loopback.
+
+Every PPO update atomically exports a deterministic live policy. With
+**AUTO-REPLAY EACH UPDATE** enabled, **WATCH TRAINING LIVE** replays the newest
+rollout on the complete browser USD and overlays reward, upright rate, torso
+tilt, COM variation, speed, and falls. Final experiments are written beneath
+`artifacts/rl/experiments/` and are intentionally ignored by Git.
+
+## Command line
+
+```bash
+python3 -m rl.train_walk \
+  --updates 200 \
+  --steps 256 \
+  --envs 128 \
+  --epochs 5 \
+  --device cuda \
+  --no-vertical-constraint \
+  --arm-swing
+```
+
+This example performs exactly 1,000 policy optimization epochs.
+The trainer writes a PyTorch checkpoint, browser policy JSON, and metrics
+JSON. Use `--live-policy-out` to request an atomic intermediate rollout after
+every update.
+
+Run the deterministic same-seed acceptance comparison with:
+
+```bash
+python3 -m rl.validate_walk \
+  artifacts/rl/experiments/<experiment>/policy.json \
+  --reference-policy-out \
+    artifacts/rl/experiments/<experiment>/authored-reference.json \
+  --out artifacts/rl/experiments/<experiment>/validation.json \
+  --expected-policy-epochs 1000
+```
+
+The validator checks exact epoch count, 22-motor order, free-root/arm-swing
+configuration, forward target-speed tracking, closed-chain residuals, and
+non-regression against the authored gait’s combined stability score. Both
+policies remain playable in the browser for visual review.
+
+## Tracked reference result
+
+`web/assets/rl/dropbear-walk-reference.json` is the selected update `188` from
+a completed 200-update, five-epoch-per-update CUDA experiment: exactly 1,000
+additional policy epochs with seed `23`. Its deterministic free-root
+evaluation remained upright for 100% of 7.98 seconds with no fall, averaged
+`0.256 m/s`, held mean/peak torso tilt to `8.66°`/`11.02°`, and limited COM
+height range to `0.044 m`.
+
+Against the same-seed authored zero-residual walk, it improved reward by
+`0.355`, upright time by `53.90` percentage points, mean torso tilt by `9.58°`,
+peak tilt by `30.41°`, and COM height range by `0.217 m`. The full browser USD
+review passed every rendered-motion gate and measured maximum sampled leg and
+arm closure residuals of `0.465 mm` and `0.154 mm`.
+
+The paired authored policy, numerical acceptance report, and rendered A/B
+report are checked in beside the policy under `web/assets/rl/`.
+
+This remains a research baseline. Before hardware passthrough, validate a
+policy in the Isaac/PhysX Dropbear USD, replay the intended trajectory through
+the ROS 2 controller SIL, and retain the existing fail-closed admission path.

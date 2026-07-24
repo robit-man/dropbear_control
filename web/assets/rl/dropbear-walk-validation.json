@@ -1,0 +1,57 @@
+{
+  "schema": "dropbear-walk-validation-v1",
+  "createdAt": "2026-07-24T02:27:58.211851+00:00",
+  "policy": "artifacts/rl/experiments/20260724T021509Z-e72e781c/policy.json",
+  "completedPolicyEpochs": 1000,
+  "selectedUpdate": 188,
+  "trainedSelectionScore": 5.514111045827926,
+  "baselineSelectionScore": 3.1304604225441586,
+  "trained": {
+    "meanReward": 3.011657355427742,
+    "uprightPercent": 100.0,
+    "fallPercent": 0.0,
+    "meanSpeed": 0.2562075068615377,
+    "armSwingError": 0.07720485232188366,
+    "comHeightRangeM": 0.04397207498550415,
+    "comLateralPeakM": 0.025530695915222168,
+    "torsoTiltMeanDegrees": 8.664081123626794,
+    "torsoTiltPeakDegrees": 11.019499298312866,
+    "closureMaxM": 4.470348358154297e-08,
+    "durationSeconds": 7.98,
+    "frameCount": 200
+  },
+  "authoredReference": {
+    "meanReward": 2.656223053825832,
+    "uprightPercent": 46.09665427509294,
+    "fallPercent": 0.37174721189591076,
+    "meanSpeed": 0.33602968169043884,
+    "armSwingError": 0.00789457596788976,
+    "comHeightRangeM": 0.2612268924713135,
+    "comLateralPeakM": 0.007469352334737778,
+    "torsoTiltMeanDegrees": 18.24324084330211,
+    "torsoTiltPeakDegrees": 41.42905871391746,
+    "closureMaxM": 4.470348358154297e-08,
+    "durationSeconds": 5.38,
+    "frameCount": 135
+  },
+  "deltas": {
+    "meanReward": 0.3554343016019099,
+    "uprightPercent": 53.90334572490706,
+    "meanSpeed": -0.07982217482890114,
+    "comHeightRangeM": -0.21725481748580933,
+    "comLateralPeakM": 0.01806134358048439,
+    "torsoTiltMeanDegrees": -9.579159719675317,
+    "torsoTiltPeakDegrees": -30.409559415604598,
+    "durationSeconds": 2.6000000000000005
+  },
+  "checks": {
+    "policyEpochs": true,
+    "freeRoot": true,
+    "armSwing": true,
+    "forward": true,
+    "targetSpeed": true,
+    "closedChains": true,
+    "stableNonRegression": true
+  },
+  "passed": true
+}

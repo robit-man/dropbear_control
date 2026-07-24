@@ -7393,10 +7393,11 @@
       "id": "arm-left-elbow-pitch",
       "side": "left",
       "physicalJoint": "elbow_pitch",
-      "usdJoint": "LH_elbow_joint",
-      "usdPath": "/humanoid/joints/LH_elbow_joint",
+      "usdJoint": "LH_Revolute41",
+      "usdPath": "/humanoid/joints/LH_Revolute41",
       "motor": "RMD-X8",
       "mount": "arm",
+      "closedLoop": true,
       "firmwareCanId": null,
       "mappingBasis": "Physical arm motor identification; authored USD joint name retained."
     },
@@ -7448,10 +7449,11 @@
       "id": "arm-right-elbow-pitch",
       "side": "right",
       "physicalJoint": "elbow_pitch",
-      "usdJoint": "RH_elbow_joint",
-      "usdPath": "/humanoid/joints/RH_elbow_joint",
+      "usdJoint": "RH_Revolute41",
+      "usdPath": "/humanoid/joints/RH_Revolute41",
       "motor": "RMD-X8",
       "mount": "arm",
+      "closedLoop": true,
       "firmwareCanId": null,
       "mappingBasis": "Physical arm motor identification; authored USD joint name retained."
     },
@@ -7475,6 +7477,42 @@
       "RL_Revolute81": "Use mirrored Z revolute basis in-browser. The source revision authors this lone outer-calf X8 axis as X while its mirrored mate and the other calf driver axes are Z; X cannot close the crank/rod/ankle contact geometry.",
       "armShoulderPitch": "Expose the two torso-mounted RMD-X10 axes as physical shoulder pitch while retaining their authored LH_yaw and RH_yaw USD joint names."
     },
+    "armLinkages": [
+      {
+        "side": "left",
+        "elbowMotor": "LH_Revolute41",
+        "passiveJoints": [
+          "LH_Revolute42",
+          "LH_elbow_joint",
+          "LH_Revolute32",
+          "LH_Revolute33",
+          "LH_Revolute44"
+        ],
+        "closureConstraints": [
+          "LH_Revolute123",
+          "LH_Revolute125",
+          "LH_Revolute127"
+        ],
+        "wristOutput": "LH_wrist_roll"
+      },
+      {
+        "side": "right",
+        "elbowMotor": "RH_Revolute41",
+        "passiveJoints": [
+          "RH_Revolute42",
+          "RH_elbow_joint",
+          "RH_Revolute32",
+          "RH_Revolute33",
+          "RH_Revolute44"
+        ],
+        "closureConstraints": [
+          "RH_Revolute123",
+          "RH_Revolute125",
+          "RH_Revolute127"
+        ],
+        "wristOutput": "RH_wrist_roll"
+      }
+    ],
     "calfLinkages": [
       {
         "side": "left",

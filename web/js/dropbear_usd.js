@@ -31,12 +31,12 @@ export const DROPBEAR_ARM_MOTOR_BINDINGS = Object.freeze([
   { id: "arm-left-shoulder-pitch", side: "left", label: "Left shoulder pitch", semanticJoint: "shoulder_pitch", usdJoint: "LH_yaw", motor: "RMD-X10", mount: "torso", sourceSemantic: "authored as LH_yaw" },
   { id: "arm-left-shoulder-yaw", side: "left", label: "Left shoulder yaw", semanticJoint: "shoulder_yaw", usdJoint: "LH_pitch", motor: "RMD-X8", mount: "arm", sourceSemantic: "authored as LH_pitch" },
   { id: "arm-left-shoulder-roll", side: "left", label: "Left shoulder roll", semanticJoint: "shoulder_roll", usdJoint: "LH_roll", motor: "RMD-X8", mount: "arm", sourceSemantic: "authored as LH_roll" },
-  { id: "arm-left-elbow-pitch", side: "left", label: "Left elbow pitch", semanticJoint: "elbow_pitch", usdJoint: "LH_elbow_joint", motor: "RMD-X8", mount: "arm", sourceSemantic: "authored as LH_elbow_joint" },
+  { id: "arm-left-elbow-pitch", side: "left", label: "Left elbow pitch", semanticJoint: "elbow_pitch", usdJoint: "LH_Revolute41", motor: "RMD-X8", mount: "arm", sourceSemantic: "actuated as LH_Revolute41", closedLoop: true },
   { id: "arm-left-wrist-roll", side: "left", label: "Left wrist roll", semanticJoint: "wrist_roll", usdJoint: "LH_wrist_roll", motor: "RMD-X8", mount: "arm", sourceSemantic: "authored as LH_wrist_roll" },
   { id: "arm-right-shoulder-pitch", side: "right", label: "Right shoulder pitch", semanticJoint: "shoulder_pitch", usdJoint: "RH_yaw", motor: "RMD-X10", mount: "torso", sourceSemantic: "authored as RH_yaw" },
   { id: "arm-right-shoulder-yaw", side: "right", label: "Right shoulder yaw", semanticJoint: "shoulder_yaw", usdJoint: "RH_pitch", motor: "RMD-X8", mount: "arm", sourceSemantic: "authored as RH_pitch" },
   { id: "arm-right-shoulder-roll", side: "right", label: "Right shoulder roll", semanticJoint: "shoulder_roll", usdJoint: "RH_roll", motor: "RMD-X8", mount: "arm", sourceSemantic: "authored as RH_roll" },
-  { id: "arm-right-elbow-pitch", side: "right", label: "Right elbow pitch", semanticJoint: "elbow_pitch", usdJoint: "RH_elbow_joint", motor: "RMD-X8", mount: "arm", sourceSemantic: "authored as RH_elbow_joint" },
+  { id: "arm-right-elbow-pitch", side: "right", label: "Right elbow pitch", semanticJoint: "elbow_pitch", usdJoint: "RH_Revolute41", motor: "RMD-X8", mount: "arm", sourceSemantic: "actuated as RH_Revolute41", closedLoop: true },
   { id: "arm-right-wrist-roll", side: "right", label: "Right wrist roll", semanticJoint: "wrist_roll", usdJoint: "RH_wrist_roll", motor: "RMD-X8", mount: "arm", sourceSemantic: "authored as RH_wrist_roll" },
 ]);
 

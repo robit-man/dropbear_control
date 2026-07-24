@@ -20,14 +20,17 @@ workspace:
 - the actual Dropbear USD structure, adapted into a browser-renderable cache
   while retaining its rigid bodies, physical joints, and loop closures;
 - a ROS 2 Jazzy `joint_trajectory_controller` software-in-the-loop path; and
-- a small PyTorch PPO baseline whose leg model exposes four-bar closure error.
+- a 22-motor PyTorch PPO teaching plant with free-root balance, contact,
+  center-of-mass, arm-swing, leg-closure, and elbow-closure state.
 
 The browser dashboard is the primary interactive surface. It renders the
 Dropbear USD, drives the exact CAN-to-USD joint bindings, projects passive calf
 and ankle joints against the retained closure anchors, exposes ten arm-motor
-shafts, and resolves each heel/toe patch against a unilateral ground plane.
+shafts, solves both five-link elbow assemblies, and resolves each heel/toe
+patch against a unilateral ground plane.
 Live telemetry covers motor state, foot contact and load, ankle state, CAN,
-sensors, linkage closure, and the constrained root height.
+sensors, linkage closure, root attitude, policy reward, and live training
+progress.
 
 ## Current state
 
@@ -36,15 +39,17 @@ sensors, linkage closure, and the constrained root height.
 | Browser USD twin | 90 rendered bodies from a 294,204-triangle cache; manifest retains 93 rigid bodies, 116 physical joints, and 27 closures | Kinematic SIL visualization, not rigid-body dynamics |
 | Leg motor map | Twelve low-level CAN nodes, `0x141`–`0x14C`, bound to the corresponding USD motor axes | Source-grounded simulation; no physical CAN authority |
 | Arm motor map | Ten selectable USD shafts: eight RMD-X8 arm drives and two torso-mounted RMD-X10 shoulder-pitch drives | Arm CAN IDs are not present in the observed leg firmware and remain deliberately unmapped |
+| Elbow linkage | `LH/RH_Revolute41` actuator input drives five passive joints against three retained loop constraints on each arm | Kinematic DLS closure; Isaac/PhysX remains dynamics-authoritative |
 | Calf/ankle linkage | Four X8 crank axes, tie rods, ankle contacts, foot pivot, and damped least-squares closure projection | Isaac/PhysX remains dynamics-authoritative |
-| Foot-ground contact | Actual foot-body bounds produce left/right heel and toe patches, unilateral no-penetration projection, gravity settling, and four load-cell values | Root motion is constrained only on Z; no friction, balance, impact, lateral, or rotational dynamics |
+| Foot-ground contact | Actual foot-body bounds produce left/right heel and toe patches, unilateral no-penetration projection, gravity settling, and four load-cell values | Browser contact remains a teaching approximation without friction or impact dynamics |
+| Root modes | Switchable Z guide plus free-root gravity/policy playback with visible height, roll, and pitch failure | Simplified browser free body; not a rigid-body solver |
 | Knee safety datum | Both knees are limited to encoder `180°`–`360°`; ROS/RL use `0`–`π` rad from the same lock datum | Software constraint; not a certified physical stop |
 | Walking demo | Forward alternating gait with loading, rearward push-off, early swing, moderated knee lift, advance, and placement | Demonstration trajectory, not a learned or dynamically stable gait |
 | Actuator CAD | STEP-derived housing/output GLB previews, technical lines, explode control, and original STEP downloads | Browser previews are simplified visualization caches |
 | Controller lab | Dimensional ESP32 DevKit reference with 19 source/inferred signal routes | Board-level visualization, not circuit simulation |
 | Firmware console | Source-shaped serial grammar, task cadence, CAN traffic, sensor stream, and fault injection | Clean-room behavioral twin, not instruction-set emulation |
 | ROS 2 | Jazzy bringup, `joint_trajectory_controller`, mock hardware, action/topic demo, validation, and local WebSocket bridge | ROS side is SIL; the dashboard does not yet auto-switch to WebSocket state |
-| Walking RL | Dependency-light PyTorch PPO baseline with a constrained planar four-bar leg | Smoke-training baseline; not trained or validated in the full USD plant |
+| Walking RL | Local 22-action/88-observation PPO experiments, update-by-update USD replay, free-root balance, COM stability, baseline-gait bias, arm swing, contacts, four closed-chain mechanisms, and a tracked 1,000-epoch reference policy | Teaching plant and policy-generation lab; not Isaac/PhysX validation |
 | Physical hardware path | Existing host, firmware, evidence, and fail-closed admission scaffolding | Deliberately disabled pending reviewed hardware evidence and HIL gates |
 
 ## Ground-truth revisions
@@ -69,15 +74,16 @@ flowchart LR
     BT --> CAN[12-axis CAN state]
     CAN --> USD[Dropbear USD articulation]
     ARM[10 arm shafts: 8 X8 + 2 X10] --> USD
-    USD --> CLS[Calf rod and ankle closure solver]
-    CLS --> GND[Heel/toe ground patches and Z-only root guide]
+    USD --> CLS[Leg and elbow closure solvers]
+    CLS --> GND[Heel/toe patches and switchable root mode]
     GND --> UI[Contact, load, ankle, motor and residual telemetry]
 
     ROS[ROS 2 joint trajectory controller] --> WS[Loopback WebSocket bridge]
     WS -. browser adapter pending .-> CAN
 
-    PPO[PyTorch PPO baseline] --> FB[Four-bar leg model]
-    FB -. Isaac/PhysX validation required .-> USD
+    PPO[22-motor PyTorch PPO] --> LIVE[Per-update policy rollout]
+    LIVE --> USD
+    PPO -. Isaac/PhysX validation required .-> USD
 ```
 
 The browser and ROS/RL paths use the same knee-lock convention and twelve
@@ -126,12 +132,12 @@ matching the hip-yaw motor class; all remaining arm motors are RMD-X8 units.
 | Left | Shoulder pitch | `LH_yaw` | RMD-X10 | Torso |
 | Left | Shoulder yaw | `LH_pitch` | RMD-X8 | Arm |
 | Left | Shoulder roll | `LH_roll` | RMD-X8 | Arm |
-| Left | Elbow pitch | `LH_elbow_joint` | RMD-X8 | Arm |
+| Left | Elbow pitch | `LH_Revolute41` | RMD-X8 | Arm |
 | Left | Wrist roll | `LH_wrist_roll` | RMD-X8 | Arm |
 | Right | Shoulder pitch | `RH_yaw` | RMD-X10 | Torso |
 | Right | Shoulder yaw | `RH_pitch` | RMD-X8 | Arm |
 | Right | Shoulder roll | `RH_roll` | RMD-X8 | Arm |
-| Right | Elbow pitch | `RH_elbow_joint` | RMD-X8 | Arm |
+| Right | Elbow pitch | `RH_Revolute41` | RMD-X8 | Arm |
 | Right | Wrist roll | `RH_wrist_roll` | RMD-X8 | Arm |
 
 The source USD calls the torso-root axes `LH_yaw` and `RH_yaw`; the dashboard
@@ -139,6 +145,12 @@ keeps those authored names visible while applying the physical shoulder-pitch
 semantic supplied for the installed robot. No arm CAN IDs are invented. The
 arm inspector therefore reports `AUX · CAN UNMAPPED` until an authoritative
 firmware or wiring map is added.
+
+The two elbow motor rows are closed-loop inputs. `LH_elbow_joint` and
+`RH_elbow_joint` are passive members, not motor commands. Each `Revolute41`
+input is solved together with `Revolute42`, the passive elbow, `Revolute32`,
+`Revolute33`, and `Revolute44` against `Revolute123`, `Revolute125`, and
+`Revolute127`. The viewer reports arm and leg residuals independently.
 
 ## Foot contact and vertical constraint
 
@@ -155,10 +167,16 @@ the root-Z offset and contact state remain inspectable in the robot view. This
 lets a retracting foot settle naturally onto the rendered floor while the
 walking motion continues.
 
-The guide is intentionally unilateral and vertical only. It does not simulate
-friction, tangential constraints, impulses, center-of-pressure balance,
-self-collision, or body attitude. Isaac/PhysX remains the required environment
-for dynamically reliable walking and contact validation.
+The Z guide is switchable. With **RL policy playback** selected and the guide
+disabled, the root enters a simple free-body mode: gravity is integrated,
+feet retain unilateral floor contact, and the torso is free to lose height,
+roll, and pitch. An untrained or failed policy therefore falls instead of
+being held upright. Exported policies can drive the same root state from their
+recorded height/attitude/contact sequence.
+
+This mode still does not simulate friction, tangential impulses,
+self-collision, or authoritative center-of-pressure dynamics. Isaac/PhysX
+remains required for dynamically reliable walking and contact validation.
 
 ## Walking demonstration
 
@@ -206,7 +224,7 @@ The dashboard starts in guarded pause even though the observed source firmware
 sets `playMode=true` during setup. Press **RUN FULL DEMO** to start the forward
 alternating gait.
 
-The five engineering views are:
+The six engineering views are:
 
 - **Robot Sim** — complete USD visualization, motor selection, live gait and
   linkage/contact telemetry, separate leg and arm motor categories, faults,
@@ -214,7 +232,9 @@ The five engineering views are:
 - **Actuator CAD** — STEP-derived actuator solids with technical lines and
   articulation controls;
 - **Controller Lab** — ESP32 board and pin/signal inspection;
-- **Firmware** — two-controller serial/CAN behavioral console; and
+- **Firmware** — two-controller serial/CAN behavioral console;
+- **RL Lab** — local PPO configuration, live epoch/update metrics,
+  update-by-update full-USD policy replay, and final policy loading; and
 - **Evidence** — source revisions, provenance, adaptations, and limitations.
 
 ## ROS 2 Jazzy SIL
@@ -254,17 +274,79 @@ See
 [`ros2_control/dropbear_trajectory_bringup/README.md`](ros2_control/dropbear_trajectory_bringup/README.md)
 for endpoints, inspection commands, and the hardware boundary.
 
-## PyTorch walking baseline
+## PyTorch walking lab
 
-Run a small PPO smoke-training job:
+Use **RL Lab** in the dashboard for live update-by-update replay, or run:
 
 ```bash
-python3 -m rl.train_walk --updates 20 --steps 256 --device cpu
+python3 -m rl.train_walk \
+  --updates 200 --steps 256 --envs 128 --epochs 5 \
+  --device cuda --no-vertical-constraint --arm-swing
 ```
 
-The default checkpoint is `artifacts/rl/dropbear_ppo.pt`. The environment
-includes the four-bar closure residual in its observation and reward and
-clamps negative knee coordinates before evaluating the constrained plant.
+The environment has 22 motor actions and 88 observations. Its leading reward
+terms hold torso attitude/angular rate stable and minimize COM height/lateral
+variation; the authored alternating walk supplies a smooth reference bias.
+Speed, contact timing, contralateral arm swing, energy, action smoothness, and
+all leg/elbow closure residuals remain explicit secondary terms.
+
+The actor mean is initialized to zero residual, so update zero is exactly the
+working authored gait instead of a random corruption of it. Each deterministic
+preview is evaluated on the same seed. The final checkpoint restores the
+highest combined stability score observed during the complete run, while
+retaining the selected update and completed-update count in its metadata.
+`--init-checkpoint` supports an audited warm start and evaluates/protects that
+state as update zero before optimization. The loopback dashboard service
+accepts warm starts only from existing `.pt` files beneath
+`artifacts/rl/experiments/`.
+
+The local dashboard service exports a deterministic rollout after every PPO
+update. **WATCH TRAINING LIVE** replays each new rollout on the full USD with
+reward, upright rate, torso tilt, COM variation, speed, and fall telemetry.
+Experiment checkpoints and policies live under `artifacts/rl/experiments/`.
+**LOAD AUTHORED BASELINE** and **LOAD PPO REFERENCE** provide an immediate
+same-view A/B replay after training.
+
+Validate a completed 200 × 5 run against the authored residual-zero walk:
+
+```bash
+python3 -m rl.validate_walk \
+  artifacts/rl/experiments/<experiment>/policy.json \
+  --reference-policy-out \
+    artifacts/rl/experiments/<experiment>/authored-reference.json \
+  --out artifacts/rl/experiments/<experiment>/validation.json \
+  --expected-policy-epochs 1000
+```
+
+### Tracked 1,000-epoch reference
+
+The checked-in PPO reference is the stability-selected update `188` from a
+complete `200 updates × 5 PPO epochs` CUDA run (`1,000` policy epochs, seed
+`23`). Its deterministic eight-second free-root evaluation achieved:
+
+| Metric | Authored walk | PPO reference | Change |
+|---|---:|---:|---:|
+| Upright time | 46.10% | 100.00% | +53.90 points |
+| Mean torso tilt | 18.24° | 8.66° | −9.58° |
+| Peak torso tilt | 41.43° | 11.02° | −30.41° |
+| COM height range | 0.261 m | 0.044 m | −0.217 m |
+| Mean forward speed | 0.336 m/s | 0.256 m/s | −0.080 m/s |
+| Mean reward | 2.656 | 3.012 | +0.355 |
+
+The subsequent full-USD browser A/B review also passed forward travel,
+alternating support, foot clearance, free-root playback, hip/knee/arm motion,
+and all browser loop-closure gates. The trained rollout travelled `2.044 m`;
+its worst sampled leg and arm closure residuals were `0.465 mm` and
+`0.154 mm`, respectively.
+
+The reproducible artifacts are
+[`dropbear-walk-reference.json`](web/assets/rl/dropbear-walk-reference.json),
+[`dropbear-authored-reference.json`](web/assets/rl/dropbear-authored-reference.json),
+[`dropbear-walk-validation.json`](web/assets/rl/dropbear-walk-validation.json),
+and
+[`dropbear-rendered-walk-review.json`](web/assets/rl/dropbear-rendered-walk-review.json).
+Load the two policies with **LOAD PPO REFERENCE** and
+**LOAD AUTHORED BASELINE** for the same-view comparison.
 
 This is a research baseline only. A policy must be trained and evaluated in
 the full Isaac/PhysX Dropbear environment, then replayed through the ROS 2 SIL
@@ -283,10 +365,18 @@ npm run verify:dashboard
 npm run test:visual
 ```
 
+For a rendered trained-versus-authored review, pass the two server-relative
+policy URLs to `npm run test:walk-policy`. It samples both trajectories on the
+full USD, checks forward travel, alternating support, foot clearance, arm/leg
+motion, free-root playback, and closure residuals, and captures both poses.
+The committed review report records the exact acceptance result for the
+tracked pair.
+
 The web suite checks the source map, all twelve leg CAN bindings, all ten arm
-shafts and their 8× X8 / 2× X10 split, heel/toe contact loads, Z-only
-no-penetration behavior, knee lock, staged gait, STEP/GLB availability,
-closure behavior, control protocols, and the critical Playwright journey.
+shafts and their 8× X8 / 2× X10 split, both three-constraint elbow linkages,
+heel/toe contact loads, guided and free-root behavior, live policy playback,
+knee lock, staged gait, STEP/GLB availability, closure behavior, control
+protocols, and the critical Playwright journey.
 
 Run the ROS protocol and RL unit tests from the repository root:
 
@@ -312,10 +402,10 @@ plant fidelity, or safe powered operation.
 
 | Path | Purpose |
 |---|---|
-| `web/` | Five-view browser engineering dashboard and USD digital twin |
+| `web/` | Six-view browser engineering dashboard, USD twin, and local RL service |
 | `web/assets/robot/` | Optimized Dropbear GLB, articulation manifest, and attribution |
 | `web/assets/cad/` | STEP-derived actuator browser caches |
-| `rl/` | Constrained PyTorch PPO walking baseline |
+| `rl/` | 22-motor free-root PyTorch PPO teaching plant and policy exporter |
 | `ros2_control/dropbear_trajectory_bringup/` | ROS 2 Jazzy trajectory-controller SIL and dashboard bridge |
 | `ros2_control/myactuator_dropbear_hardware/` | Existing fail-closed physical hardware plugin boundary |
 | `firmware/esp32/` | ESP32/PAL and motor-driver scaffolding |

@@ -64,6 +64,9 @@
         <button class="rail-item" data-view-target="firmware">
           <span class="rail-icon">›_</span><span>Firmware</span>
         </button>
+        <button class="rail-item" data-view-target="rl">
+          <span class="rail-icon">λ</span><span>RL Lab</span>
+        </button>
         <button class="rail-item" data-view-target="evidence">
           <span class="rail-icon">◎</span><span>Evidence</span>
         </button>
@@ -92,7 +95,12 @@
                 <option value="balance">Balance transfer</option>
                 <option value="sensor-sweep">Sensor sweep</option>
                 <option value="manual">Manual torque</option>
+                <option value="rl-policy">RL policy playback</option>
               </select>
+            </label>
+            <label class="switch stage-constraint-switch">
+              <input id="vertical-constraint" type="checkbox" checked>
+              <span></span>Z GUIDE
             </label>
             <button id="run-demo" class="button accent">RUN FULL DEMO</button>
           </div>
@@ -141,12 +149,24 @@
                 <b>3c37aed · Z-UP · METRES</b>
               </div>
               <button id="robot-fit" class="button subtle robot-fit">FIT USD</button>
-              <div id="closure-status" class="robot-closure-note"><i></i><span id="closure-status-text">Z GUIDE · SOLE CONTACT · X8 CRANK → TIE ROD → ANKLE/FOOT PIVOT · SOLVING…</span></div>
+              <div id="closure-status" class="robot-closure-note"><i></i><span id="closure-status-text">Z GUIDE · LEG + ARM CLOSED LOOPS · SOLVING…</span></div>
               <div class="stage-readout">
                 <div><span>SIM TIME</span><b id="sim-time">0.00 s</b></div>
                 <div><span>CONTROL</span><b id="control-state">STOP</b></div>
                 <div><span>CAN LOAD</span><b id="can-load">0.0%</b></div>
                 <div><span>ROOT Z</span><b id="root-z-offset">+0 mm</b></div>
+              </div>
+              <div id="training-live-overlay" class="training-live-overlay" hidden>
+                <span>RL TRAINING · LIVE POLICY</span>
+                <b id="training-live-update">UPDATE 0 / 0</b>
+                <dl>
+                  <div><dt>REWARD</dt><dd id="training-live-reward">—</dd></div>
+                  <div><dt>UPRIGHT</dt><dd id="training-live-upright">—</dd></div>
+                  <div><dt>TORSO</dt><dd id="training-live-torso">—</dd></div>
+                  <div><dt>COM σ</dt><dd id="training-live-com">—</dd></div>
+                  <div><dt>SPEED</dt><dd id="training-live-speed">—</dd></div>
+                  <div><dt>FALLS</dt><dd id="training-live-falls">—</dd></div>
+                </dl>
               </div>
             </div>
           </article>
@@ -356,6 +376,110 @@
             <div class="panel-head"><div><span class="panel-kicker">SOURCE DIAGNOSTICS</span><h2>Observed hazards</h2></div><span class="count-chip warning">2 OPEN</span></div>
             <div class="diagnostic warn"><b>STOP ID ROUTING</b><p>The source stop branch calls <code>sendStopCommand(i)</code> for indices 0–11, not actuator IDs 0x141–0x14C.</p></div>
             <div class="diagnostic warn"><b>IMPEDANCE PARSER</b><p>The desired-velocity substring begins at <code>thirdSpace + 2</code>, overlapping the intended position field.</p></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" data-view="rl">
+        <div class="view-heading">
+          <div>
+            <div class="eyebrow">PYTORCH / LOCAL POLICY LAB</div>
+            <h1>Teach the 22-motor Dropbear to walk</h1>
+            <p>Run bounded PPO experiments against the local teaching plant, remove the vertical guide, retain leg and elbow closures, and replay the exported motor and root state on the full browser USD.</p>
+          </div>
+          <div id="rl-server-state" class="load-status ok"><span></span>TRAINER READY</div>
+        </div>
+
+        <div class="rl-layout">
+          <article class="panel rl-config-panel">
+            <div class="panel-head">
+              <div>
+                <span class="panel-kicker">EXPERIMENT CONFIGURATION</span>
+                <h2>PPO curriculum</h2>
+              </div>
+              <span class="count-chip">22 ACTIONS · 88 OBS</span>
+            </div>
+            <form id="rl-form" class="rl-config-grid">
+              <label><span>UPDATES</span><input id="rl-updates" type="number" min="1" max="200" value="12"></label>
+              <label><span>ROLLOUT STEPS</span><input id="rl-steps" type="number" min="16" max="2048" value="128"></label>
+              <label><span>PARALLEL ENVS</span><input id="rl-envs" type="number" min="1" max="512" value="32"></label>
+              <label><span>EPOCHS / UPDATE</span><input id="rl-epochs" type="number" min="1" max="20" value="4"></label>
+              <label><span>BATCH SIZE</span><input id="rl-batch-size" type="number" min="32" max="32768" value="1024"></label>
+              <label><span>TARGET SPEED M/S</span><input id="rl-target-speed" type="number" min="0" max="1.2" step="0.05" value="0.35"></label>
+              <label><span>EPISODE SECONDS</span><input id="rl-episode-seconds" type="number" min="1" max="30" step="1" value="8"></label>
+              <label><span>SEED</span><input id="rl-seed" type="number" min="0" value="7"></label>
+              <label><span>DEVICE</span>
+                <select id="rl-device">
+                  <option value="auto">Auto</option>
+                  <option value="cpu">CPU</option>
+                  <option value="cuda">CUDA</option>
+                </select>
+              </label>
+              <div class="rl-switches">
+                <label class="switch"><input id="rl-vertical-constraint" type="checkbox"><span></span>VERTICAL GUIDE</label>
+                <label class="switch"><input id="rl-arm-swing" type="checkbox" checked><span></span>ARM SWING</label>
+              </div>
+              <div class="rl-form-actions">
+                <button id="rl-start" type="submit" class="button accent">START TRAINING</button>
+                <button id="rl-stop" type="button" class="button danger" disabled>STOP</button>
+              </div>
+            </form>
+            <div class="rl-boundary">
+              <b>TEACHING PLANT</b>
+              <p>Free-root height, roll, pitch, heel/toe load, arm counter-swing, both leg loops, and both three-constraint elbow loops are optimized here. Isaac/PhysX remains the dynamics authority before ROS or hardware use.</p>
+            </div>
+          </article>
+
+          <article class="panel rl-progress-panel">
+            <div class="panel-head">
+              <div>
+                <span class="panel-kicker">LIVE OPTIMIZATION</span>
+                <h2 id="rl-progress-title">No experiment running</h2>
+              </div>
+              <span id="rl-experiment-id" class="count-chip">LOCAL</span>
+            </div>
+            <div class="rl-progress-track"><i id="rl-progress-fill"></i></div>
+            <div class="metric-strip rl-metrics">
+              <div><span>REWARD</span><b id="rl-reward">—</b></div>
+              <div><span>UPRIGHT</span><b id="rl-upright">—</b></div>
+              <div><span>SPEED</span><b id="rl-speed">—</b></div>
+              <div><span>FALLS</span><b id="rl-falls">—</b></div>
+              <div><span>CLOSURE</span><b id="rl-closure">—</b></div>
+              <div><span>TORSO TILT</span><b id="rl-torso-tilt">—</b></div>
+              <div><span>COM σ</span><b id="rl-com-variation">—</b></div>
+            </div>
+            <div id="rl-log" class="rl-log" aria-live="polite">
+              <div><span>READY</span>Configure a bounded local experiment or load the tracked reference policy.</div>
+            </div>
+          </article>
+
+          <article class="panel rl-policy-panel">
+            <div class="panel-head">
+              <div>
+                <span class="panel-kicker">POLICY REPLAY / FULL USD</span>
+                <h2 id="rl-policy-title">Reference walking policy</h2>
+              </div>
+              <span id="rl-policy-mode" class="count-chip warning">FREE ROOT</span>
+            </div>
+            <div class="rl-policy-actions">
+              <button id="rl-load-reference" class="button subtle">LOAD PPO REFERENCE</button>
+              <button id="rl-load-authored" class="button subtle">LOAD AUTHORED BASELINE</button>
+              <button id="rl-load-latest" class="button subtle" disabled>LOAD LATEST</button>
+              <button id="rl-watch-live" class="button subtle">WATCH TRAINING LIVE</button>
+              <button id="rl-policy-play" class="button accent" disabled>PLAY ON USD</button>
+              <button id="rl-open-sim" class="button subtle">OPEN ROBOT SIM</button>
+            </div>
+            <label class="switch rl-auto-replay"><input id="rl-auto-replay" type="checkbox" checked><span></span>AUTO-REPLAY EACH UPDATE</label>
+            <label class="range-control rl-timeline">
+              <span>POLICY TIME <output id="rl-time-output">0.00 / 0.00 s</output></span>
+              <input id="rl-timeline" type="range" min="0" max="1" step="0.01" value="0" disabled>
+            </label>
+            <div class="rl-policy-summary">
+              <div><span>JOINT ORDER</span><b>12 LEG + 10 ARM</b></div>
+              <div><span>ELBOW INPUT</span><b>LH/RH_REVOLUTE41</b></div>
+              <div><span>PASSIVE ELBOWS</span><b>5 LINKS + 3 LOOPS / SIDE</b></div>
+              <div><span>ROOT</span><b id="rl-root-summary">GUIDE DISABLED</b></div>
+            </div>
           </article>
         </div>
       </section>

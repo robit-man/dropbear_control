@@ -121,7 +121,13 @@ assert.equal(
   DROPBEAR_ARM_MOTOR_BINDINGS.every((binding) => !Object.hasOwn(binding, "canId")),
   true,
 );
-assert.equal(dropbearArmMotorBinding("arm-right-elbow-pitch")?.usdJoint, "RH_elbow_joint");
+assert.equal(dropbearArmMotorBinding("arm-right-elbow-pitch")?.usdJoint, "RH_Revolute41");
+assert.deepEqual(
+  DROPBEAR_ARM_MOTOR_BINDINGS
+    .filter((binding) => binding.closedLoop)
+    .map((binding) => binding.usdJoint),
+  ["LH_Revolute41", "RH_Revolute41"],
+);
 
 const sim = new DropbearSim();
 assert.equal(sim.playMode, false);

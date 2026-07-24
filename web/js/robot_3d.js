@@ -144,10 +144,25 @@ export class Robot3D {
     this.lastDrawAt = 0;
     this.pendingJoints = [];
     this.passiveAngles = new Map();
+    this.legClosureResidualMm = 0;
+    this.armClosureResidualMm = 0;
     this.closureResidualMm = 0;
     this.neutralFootZ = new Map();
     this.groundConstraint = new VerticalGroundConstraint({ massKg: 42 });
     this.groundContact = this.groundConstraint.lastState;
+    this.verticalConstraintEnabled = true;
+    this.externalRootPose = null;
+    this.externalContactLoadsKg = null;
+    this.neutralGroundOffsetZ = 0;
+    this.freeRootState = {
+      height: 0.80,
+      velocityZ: 0,
+      x: 0,
+      roll: 0.012,
+      pitch: -0.008,
+      rollRate: 0,
+      pitchRate: 0,
+    };
     this.armMotorStates = DROPBEAR_ARM_MOTOR_BINDINGS.map((binding) => ({
       id: binding.id,
       angleDeg: 0,
@@ -255,10 +270,20 @@ export class Robot3D {
         || actual.usdJoint !== binding.usdJoint
         || actual.motor !== binding.motor
         || actual.mount !== binding.mount
+        || Boolean(actual.closedLoop) !== Boolean(binding.closedLoop)
         || actual.firmwareCanId !== null
       ) {
         throw new Error(`arm motor binding mismatch: ${binding.id}`);
       }
+    }
+    if (
+      this.manifest.browserKinematics?.armLinkages?.length !== 2
+      || this.manifest.browserKinematics.armLinkages.some(
+        (linkage) => linkage.passiveJoints?.length !== 5
+          || linkage.closureConstraints?.length !== 3,
+      )
+    ) {
+      throw new Error("arm closed-loop topology missing");
     }
   }
 
@@ -393,6 +418,21 @@ export class Robot3D {
       side,
       passiveNames.map((name) => this.jointByName.get(`${side}${name}`)).filter(Boolean),
     ]));
+    this.armClosures = new Map(["LH_", "RH_"].map((side) => [
+      side,
+      this.manifest.joints.filter((joint) => joint.closure && joint.name.startsWith(side)),
+    ]));
+    const armPassiveNames = [
+      "Revolute42",
+      "elbow_joint",
+      "Revolute32",
+      "Revolute33",
+      "Revolute44",
+    ];
+    this.armPassiveJoints = new Map(["LH_", "RH_"].map((side) => [
+      side,
+      armPassiveNames.map((name) => this.jointByName.get(`${side}${name}`)).filter(Boolean),
+    ]));
   }
 
   _buildJointMarkers() {
@@ -475,6 +515,7 @@ export class Robot3D {
       if (binding) radiansByUsdJoint.set(binding.usdJoint, THREE.MathUtils.degToRad(state.angleDeg || 0));
     }
     this._solveLegClosures(radiansByUsdJoint);
+    this._solveArmClosures(radiansByUsdJoint);
     const rawMatrices = this._calculateMatrices(radiansByUsdJoint);
     this.currentMatrices = this._applyVerticalGroundConstraint(rawMatrices, poseDt);
     for (const [path, group] of this.bodyGroups) group.matrix.copy(this.currentMatrices.get(path));
@@ -508,22 +549,125 @@ export class Robot3D {
   }
 
   _applyVerticalGroundConstraint(rawMatrices, poseDt) {
+    if (!this.verticalConstraintEnabled) {
+      const dt = Math.max(0, Math.min(0.08, Number(poseDt) || 0));
+      const policyDriven = Boolean(this.externalRootPose);
+      const pose = policyDriven ? this.externalRootPose : this.freeRootState;
+      if (!policyDriven && dt > 0) {
+        pose.velocityZ = Math.max(-3.5, pose.velocityZ - 9.80665 * dt);
+        pose.height += pose.velocityZ * dt;
+        const rollAcceleration = 4.2 * pose.roll + 0.92 - 0.28 * pose.rollRate;
+        const pitchAcceleration = 3.8 * pose.pitch - 0.54 - 0.28 * pose.pitchRate;
+        pose.rollRate = Math.max(-3.5, Math.min(3.5, pose.rollRate + rollAcceleration * dt));
+        pose.pitchRate = Math.max(-3.5, Math.min(3.5, pose.pitchRate + pitchAcceleration * dt));
+        pose.roll += pose.rollRate * dt;
+        pose.pitch += pose.pitchRate * dt;
+      }
+      const heightDelta = (Number(pose.height) || 0.80) - 0.80;
+      const pivotZ = 0.80;
+      const transformPose = (extraZ = 0) => {
+        const rotation = new THREE.Matrix4().makeRotationFromEuler(
+          new THREE.Euler(
+            Number(pose.roll) || 0,
+            Number(pose.pitch) || 0,
+            0,
+            "XYZ",
+          ),
+        );
+        const rootTransform = new THREE.Matrix4()
+          .makeTranslation(
+            Number(pose.x) || 0,
+            0,
+            this.neutralGroundOffsetZ + heightDelta + extraZ + pivotZ,
+          )
+          .multiply(rotation)
+          .multiply(new THREE.Matrix4().makeTranslation(0, 0, -pivotZ));
+        return new Map(
+          [...rawMatrices].map(([path, matrix]) => [
+            path,
+            rootTransform.clone().multiply(matrix),
+          ]),
+        );
+      };
+      let transformed = transformPose();
+      let feet = this._rawFootPatches(transformed);
+      let collisionLift = 0;
+      if (!policyDriven) {
+        const minimumFootZ = Math.min(
+          ...["left", "right"].flatMap((side) => [
+            feet[side]?.heelZ ?? Infinity,
+            feet[side]?.toeZ ?? Infinity,
+          ]),
+        );
+        collisionLift = Number.isFinite(minimumFootZ) ? Math.max(0, -minimumFootZ) : 0;
+        if (collisionLift > 0) {
+          pose.height += collisionLift;
+          pose.velocityZ = Math.max(0, pose.velocityZ);
+          transformed = transformPose(collisionLift);
+          feet = this._rawFootPatches(transformed);
+        }
+      }
+      let loads = this.externalContactLoadsKg || [0, 0, 0, 0];
+      if (!policyDriven) {
+        const heights = ["left", "right"].flatMap((side) => [
+          Math.max(0, feet[side]?.heelZ ?? 1),
+          Math.max(0, feet[side]?.toeZ ?? 1),
+        ]);
+        const weights = heights.map((height) => Math.max(0, 1 - height / 0.008));
+        const weightTotal = weights.reduce((sum, weight) => sum + weight, 0);
+        loads = weights.map((weight) => weightTotal > 0 ? 42 * weight / weightTotal : 0);
+      }
+      const makeFoot = (side, loadOffset) => {
+        const heelHeight = Math.max(0, feet[side]?.heelZ || 0);
+        const toeHeight = Math.max(0, feet[side]?.toeZ || 0);
+        const heelLoad = Number(loads[loadOffset]) || 0;
+        const toeLoad = Number(loads[loadOffset + 1]) || 0;
+        return {
+          contact: heelLoad + toeLoad > 0.05,
+          heelContact: heelLoad > 0.05,
+          toeContact: toeLoad > 0.05,
+          footHeightMm: Math.min(heelHeight, toeHeight) * 1000,
+          heelHeightMm: heelHeight * 1000,
+          toeHeightMm: toeHeight * 1000,
+          loadKg: heelLoad + toeLoad,
+          heelLoadKg: heelLoad,
+          toeLoadKg: toeLoad,
+        };
+      };
+      this.groundContact = {
+        valid: true,
+        guide: policyDriven ? "FREE_ROOT_POLICY" : "FREE_ROOT_GRAVITY",
+        offsetZ: this.neutralGroundOffsetZ + heightDelta + collisionLift,
+        velocityZ: Number(pose.velocityZ) || 0,
+        constrained: false,
+        left: makeFoot("left", 0),
+        right: makeFoot("right", 2),
+      };
+      this._updateContactMarkers(feet, 0);
+      return transformed;
+    }
+
     const rawFeet = this._rawFootPatches(rawMatrices);
     this.groundContact = this.groundConstraint.solve(rawFeet, poseDt);
     const translation = new THREE.Matrix4().makeTranslation(0, 0, this.groundContact.offsetZ);
     const translated = new Map(
       [...rawMatrices].map(([path, matrix]) => [path, translation.clone().multiply(matrix)]),
     );
+    this._updateContactMarkers(rawFeet, this.groundContact.offsetZ);
+    return translated;
+  }
+
+  _updateContactMarkers(feet, offsetZ) {
     for (const side of ["left", "right"]) {
       for (const patch of ["heel", "toe"]) {
         const marker = this.contactMarkers.get(`${side}:${patch}`);
-        const point = rawFeet[side]?.[`${patch}Point`];
+        const point = feet[side]?.[`${patch}Point`];
         const patchState = this.groundContact[side];
         if (!marker || !point || !patchState) continue;
         marker.position.set(
           point.x,
           point.y,
-          point.z + this.groundContact.offsetZ + 0.0015,
+          point.z + offsetZ + 0.0015,
         );
         const active = patchState[`${patch}Contact`];
         marker.material.color.set(active ? "#34d399" : "#fbbf24");
@@ -531,10 +675,10 @@ export class Robot3D {
         marker.scale.setScalar(active ? 1.08 : 0.82);
       }
     }
-    return translated;
   }
 
   _captureNeutralFootReferences() {
+    this.neutralGroundOffsetZ = this.groundContact.offsetZ || 0;
     for (const [side, prefix] of [["left", "LL_"], ["right", "RL_"]]) {
       const footMatrix = this.currentMatrices.get(`/humanoid/${prefix}skateboard_bearing_left_2`);
       if (footMatrix) this.neutralFootZ.set(side, new THREE.Vector3().setFromMatrixPosition(footMatrix).z);
@@ -582,16 +726,15 @@ export class Robot3D {
     return matrices;
   }
 
-  _closureVector(side, matrices, weighted = false) {
+  _closureVectorFor(joints, matrices, weightFor = null) {
     const residual = [];
-    for (const joint of this.legClosures.get(side) || []) {
+    for (const joint of joints || []) {
       const body0 = matrices.get(joint.body0);
       const body1 = matrices.get(joint.body1);
       if (!body0 || !body1) continue;
       const point0 = new THREE.Vector3(...joint.localPos0).applyMatrix4(body0);
       const point1 = new THREE.Vector3(...joint.localPos1).applyMatrix4(body1);
-      const isCalfRodContact = joint.name.endsWith("Revolute115") || joint.name.endsWith("Revolute117");
-      const weight = weighted && isCalfRodContact ? 5 : 1;
+      const weight = weightFor ? weightFor(joint) : 1;
       residual.push(
         (point0.x - point1.x) * weight,
         (point0.y - point1.y) * weight,
@@ -601,67 +744,130 @@ export class Robot3D {
     return residual;
   }
 
-  _solveLegClosures(commandedAngles) {
+  _solvePassiveClosure(
+    joints,
+    variables,
+    commandedAngles,
+    {
+      iterations = 10,
+      weighted = null,
+    } = {},
+  ) {
     const epsilon = 1e-4;
-    let worst = 0;
-    for (const side of ["LL_", "RL_"]) {
-      const variables = this.legPassiveJoints.get(side) || [];
-      if (!variables.length) continue;
-      for (const joint of variables) {
-        if (!this.passiveAngles.has(joint.name)) this.passiveAngles.set(joint.name, 0);
-      }
-      for (let iteration = 0; iteration < 10; iteration += 1) {
-        const base = this._closureVector(side, this._calculateMatrices(commandedAngles), true);
-        const baseNorm = Math.sqrt(base.reduce((sum, value) => sum + value * value, 0));
-        if (baseNorm < 2e-5) break;
-        const jacobian = Array.from({ length: base.length }, () => Array(variables.length).fill(0));
-        variables.forEach((joint, column) => {
-          const before = this.passiveAngles.get(joint.name) || 0;
-          this.passiveAngles.set(joint.name, before + epsilon);
-          const shifted = this._closureVector(side, this._calculateMatrices(commandedAngles), true);
-          this.passiveAngles.set(joint.name, before);
+    if (!variables.length || !joints.length) return 0;
+    for (const joint of variables) {
+      if (!this.passiveAngles.has(joint.name)) this.passiveAngles.set(joint.name, 0);
+    }
+    for (let iteration = 0; iteration < iterations; iteration += 1) {
+      const base = this._closureVectorFor(
+        joints,
+        this._calculateMatrices(commandedAngles),
+        weighted,
+      );
+      const baseNorm = Math.sqrt(base.reduce((sum, value) => sum + value * value, 0));
+      if (baseNorm < 2e-5) break;
+      const jacobian = Array.from({ length: base.length }, () => Array(variables.length).fill(0));
+      variables.forEach((joint, column) => {
+        const before = this.passiveAngles.get(joint.name) || 0;
+        this.passiveAngles.set(joint.name, before + epsilon);
+        const shifted = this._closureVectorFor(
+          joints,
+          this._calculateMatrices(commandedAngles),
+          weighted,
+        );
+        this.passiveAngles.set(joint.name, before);
+        for (let row = 0; row < base.length; row += 1) {
+          jacobian[row][column] = (shifted[row] - base[row]) / epsilon;
+        }
+      });
+      const normal = Array.from({ length: variables.length }, () => Array(variables.length).fill(0));
+      const rhs = Array(variables.length).fill(0);
+      for (let column = 0; column < variables.length; column += 1) {
+        for (let row = 0; row < base.length; row += 1) rhs[column] -= jacobian[row][column] * base[row];
+        for (let other = 0; other < variables.length; other += 1) {
           for (let row = 0; row < base.length; row += 1) {
-            jacobian[row][column] = (shifted[row] - base[row]) / epsilon;
+            normal[column][other] += jacobian[row][column] * jacobian[row][other];
           }
+        }
+        normal[column][column] += 2e-6;
+      }
+      const delta = solveSymmetric(normal, rhs);
+      const before = variables.map((joint) => this.passiveAngles.get(joint.name) || 0);
+      let accepted = false;
+      for (const scale of [1, 0.5, 0.25, 0.125]) {
+        variables.forEach((joint, index) => {
+          const raw = Number.isFinite(delta[index]) ? delta[index] : 0;
+          const step = Math.max(-0.28, Math.min(0.28, raw * scale));
+          this.passiveAngles.set(joint.name, before[index] + step);
         });
-        const normal = Array.from({ length: variables.length }, () => Array(variables.length).fill(0));
-        const rhs = Array(variables.length).fill(0);
-        for (let column = 0; column < variables.length; column += 1) {
-          for (let row = 0; row < base.length; row += 1) rhs[column] -= jacobian[row][column] * base[row];
-          for (let other = 0; other < variables.length; other += 1) {
-            for (let row = 0; row < base.length; row += 1) {
-              normal[column][other] += jacobian[row][column] * jacobian[row][other];
-            }
-          }
-          normal[column][column] += 2e-6;
-        }
-        const delta = solveSymmetric(normal, rhs);
-        const before = variables.map((joint) => this.passiveAngles.get(joint.name) || 0);
-        let accepted = false;
-        for (const scale of [1, 0.5, 0.25, 0.125]) {
-          variables.forEach((joint, index) => {
-            const raw = Number.isFinite(delta[index]) ? delta[index] : 0;
-            const step = Math.max(-0.28, Math.min(0.28, raw * scale));
-            this.passiveAngles.set(joint.name, before[index] + step);
-          });
-          const trial = this._closureVector(side, this._calculateMatrices(commandedAngles), true);
-          const trialNorm = Math.sqrt(trial.reduce((sum, value) => sum + value * value, 0));
-          if (trialNorm < baseNorm) {
-            accepted = true;
-            break;
-          }
-        }
-        if (!accepted) {
-          variables.forEach((joint, index) => this.passiveAngles.set(joint.name, before[index]));
+        const trial = this._closureVectorFor(
+          joints,
+          this._calculateMatrices(commandedAngles),
+          weighted,
+        );
+        const trialNorm = Math.sqrt(trial.reduce((sum, value) => sum + value * value, 0));
+        if (trialNorm < baseNorm) {
+          accepted = true;
           break;
         }
       }
-      const residual = this._closureVector(side, this._calculateMatrices(commandedAngles));
-      for (let index = 0; index < residual.length; index += 3) {
-        worst = Math.max(worst, Math.hypot(residual[index], residual[index + 1], residual[index + 2]));
+      if (!accepted) {
+        variables.forEach((joint, index) => this.passiveAngles.set(joint.name, before[index]));
+        break;
       }
     }
-    this.closureResidualMm = worst * 1000;
+    const residual = this._closureVectorFor(
+      joints,
+      this._calculateMatrices(commandedAngles),
+    );
+    let worst = 0;
+    for (let index = 0; index < residual.length; index += 3) {
+      worst = Math.max(worst, Math.hypot(
+        residual[index],
+        residual[index + 1],
+        residual[index + 2],
+      ));
+    }
+    return worst * 1000;
+  }
+
+  _solveLegClosures(commandedAngles) {
+    let worst = 0;
+    const calfWeight = (joint) => (
+      joint.name.endsWith("Revolute115") || joint.name.endsWith("Revolute117")
+        ? 5
+        : 1
+    );
+    for (const side of ["LL_", "RL_"]) {
+      worst = Math.max(
+        worst,
+        this._solvePassiveClosure(
+          this.legClosures.get(side) || [],
+          this.legPassiveJoints.get(side) || [],
+          commandedAngles,
+          { iterations: 10, weighted: calfWeight },
+        ),
+      );
+    }
+    this.legClosureResidualMm = worst;
+    this.closureResidualMm = Math.max(this.legClosureResidualMm, this.armClosureResidualMm);
+  }
+
+  _solveArmClosures(commandedAngles) {
+    let worst = 0;
+    for (const side of ["LH_", "RH_"]) {
+      worst = Math.max(
+        worst,
+        this._solvePassiveClosure(
+          this.armClosures.get(side) || [],
+          this.armPassiveJoints.get(side) || [],
+          commandedAngles,
+          { iterations: 16 },
+        ),
+      );
+    }
+    this.armClosureResidualMm = worst;
+    this.closureResidualMm = Math.max(this.legClosureResidualMm, this.armClosureResidualMm);
   }
 
   _updateMarkers(radiansByUsdJoint) {
@@ -753,6 +959,34 @@ export class Robot3D {
   resetGroundConstraint() {
     this.groundConstraint.reset();
     this.groundContact = this.groundConstraint.lastState;
+  }
+
+  setVerticalConstraintEnabled(enabled) {
+    const next = Boolean(enabled);
+    if (this.verticalConstraintEnabled === next) return;
+    this.verticalConstraintEnabled = next;
+    if (this.verticalConstraintEnabled) {
+      this.externalRootPose = null;
+      this.externalContactLoadsKg = null;
+      this.resetGroundConstraint();
+    } else {
+      this.freeRootState = {
+        height: 0.80,
+        velocityZ: 0,
+        x: 0,
+        roll: 0.012,
+        pitch: -0.008,
+        rollRate: 0,
+        pitchRate: 0,
+      };
+    }
+  }
+
+  setExternalRootPose(pose = null, contactLoadsKg = null) {
+    this.externalRootPose = pose ? { ...pose } : null;
+    this.externalContactLoadsKg = Array.isArray(contactLoadsKg)
+      ? [...contactLoadsKg]
+      : null;
   }
 
   setActive(on) {

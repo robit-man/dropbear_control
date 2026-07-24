@@ -13,6 +13,7 @@ import {
   dropbearArmMotorBinding,
   dropbearUsdBinding,
 } from "./dropbear_usd.js";
+import { RLPolicyPlayer } from "./rl_policy.js";
 import { Robot3D } from "./robot_3d.js";
 
 const $ = (id) => document.getElementById(id);
@@ -37,7 +38,13 @@ const ui = {
   motorCategory: "legs",
   axisCategory: "leg",
   selectedArmMotorId: null,
-  lastRobotSimTime: 0,
+  lastRobotFrameAt: performance.now(),
+  policyMode: false,
+  latestPolicyUrl: null,
+  rlStatusSignature: "",
+  watchTraining: false,
+  previewLoadedKey: null,
+  previewLoading: false,
 };
 
 function selectedJoint() {
@@ -101,6 +108,62 @@ const robot = new Robot3D($("robot-canvas"), {
   },
 });
 
+function applyPolicyFrame(frame, policy) {
+  const toDegrees = (radians) => radians * 180 / Math.PI;
+  sim.scenario = "rl-policy";
+  sim.playMode = true;
+  sim.time = frame.time;
+  sim.joints.forEach((joint, index) => {
+    const angle = 180 + toDegrees(frame.q[index] || 0);
+    joint.angle = Math.max(joint.minAngle, Math.min(joint.maxAngle, angle));
+    joint.rawAngle = joint.angle % 360;
+    joint.desiredPosition = joint.angle;
+    joint.velocity = toDegrees(frame.dq[index] || 0);
+    joint.torque = 0;
+  });
+  armMotorStates.forEach((state, index) => {
+    state.angleDeg = toDegrees(frame.q[index + 12] || 0);
+    state.velocityDegS = toDegrees(frame.dq[index + 12] || 0);
+    state.torqueNm = 0;
+  });
+  const loads = frame.contactLoadsKg || [0, 0, 0, 0];
+  const leftLoad = loads[0] + loads[1];
+  const rightLoad = loads[2] + loads[3];
+  sim.gait.left = {
+    phase: frame.phase,
+    mode: leftLoad > 1 ? "policy stance" : "policy swing",
+    swing: leftLoad <= 1,
+    contact: Math.min(1, leftLoad / 21),
+  };
+  sim.gait.right = {
+    phase: (frame.phase + 0.5) % 1,
+    mode: rightLoad > 1 ? "policy stance" : "policy swing",
+    swing: rightLoad <= 1,
+    contact: Math.min(1, rightLoad / 21),
+  };
+  const constrained = Boolean(policy.config?.verticalConstraint);
+  robot.setVerticalConstraintEnabled(constrained);
+  robot.setExternalRootPose(frame.base, loads);
+  $("vertical-constraint").checked = constrained;
+}
+
+const policyPlayer = new RLPolicyPlayer({
+  onFrame: applyPolicyFrame,
+  onState: (state) => {
+    if (!$("rl-policy-play")) return;
+    $("rl-policy-play").disabled = !state.loaded;
+    $("rl-policy-play").textContent = state.playing ? "PAUSE POLICY" : "PLAY ON USD";
+    $("rl-timeline").disabled = !state.loaded;
+    $("rl-timeline").max = String(Math.max(0.01, state.duration));
+    $("rl-timeline").value = String(state.elapsed);
+    $("rl-time-output").textContent = `${state.elapsed.toFixed(2)} / ${state.duration.toFixed(2)} s`;
+    if (state.loaded) {
+      $("rl-policy-mode").textContent = state.config?.verticalConstraint ? "Z GUIDE" : "FREE ROOT";
+      $("rl-root-summary").textContent = state.config?.verticalConstraint ? "GUIDE ENABLED" : "GUIDE DISABLED";
+    }
+  },
+});
+
 function switchView(name) {
   ui.view = name;
   const workspace = document.querySelector(".workspace");
@@ -132,7 +195,12 @@ function makeJointCards() {
       const state = armMotorStates.find((entry) => entry.id === definition.id);
       const button = document.createElement("button");
       button.type = "button";
-      button.className = `joint-card arm-card ${definition.motor === "RMD-X10" ? "x10" : "x8"}`;
+      button.className = [
+        "joint-card",
+        "arm-card",
+        definition.motor === "RMD-X10" ? "x10" : "x8",
+        definition.closedLoop ? "closed-loop" : "",
+      ].filter(Boolean).join(" ");
       button.dataset.armMotorId = definition.id;
       button.style.setProperty("--side-color", definition.side === "left" ? "var(--left)" : "var(--right)");
       button.innerHTML = `
@@ -210,7 +278,11 @@ function selectArmMotor(id) {
   robot.setArmSelection(id);
   $("selected-name").textContent = binding.label;
   $("selected-can").textContent = `${binding.motor} · AUX`;
-  $("selected-usd").textContent = `USD ${binding.usdJoint} · ${binding.sourceSemantic.toUpperCase()}`;
+  $("selected-usd").textContent = [
+    `USD ${binding.usdJoint}`,
+    binding.sourceSemantic.toUpperCase(),
+    binding.closedLoop ? "CLOSED LOOP" : null,
+  ].filter(Boolean).join(" · ");
   $("cad-joint-name").textContent = binding.label;
   $("position-target").min = "-120";
   $("position-target").max = "120";
@@ -258,16 +330,29 @@ function setupSimControls() {
     $("usd-resolution-output").textContent = `${percent}%`;
     localStorage.setItem("dropbear-usd-resolution", String(percent));
   });
-  $("sim-toggle").addEventListener("click", () => sim.setPlay(!sim.playMode));
+  $("sim-toggle").addEventListener("click", () => {
+    if (ui.policyMode) {
+      if (policyPlayer.playing) policyPlayer.pause();
+      else policyPlayer.play();
+      return;
+    }
+    sim.setPlay(!sim.playMode);
+  });
   $("sim-reset").addEventListener("click", () => {
+    policyPlayer.pause();
+    ui.policyMode = false;
     sim.reset();
+    $("scenario").value = "neutral";
+    robot.setVerticalConstraintEnabled(true);
+    robot.setExternalRootPose(null, null);
+    $("vertical-constraint").checked = true;
     robot.resetGroundConstraint();
     armMotorStates.forEach((state) => {
       state.angleDeg = 0;
       state.velocityDegS = 0;
       state.torqueNm = 0;
     });
-    ui.lastRobotSimTime = 0;
+    ui.lastRobotFrameAt = performance.now();
     ui.scopeHistory = [];
     ui.motorCategory = "legs";
     document.querySelectorAll("[data-motor-category]").forEach((entry) => {
@@ -279,16 +364,40 @@ function setupSimControls() {
   });
   $("sim-speed").addEventListener("change", (event) => { sim.speed = Number(event.target.value); });
   $("scenario").addEventListener("change", (event) => {
+    if (event.target.value === "rl-policy") {
+      ui.policyMode = true;
+      sim.scenario = "rl-policy";
+      sim.playMode = true;
+      if (policyPlayer.policy) {
+        policyPlayer.play();
+      } else {
+        robot.setExternalRootPose(null, null);
+        robot.setVerticalConstraintEnabled($("vertical-constraint").checked);
+      }
+      return;
+    }
+    policyPlayer.pause();
+    ui.policyMode = false;
+    robot.setExternalRootPose(null, null);
+    robot.setVerticalConstraintEnabled($("vertical-constraint").checked);
     sim.setScenario(event.target.value);
     if (event.target.value === "manual") $("impedance-toggle").checked = false;
   });
   $("run-demo").addEventListener("click", () => {
+    policyPlayer.pause();
+    ui.policyMode = false;
+    robot.setExternalRootPose(null, null);
+    robot.setVerticalConstraintEnabled($("vertical-constraint").checked);
     $("scenario").value = "walk";
     sim.setScenario("walk");
     switchView("sim");
     appendTerminal("[dashboard] full alternating-step demo started", "ok");
   });
   $("robot-fit").addEventListener("click", () => robot.fit());
+  $("vertical-constraint").addEventListener("change", (event) => {
+    robot.setVerticalConstraintEnabled(event.target.checked);
+    if (!event.target.checked && !policyPlayer.policy) robot.setExternalRootPose(null, null);
+  });
   $("position-target").addEventListener("input", (event) => {
     const value = Number(event.target.value);
     if (ui.axisCategory === "arm") {
@@ -420,6 +529,229 @@ function setupFirmware() {
   appendTerminal("Guarded pause active. Source firmware would set playMode=true during setup.", "warn");
 }
 
+async function requestJson(url, options = {}) {
+  const response = await fetch(url, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...(options.headers || {}),
+    },
+  });
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(payload.error || `HTTP ${response.status}`);
+  return payload;
+}
+
+function renderRLStatus(status) {
+  const running = ["running", "stopping"].includes(status.state);
+  $("rl-server-state").className = `load-status ${status.state === "error" ? "error" : running ? "loading" : "ok"}`;
+  $("rl-server-state").innerHTML = "<span></span>";
+  $("rl-server-state").append(document.createTextNode(
+    status.state === "idle" ? "TRAINER READY" : `TRAINER ${status.state.toUpperCase()}`,
+  ));
+  $("rl-start").disabled = running;
+  $("rl-stop").disabled = !running;
+  const policyEpochsComplete = status.progress && status.config
+    ? status.progress.update * status.config.epochs
+    : 0;
+  const policyEpochsTotal = status.config
+    ? status.config.updates * status.config.epochs
+    : 0;
+  $("rl-progress-title").textContent = status.progress
+    ? `Update ${status.progress.update} / ${status.progress.updates} · epoch ${policyEpochsComplete} / ${policyEpochsTotal}`
+    : status.state === "complete" ? "Experiment complete" : "No experiment running";
+  $("rl-experiment-id").textContent = status.experimentId?.slice(-8).toUpperCase() || "LOCAL";
+  const progress = status.progress
+    ? 100 * status.progress.update / Math.max(1, status.progress.updates)
+    : status.state === "complete" ? 100 : 0;
+  $("rl-progress-fill").style.width = `${progress}%`;
+  const metric = status.progress || {};
+  $("rl-reward").textContent = Number.isFinite(metric.reward) ? metric.reward.toFixed(3) : "—";
+  $("rl-upright").textContent = Number.isFinite(metric.upright_percent) ? `${metric.upright_percent.toFixed(1)}%` : "—";
+  $("rl-speed").textContent = Number.isFinite(metric.speed) ? `${metric.speed.toFixed(3)} m/s` : "—";
+  $("rl-falls").textContent = Number.isFinite(metric.fall_percent) ? `${metric.fall_percent.toFixed(1)}%` : "—";
+  $("rl-closure").textContent = Number.isFinite(metric.closure_max_m) ? `${(metric.closure_max_m * 1000).toFixed(3)} mm` : "—";
+  $("rl-torso-tilt").textContent = Number.isFinite(metric.torso_tilt_degrees) ? `${metric.torso_tilt_degrees.toFixed(2)}°` : "—";
+  $("rl-com-variation").textContent = Number.isFinite(metric.com_variation_m) ? `${(metric.com_variation_m * 1000).toFixed(2)} mm` : "—";
+  const overlay = $("training-live-overlay");
+  overlay.hidden = !ui.watchTraining || !status.experimentId;
+  $("training-live-update").textContent = metric.update
+    ? `UPDATE ${metric.update} / ${metric.updates} · EPOCH ${policyEpochsComplete} / ${policyEpochsTotal}`
+    : "WAITING FOR FIRST UPDATE";
+  $("training-live-reward").textContent = Number.isFinite(metric.reward) ? metric.reward.toFixed(3) : "—";
+  $("training-live-upright").textContent = Number.isFinite(metric.upright_percent) ? `${metric.upright_percent.toFixed(1)}%` : "—";
+  $("training-live-torso").textContent = Number.isFinite(metric.torso_tilt_degrees) ? `${metric.torso_tilt_degrees.toFixed(2)}°` : "—";
+  $("training-live-com").textContent = Number.isFinite(metric.com_variation_m) ? `${(metric.com_variation_m * 1000).toFixed(2)} mm` : "—";
+  $("training-live-speed").textContent = Number.isFinite(metric.speed) ? `${metric.speed.toFixed(3)} m/s` : "—";
+  $("training-live-falls").textContent = Number.isFinite(metric.fall_percent) ? `${metric.fall_percent.toFixed(1)}%` : "—";
+
+  if (status.policyUrl) {
+    ui.latestPolicyUrl = status.policyUrl;
+    $("rl-load-latest").disabled = status.state !== "complete";
+  }
+  const signature = JSON.stringify(status.events || []);
+  if (signature !== ui.rlStatusSignature) {
+    ui.rlStatusSignature = signature;
+    const log = $("rl-log");
+    log.innerHTML = "";
+    for (const event of (status.events || []).slice(-50)) {
+      const row = document.createElement("div");
+      const label = document.createElement("span");
+      const message = document.createTextNode(
+        event.event === "progress"
+          ? `update ${event.update}/${event.updates} · reward ${event.reward.toFixed(3)} · upright ${event.upright_percent.toFixed(1)}%`
+          : event.event === "preview"
+            ? `update ${event.update}/${event.updates} · score ${event.selectionScore?.toFixed(3) || "—"}${event.isBest ? " · new best" : ""}`
+          : event.event === "complete"
+            ? `policy exported · ${event.evaluation?.frameCount || 0} frames`
+            : event.message || event.event || "event",
+      );
+      label.textContent = String(event.event || "LOG").toUpperCase();
+      row.append(label, message);
+      log.append(row);
+    }
+    if (!log.childElementCount) {
+      const row = document.createElement("div");
+      const label = document.createElement("span");
+      label.textContent = "READY";
+      row.append(label, document.createTextNode("Configure a bounded local experiment or load the tracked reference policy."));
+      log.append(row);
+    }
+    log.scrollTop = log.scrollHeight;
+  }
+  refreshLivePreview(status);
+}
+
+async function refreshLivePreview(status) {
+  if (
+    !ui.watchTraining
+    || !$("rl-auto-replay").checked
+    || !status.livePolicyUrl
+    || !status.previewUpdate
+    || ui.previewLoading
+  ) return;
+  const key = `${status.experimentId}:${status.previewUpdate}`;
+  if (ui.previewLoadedKey === key) return;
+  ui.previewLoading = true;
+  try {
+    await policyPlayer.load(`${status.livePolicyUrl}?update=${status.previewUpdate}`);
+    ui.previewLoadedKey = key;
+    ui.policyMode = true;
+    policyPlayer.loop = true;
+    policyPlayer.play();
+    $("scenario").value = "rl-policy";
+    $("rl-policy-title").textContent = `Live policy · update ${status.previewUpdate} / ${status.progress?.updates || "?"}`;
+  } catch (error) {
+    appendTerminal(`[rl] live preview ${status.previewUpdate} unavailable: ${error.message}`, "warn");
+  } finally {
+    ui.previewLoading = false;
+  }
+}
+
+async function pollRLStatus() {
+  try {
+    renderRLStatus(await requestJson("/api/rl/status"));
+  } catch (error) {
+    $("rl-server-state").className = "load-status error";
+    $("rl-server-state").innerHTML = "<span></span>";
+    $("rl-server-state").append(document.createTextNode(`TRAINER OFFLINE · ${error.message}`));
+  }
+}
+
+async function loadPolicy(url, label, { play = false, loop = false } = {}) {
+  try {
+    const policy = await policyPlayer.load(url);
+    ui.policyMode = true;
+    policyPlayer.loop = loop;
+    $("scenario").value = "rl-policy";
+    $("rl-policy-title").textContent = label;
+    $("rl-policy-play").disabled = false;
+    if (play) policyPlayer.play();
+    appendTerminal(`[rl] loaded ${policy.frames.length} policy frames from ${url}`, "ok");
+  } catch (error) {
+    appendTerminal(`[rl] policy load failed: ${error.message}`, "err");
+    throw error;
+  }
+}
+
+function setupRLLab() {
+  $("rl-form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const config = {
+      updates: Number($("rl-updates").value),
+      steps: Number($("rl-steps").value),
+      envs: Number($("rl-envs").value),
+      epochs: Number($("rl-epochs").value),
+      batchSize: Number($("rl-batch-size").value),
+      targetSpeed: Number($("rl-target-speed").value),
+      episodeSeconds: Number($("rl-episode-seconds").value),
+      seed: Number($("rl-seed").value),
+      device: $("rl-device").value,
+      verticalConstraint: $("rl-vertical-constraint").checked,
+      armSwing: $("rl-arm-swing").checked,
+    };
+    try {
+      const status = await requestJson("/api/rl/train", {
+        method: "POST",
+        body: JSON.stringify(config),
+      });
+      ui.watchTraining = true;
+      ui.previewLoadedKey = null;
+      $("rl-watch-live").textContent = "STOP LIVE VIEW";
+      renderRLStatus(status);
+      switchView("sim");
+      appendTerminal(`[rl] experiment started · ${config.updates} updates × ${config.epochs} epochs`, "ok");
+    } catch (error) {
+      appendTerminal(`[rl] start rejected: ${error.message}`, "err");
+    }
+  });
+  $("rl-stop").addEventListener("click", async () => {
+    try {
+      renderRLStatus(await requestJson("/api/rl/stop", {
+        method: "POST",
+        body: "{}",
+      }));
+    } catch (error) {
+      appendTerminal(`[rl] stop failed: ${error.message}`, "err");
+    }
+  });
+  $("rl-load-reference").addEventListener("click", () => {
+    loadPolicy("/assets/rl/dropbear-walk-reference.json", "Tracked reference walking policy");
+  });
+  $("rl-load-authored").addEventListener("click", () => {
+    loadPolicy("/assets/rl/dropbear-authored-reference.json", "Authored residual-zero walking baseline");
+  });
+  $("rl-load-latest").addEventListener("click", () => {
+    if (ui.latestPolicyUrl) loadPolicy(ui.latestPolicyUrl, "Latest local walking policy");
+  });
+  $("rl-watch-live").addEventListener("click", () => {
+    ui.watchTraining = !ui.watchTraining;
+    ui.previewLoadedKey = null;
+    $("rl-watch-live").textContent = ui.watchTraining ? "STOP LIVE VIEW" : "WATCH TRAINING LIVE";
+    if (ui.watchTraining) {
+      switchView("sim");
+      pollRLStatus();
+    } else {
+      $("training-live-overlay").hidden = true;
+      policyPlayer.loop = false;
+    }
+  });
+  $("rl-policy-play").addEventListener("click", () => {
+    ui.policyMode = true;
+    policyPlayer.loop = false;
+    $("scenario").value = "rl-policy";
+    if (policyPlayer.playing) policyPlayer.pause();
+    else policyPlayer.play();
+  });
+  $("rl-open-sim").addEventListener("click", () => switchView("sim"));
+  $("rl-timeline").addEventListener("input", (event) => {
+    ui.policyMode = true;
+    policyPlayer.seek(Number(event.target.value));
+  });
+  pollRLStatus();
+  window.setInterval(pollRLStatus, 800);
+}
+
 function drawScope() {
   const canvas = $("scope-canvas");
   const rect = canvas.getBoundingClientRect();
@@ -462,13 +794,14 @@ function renderLive() {
   const target = selectedJoint();
   const selectedArm = armMotorStates.find((entry) => entry.id === ui.selectedArmMotorId);
   const runningButton = $("sim-toggle");
-  runningButton.classList.toggle("stop", sim.playMode);
-  runningButton.setAttribute("aria-pressed", String(sim.playMode));
-  runningButton.innerHTML = sim.playMode ? '<span class="run-icon">■</span> STOP' : '<span class="run-icon">▶</span> PLAY';
-  $("system-state").className = `system-state ${sim.playMode ? "running" : "paused"}`;
-  $("system-state").innerHTML = `<span></span>${sim.playMode ? "CONTROL ACTIVE" : "GUARDED PAUSE"}`;
+  const effectivePlaying = ui.policyMode ? policyPlayer.playing : sim.playMode;
+  runningButton.classList.toggle("stop", effectivePlaying);
+  runningButton.setAttribute("aria-pressed", String(effectivePlaying));
+  runningButton.innerHTML = effectivePlaying ? '<span class="run-icon">■</span> STOP' : '<span class="run-icon">▶</span> PLAY';
+  $("system-state").className = `system-state ${effectivePlaying ? "running" : "paused"}`;
+  $("system-state").innerHTML = `<span></span>${effectivePlaying ? "CONTROL ACTIVE" : "GUARDED PAUSE"}`;
   $("sim-time").textContent = `${sim.time.toFixed(2)} s`;
-  $("control-state").textContent = sim.playMode ? sim.scenario.toUpperCase() : "STOP";
+  $("control-state").textContent = effectivePlaying ? sim.scenario.toUpperCase() : "STOP";
   $("can-load").textContent = `${sim.canUtilization.toFixed(1)}%`;
   $("sel-angle").textContent = ui.axisCategory === "arm"
     ? `${(selectedArm?.angleDeg || 0).toFixed(1)}°`
@@ -499,8 +832,9 @@ function renderLive() {
     dot.className = `joint-dot ${joint.temperature > 80 || sim.faults.canDrop ? "warn" : sim.playMode ? "live" : ""}`;
   }
 
-  const poseDt = Math.max(0, sim.time - ui.lastRobotSimTime);
-  ui.lastRobotSimTime = sim.time;
+  const poseNow = performance.now();
+  const poseDt = Math.max(0, Math.min(0.08, (poseNow - ui.lastRobotFrameAt) / 1000));
+  ui.lastRobotFrameAt = poseNow;
   robot.setJointStates(
     sim.joints,
     ui.axisCategory === "leg" ? ui.selectedJointId : null,
@@ -512,7 +846,7 @@ function renderLive() {
     const leg = robot.legTelemetry[side];
     const gait = sim.gait[side];
     const footHeight = $(`${side}-foot-height`);
-    $(`${side}-gait-phase`).textContent = sim.playMode && sim.scenario === "walk"
+    $(`${side}-gait-phase`).textContent = effectivePlaying && ["walk", "rl-policy"].includes(sim.scenario)
       ? gait.mode.toUpperCase()
       : "HOLD";
     footHeight.textContent = `${signed(leg.footHeightMm, 0)} mm`;
@@ -529,7 +863,8 @@ function renderLive() {
   }
   const closureText = $("closure-status-text");
   if (closureText && robot.ready) {
-    closureText.textContent = `Z GUIDE ${signed(robot.groundContact.offsetZ * 1000, 0)} mm · SOLE CONTACT · X8 CRANK → TIE ROD → ANKLE/FOOT PIVOT · CLOSURE ${robot.closureResidualMm.toFixed(3)} mm`;
+    const guide = robot.verticalConstraintEnabled ? "Z GUIDE" : "FREE ROOT";
+    closureText.textContent = `${guide} ${signed(robot.groundContact.offsetZ * 1000, 0)} mm · LEG ${robot.legClosureResidualMm.toFixed(3)} mm · ARM ${robot.armClosureResidualMm.toFixed(3)} mm · MAX ${robot.closureResidualMm.toFixed(3)} mm`;
   }
   $("root-z-offset").textContent = `${signed(robot.groundContact.offsetZ * 1000, 0)} mm`;
   drawScope();
@@ -553,7 +888,8 @@ function renderLive() {
 function frame(now) {
   const dt = Math.min(0.05, (now - ui.lastFrame) / 1000);
   ui.lastFrame = now;
-  sim.step(dt);
+  if (ui.policyMode) policyPlayer.update(dt);
+  else sim.step(dt);
   if (now - ui.scopeSampleAt > 38) {
     const target = selectedJoint();
     ui.scopeHistory.push({ t: sim.time, angle: target.angle, desired: target.desiredPosition, torque: target.torque });
@@ -574,6 +910,7 @@ setupSimControls();
 setupCadControls();
 setupBoardControls();
 setupFirmware();
+setupRLLab();
 selectJoint(0x141);
 renderLive();
 requestAnimationFrame(frame);
@@ -585,6 +922,7 @@ window.dropbearTwin = {
   cad,
   armMotorStates,
   armMotorBindings: DROPBEAR_ARM_MOTOR_BINDINGS,
+  policyPlayer,
   source: DROPBEAR_SOURCE,
   usdSource: DROPBEAR_USD_SOURCE,
   cadEvidence: CAD_EVIDENCE,

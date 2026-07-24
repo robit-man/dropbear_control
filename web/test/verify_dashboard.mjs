@@ -35,7 +35,7 @@ function check(name, condition) {
 
 const index = await request(`${base}/`);
 check("index served", index.status === 200);
-check("five engineering views present", (index.body.match(/data-view="/g) || []).length === 5);
+check("six engineering views present", (index.body.match(/data-view="/g) || []).length === 6);
 check("full Dropbear USD simulation present", index.body.includes("Dropbear closed-loop articulation"));
 check("USD robot viewport replaces schematic", index.body.includes('id="robot-canvas"') && !index.body.includes('id="robot-svg"'));
 check("STEP-derived CAD viewport present", index.body.includes('id="cad-canvas"'));
@@ -57,6 +57,14 @@ check(
   "separate leg and arm motor categories present",
   index.body.includes('data-motor-category="legs"')
     && index.body.includes('data-motor-category="arms"'),
+);
+check(
+  "local RL lab exposes free-root and epoch controls",
+  index.body.includes('data-view="rl"')
+    && index.body.includes('id="rl-epochs"')
+    && index.body.includes('id="rl-vertical-constraint"')
+    && index.body.includes('id="rl-load-authored"')
+    && index.body.includes('id="rl-policy-play"'),
 );
 
 const dropbear = await request(`${base}/js/dropbear.js`);
@@ -80,6 +88,34 @@ check("dashboard exposes inspectable twin", app.body.includes("window.dropbearTw
 check("dashboard exposes inspectable arm motor state", app.body.includes("armMotorBindings: DROPBEAR_ARM_MOTOR_BINDINGS"));
 check("USD resolution persists and updates renderer", app.body.includes("dropbear-usd-resolution") && app.body.includes("setResolutionScale"));
 check("geometry contact feeds the load-cell simulator", app.body.includes("sim.setFootContactState(robot.groundContact)"));
+check(
+  "browser policy player maps free-root state onto the USD",
+  app.body.includes("new RLPolicyPlayer")
+    && app.body.includes("setExternalRootPose")
+    && app.body.includes('sim.scenario = "rl-policy"')
+    && app.body.includes("policyEpochsComplete"),
+);
+
+const rlStatus = await request(`${base}/api/rl/status`);
+let rlState;
+try {
+  rlState = JSON.parse(rlStatus.body);
+} catch {
+  rlState = null;
+}
+check(
+  "local RL training status API served",
+  rlStatus.status === 200
+    && Boolean(rlState)
+    && Array.isArray(rlState.events),
+);
+const rlPolicy = await request(`${base}/js/rl_policy.js`);
+check(
+  "policy interpolation runtime served",
+  rlPolicy.status === 200
+    && rlPolicy.body.includes("dropbear-walk-policy-v2")
+    && rlPolicy.body.includes("interpolateFrame"),
+);
 
 const usdBindings = await request(`${base}/js/dropbear_usd.js`);
 const armBindingSource = usdBindings.body.split("export const DROPBEAR_ARM_MOTOR_BINDINGS")[1]?.split("export function dropbearUsdBinding")[0] || "";
@@ -98,10 +134,13 @@ check(
 
 const robotModule = await request(`${base}/js/robot_3d.js`);
 check(
-  "robot viewer builds arm shafts and vertical ground contact",
+  "robot viewer builds arm shafts, elbow closures, and switchable root modes",
   robotModule.body.includes("_buildArmMotorShafts")
     && robotModule.body.includes("VerticalGroundConstraint")
-    && robotModule.body.includes("_rawFootPatches"),
+    && robotModule.body.includes("_rawFootPatches")
+    && robotModule.body.includes("setVerticalConstraintEnabled")
+    && robotModule.body.includes('"FREE_ROOT_POLICY"')
+    && robotModule.body.includes('"FREE_ROOT_GRAVITY"'),
 );
 
 const groundConstraint = await request(`${base}/js/vertical_ground_constraint.js`);
@@ -144,6 +183,16 @@ check(
     && robotManifest?.armMotorBindings?.filter(
       (binding) => binding.motor === "RMD-X10" && binding.mount === "torso",
     ).length === 2,
+);
+check(
+  "both elbow motors drive retained three-constraint closed loops",
+  robotManifest?.browserKinematics?.armLinkages?.length === 2
+    && robotManifest.browserKinematics.armLinkages.every(
+      (linkage) => linkage.elbowMotor?.endsWith("Revolute41")
+        && linkage.passiveJoints?.length === 5
+        && linkage.closureConstraints?.length === 3,
+    )
+    && robotManifest.armMotorBindings.filter((binding) => binding.closedLoop).length === 2,
 );
 check(
   "four calf CAN nodes bind to X8 driver axes",
