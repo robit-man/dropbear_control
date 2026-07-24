@@ -125,8 +125,8 @@ set of phase-shifted sine waves. Each leg transitions through:
 
 The current target envelope never commands below the `180°` knee lock,
 reaches that lock at heel strike, and limits peak gait knee demand to `232°`.
-Hip pitch extends to approximately `22°` rearward during push-off, then
-continues forward to `37°` as the knee reaches its heel-contact target. The leg
+Hip pitch extends to approximately `25°` rearward during push-off, then
+continues forward to `34°` as the knee reaches its heel-contact target. The leg
 begins pulling backward only after contact becomes dominant. The viewport
 correlates outer/inner X8 positions with solved ankle angle and foot-pivot
 height, while the lower strip reports the worst retained-anchor residual.

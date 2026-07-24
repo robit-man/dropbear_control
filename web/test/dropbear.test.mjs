@@ -42,19 +42,19 @@ assert.equal(ALTERNATING_STEP_PERIOD_S, 2.8);
 assert.equal(Math.max(...ALTERNATING_STEP_KEYFRAMES.map((frame) => frame.knee)), 52);
 const heelStrike = sampleAlternatingStep(0, "left");
 assert.equal(heelStrike.targets.knee, 180);
-assert.equal(heelStrike.targets.hip_pitch, 143);
+assert.equal(heelStrike.targets.hip_pitch, 146);
 assert.equal(heelStrike.contact, 1);
 const heelPrepare = sampleAlternatingStep(ALTERNATING_STEP_PERIOD_S * 0.94, "left");
 assert.equal(heelPrepare.mode, "heel prepare");
 assert.equal(heelPrepare.targets.knee, 180);
-assert.equal(heelPrepare.targets.hip_pitch, 143);
+assert.equal(heelPrepare.targets.hip_pitch, 146);
 assert.ok(heelPrepare.contact < heelStrike.contact);
 const loading = sampleAlternatingStep(ALTERNATING_STEP_PERIOD_S * 0.12, "left");
 assert.equal(loading.mode, "loading");
 assert.ok(loading.targets.hip_pitch > heelStrike.targets.hip_pitch);
 const pushOff = sampleAlternatingStep(ALTERNATING_STEP_PERIOD_S * 0.54, "left");
 assert.equal(pushOff.mode, "push off");
-assert.equal(pushOff.targets.hip_pitch, 202);
+assert.equal(pushOff.targets.hip_pitch, 205);
 const highKnee = sampleAlternatingStep(ALTERNATING_STEP_PERIOD_S * 0.68, "left");
 assert.equal(highKnee.mode, "high knee");
 assert.equal(highKnee.targets.knee, 232);
@@ -62,7 +62,7 @@ assert.equal(highKnee.targets.hip_pitch, 151);
 assert.ok(highKnee.targets.outer_calf !== highKnee.targets.inner_calf);
 assert.equal(
   Math.min(...ALTERNATING_STEP_KEYFRAMES.map((frame) => frame.hipPitch)),
-  -37,
+  -34,
 );
 const opposingLeg = sampleAlternatingStep(ALTERNATING_STEP_PERIOD_S * 0.68, "right");
 assert.equal(highKnee.swing, true);
