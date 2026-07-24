@@ -53,7 +53,13 @@ check("Dropbear simulator module served", dropbear.status === 200);
 check("simulator declares exact CAN range", dropbear.body.includes("0x141") && dropbear.body.includes("0x14C"));
 check("simulator declares guarded pause", dropbear.body.includes("guarded PAUSE"));
 check("simulator implements firmware serial parser", dropbear.body.includes("command(text"));
-check("alternating gait has staged high-knee profile", dropbear.body.includes("high knee") && dropbear.body.includes("calfDiff"));
+check(
+  "alternating gait has staged contact and swing profile",
+  dropbear.body.includes("high knee")
+    && dropbear.body.includes("heel prepare")
+    && dropbear.body.includes("push off")
+    && dropbear.body.includes("calfDiff"),
+);
 
 const app = await request(`${base}/js/app.js`);
 check("dashboard instantiates CAD viewer", app.body.includes("new CadViewer"));

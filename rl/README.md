@@ -19,6 +19,15 @@ The knee motor datum is also mechanically bounded: browser `180°` maps to
 policy/ROS `0 rad` (locked), and `360°` maps to `π rad`. Negative knee
 coordinates are clamped before the closed-chain plant is evaluated.
 
+## Current status
+
+The policy network, rollout buffer, generalized advantage estimation, clipped
+PPO update, checkpoint path, four-bar projection, and knee-bound regressions
+are implemented and unit-tested. This package does not currently roll out
+against the full Dropbear USD, Isaac/PhysX contacts, the browser simulator, or
+the ROS 2 trajectory controller. It should be treated as a reproducible
+algorithm and constraint smoke test, not a trained walking policy.
+
 ## Run a smoke-training job
 
 ```bash

@@ -16,6 +16,8 @@ mock_components/GenericSystem (SIL only)
                 |
 local WebSocket bridge (ws://127.0.0.1:9091)
                 |
+browser adapter integration boundary
+                |
 browser Dropbear USD / exact CAN-to-USD map
 ```
 
@@ -60,8 +62,12 @@ source /tmp/dropbear_ros2_install/setup.bash
 ros2 launch dropbear_trajectory_bringup dropbear_trajectory.launch.py
 ```
 
-Keep the dashboard open at <http://localhost:8000>. It connects to
-`ws://127.0.0.1:9091` and mirrors ROS state into the actual USD bodies.
+The bridge listens on `ws://127.0.0.1:9091` and exposes the ordered ROS state
+and trajectory request protocol needed by the USD dashboard. The current
+tracked browser dashboard still runs its internal low-level simulator and
+does not automatically open this WebSocket. Wiring that browser adapter is a
+remaining integration step; this package completes and tests the ROS-side SIL
+boundary.
 
 Send a monitored action goal:
 

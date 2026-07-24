@@ -83,8 +83,8 @@ export const TASKS = Object.freeze([
 const DEFAULT_IMPEDANCE = Object.freeze({
   outer_calf: { k: 0.038, d: 0.018 },
   inner_calf: { k: 0.038, d: 0.018 },
-  knee: { k: 0.050, d: 0.024 },
-  hip_pitch: { k: 0.060, d: 0.030 },
+  knee: { k: 0.065, d: 0.030 },
+  hip_pitch: { k: 0.075, d: 0.035 },
   hip_roll: { k: 0.045, d: 0.022 },
   hip_yaw: { k: 0, d: 0 },
 });
@@ -100,15 +100,19 @@ export const ALTERNATING_STEP_PERIOD_S = 2.8;
 // Values are actuator offsets from the calibrated 180° datum. Calf common
 // motion drives the paired rods together; calf differential trims foot pitch.
 export const ALTERNATING_STEP_KEYFRAMES = Object.freeze([
-  Object.freeze({ phase: 0.00, mode: "heel strike", hipPitch: -16, knee: 10, calfCommon: 2, calfDiff: 0.4, hipRoll: 3.0, contact: 1.00 }),
-  Object.freeze({ phase: 0.12, mode: "loading", hipPitch: -8, knee: 5, calfCommon: 0, calfDiff: 0.2, hipRoll: 4.0, contact: 1.00 }),
-  Object.freeze({ phase: 0.32, mode: "mid stance", hipPitch: 4, knee: 3, calfCommon: 4, calfDiff: 0.0, hipRoll: 4.5, contact: 1.00 }),
-  Object.freeze({ phase: 0.48, mode: "toe off", hipPitch: 16, knee: 10, calfCommon: -15, calfDiff: 1.2, hipRoll: 3.0, contact: 0.72 }),
-  Object.freeze({ phase: 0.55, mode: "early swing", hipPitch: 7, knee: 28, calfCommon: -8, calfDiff: -0.8, hipRoll: -2.0, contact: 0.00 }),
+  Object.freeze({ phase: 0.00, mode: "heel strike", hipPitch: -37, knee: 0, calfCommon: 2, calfDiff: 0.4, hipRoll: 3.0, contact: 1.00 }),
+  Object.freeze({ phase: 0.12, mode: "loading", hipPitch: -18, knee: 1, calfCommon: 0, calfDiff: 0.2, hipRoll: 4.0, contact: 1.00 }),
+  Object.freeze({ phase: 0.32, mode: "mid stance", hipPitch: 4, knee: 2, calfCommon: 4, calfDiff: 0.0, hipRoll: 4.5, contact: 1.00 }),
+  Object.freeze({ phase: 0.48, mode: "toe off", hipPitch: 20, knee: 9, calfCommon: -15, calfDiff: 1.2, hipRoll: 3.0, contact: 0.78 }),
+  Object.freeze({ phase: 0.54, mode: "push off", hipPitch: 22, knee: 12, calfCommon: -16, calfDiff: 1.3, hipRoll: 1.5, contact: 0.20 }),
+  Object.freeze({ phase: 0.60, mode: "early swing", hipPitch: 8, knee: 26, calfCommon: -8, calfDiff: -0.8, hipRoll: -2.0, contact: 0.00 }),
   Object.freeze({ phase: 0.68, mode: "high knee", hipPitch: -29, knee: 52, calfCommon: 10, calfDiff: -1.6, hipRoll: -3.5, contact: 0.00 }),
-  Object.freeze({ phase: 0.82, mode: "swing advance", hipPitch: -33, knee: 36, calfCommon: 14, calfDiff: -1.5, hipRoll: -2.5, contact: 0.00 }),
-  Object.freeze({ phase: 0.94, mode: "pre-contact", hipPitch: -21, knee: 14, calfCommon: 3, calfDiff: 0.3, hipRoll: 1.5, contact: 0.08 }),
-  Object.freeze({ phase: 1.00, mode: "heel strike", hipPitch: -16, knee: 10, calfCommon: 2, calfDiff: 0.4, hipRoll: 3.0, contact: 1.00 }),
+  Object.freeze({ phase: 0.74, mode: "swing advance", hipPitch: -33, knee: 28, calfCommon: 14, calfDiff: -1.5, hipRoll: -2.5, contact: 0.00 }),
+  Object.freeze({ phase: 0.80, mode: "knee extension", hipPitch: -35, knee: 7, calfCommon: 9, calfDiff: -0.5, hipRoll: -1.0, contact: 0.00 }),
+  Object.freeze({ phase: 0.86, mode: "pre-contact", hipPitch: -36, knee: 0, calfCommon: 5, calfDiff: 0.1, hipRoll: 0.5, contact: 0.00 }),
+  Object.freeze({ phase: 0.94, mode: "heel prepare", hipPitch: -37, knee: 0, calfCommon: 2, calfDiff: 0.4, hipRoll: 2.0, contact: 0.15 }),
+  Object.freeze({ phase: 0.98, mode: "heel contact", hipPitch: -37, knee: 0, calfCommon: 2, calfDiff: 0.4, hipRoll: 2.6, contact: 0.55 }),
+  Object.freeze({ phase: 1.00, mode: "heel strike", hipPitch: -37, knee: 0, calfCommon: 2, calfDiff: 0.4, hipRoll: 3.0, contact: 1.00 }),
 ]);
 
 function interpolateStepKeyframes(phase) {
@@ -469,10 +473,10 @@ export class DropbearSim {
       // Knee and calf channels retain enough bandwidth to follow the staged
       // swing trajectory instead of visually averaging it into tiny steps.
       const response = {
-        knee: 120,
+        knee: 150,
         outer_calf: 92,
         inner_calf: 92,
-        hip_pitch: 96,
+        hip_pitch: 120,
         hip_roll: 82,
         hip_yaw: 72,
       }[target.key] || 82;

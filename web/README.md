@@ -20,10 +20,12 @@ plant. Do not use it as the sole safety basis for powered hardware.
   non-calf motors and four X8 calf cranks drive browser forward kinematics;
   the retained passive rods and ankle/foot pivots are projected against the
   true USD closure anchors. Isaac/PhysX remains authoritative for dynamics.
-  The alternating-step demo uses explicit stance, toe-off, high-knee swing,
-  advance, and heel-placement phases rather than phase-shifted sine waves.
-  Live per-leg cards correlate foot-pivot clearance and solved ankle angle
-  with the outer/inner X8 positions.
+  The alternating-step demo uses explicit loading, stance, extended rearward
+  push-off, moderated knee lift, continued forward advance during knee
+  extension, peak forward hip pitch at near-lock heel placement, and a loaded
+  backward stance pull rather than phase-shifted sine waves. Live per-leg
+  cards correlate foot-pivot clearance and solved ankle angle with the
+  outer/inner X8 positions.
 - **Actuator CAD** — interactive housing and output solids derived from the
   cached STEP candidates, with technical edges, visibility controls,
   articulation, and exploded output. Full-resolution STEP files stay
@@ -76,7 +78,8 @@ python3 web/serve.py 8000
 
 Open <http://localhost:8000>. The small server also exposes local Three.js
 modules, the exact generated CAD candidates, and the optimized browser caches
-without a frontend build step.
+without a frontend build step. The `USD RES` slider changes the actual renderer
+pixel density from 50–200% and persists the local selection.
 
 ## Verify
 

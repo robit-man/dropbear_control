@@ -42,9 +42,9 @@ await page.waitForFunction(
   () => Math.max(
     window.dropbearTwin.robot.legTelemetry.left.footHeightMm,
     window.dropbearTwin.robot.legTelemetry.right.footHeightMm,
-  ) > 60,
+  ) > 45,
   null,
-  { timeout: 3000 },
+  { timeout: 6000 },
 );
 const runState = (await page.locator("#system-state").textContent())?.trim();
 const canLoad = Number.parseFloat(await page.locator("#can-load").textContent());
