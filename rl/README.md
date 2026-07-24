@@ -16,6 +16,117 @@ collision-pair filter is available. The original `teaching-plant-v2` remains
 available as a fast fallback. Neither replaces final Isaac/PhysX, HIL, or
 hardware validation.
 
+## CUDA compatibility controller
+
+The `rl.sonic_*` modules are a CUDA-first compatibility PoC for validating the
+Dropbear controller boundary. Install the locked x86_64 runtime into the local
+environment, which must already expose a CUDA-enabled PyTorch build:
+
+```bash
+./tools/setup_gr00t_runtime.sh
+```
+
+On an A100 host, run the fail-fast training, export, runtime, ONNX CUDA, and
+TensorRT numerical smoke test with:
+
+```bash
+DROPBEAR_CUDA_DEVICES=0 \
+DROPBEAR_VERIFY_SESSION=a100-verify \
+  ./tools/verify_gr00t_cuda.sh
+```
+
+The local model ABI is two inputs—`observation[N,90]` and
+`motion_token[N,64]`—and one `motor_residual[N,22]` output in canonical
+Dropbear motor order. A supplied reference is rejected unless its timeline is
+exactly 50 Hz. Convert and validate dashboard motion before using
+`--reference-path`:
+
+```bash
+python3 -m integrations.gr00t_wbc.motion_reference convert \
+  --input web/assets/rl/dropbear-walk-reference.json \
+  --output /tmp/dropbear-sonic-reference.json
+```
+
+The output is a normalized residual, not an absolute angle:
+
+```text
+target_rad[i] =
+  authored_reference_rad[i]
+  + clamp(motor_residual[i], -1, 1)
+    * LOCAL_POLICY_ACTION_SCALE[i]
+    * LOCAL_POLICY_RESIDUAL_GAIN
+```
+
+Zero therefore reproduces the time-varying authored reference. The final left
+and right knee targets (indices 4 and 7) are clamped to `[0, π]` radians.
+`rl.sonic_action.residual_to_reference` implements this exact
+`dropbear-local-reference-residual-v1` contract; the per-axis `scale_rad`
+values and joint order are serialized in every checkpoint and session
+manifest. A raw residual must never be sent to a ROS position interface as
+radians.
+
+For a full A100 session followed by fail-closed deployment verification:
+
+```bash
+.gr00t-venv/bin/python -m rl.sonic_train \
+  --device cuda --devices 0 \
+  --amp --amp-dtype bfloat16 \
+  --session-id a100-session \
+  --reference-path /tmp/dropbear-sonic-reference.json
+
+.gr00t-venv/bin/python -m rl.sonic_deploy \
+  --checkpoint artifacts/rl/sonic/a100-session/sonic_policy.pt \
+  --device cuda --devices 0 \
+  --amp --amp-dtype bfloat16 \
+  --require-tensorrt --tensorrt-fp16
+```
+
+Deployment exports a dynamic-batch ONNX graph, compares Torch with ONNX
+Runtime using `CUDAExecutionProvider`, exercises runtime clamps and the stale
+watchdog, builds a TensorRT 10.13 engine, and numerically compares TensorRT
+with Torch. Any required-provider, build, execution, finite-value, tolerance,
+or contract failure stops admission.
+
+Pass multiple device indices to train through single-process
+`torch.nn.DataParallel`; the first device is primary and is used for export
+and engine verification:
+
+```bash
+.gr00t-venv/bin/python -m rl.sonic_train \
+  --device cuda --devices 0,1,2 \
+  --amp --amp-dtype bfloat16 \
+  --session-id a100-multigpu
+```
+
+Each directory under `artifacts/rl/sonic/<session>/` contains
+`sonic_policy.pt` and `session.json`. Verified deployment adds
+`sonic_policy.onnx`, `sonic_policy.onnx.json`, `sonic_policy.engine`, and
+`deployment-report.json`; the smoke path additionally writes
+`smoke-report.json`. The reports record hashes, device selection, ABI,
+reference metadata, numerical errors, and tolerances.
+
+When training is launched with `--deploy`, its manifest remains
+`deployment_pending` until ONNX CUDA and the requested TensorRT gate finish.
+A failed or interrupted deployment is never indexed as complete. Runtime
+admission requires exact physical action-contract equality and matching
+checkpoint/session/sidecar hashes; it also rejects nonfinite, stale, replayed,
+or excessively future-dated input frames.
+
+The repository's checked A100 record is
+`artifacts/rl/sonic-smoke/cuda-verified-20260724-r3/smoke-report.json`:
+2,048 samples, 100% upright, 0% falls, `5.22e-8 m` maximum closure residual,
+`1.14e-8` ONNX CUDA error, and `3.39e-8` TensorRT 10.13.3.9 FP16 error.
+
+This PoC is deliberately not NVIDIA SONIC: it is incompatible with NVIDIA
+GR00T-WholeBodyControl's native 784-value decoder ABI and released G1 weights.
+Its 64-value tokens are deterministic reference-state tokens, not
+natural-language embeddings, and it provides neither prompt inference nor a
+persistent TensorRT motion service. The generated engine is a verified
+artifact, not a continuously scheduled ROS or hardware deployment. Native
+prompt-to-motion still requires the pinned upstream overlay, Dropbear
+prompt-labelled data, Isaac Lab/PhysX training, a learned prompt/token
+adapter, a persistent inference service, and separate SIL/HIL admission.
+
 ## Modelled state
 
 - 22 motor positions, velocities, and actions;
@@ -103,7 +214,8 @@ Open <http://localhost:8000>, select **RL Lab**, configure updates, rollout
 steps, parallel environments, epochs, and the expandable reward profile, then
 start training. The same tuning controls are available in the Robot Sim
 training drawer. Training accepts up to 10,000 updates; the process-control
-endpoints accept mutations only from loopback.
+endpoints accept mutations only from loopback and require a same-origin,
+token-authenticated JSON request. The browser handles that token automatically.
 
 Every PPO update atomically exports a deterministic live policy. With
 **AUTO-REPLAY EACH UPDATE** enabled, **WATCH TRAINING LIVE** replays the newest

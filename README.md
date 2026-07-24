@@ -12,17 +12,19 @@ passthrough, and constrained walking-RL tooling for the Dropbear humanoid.
 
 ## Overview
 
-`dropbear_control` joins four previously separate concerns into one auditable
+`dropbear_control` joins five previously separate concerns into one auditable
 workspace:
 
 - the observed two-ESP32 Dropbear low-level-control behavior and 12-node CAN
   map;
 - the actual Dropbear USD structure, adapted into a browser-renderable cache
   while retaining its rigid bodies, physical joints, and loop closures;
-- a ROS 2 Jazzy `joint_trajectory_controller` software-in-the-loop path; and
+- a ROS 2 Jazzy `joint_trajectory_controller` software-in-the-loop path;
 - a 22-motor PyTorch PPO lab with a source-derived MuJoCo rigid-body backend,
   free-root balance, contact forces, center-of-mass, arm-swing, and retained
-  leg/elbow loop-closure state.
+  leg/elbow loop-closure state; and
+- a pinned GR00T-WBC Dropbear embodiment overlay plus a separately labelled
+  CUDA compatibility controller for training/export/deployment plumbing.
 
 The browser dashboard is the primary interactive surface. It renders the
 Dropbear USD, drives the exact CAN-to-USD joint bindings, projects passive calf
@@ -50,6 +52,10 @@ progress.
 | Controller lab | Dimensional ESP32 DevKit reference with 19 source/inferred signal routes | Board-level visualization, not circuit simulation |
 | Firmware console | Source-shaped serial grammar, task cadence, CAN traffic, sensor stream, and fault injection | Clean-room behavioral twin, not instruction-set emulation |
 | ROS 2 | Jazzy bringup, `joint_trajectory_controller`, mock hardware, action/topic demo, validation, and local WebSocket bridge | ROS side is SIL; the dashboard does not yet auto-switch to WebSocket state |
+| GR00T-WBC embodiment | Pinned upstream revision; canonical 22-action/784-observation ABI; order conversion; exact source-hash checks; 50 Hz reference conversion; reduced closure validation; upstream action decoder | Overlay only: no NVIDIA code, weights, Isaac run, or Dropbear SONIC checkpoint is vendored or claimed |
+| CUDA compatibility controller | Local 90-observation + 64-token → 22-residual PyTorch controller; CUDA-only training by default; BF16/FP16 AMP; multi-A100; ONNX Runtime CUDA; guarded Torch/ONNX inference; TensorRT 10.13 engine build/numeric verification; persistent dashboard sessions | This is not NVIDIA SONIC, is not prompt-conditioned, and emits a residual around a required authored reference rather than a standalone trajectory |
+| ROS 2 WBC guard | Exact 22-axis JSON contracts, 50 Hz watchdog, guarded activation, stand blending, knee envelope, hard/slew limits, and latched E-stop, always labelled `sil_only` | Separate from the existing 12-leg-axis JTC; no decoder→JTC or hardware transport is claimed |
+| Prompt planner | Inspectable bounded language router and browser preset preview with a 64-D development token | Keyword planning only; its token schema is deliberately not admitted to the state-token-trained CUDA checkpoint |
 | Walking RL | Local 22-action/90-observation PPO experiments launched from Robot Sim or RL Lab; source-derived MuJoCo or teaching-plant backend; 15 adjustable reward terms; tuned gentle-forward and circle-walk profiles; persistent sessions; checkpoint warm-start; update-by-update USD replay; free-root gravity/contact; 27 retained loop constraints; and a tracked 1,000-epoch reference policy | MuJoCo uses exact authored mass/inertia/joint data with inertia-derived collision proxies because the source USD collision groups do not expose finite external envelopes; Isaac/PhysX and hardware validation remain required |
 | Physical hardware path | Existing host, firmware, evidence, and fail-closed admission scaffolding | Deliberately disabled pending reviewed hardware evidence and HIL gates |
 
@@ -100,11 +106,17 @@ flowchart LR
     PPO --> LIVE[Per-update policy rollout]
     LIVE --> USD
     PPO -. Isaac/PhysX validation required .-> USD
+
+    PROMPT[Bounded prompt planner] --> PREVIEW[Preset preview]
+    GABI[Pinned GR00T ABI: 784 obs / 22 actions] -. future Isaac training .-> SONIC[Upstream Dropbear SONIC]
+    CUDA[Local CUDA PoC: 90 obs + 64 token] --> RES[Versioned residual + authored reference]
+    RES --> WBC[22-axis ROS WBC SIL guard]
 ```
 
-The browser and ROS/RL paths use the same knee-lock convention and twelve
-semantic joint names, but they are not presented as equivalent physics
-engines.
+The browser leg path and existing 12-axis ROS trajectory path use the same
+knee-lock convention and twelve semantic leg names. The separate WBC contract
+extends this to 22 motor axes, but none of these paths is presented as an
+equivalent physics engine.
 
 ## CAN-to-USD map
 
@@ -232,7 +244,9 @@ behavior, and control timing. It is not evidence of balance or walk stability.
 
 ## Run the dashboard
 
-Prerequisites are Python 3, Node.js, and npm.
+Prerequisites are Python 3, Node.js, and npm. The base dashboard can run under
+the system interpreter; the GR00T compatibility lab requires the locked CUDA
+runtime.
 
 ```bash
 git clone git@github.com:robit-man/dropbear_control.git
@@ -242,10 +256,19 @@ cd web
 npm ci
 cd ..
 
-python3 web/serve.py 8000
+tools/setup_gr00t_runtime.sh
+.gr00t-venv/bin/python web/serve.py 8000
 ```
 
 Open <http://localhost:8000>.
+
+On a non-CUDA workstation, use `python3 web/serve.py 8000`; the dashboard and
+existing RL lab still run, while CUDA deployment gates remain visibly closed.
+The server binds `127.0.0.1` by default. Browser mutations transparently fetch
+a per-process control token and require same-origin JSON requests. Static
+remote viewing can be enabled explicitly with
+`DROPBEAR_DASHBOARD_HOST=<address> DROPBEAR_ALLOW_REMOTE=1`, but training,
+prompt, and stop operations remain client-loopback-only.
 
 The dashboard starts in guarded pause even though the observed source firmware
 sets `playMode=true` during setup. Choose either **Presets** or **RL Policies**
@@ -259,7 +282,7 @@ Select any run to copy its exact optimizer, curriculum, guide, arm, and reward
 parameters; optionally warm-start from its checkpoint; or replay its policy.
 **New run** clears only the selection—stored history is never deleted.
 
-The six engineering views are:
+The seven engineering views are:
 
 - **Robot Sim** — complete USD visualization, motor selection, live gait and
   linkage/contact telemetry, separate leg and arm motor categories, faults,
@@ -270,7 +293,9 @@ The six engineering views are:
 - **Controller Lab** — ESP32 board and pin/signal inspection;
 - **Firmware** — two-controller serial/CAN behavioral console;
 - **RL Lab** — advanced local PPO configuration and experiment diagnostics;
-  source selection and playback remain unified on Robot Sim; and
+  source selection and playback remain unified on Robot Sim;
+- **GR00T WBC** — pinned upstream ABI status, deterministic prompt planning,
+  CUDA compatibility training/deployment checks, and retained sessions; and
 - **Evidence** — source revisions, provenance, adaptations, and limitations.
 
 ## ROS 2 Jazzy SIL
@@ -283,11 +308,10 @@ The ROS package provides a twelve-axis
 sudo ros2_control/setup_ros2_jazzy.sh
 source /opt/ros/jazzy/setup.bash
 
-colcon build --symlink-install \
+colcon --log-base /tmp/dropbear_ros2_log build --symlink-install \
   --base-paths ros2_control/dropbear_trajectory_bringup \
   --build-base /tmp/dropbear_ros2_build \
-  --install-base /tmp/dropbear_ros2_install \
-  --log-base /tmp/dropbear_ros2_log
+  --install-base /tmp/dropbear_ros2_install
 
 source /tmp/dropbear_ros2_install/setup.bash
 ros2 launch dropbear_trajectory_bringup dropbear_trajectory.launch.py
@@ -414,18 +438,75 @@ The reproducible artifacts are
 [`dropbear-walk-validation.json`](web/assets/rl/dropbear-walk-validation.json),
 and
 [`dropbear-rendered-walk-review.json`](web/assets/rl/dropbear-rendered-walk-review.json).
-Load the two policies with **LOAD PPO REFERENCE** and
+Load the two policies with **LOAD PPO REFERENCE** and **LOAD AUTHORED
+BASELINE** for the same-view comparison.
 
-### Natural-language whole-body control direction
+### GR00T-WBC and CUDA compatibility path
 
-GR00T/SONIC is planned as a high-level task and motion teacher rather than a
-direct source of Dropbear motor commands. The released runtime targets the
-Unitree G1; Dropbear needs constrained pose retargeting, a native 22-axis
-embodiment, and a whole-body ROS interface before language-conditioned output
-can safely reach its controller. The staged architecture, closed-loop
-retargeting objective, runtime boundary, and acceptance gates are documented in
-[`docs/GR00T_WBC_INTEGRATION.md`](docs/GR00T_WBC_INTEGRATION.md).
-**LOAD AUTHORED BASELINE** for the same-view comparison.
+The repository now pins NVIDIA GR00T-WholeBodyControl at
+`4141c34280abb67c82e115342a8720f4a83d750d` and supplies a clean Dropbear
+overlay: canonical 22-axis policy/source-USD/ROS ordering, declared target
+orders for future Isaac/MuJoCo assets, the upstream 784-value decoder
+observation contract, closure-domain validation, a pinned-reader-shaped 50 Hz
+motion-reference bundle, source hashes, and the upstream fixed-center action
+decoder. The Isaac/MuJoCo mappings are not called verified until generated
+assets pass parity tests. Upstream source and weights are not vendored.
+Reproduce the source
+checkout without downloading weights with:
+
+```bash
+tools/bootstrap_gr00t_wbc.sh
+```
+
+The runnable CUDA controller in this repository is intentionally a separate
+compatibility prototype. It consumes 90 Dropbear state values plus a 64-value
+reference token and emits 22 normalized residuals. Runtime targets are
+reconstructed as:
+
+```text
+authored_reference[t] + clamp(residual, -1, 1) * action_scale * 0.62
+```
+
+That time-varying reference is mandatory; these artifacts are neither
+upstream SONIC checkpoints nor standalone prompt-conditioned trajectories.
+The dashboard’s natural-language box is an inspectable bounded preset planner,
+not neural GR00T/VLA inference.
+
+Set up and verify the local GPU path with:
+
+```bash
+tools/setup_gr00t_runtime.sh
+DROPBEAR_CUDA_DEVICES=0 tools/verify_gr00t_cuda.sh
+```
+
+The verification performs an actual CUDA optimization update, exports ONNX,
+compares ONNX Runtime CUDA numerically with PyTorch, builds a TensorRT 10.13
+FP16 engine, compares that engine numerically, and checks the runtime
+watchdog/limits. Multi-A100 training is supported through
+`--devices 0,1,...`.
+
+The current checked verification record is
+`cuda-verified-20260724-r3` on an NVIDIA A100 80GB PCIe. It processed 2,048
+training samples with 100% upright and 0% falls, measured a
+`5.22e-8 m` maximum retained-closure residual, matched ONNX Runtime CUDA to
+Torch within `1.14e-8`, and matched TensorRT 10.13.3.9 FP16 within
+`3.39e-8`. Runtime admission now binds the checkpoint, completed session,
+physical residual contract, exact 50 Hz reference, ONNX sidecar, and
+TensorRT engine by recorded SHA-256 values. Dashboard sessions are not marked
+complete until that deployment evidence passes.
+
+The remaining upstream path is explicit: install the pinned Isaac Lab/Isaac
+Sim environment, import the full constrained USD with validated collisions,
+train a native Dropbear 784→22 SONIC decoder, train/admit a compatible
+language/token model, and connect its admitted radian references to a reviewed
+22-axis ROS trajectory/hardware transport. Package installation alone never
+opens those gates.
+
+See
+[`integrations/gr00t_wbc/README.md`](integrations/gr00t_wbc/README.md),
+[`docs/GR00T_WBC_INTEGRATION.md`](docs/GR00T_WBC_INTEGRATION.md), and
+[`ros2_control/dropbear_wbc_controller/README.md`](ros2_control/dropbear_wbc_controller/README.md)
+for the exact contracts and blockers.
 
 This is a research baseline only. A policy must be trained and evaluated in
 the full Isaac/PhysX Dropbear environment, then replayed through the ROS 2 SIL
@@ -457,14 +538,23 @@ heel/toe contact loads, guided and free-root behavior, live policy playback,
 knee lock, staged gait, STEP/GLB availability, closure behavior, control
 protocols, and the critical Playwright journey.
 
-Run the ROS protocol and RL unit tests from the repository root:
+Run the GR00T overlay, CUDA-controller, ROS protocol, and RL unit tests from
+the repository root:
 
 ```bash
-PYTHONPATH=.:ros2_control/dropbear_trajectory_bringup \
+PYTHONPATH=.:ros2_control/dropbear_trajectory_bringup:ros2_control/dropbear_wbc_controller \
 python3 -m pytest -q \
-  ros2_control/dropbear_trajectory_bringup/test/test_protocol.py \
-  tests/rl/test_dropbear_ppo.py \
-  tests/rl/test_rl_service.py
+  tests/gr00t_wbc \
+  tests/rl \
+  ros2_control/dropbear_trajectory_bringup/test \
+  ros2_control/dropbear_wbc_controller/test
+```
+
+Run the real CUDA/ONNX/TensorRT admission smoke separately:
+
+```bash
+tools/setup_gr00t_runtime.sh
+DROPBEAR_CUDA_DEVICES=0 tools/verify_gr00t_cuda.sh
 ```
 
 For the much broader offline evidence, firmware, host, native, CAD, and safety
@@ -482,11 +572,13 @@ plant fidelity, or safe powered operation.
 
 | Path | Purpose |
 |---|---|
-| `web/` | Six-view browser engineering dashboard, USD twin, and local RL service |
+| `web/` | Seven-view browser engineering dashboard, USD twin, PPO service, and GR00T compatibility lab |
 | `web/assets/robot/` | Optimized Dropbear GLB, articulation manifest, and attribution |
 | `web/assets/cad/` | STEP-derived actuator browser caches |
-| `rl/` | 22-motor free-root PyTorch PPO teaching plant and policy exporter |
+| `integrations/gr00t_wbc/` | Pinned 22-action/784-observation upstream overlay, order/closure adapters, and 50 Hz reference contract |
+| `rl/` | 22-motor free-root PPO lab plus the separately versioned CUDA 90+64 residual compatibility controller |
 | `ros2_control/dropbear_trajectory_bringup/` | ROS 2 Jazzy trajectory-controller SIL and dashboard bridge |
+| `ros2_control/dropbear_wbc_controller/` | Exact 22-axis, 50 Hz guarded JSON WBC SIL boundary |
 | `ros2_control/myactuator_dropbear_hardware/` | Existing fail-closed physical hardware plugin boundary |
 | `firmware/esp32/` | ESP32/PAL and motor-driver scaffolding |
 | `host/myactuator_lib/` | Host protocols, emulators, evidence, session, and safety tooling |

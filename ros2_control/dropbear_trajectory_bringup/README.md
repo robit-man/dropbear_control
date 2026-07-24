@@ -48,11 +48,10 @@ From the repository root:
 ```bash
 sudo ros2_control/setup_ros2_jazzy.sh
 source /opt/ros/jazzy/setup.bash
-colcon build --symlink-install \
+colcon --log-base /tmp/dropbear_ros2_log build --symlink-install \
   --base-paths ros2_control/dropbear_trajectory_bringup \
   --build-base /tmp/dropbear_ros2_build \
-  --install-base /tmp/dropbear_ros2_install \
-  --log-base /tmp/dropbear_ros2_log
+  --install-base /tmp/dropbear_ros2_install
 source /tmp/dropbear_ros2_install/setup.bash
 ```
 

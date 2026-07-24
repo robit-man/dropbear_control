@@ -59,6 +59,14 @@ def test_training_manager_rejects_out_of_range_updates_and_nonfinite_weights(
         )
     with pytest.raises(ValueError, match="physicsBackend"):
         manager._validated_config({"physicsBackend": "pretend-physx"})
+    with pytest.raises(ValueError, match="updates must be an integer"):
+        manager._validated_config({"updates": 2.5})
+    with pytest.raises(ValueError, match="verticalConstraint"):
+        manager._validated_config({"verticalConstraint": "false"})
+    with pytest.raises(ValueError, match="armSwing"):
+        manager._validated_config({"armSwing": 1})
+    with pytest.raises(ValueError, match="targetSpeed"):
+        manager._validated_config({"targetSpeed": True})
 
 
 def test_training_manager_restores_latest_completed_experiment(tmp_path: Path):

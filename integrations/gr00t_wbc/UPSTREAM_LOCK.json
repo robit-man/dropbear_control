@@ -1,0 +1,25 @@
+{
+  "schema": "dropbear-gr00t-upstream-lock-v1",
+  "resolvedAt": "2026-07-24T00:00:00Z",
+  "repository": "https://github.com/NVlabs/GR00T-WholeBodyControl.git",
+  "branch": "main",
+  "commit": "4141c34280abb67c82e115342a8720f4a83d750d",
+  "sourceLicense": {
+    "spdx": "Apache-2.0",
+    "file": "LICENSE",
+    "sha256": "24ab66be50d1aca4fc5e029ef76ce4ceaac6557ea21665caf4b140695a76ffee"
+  },
+  "modelWeightsLicense": {
+    "name": "NVIDIA Open Model License",
+    "file": "LICENSE",
+    "scope": "Upstream checkpoints and model weights only"
+  },
+  "upstreamRuntime": {
+    "isaacLab": "2.3.2",
+    "controllerRateHz": 50,
+    "latentTokenDimension": 64
+  },
+  "integrationMode": "overlay-no-vendored-upstream-code-or-weights",
+  "sourceCodeVendored": false,
+  "modelWeightsVendored": false
+}

@@ -1,0 +1,13 @@
+dropbear_wbc_bridge:
+  ros__parameters:
+    # Contract v1 is fixed at the SONIC decoder cadence.
+    control_hz: 50.0
+    command_timeout_sec: 0.10
+    state_timeout_sec: 0.10
+    stand_blend_sec: 1.0
+    watchdog_blend_sec: 0.75
+    activation_max_velocity_rad_s: 0.15
+    source_future_tolerance_sec: 0.025
+    # Software/SIL envelope only. This is intentionally not configurable to
+    # unreviewed physical motor limits from the ROS parameter surface.
+    limits_profile: conservative_sil_v1

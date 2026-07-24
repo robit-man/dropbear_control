@@ -128,6 +128,11 @@ modules, the exact generated CAD candidates, and the optimized browser caches
 without a frontend build step. The `USD RES` slider changes the actual renderer
 pixel density from 50–200% and persists the local selection.
 
+The server binds to `127.0.0.1` by default. Control requests use strict JSON,
+same-origin checks, and a per-process token fetched automatically by the
+dashboard. An explicitly enabled remote bind can serve the static/status
+surface, but prompt, training, and stop mutations remain loopback-only.
+
 ## Verify
 
 ```bash
@@ -146,7 +151,7 @@ Set `DASHBOARD_BASE`, `BASE_URL`, or `VISUAL_OUT` to override their defaults.
 
 | Path | Purpose |
 |---|---|
-| `index.html` | Six-view engineering workspace |
+| `index.html` | Seven-view engineering workspace |
 | `js/dropbear.js` | Source map, task scheduler, serial grammar, load-cell state, and simplified joint plant |
 | `js/dropbear_usd.js` | Auditable 12-leg-CAN and 10-arm-motor USD binding maps |
 | `js/vertical_ground_constraint.js` | Heel/toe sensing, gravity settling, and Z-only no-penetration projection |

@@ -90,6 +90,9 @@
         <button class="rail-item" data-view-target="rl">
           <span class="rail-icon">λ</span><span>RL Lab</span><i id="rl-rail-state" class="rail-state" hidden></i>
         </button>
+        <button class="rail-item" data-view-target="gr00t">
+          <span class="rail-icon">◈</span><span>GR00T WBC</span><i id="gr00t-rail-state" class="rail-state" hidden></i>
+        </button>
         <button class="rail-item" data-view-target="evidence">
           <span class="rail-icon">◎</span><span>Evidence</span>
         </button>
@@ -634,6 +637,155 @@
         </div>
       </section>
 
+      <section class="view" data-view="gr00t">
+        <div class="view-heading">
+          <div>
+            <div class="eyebrow">GR00T-WBC INTEGRATION / DROPBEAR</div>
+            <h1>Prompt-to-motion integration bench</h1>
+            <p>Exercise the pinned Dropbear embodiment contract, route bounded prompts into 64-dimensional motion references, and train and deploy-verify the local 22-motor CUDA compatibility controller without confusing it for an NVIDIA SONIC checkpoint.</p>
+          </div>
+          <div id="gr00t-runtime-state" class="load-status loading"><span></span>PROBING CUDA RUNTIME</div>
+        </div>
+
+        <div class="gr00t-runtime-grid">
+          <article class="panel gr00t-gates-panel">
+            <div class="panel-head">
+              <div>
+                <span class="panel-kicker">DEPLOYMENT READINESS</span>
+                <h2>Fail-closed runtime gates</h2>
+              </div>
+              <span id="gr00t-upstream-revision" class="count-chip">UPSTREAM —</span>
+            </div>
+            <div class="gr00t-gates">
+              <div id="gr00t-gate-cuda"><i></i><span>CUDA POLICY</span><b>CHECKING</b></div>
+              <div id="gr00t-gate-onnx"><i></i><span>ONNX CUDA</span><b>CHECKING</b></div>
+              <div id="gr00t-gate-trt"><i></i><span>TENSORRT 10.13</span><b>CHECKING</b></div>
+              <div id="gr00t-gate-smoke"><i></i><span>RESIDUAL ENGINE</span><b>CHECKING</b></div>
+              <div id="gr00t-gate-isaac"><i></i><span>ISAAC / PHYSX RUN</span><b>CHECKING</b></div>
+              <div id="gr00t-gate-hardware"><i></i><span>HARDWARE</span><b>LOCKED</b></div>
+            </div>
+            <div class="gr00t-device-list" id="gr00t-device-list">
+              <span>Waiting for CUDA inventory…</span>
+            </div>
+            <div class="rl-boundary">
+              <b>DEVELOPMENT DEPLOYMENT ONLY</b>
+              <p>The green CUDA path proves local training, ONNX CUDA inference, output guarding, and a numerically checked TensorRT engine build. The engine emits normalized residuals and still requires the versioned gait reference adapter. Isaac/PhysX asset validation, ROS 2 HIL admission, physical limits, and an independent emergency stop remain mandatory before motor authority.</p>
+            </div>
+          </article>
+
+          <article class="panel gr00t-prompt-panel">
+            <div class="panel-head">
+              <div>
+                <span class="panel-kicker">BOUNDED PROMPT PLANNER / NOT MODEL INFERENCE</span>
+                <h2>Describe a bounded motion</h2>
+              </div>
+              <span class="count-chip">50 HZ REFERENCE</span>
+            </div>
+            <form id="gr00t-prompt-form" class="gr00t-prompt-form">
+              <label>
+                <span>MOTION PROMPT</span>
+                <textarea id="gr00t-prompt" maxlength="256" rows="3">Walk gently forward with symmetric arm swing</textarea>
+              </label>
+              <button id="gr00t-plan-prompt" type="submit" class="button accent">PLAN MOTION</button>
+              <button id="gr00t-preview-prompt" type="button" class="button subtle" disabled>PREVIEW ROUTED PRESET</button>
+            </form>
+            <div id="gr00t-prompt-result" class="gr00t-prompt-result">
+              <span>The deterministic planner selects a bounded browser preset. Its token is not admitted to the state-token-trained CUDA checkpoint.</span>
+            </div>
+          </article>
+
+          <article class="panel gr00t-training-panel">
+            <div class="panel-head">
+              <div>
+                <span class="panel-kicker">CUDA-FIRST COMPATIBILITY TRAINING</span>
+                <h2>Dropbear token-policy session</h2>
+              </div>
+              <span id="gr00t-training-id" class="count-chip">NEW SESSION</span>
+            </div>
+            <form id="gr00t-training-form" class="gr00t-training-form">
+              <label><span>MOTION PROFILE</span>
+                <select id="gr00t-motion-profile">
+                  <option value="gentle-forward">Gentle forward</option>
+                  <option value="circle-walk">Circle walk · left</option>
+                  <option value="custom">Custom</option>
+                </select>
+              </label>
+              <label><span>CUDA DEVICES</span>
+                <select id="gr00t-devices">
+                  <option value="0">A100 · GPU 0</option>
+                  <option value="0,1">A100 · GPU 0 + 1</option>
+                  <option value="0,1,2">A100 · GPU 0 + 1 + 2</option>
+                </select>
+              </label>
+              <label><span>UPDATES</span><input id="gr00t-updates" type="number" min="1" max="10000" value="4"></label>
+              <label><span>ROLLOUT STEPS</span><input id="gr00t-rollout-steps" type="number" min="8" max="2048" value="64"></label>
+              <label><span>PARALLEL ENVS</span><input id="gr00t-environments" type="number" min="1" max="4096" value="128"></label>
+              <label><span>PPO EPOCHS</span><input id="gr00t-ppo-epochs" type="number" min="1" max="20" value="2"></label>
+              <label><span>BATCH SIZE</span><input id="gr00t-batch-size" type="number" min="32" max="131072" value="2048"></label>
+              <label><span>PRECISION</span>
+                <select id="gr00t-precision">
+                  <option value="bfloat16">BF16 AMP</option>
+                  <option value="float16">FP16 AMP</option>
+                  <option value="float32">FP32</option>
+                </select>
+              </label>
+              <label><span>TARGET M/S</span><input id="gr00t-target-speed" type="number" min="-0.5" max="1.2" step="0.01" value="0.26"></label>
+              <label><span>TURN RAD/S</span><input id="gr00t-target-turn" type="number" min="-1.2" max="1.2" step="0.01" value="0"></label>
+              <label class="switch gr00t-free-root"><input id="gr00t-vertical-constraint" type="checkbox"><span></span>VERTICAL GUIDE</label>
+              <div class="rl-form-actions">
+                <button id="gr00t-train" type="submit" class="button accent">START CUDA TRAINING</button>
+                <button id="gr00t-stop" type="button" class="button danger" disabled>STOP</button>
+              </div>
+            </form>
+            <div class="rl-progress-track"><i id="gr00t-training-fill"></i></div>
+            <div id="gr00t-training-log" class="rl-log" aria-live="polite">
+              <div><span>READY</span>Waiting for the CUDA runtime gate.</div>
+            </div>
+          </article>
+
+          <article class="panel gr00t-contract-panel">
+            <div class="panel-head">
+              <div>
+                <span class="panel-kicker">DROPBEAR EMBODIMENT</span>
+                <h2>Control and closure contract</h2>
+              </div>
+              <span class="count-chip">22 ACTIONS · 784 UPSTREAM OBS</span>
+            </div>
+            <div class="gr00t-contract-flow">
+              <div><span>LANGUAGE / VLA</span><b>PROMPT OR CAMERA POLICY</b></div>
+              <i>→</i>
+              <div><span>MOTION INTENT</span><b>64-D TOKEN / SMPL / JOINT REF</b></div>
+              <i>→</i>
+              <div><span>UPSTREAM SONIC ABI</span><b>784 OBS · 22 MOTOR RESIDUALS</b></div>
+              <i>→</i>
+              <div><span>ROS 2 WBC</span><b>WATCHDOG + LIMITS + STAND BLEND</b></div>
+            </div>
+            <ul class="gr00t-contract-list">
+              <li>Policy coordinates are motor shafts; the local adapter validates reduced knee/elbow closure projections, while full passive-link transforms remain Isaac/PhysX-authoritative.</li>
+              <li>The locally verified CUDA PoC consumes 90 robot observations plus the 64-D token. The pinned upstream decoder ABI consumes 784 values; no NVIDIA checkpoint is represented as locally trained.</li>
+              <li>Prompt-router tokens and state-derived local training tokens are separate schemas. Prompt-conditioned neural inference remains blocked until a compatible GR00T/VLA checkpoint is trained and admitted.</li>
+              <li>Both knees retain the 180° lock datum mapped to policy 0 rad, with a software range of 0–π.</li>
+              <li>Local runtime frames are replay/stale guarded. ZMQ v4 remains an upstream integration patch point; this repository does not claim a live ZMQ transport.</li>
+            </ul>
+            <a class="source-link" href="https://nvlabs.github.io/GR00T-WholeBodyControl/" target="_blank" rel="noreferrer">OPEN NVIDIA GR00T-WBC DOCS ↗</a>
+          </article>
+
+          <article class="panel gr00t-sessions-panel">
+            <div class="panel-head">
+              <div>
+                <span class="panel-kicker">VERSIONED RUN HISTORY</span>
+                <h2>CUDA compatibility sessions</h2>
+              </div>
+              <button id="gr00t-refresh-sessions" type="button" class="button subtle">REFRESH</button>
+            </div>
+            <p class="gr00t-session-note">Every start creates a new directory. Select a completed row to copy its training parameters into the new-run form; existing checkpoints and reports are never overwritten.</p>
+            <div id="gr00t-session-list" class="gr00t-session-list" role="listbox" aria-label="Stored GR00T compatibility sessions">
+              <div class="rl-session-empty">No local CUDA sessions yet.</div>
+            </div>
+          </article>
+        </div>
+      </section>
+
       <section class="view" data-view="evidence">
         <div class="view-heading">
           <div>
@@ -685,6 +837,6 @@
     </main>
   </div>
 
-  <script type="module" src="/js/app.js?v=20260724-mujoco-profiles1"></script>
+  <script type="module" src="/js/app.js?v=20260724-gr00t-wbc2"></script>
 </body>
 </html>

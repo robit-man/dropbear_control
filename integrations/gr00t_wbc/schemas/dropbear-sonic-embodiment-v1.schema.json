@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.io/schemas/dropbear-sonic-embodiment-v1.schema.json",
+  "title": "Dropbear SONIC embodiment contract",
+  "type": "object",
+  "required": [
+    "schema",
+    "status",
+    "robot",
+    "sourceAssets",
+    "expectedSourceStatistics",
+    "expectedPhysicsStatistics",
+    "actionContract",
+    "actions",
+    "observationContract",
+    "runtimeParameters"
+  ],
+  "properties": {
+    "schema": {"const": "dropbear-sonic-embodiment-v1"},
+    "status": {"const": "integration-overlay-preflight"},
+    "robot": {
+      "type": "object",
+      "required": ["name", "policyRateHz", "massKg", "bodyAnchors"],
+      "properties": {
+        "name": {"const": "dropbear"},
+        "policyRateHz": {"const": 50},
+        "massKg": {"type": "number", "exclusiveMinimum": 0},
+        "bodyAnchors": {"type": "object"}
+      }
+    },
+    "sourceAssets": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["role", "path", "sha256"],
+        "properties": {
+          "role": {"type": "string"},
+          "path": {"type": "string"},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "expectedSourceStatistics": {
+      "type": "object",
+      "required": [
+        "rigidBodies",
+        "physicsJoints",
+        "closureConstraints",
+        "rlBodyActions"
+      ],
+      "properties": {
+        "rigidBodies": {"const": 93},
+        "physicsJoints": {"const": 116},
+        "closureConstraints": {"const": 27},
+        "rlBodyActions": {"const": 22}
+      }
+    },
+    "expectedPhysicsStatistics": {
+      "type": "object",
+      "required": ["rigidBodies", "physicsJoints"],
+      "properties": {
+        "rigidBodies": {"const": 93},
+        "physicsJoints": {"const": 117}
+      }
+    },
+    "actionContract": {
+      "type": "object",
+      "required": ["type", "count", "passiveJointsCommandable"],
+      "properties": {
+        "count": {"const": 22},
+        "passiveJointsCommandable": {"const": false}
+      }
+    },
+    "actions": {
+      "type": "array",
+      "minItems": 22,
+      "maxItems": 22,
+      "items": {
+        "type": "object",
+        "required": [
+          "index",
+          "name",
+          "usdJoint",
+          "rosJoint",
+          "motor",
+          "centerRad",
+          "scaleRad",
+          "positionLimitRad"
+        ],
+        "properties": {
+          "index": {"type": "integer", "minimum": 0, "maximum": 21},
+          "name": {"type": "string"},
+          "usdJoint": {"type": "string"},
+          "rosJoint": {"type": "string"},
+          "motor": {"type": "string"},
+          "canId": {"type": ["string", "null"]},
+          "centerRad": {"type": "number"},
+          "scaleRad": {"type": "number", "exclusiveMinimum": 0},
+          "positionLimitRad": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {"type": "number"}
+          }
+        }
+      }
+    },
+    "observationContract": {
+      "type": "object",
+      "required": [
+        "decoderTerms",
+        "decoderTotalDimension",
+        "tokenDimension",
+        "historyFrames"
+      ],
+      "properties": {
+        "decoderTotalDimension": {"const": 784},
+        "tokenDimension": {"const": 64},
+        "historyFrames": {"const": 10}
+      }
+    },
+    "runtimeParameters": {
+      "type": "object",
+      "required": ["hardwareDeploymentAllowed"],
+      "properties": {
+        "hardwareDeploymentAllowed": {"const": false}
+      }
+    }
+  }
+}

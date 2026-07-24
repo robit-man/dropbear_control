@@ -278,11 +278,34 @@ if (!(await page.locator("#rl-auto-replay").isChecked())) {
 }
 await page.screenshot({ path: `${OUT}/07-rl-lab.png` });
 
+await page.click('[data-view-target="gr00t"]');
+await page.locator('[data-view="gr00t"] h1').waitFor({ state: "visible" });
+await page.waitForTimeout(350);
+await page.waitForFunction(
+  () => document.querySelector("#gr00t-runtime-state")?.textContent
+    ?.includes("CUDA RESIDUAL ENGINE BUILD VERIFIED"),
+  null,
+  { timeout: 15000 },
+);
+if ((await page.locator("#gr00t-gate-smoke b").textContent())?.trim() !== "BUILD VERIFIED") {
+  throw new Error("GR00T compatibility deployment report was not admitted");
+}
+if ((await page.locator("#gr00t-gate-isaac b").textContent())?.trim() !== "NOT VALIDATED") {
+  throw new Error("GR00T view incorrectly claimed an authoritative Isaac/PhysX run");
+}
+if ((await page.locator("#gr00t-gate-hardware b").textContent())?.trim() !== "LOCKED") {
+  throw new Error("GR00T hardware gate must remain locked");
+}
+if ((await page.locator("#gr00t-session-list .gr00t-session-row").count()) < 1) {
+  throw new Error("Verified CUDA session did not surface in the GR00T run history");
+}
+await page.screenshot({ path: `${OUT}/08-gr00t-wbc.png` });
+
 await page.click('[data-view-target="evidence"]');
 await page.locator('[data-view="evidence"] h1').waitFor({ state: "visible" });
 await page.waitForTimeout(350);
 if (!(await page.locator('[data-view="evidence"]').textContent())?.includes("Actual Dropbear USD")) throw new Error("USD provenance missing");
-await page.screenshot({ path: `${OUT}/08-evidence.png` });
+await page.screenshot({ path: `${OUT}/09-evidence.png` });
 
 await browser.close();
 

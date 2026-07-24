@@ -1,0 +1,10 @@
+# Dropbear SONIC integration runtime.
+#
+# Install this into a Python environment that already provides a CUDA-enabled
+# PyTorch build.  The TensorRT pin follows NVIDIA's x86_64 GR00T-WBC
+# deployment requirement (10.13); Jetson uses a different, platform-managed
+# TensorRT build and must not consume this file.
+onnx==1.22.0
+onnxruntime-gpu==1.24.4; platform_machine == "x86_64"
+pyzmq==27.1.0
+tensorrt-cu12==10.13.3.9; platform_machine == "x86_64"

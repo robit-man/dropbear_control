@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperspawn.io/schemas/dropbear-sonic-motion-reference-v1.schema.json",
+  "title": "Dropbear SONIC motion reference",
+  "type": "object",
+  "required": [
+    "schema",
+    "createdAt",
+    "source",
+    "embodiment",
+    "sampleRateHz",
+    "jointOrder",
+    "frameCount",
+    "frames"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {"const": "dropbear-sonic-motion-reference-v1"},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "source": {"type": "object"},
+    "embodiment": {"type": "object"},
+    "sampleRateHz": {"const": 50},
+    "jointOrder": {
+      "type": "array",
+      "minItems": 22,
+      "maxItems": 22,
+      "uniqueItems": true,
+      "items": {"type": "string"}
+    },
+    "frameCount": {"type": "integer", "minimum": 2},
+    "frames": {
+      "type": "array",
+      "minItems": 2,
+      "items": {"$ref": "#/$defs/frame"}
+    }
+  },
+  "$defs": {
+    "number22": {
+      "type": "array",
+      "minItems": 22,
+      "maxItems": 22,
+      "items": {"type": "number"}
+    },
+    "frame": {
+      "type": "object",
+      "required": [
+        "timeSec",
+        "rootPositionM",
+        "rootOrientationWxyz",
+        "jointPositionRad",
+        "jointVelocityRadSec",
+        "contactLoadsKg",
+        "reducedClosure"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "timeSec": {"type": "number", "minimum": 0},
+        "rootPositionM": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {"type": "number"}
+        },
+        "rootOrientationWxyz": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {"type": "number"}
+        },
+        "jointPositionRad": {"$ref": "#/$defs/number22"},
+        "jointVelocityRadSec": {"$ref": "#/$defs/number22"},
+        "contactLoadsKg": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {"type": "number", "minimum": 0}
+        },
+        "reducedClosure": {
+          "type": "object",
+          "required": [
+            "leftKneeOutputRad",
+            "rightKneeOutputRad",
+            "leftElbowOutputRad",
+            "rightElbowOutputRad",
+            "maximumResidualM",
+            "validatedDomain"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "leftKneeOutputRad": {"type": "number"},
+            "rightKneeOutputRad": {"type": "number"},
+            "leftElbowOutputRad": {"type": "number"},
+            "rightElbowOutputRad": {"type": "number"},
+            "maximumResidualM": {"type": "number", "minimum": 0},
+            "validatedDomain": {"const": true}
+          }
+        }
+      }
+    }
+  }
+}

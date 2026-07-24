@@ -50,6 +50,34 @@ def test_environment_observation_and_step_shapes():
     assert info["reward_weights"]["armSwing"] == 0.35
 
 
+def test_environment_applies_explicit_reference_as_residual_baseline():
+    env = DropbearWalkEnv(num_envs=2)
+    env.reset()
+    reference = env._reference_motor_targets().clone()
+    reference[:, 5] = 0.77
+    reference[:, 6] = -0.68
+    _, _, _, info = env.step(
+        torch.zeros(2, env.action_dim),
+        reference_override=reference,
+    )
+    assert torch.equal(info["reference_target"], reference)
+    assert torch.equal(info["desired_target"], reference)
+    assert torch.all(env.q[:, 5] > 0)
+    assert torch.all(env.q[:, 6] < 0)
+
+
+def test_environment_rejects_malformed_or_nonfinite_reference_override():
+    env = DropbearWalkEnv(num_envs=2)
+    env.reset()
+    action = torch.zeros(2, env.action_dim)
+    with pytest.raises(ValueError, match="reference_override must have shape"):
+        env.step(action, reference_override=torch.zeros(env.action_dim))
+    invalid = torch.zeros(2, env.action_dim)
+    invalid[0, 0] = torch.nan
+    with pytest.raises(ValueError, match="finite"):
+        env.step(action, reference_override=invalid)
+
+
 def test_arm_swing_penalty_weight_changes_the_actual_reward():
     default_env = DropbearWalkEnv(num_envs=2, seed=19)
     no_arm_penalty_env = DropbearWalkEnv(

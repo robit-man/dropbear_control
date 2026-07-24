@@ -7,8 +7,10 @@
 
 # Python
 **/__pycache__/
+**/.pytest_cache/
 *.pyc
 .venv/
+.gr00t-venv/
 venv/
 *.egg-info/
 
@@ -19,13 +21,19 @@ venv/
 
 # Reproducible external-source working copies
 references/Dropbear/
+references/GR00T-WholeBodyControl/
 
 # Web dependency/install outputs
 **/node_modules/
 
 # Local RL experiment outputs (the small tracked reference policy lives in web/assets/rl/)
 artifacts/rl/experiments/
+artifacts/rl/sonic/
+artifacts/rl/sonic-smoke/*/sonic_policy.*
 artifacts/usd/*.usd
+
+# Local colcon/test logs
+/log/
 
 # OS / editor
 .DS_Store

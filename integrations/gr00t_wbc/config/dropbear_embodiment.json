@@ -1,0 +1,322 @@
+{
+  "schema": "dropbear-sonic-embodiment-v1",
+  "status": "integration-overlay-preflight",
+  "robot": {
+    "name": "dropbear",
+    "policyRateHz": 50,
+    "root": "/humanoid/world",
+    "massKg": 56.22897759778425,
+    "upAxis": "Z",
+    "metersPerUnit": 1.0,
+    "bodyAnchors": {
+      "torso": "/humanoid/world",
+      "leftFoot": "/humanoid/LL_basis_left_1",
+      "rightFoot": "/humanoid/RL_basis_left_1",
+      "leftWrist": "/humanoid/LH_shoulder_ex_al_interface_1",
+      "rightWrist": "/humanoid/RH_shoulder_ex_al_interface_1"
+    }
+  },
+  "sourceAssets": [
+    {
+      "role": "authoritative_usd",
+      "path": "artifacts/usd/dropbear.usd",
+      "sha256": "ef4434e0adb5a74cb0fe8e779c49aac4ebdcba48998ed519cf17ab16d822e073"
+    },
+    {
+      "role": "articulation_manifest",
+      "path": "web/assets/robot/dropbear-articulation.json",
+      "sha256": "9d0b8129ffd56d10c94e55780ae1b40a27d6837842c82416271426cf6b5ef3aa"
+    },
+    {
+      "role": "physics_manifest",
+      "path": "web/assets/robot/dropbear-physics-manifest.json",
+      "sha256": "ff002f2ea2597447a09a9c87a9e4a0589d3b7f2285bfb64ef0086469c8e458c8"
+    }
+  ],
+  "expectedSourceStatistics": {
+    "rigidBodies": 93,
+    "physicsJoints": 116,
+    "closureConstraints": 27,
+    "rlBodyActions": 22
+  },
+  "expectedPhysicsStatistics": {
+    "rigidBodies": 93,
+    "physicsJoints": 117
+  },
+  "actionContract": {
+    "type": "normalized_residual_position",
+    "count": 22,
+    "units": "radian",
+    "formula": "target_rad = center_rad + clamp(action, -1, 1) * scale_rad",
+    "passiveJointsCommandable": false
+  },
+  "actions": [
+    {
+      "index": 0,
+      "name": "left_outer_calf",
+      "usdJoint": "LL_Revolute81",
+      "rosJoint": "LL_Revolute81",
+      "motor": "RMD-X8",
+      "canId": "0x141",
+      "centerRad": 0.0,
+      "scaleRad": 0.10,
+      "positionLimitRad": [-3.141592653589793, 3.141592653589793]
+    },
+    {
+      "index": 1,
+      "name": "left_inner_calf",
+      "usdJoint": "LL_Revolute67",
+      "rosJoint": "LL_Revolute67",
+      "motor": "RMD-X8",
+      "canId": "0x142",
+      "centerRad": 0.0,
+      "scaleRad": 0.10,
+      "positionLimitRad": [-3.141592653589793, 3.141592653589793]
+    },
+    {
+      "index": 2,
+      "name": "right_inner_calf",
+      "usdJoint": "RL_Revolute67",
+      "rosJoint": "RL_Revolute67",
+      "motor": "RMD-X8",
+      "canId": "0x143",
+      "centerRad": 0.0,
+      "scaleRad": 0.10,
+      "positionLimitRad": [-3.141592653589793, 3.141592653589793]
+    },
+    {
+      "index": 3,
+      "name": "right_outer_calf",
+      "usdJoint": "RL_Revolute81",
+      "rosJoint": "RL_Revolute81",
+      "motor": "RMD-X8",
+      "canId": "0x144",
+      "centerRad": 0.0,
+      "scaleRad": 0.10,
+      "positionLimitRad": [-3.141592653589793, 3.141592653589793],
+      "sourceAxisAdaptation": "browser and reduced-model Z mirror; authoritative PhysX USD retains authored X axis"
+    },
+    {
+      "index": 4,
+      "name": "left_knee",
+      "usdJoint": "LL_knee_actuator_joint",
+      "rosJoint": "LL_knee_actuator_joint",
+      "motor": "RMD-X10-S2",
+      "canId": "0x145",
+      "centerRad": 0.55,
+      "scaleRad": 0.55,
+      "positionLimitRad": [0.0, 3.141592653589793],
+      "zeroDefinition": "0 rad policy and ROS equals 180 degree mechanical knee lock"
+    },
+    {
+      "index": 5,
+      "name": "left_hip_pitch",
+      "usdJoint": "LL_hip_joint",
+      "rosJoint": "LL_hip_joint",
+      "motor": "RMD-X10",
+      "canId": "0x146",
+      "centerRad": 0.0,
+      "scaleRad": 0.62,
+      "positionLimitRad": [-3.141592653589793, 3.141592653589793]
+    },
+    {
+      "index": 6,
+      "name": "right_hip_pitch",
+      "usdJoint": "RL_hip_joint",
+      "rosJoint": "RL_hip_joint",
+      "motor": "RMD-X10",
+      "canId": "0x147",
+      "centerRad": 0.0,
+      "scaleRad": 0.62,
+      "positionLimitRad": [-3.141592653589793, 3.141592653589793]
+    },
+    {
+      "index": 7,
+      "name": "right_knee",
+      "usdJoint": "RL_knee_actuator_joint",
+      "rosJoint": "RL_knee_actuator_joint",
+      "motor": "RMD-X10-S2",
+      "canId": "0x148",
+      "centerRad": 0.55,
+      "scaleRad": 0.55,
+      "positionLimitRad": [0.0, 3.141592653589793],
+      "zeroDefinition": "0 rad policy and ROS equals 180 degree mechanical knee lock"
+    },
+    {
+      "index": 8,
+      "name": "left_hip_yaw",
+      "usdJoint": "PG_left_leg_roll",
+      "rosJoint": "PG_left_leg_roll",
+      "motor": "RMD-X10-S2",
+      "canId": "0x149",
+      "centerRad": 0.0,
+      "scaleRad": 0.30,
+      "positionLimitRad": [-3.141592653589793, 3.141592653589793]
+    },
+    {
+      "index": 9,
+      "name": "left_hip_roll",
+      "usdJoint": "PG_left_leg_pitch",
+      "rosJoint": "PG_left_leg_pitch",
+      "motor": "RMD-X10-S2",
+      "canId": "0x14A",
+      "centerRad": 0.0,
+      "scaleRad": 0.35,
+      "positionLimitRad": [-3.141592653589793, 3.141592653589793]
+    },
+    {
+      "index": 10,
+      "name": "right_hip_roll",
+      "usdJoint": "PG_right_leg_pitch",
+      "rosJoint": "PG_right_leg_pitch",
+      "motor": "RMD-X10-S2",
+      "canId": "0x14B",
+      "centerRad": 0.0,
+      "scaleRad": 0.35,
+      "positionLimitRad": [-3.141592653589793, 3.141592653589793]
+    },
+    {
+      "index": 11,
+      "name": "right_hip_yaw",
+      "usdJoint": "PG_right_leg_roll",
+      "rosJoint": "PG_right_leg_roll",
+      "motor": "RMD-X10-S2",
+      "canId": "0x14C",
+      "centerRad": 0.0,
+      "scaleRad": 0.30,
+      "positionLimitRad": [-3.141592653589793, 3.141592653589793]
+    },
+    {
+      "index": 12,
+      "name": "left_shoulder_pitch",
+      "usdJoint": "LH_yaw",
+      "rosJoint": "LH_yaw",
+      "motor": "RMD-X10",
+      "canId": null,
+      "centerRad": 0.0,
+      "scaleRad": 0.82,
+      "positionLimitRad": [-3.141592653589793, 3.141592653589793]
+    },
+    {
+      "index": 13,
+      "name": "left_shoulder_yaw",
+      "usdJoint": "LH_pitch",
+      "rosJoint": "LH_pitch",
+      "motor": "RMD-X8",
+      "canId": null,
+      "centerRad": 0.0,
+      "scaleRad": 0.32,
+      "positionLimitRad": [-3.141592653589793, 3.141592653589793]
+    },
+    {
+      "index": 14,
+      "name": "left_shoulder_roll",
+      "usdJoint": "LH_roll",
+      "rosJoint": "LH_roll",
+      "motor": "RMD-X8",
+      "canId": null,
+      "centerRad": 0.0,
+      "scaleRad": 0.42,
+      "positionLimitRad": [-3.141592653589793, 3.141592653589793]
+    },
+    {
+      "index": 15,
+      "name": "left_elbow_pitch",
+      "usdJoint": "LH_Revolute41",
+      "rosJoint": "LH_Revolute41",
+      "motor": "RMD-X8",
+      "canId": null,
+      "centerRad": 0.44,
+      "scaleRad": 0.36,
+      "positionLimitRad": [-1.0471976, 1.3089969],
+      "limitBasis": "validated USD-sampled reduced elbow projection domain"
+    },
+    {
+      "index": 16,
+      "name": "left_wrist_roll",
+      "usdJoint": "LH_wrist_roll",
+      "rosJoint": "LH_wrist_roll",
+      "motor": "RMD-X8",
+      "canId": null,
+      "centerRad": 0.0,
+      "scaleRad": 0.38,
+      "positionLimitRad": [-3.141592653589793, 3.141592653589793]
+    },
+    {
+      "index": 17,
+      "name": "right_shoulder_pitch",
+      "usdJoint": "RH_yaw",
+      "rosJoint": "RH_yaw",
+      "motor": "RMD-X10",
+      "canId": null,
+      "centerRad": 0.0,
+      "scaleRad": 0.82,
+      "positionLimitRad": [-3.141592653589793, 3.141592653589793]
+    },
+    {
+      "index": 18,
+      "name": "right_shoulder_yaw",
+      "usdJoint": "RH_pitch",
+      "rosJoint": "RH_pitch",
+      "motor": "RMD-X8",
+      "canId": null,
+      "centerRad": 0.0,
+      "scaleRad": 0.32,
+      "positionLimitRad": [-3.141592653589793, 3.141592653589793]
+    },
+    {
+      "index": 19,
+      "name": "right_shoulder_roll",
+      "usdJoint": "RH_roll",
+      "rosJoint": "RH_roll",
+      "motor": "RMD-X8",
+      "canId": null,
+      "centerRad": 0.0,
+      "scaleRad": 0.42,
+      "positionLimitRad": [-3.141592653589793, 3.141592653589793]
+    },
+    {
+      "index": 20,
+      "name": "right_elbow_pitch",
+      "usdJoint": "RH_Revolute41",
+      "rosJoint": "RH_Revolute41",
+      "motor": "RMD-X8",
+      "canId": null,
+      "centerRad": 0.44,
+      "scaleRad": 0.36,
+      "positionLimitRad": [-1.0471976, 1.3089969],
+      "limitBasis": "validated USD-sampled reduced elbow projection domain"
+    },
+    {
+      "index": 21,
+      "name": "right_wrist_roll",
+      "usdJoint": "RH_wrist_roll",
+      "rosJoint": "RH_wrist_roll",
+      "motor": "RMD-X8",
+      "canId": null,
+      "centerRad": 0.0,
+      "scaleRad": 0.38,
+      "positionLimitRad": [-3.141592653589793, 3.141592653589793]
+    }
+  ],
+  "observationContract": {
+    "decoderTerms": [
+      {"name": "token_state", "dimension": 64, "history": 1},
+      {"name": "base_angular_velocity", "dimension": 3, "history": 10},
+      {"name": "body_joint_positions", "dimension": 22, "history": 10},
+      {"name": "body_joint_velocities", "dimension": 22, "history": 10},
+      {"name": "last_actions", "dimension": 22, "history": 10},
+      {"name": "gravity_dir", "dimension": 3, "history": 10}
+    ],
+    "decoderTotalDimension": 784,
+    "tokenDimension": 64,
+    "historyFrames": 10,
+    "closureResidualCriticOnlyDimension": 4
+  },
+  "runtimeParameters": {
+    "motorEffortLimits": "unverified-requires-vendor-and-HIL-admission",
+    "motorVelocityLimits": "unverified-requires-vendor-and-HIL-admission",
+    "implicitPdGains": "unverified-requires-system-identification",
+    "hardwareDeploymentAllowed": false
+  }
+}

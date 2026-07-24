@@ -15,6 +15,7 @@ import {
 } from "./dropbear_usd.js";
 import { RLPolicyPlayer } from "./rl_policy.js";
 import { Robot3D } from "./robot_3d.js";
+import { setupGr00tLab } from "./gr00t_lab.js";
 
 const $ = (id) => document.getElementById(id);
 const sim = new DropbearSim();
@@ -31,6 +32,11 @@ const RL_SOURCES = Object.freeze([
   { value: "latest", label: "Latest completed local policy" },
   { value: "live", label: "Live policy from active training" },
 ]);
+const GR00T_PROMPT_PREVIEW_PRESETS = Object.freeze({
+  stand: "neutral",
+  walk: "walk",
+});
+const GR00T_PROMPT_PREVIEW_TURN_EPSILON_RPS = 0.005;
 const RL_TRAINING_PROFILES = Object.freeze({
   "gentle-forward": Object.freeze({
     label: "Gentle forward",
@@ -739,17 +745,61 @@ function setupFirmware() {
   appendTerminal("Guarded pause active. Source firmware would set playMode=true during setup.", "warn");
 }
 
+let controlTokenPromise = null;
+
+function invalidateControlToken() {
+  controlTokenPromise = null;
+}
+
+async function getControlToken() {
+  if (!controlTokenPromise) {
+    controlTokenPromise = fetch("/api/control-token", {
+      cache: "no-store",
+      credentials: "same-origin",
+    }).then(async (response) => {
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(payload.error || `HTTP ${response.status}`);
+      }
+      if (typeof payload.token !== "string" || !payload.token) {
+        throw new Error("control token response is invalid");
+      }
+      return payload.token;
+    }).catch((error) => {
+      invalidateControlToken();
+      throw error;
+    });
+  }
+  return controlTokenPromise;
+}
+
 async function requestJson(url, options = {}) {
-  const response = await fetch(url, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers || {}),
-    },
-  });
-  const payload = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(payload.error || `HTTP ${response.status}`);
-  return payload;
+  const method = String(options.method || "GET").toUpperCase();
+  const mutation = method !== "GET" && method !== "HEAD";
+  for (let attempt = 0; attempt < (mutation ? 2 : 1); attempt += 1) {
+    const headers = new Headers(options.headers || {});
+    const request = {
+      ...options,
+      method,
+      headers,
+      cache: options.cache || "no-store",
+      credentials: "same-origin",
+    };
+    if (mutation) {
+      headers.set("Content-Type", "application/json");
+      headers.set("X-Dropbear-Control-Token", await getControlToken());
+      request.body = options.body === undefined ? "{}" : options.body;
+    }
+    const response = await fetch(url, request);
+    const payload = await response.json().catch(() => ({}));
+    if (response.ok) return payload;
+    if (response.status === 403 && mutation && attempt === 0) {
+      invalidateControlToken();
+      continue;
+    }
+    throw new Error(payload.error || `HTTP ${response.status}`);
+  }
+  throw new Error("control authorization failed");
 }
 
 async function pollPhysicsRuntime() {
@@ -1523,6 +1573,45 @@ setupCadControls();
 setupBoardControls();
 setupFirmware();
 setupRLLab();
+setupGr00tLab();
+window.addEventListener("dropbear:prompt-plan", async (event) => {
+  const plan = event.detail || {};
+  const primitive = String(plan.primitive || "").trim().toLowerCase();
+  const targetTurnRate = Number(plan.target_turn_rate_rps);
+  const scenario = GR00T_PROMPT_PREVIEW_PRESETS[primitive] || null;
+  const unavailableReason = !Number.isFinite(targetTurnRate)
+    ? "the plan has an invalid turn-rate target"
+    : Math.abs(targetTurnRate) > GR00T_PROMPT_PREVIEW_TURN_EPSILON_RPS
+      ? `the browser preset runner cannot apply ${targetTurnRate.toFixed(2)} rad/s turning`
+      : !scenario
+        ? `the browser preset runner has no ${primitive || "unknown"} reference`
+        : null;
+  if (unavailableReason) {
+    const result = $("gr00t-prompt-result");
+    result?.querySelector(".gr00t-preview-unavailable")?.remove();
+    if (result) {
+      const notice = document.createElement("p");
+      notice.className = "gr00t-preview-unavailable";
+      notice.textContent = `PREVIEW UNAVAILABLE · ${unavailableReason}. The plan was not played.`;
+      result.append(notice);
+    }
+    appendTerminal(`[gr00t] no browser preset matches ${primitive || "unknown"} · ${unavailableReason}`, "warn");
+    return;
+  }
+  try {
+    setPlaybackMode("preset", scenario);
+    await configurePlaybackSource(scenario);
+    sim.setPlay(true);
+    switchView("sim");
+    appendTerminal(
+      `[gr00t] browser preset preview · ${primitive} → ${scenario} · `
+      + "fixed-rate kinematic reference; planner speed is metadata only",
+      "ok",
+    );
+  } catch (error) {
+    appendTerminal(`[gr00t] prompt preview failed: ${error.message}`, "err");
+  }
+});
 pollPhysicsRuntime();
 selectJoint(0x141);
 renderLive();

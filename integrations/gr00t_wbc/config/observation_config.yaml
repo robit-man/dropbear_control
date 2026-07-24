@@ -1,0 +1,73 @@
+# Dropbear SONIC decoder observation contract.
+#
+# This uses names registered by the pinned GR00T-WholeBodyControl deployment
+# runtime. Joint-dependent terms become 22D after the Dropbear embodiment is
+# registered. Order is ABI: changing it requires a newly exported ONNX model.
+#
+# Decoder input: 64 + 30 + 220 + 220 + 220 + 30 = 784 dimensions.
+
+observations:
+  - name: "token_state"
+    enabled: true
+
+  - name: "his_base_angular_velocity_10frame_step1"
+    enabled: true
+
+  - name: "his_body_joint_positions_10frame_step1"
+    enabled: true
+
+  - name: "his_body_joint_velocities_10frame_step1"
+    enabled: true
+
+  - name: "his_last_actions_10frame_step1"
+    enabled: true
+
+  - name: "his_gravity_dir_10frame_step1"
+    enabled: true
+
+encoder:
+  dimension: 64
+  use_fp16: false
+  encoder_observations:
+    - name: "encoder_index"
+      enabled: true
+    - name: "command_multi_future_nonflat"
+      enabled: true
+    - name: "motion_anchor_ori_b_mf_nonflat"
+      enabled: true
+    - name: "command_multi_future_lower_body"
+      enabled: true
+    - name: "vr_3point_local_target"
+      enabled: true
+    - name: "vr_3point_local_orn_target"
+      enabled: true
+    - name: "motion_anchor_ori_b"
+      enabled: true
+    - name: "smpl_joints_multi_future_local_nonflat"
+      enabled: true
+    - name: "smpl_root_ori_b_multi_future"
+      enabled: true
+    - name: "joint_pos_multi_future_wrist_for_smpl"
+      enabled: true
+  encoder_modes:
+    - name: "dropbear"
+      mode_id: 0
+      required_observations:
+        - encoder_index
+        - command_multi_future_nonflat
+        - motion_anchor_ori_b_mf_nonflat
+    - name: "teleop"
+      mode_id: 1
+      required_observations:
+        - encoder_index
+        - command_multi_future_lower_body
+        - vr_3point_local_target
+        - vr_3point_local_orn_target
+        - motion_anchor_ori_b
+    - name: "smpl"
+      mode_id: 2
+      required_observations:
+        - encoder_index
+        - smpl_joints_multi_future_local_nonflat
+        - smpl_root_ori_b_multi_future
+        - joint_pos_multi_future_wrist_for_smpl

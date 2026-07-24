@@ -7,12 +7,35 @@ from datetime import datetime, timezone
 import json
 import importlib.util
 import math
+import os
 from pathlib import Path
+import signal
 import subprocess
 import sys
 import threading
 import uuid
 from typing import Any
+
+
+def _reject_json_constant(value: str) -> None:
+    raise ValueError(f"non-finite JSON constant is not allowed: {value}")
+
+
+def _require_finite_json(value: Any, *, label: str = "payload") -> None:
+    if isinstance(value, float) and not math.isfinite(value):
+        raise ValueError(f"{label} contains a non-finite number")
+    if isinstance(value, dict):
+        for key, item in value.items():
+            _require_finite_json(item, label=f"{label}.{key}")
+    elif isinstance(value, (list, tuple)):
+        for index, item in enumerate(value):
+            _require_finite_json(item, label=f"{label}[{index}]")
+
+
+def _strict_json_loads(raw: str) -> Any:
+    payload = json.loads(raw, parse_constant=_reject_json_constant)
+    _require_finite_json(payload)
+    return payload
 
 
 class RLTrainingManager:
@@ -55,7 +78,10 @@ class RLTrainingManager:
         minimum: int,
         maximum: int,
     ) -> int:
-        value = int(payload.get(key, default))
+        raw = payload.get(key, default)
+        if type(raw) is not int:
+            raise ValueError(f"{key} must be an integer")
+        value = raw
         if value < minimum or value > maximum:
             raise ValueError(f"{key} must be in [{minimum}, {maximum}]")
         return value
@@ -68,18 +94,25 @@ class RLTrainingManager:
         minimum: float,
         maximum: float,
     ) -> float:
-        value = float(payload.get(key, default))
+        raw = payload.get(key, default)
+        if isinstance(raw, bool) or not isinstance(raw, (int, float)):
+            raise ValueError(f"{key} must be a number")
+        value = float(raw)
         if not math.isfinite(value) or value < minimum or value > maximum:
             raise ValueError(f"{key} must be in [{minimum}, {maximum}]")
         return value
 
     def _validated_config(self, payload: dict[str, Any]) -> dict[str, Any]:
-        device = str(payload.get("device", "auto"))
+        device = payload.get("device", "auto")
+        if not isinstance(device, str):
+            raise ValueError("device must be a string")
         if device not in {"auto", "cpu", "cuda"}:
             raise ValueError("device must be auto, cpu, or cuda")
-        physics_backend = str(
-            payload.get("physicsBackend", "teaching-plant-v2")
+        physics_backend = payload.get(
+            "physicsBackend", "teaching-plant-v2"
         )
+        if not isinstance(physics_backend, str):
+            raise ValueError("physicsBackend must be a string")
         if physics_backend not in {
             "teaching-plant-v2",
             "mujoco-usd-proxy-v1",
@@ -94,14 +127,17 @@ class RLTrainingManager:
             raise ValueError("MuJoCo physics backend is not installed")
         if physics_backend == "mujoco-usd-proxy-v1" and device == "cuda":
             raise ValueError("MuJoCo physics backend requires the CPU device")
-        motion_profile = str(
-            payload.get("motionProfile", "gentle-forward")
-        )
+        motion_profile = payload.get("motionProfile", "gentle-forward")
+        if not isinstance(motion_profile, str):
+            raise ValueError("motionProfile must be a string")
         if motion_profile not in {"gentle-forward", "circle-walk", "custom"}:
             raise ValueError("motionProfile is not supported")
         init_checkpoint = None
-        if payload.get("initCheckpoint"):
-            candidate = (self.project_root / str(payload["initCheckpoint"])).resolve()
+        raw_checkpoint = payload.get("initCheckpoint")
+        if raw_checkpoint not in (None, ""):
+            if not isinstance(raw_checkpoint, str):
+                raise ValueError("initCheckpoint must be a string")
+            candidate = (self.project_root / raw_checkpoint).resolve()
             experiment_root = self.experiment_root.resolve()
             if (
                 not candidate.is_relative_to(experiment_root)
@@ -163,6 +199,12 @@ class RLTrainingManager:
                 reward_payload, "fall", 7.0, 0.0, 100.0
             ),
         }
+        vertical_constraint = payload.get("verticalConstraint", False)
+        arm_swing = payload.get("armSwing", True)
+        if type(vertical_constraint) is not bool:
+            raise ValueError("verticalConstraint must be a boolean")
+        if type(arm_swing) is not bool:
+            raise ValueError("armSwing must be a boolean")
         return {
             "updates": self._bounded_int(payload, "updates", 12, 1, 10_000),
             "steps": self._bounded_int(payload, "steps", 128, 16, 2048),
@@ -197,8 +239,8 @@ class RLTrainingManager:
                 1.0,
                 30.0,
             ),
-            "verticalConstraint": bool(payload.get("verticalConstraint", False)),
-            "armSwing": bool(payload.get("armSwing", True)),
+            "verticalConstraint": vertical_constraint,
+            "armSwing": arm_swing,
             "rewardWeights": reward_weights,
             "device": device,
             "initCheckpoint": init_checkpoint,
@@ -209,16 +251,24 @@ class RLTrainingManager:
     @staticmethod
     def _read_json_file(path: Path) -> dict[str, Any]:
         try:
-            payload = json.loads(path.read_text(encoding="utf-8"))
+            payload = _strict_json_loads(path.read_text(encoding="utf-8"))
             return payload if isinstance(payload, dict) else {}
-        except (OSError, TypeError, json.JSONDecodeError):
+        except (OSError, TypeError, ValueError, json.JSONDecodeError):
             return {}
 
     @staticmethod
     def _write_json_atomic(path: Path, payload: dict[str, Any]) -> None:
+        _require_finite_json(payload)
+        path.parent.mkdir(parents=True, exist_ok=True)
         temporary = path.with_suffix(path.suffix + ".tmp")
         temporary.write_text(
-            json.dumps(payload, indent=2, sort_keys=True) + "\n",
+            json.dumps(
+                payload,
+                indent=2,
+                sort_keys=True,
+                allow_nan=False,
+            )
+            + "\n",
             encoding="utf-8",
         )
         temporary.replace(path)
@@ -438,10 +488,10 @@ class RLTrainingManager:
             return
         output_dir = candidates[0]
         try:
-            policy = json.loads(
+            policy = _strict_json_loads(
                 (output_dir / "policy.json").read_text(encoding="utf-8")
             )
-            metrics = json.loads(
+            metrics = _strict_json_loads(
                 (output_dir / "metrics.json").read_text(encoding="utf-8")
             )
             policy_config = policy.get("config", {})
@@ -651,7 +701,7 @@ class RLTrainingManager:
             if not line:
                 continue
             try:
-                event = json.loads(line)
+                event = _strict_json_loads(line)
                 if not isinstance(event, dict):
                     raise ValueError
             except (json.JSONDecodeError, ValueError):
@@ -685,6 +735,8 @@ class RLTrainingManager:
             self.state["finishedAt"] = datetime.now(timezone.utc).isoformat()
             self.state["pid"] = None
             self._persist_current_session()
+            if self.process is process:
+                self.process = None
 
     def stop(self) -> dict[str, Any]:
         with self.lock:
@@ -693,12 +745,53 @@ class RLTrainingManager:
                 return self.snapshot()
             self.state["state"] = "stopping"
             self._persist_current_session()
-            process.terminate()
+            try:
+                os.killpg(process.pid, signal.SIGTERM)
+            except ProcessLookupError:
+                pass
         try:
-            process.wait(timeout=3)
+            process.wait(timeout=5)
         except subprocess.TimeoutExpired:
-            process.kill()
+            try:
+                os.killpg(process.pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+            try:
+                process.wait(timeout=2)
+            except subprocess.TimeoutExpired:
+                with self.lock:
+                    self.state["state"] = "error"
+                    self.state["error"] = (
+                        "RL trainer process group did not terminate"
+                    )
+                    self.state["finishedAt"] = (
+                        datetime.now(timezone.utc).isoformat()
+                    )
+                    self._persist_current_session()
+        reader = self.reader
+        if (
+            reader is not None
+            and reader is not threading.current_thread()
+            and reader.is_alive()
+        ):
+            reader.join(timeout=2)
+        with self.lock:
+            if (
+                self.state.get("state") == "stopping"
+                and process.poll() is not None
+            ):
+                self.state["state"] = "stopped"
+                self.state["finishedAt"] = (
+                    datetime.now(timezone.utc).isoformat()
+                )
+                self.state["pid"] = None
+                self._persist_current_session()
         return self.snapshot()
+
+    def shutdown(self) -> None:
+        """Stop and reap a trainer before the dashboard exits."""
+
+        self.stop()
 
     def snapshot(self) -> dict[str, Any]:
         with self.lock:

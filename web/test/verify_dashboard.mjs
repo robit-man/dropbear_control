@@ -35,7 +35,7 @@ function check(name, condition) {
 
 const index = await request(`${base}/`);
 check("index served", index.status === 200);
-check("six engineering views present", (index.body.match(/data-view="/g) || []).length === 6);
+check("seven engineering views present", (index.body.match(/data-view="/g) || []).length === 7);
 check("full Dropbear USD simulation present", index.body.includes("Dropbear closed-loop articulation"));
 check("USD robot viewport replaces schematic", index.body.includes('id="robot-canvas"') && !index.body.includes('id="robot-svg"'));
 check("STEP-derived CAD viewport present", index.body.includes('id="cad-canvas"'));
@@ -76,6 +76,17 @@ check(
     && index.body.includes('id="global-training-strip"')
     && !index.body.includes('id="run-demo"'),
 );
+const dashboardStyle = await request(`${base}/css/style.css`);
+const playbackStyle = dashboardStyle.body
+  .split(".playback-mode-button {")[1]
+  ?.split("}")[0] || "";
+check(
+  "playback source is one yellow text-only toggle",
+  dashboardStyle.status === 200
+    && playbackStyle.includes("background: var(--cyan)")
+    && playbackStyle.includes("border: 1px solid var(--cyan)")
+    && !index.body.includes('type="checkbox" id="playback-mode"'),
+);
 check(
   "RL horizon reaches 10,000 updates with explicit reward tuning",
   index.body.includes('id="rl-updates" type="number" min="1" max="10000"')
@@ -94,6 +105,17 @@ check(
     && index.body.includes('id="rl-session-copy"')
     && index.body.includes('id="rl-session-replay"')
     && index.body.includes('id="rl-session-warm-start"'),
+);
+check(
+  "GR00T prompt, CUDA training, and deployment gates are present",
+  index.body.includes('data-view="gr00t"')
+    && index.body.includes('id="gr00t-prompt-form"')
+    && index.body.includes('id="gr00t-training-form"')
+    && index.body.includes('id="gr00t-gate-cuda"')
+    && index.body.includes('id="gr00t-gate-trt"')
+    && index.body.includes('id="gr00t-gate-smoke"')
+    && index.body.includes('id="gr00t-gate-isaac"')
+    && index.body.includes('id="gr00t-gate-hardware"'),
 );
 
 const dropbear = await request(`${base}/js/dropbear.js`);
@@ -136,6 +158,31 @@ check(
     && app.body.includes("applyRLSessionConfig")
     && app.body.includes("warmStartConfig")
     && app.body.includes("replaySelectedRLSession"),
+);
+check(
+  "dashboard initializes GR00T lab and fail-closed prompt preview",
+  app.body.includes("setupGr00tLab")
+    && app.body.includes('"dropbear:prompt-plan"')
+    && app.body.includes("GR00T_PROMPT_PREVIEW_PRESETS")
+    && app.body.includes("GR00T_PROMPT_PREVIEW_TURN_EPSILON_RPS")
+    && app.body.includes("no browser preset matches")
+    && app.body.includes("The plan was not played.")
+    && !app.body.includes('["walk", "circle", "turn"].includes(plan.primitive)'),
+);
+
+const gr00tStatusResponse = await request(`${base}/api/gr00t/status`);
+let gr00tStatus;
+try {
+  gr00tStatus = JSON.parse(gr00tStatusResponse.body);
+} catch {
+  gr00tStatus = null;
+}
+check(
+  "GR00T CUDA and safety gate status API served",
+  gr00tStatusResponse.status === 200
+    && gr00tStatus?.schema === "dropbear-gr00t-runtime-v1"
+    && gr00tStatus?.safety?.hardwareCommandsEnabled === false
+    && Boolean(gr00tStatus?.training),
 );
 
 const rlStatus = await request(`${base}/api/rl/status`);

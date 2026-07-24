@@ -52,6 +52,31 @@ ARM_JOINT_NAMES = (
 )
 
 ACTION_NAMES = LEG_JOINT_NAMES + ARM_JOINT_NAMES
+LOCAL_POLICY_ACTION_SCALE = (
+    0.10,
+    0.10,
+    0.10,
+    0.10,
+    0.55,
+    0.62,
+    0.62,
+    0.55,
+    0.30,
+    0.35,
+    0.35,
+    0.30,
+    0.82,
+    0.32,
+    0.42,
+    0.36,
+    0.38,
+    0.82,
+    0.32,
+    0.42,
+    0.36,
+    0.38,
+)
+LOCAL_POLICY_RESIDUAL_GAIN = 0.62
 
 
 @dataclass(frozen=True)
@@ -354,17 +379,10 @@ class DropbearWalkEnv:
             )
 
         center = torch.zeros(len(ACTION_NAMES), device=self.device)
+        # The adjacent inner/outer X8s retain deliberately small residual
+        # authority so their three-point calf/ankle loop stays on-manifold.
         scale = torch.tensor(
-            [
-                # The adjacent inner/outer X8s operate on the retained
-                # three-point calf/ankle loop. Keep learned residual authority
-                # small enough to stay on that physically closed manifold.
-                0.10, 0.10, 0.10, 0.10,  # calf X8 sources
-                0.55, 0.62, 0.62, 0.55,  # knee and hip pitch
-                0.30, 0.35, 0.35, 0.30,  # hip yaw / roll
-                0.82, 0.32, 0.42, 0.36, 0.38,  # left arm
-                0.82, 0.32, 0.42, 0.36, 0.38,  # right arm
-            ],
+            LOCAL_POLICY_ACTION_SCALE,
             device=self.device,
         )
         center[4] = 0.55
@@ -757,13 +775,47 @@ class DropbearWalkEnv:
         ) % self.symmetry_lag_steps
         return reward, error, valid
 
-    def step(self, action: torch.Tensor):
-        action = action.to(self.device).clamp(-1.0, 1.0)
+    def step(
+        self,
+        action: torch.Tensor,
+        *,
+        reference_override: torch.Tensor | None = None,
+    ):
+        action = action.to(self.device)
+        expected_shape = (self.num_envs, self.action_dim)
+        if tuple(action.shape) != expected_shape:
+            raise ValueError(
+                f"action must have shape {expected_shape}, got {tuple(action.shape)}"
+            )
+        if not torch.isfinite(action).all():
+            raise ValueError("action must contain only finite values")
+        action = action.clamp(-1.0, 1.0)
         # PPO controls a residual around the proven browser walking sequence.
         # This makes the existing gait a useful prior while leaving enough
         # authority to alter every motor for balance and COM stabilization.
-        reference = self._reference_motor_targets()
-        desired = reference + action * self.action_scale * 0.62
+        if reference_override is None:
+            reference = self._reference_motor_targets()
+        else:
+            reference = torch.as_tensor(
+                reference_override,
+                dtype=self.q.dtype,
+                device=self.device,
+            )
+            if tuple(reference.shape) != expected_shape:
+                raise ValueError(
+                    "reference_override must have shape "
+                    f"{expected_shape}, got {tuple(reference.shape)}"
+                )
+            if not torch.isfinite(reference).all():
+                raise ValueError(
+                    "reference_override must contain only finite values"
+                )
+        desired = (
+            reference
+            + action
+            * self.action_scale
+            * LOCAL_POLICY_RESIDUAL_GAIN
+        )
         desired[:, 4] = desired[:, 4].clamp(0.0, math.pi)
         desired[:, 7] = desired[:, 7].clamp(0.0, math.pi)
         if not self.config.arm_swing:
@@ -1015,6 +1067,8 @@ class DropbearWalkEnv:
             "physics_backend": self.config.physics_backend,
             "motion_profile": self.config.motion_profile,
             "reward_weights": weights.as_dict(),
+            "reference_target": reference.detach(),
+            "desired_target": desired.detach(),
         }
         return obs, reward, done, info
 
