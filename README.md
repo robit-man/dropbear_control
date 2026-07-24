@@ -24,16 +24,20 @@ workspace:
 
 The browser dashboard is the primary interactive surface. It renders the
 Dropbear USD, drives the exact CAN-to-USD joint bindings, projects passive calf
-and ankle joints against the retained closure anchors, and shows live motor,
-foot-clearance, ankle, CAN, sensor, and closure telemetry.
+and ankle joints against the retained closure anchors, exposes ten arm-motor
+shafts, and resolves each heel/toe patch against a unilateral ground plane.
+Live telemetry covers motor state, foot contact and load, ankle state, CAN,
+sensors, linkage closure, and the constrained root height.
 
 ## Current state
 
 | Area | Implemented now | Boundary |
 |---|---|---|
 | Browser USD twin | 90 rendered bodies from a 294,204-triangle cache; manifest retains 93 rigid bodies, 116 physical joints, and 27 closures | Kinematic SIL visualization, not rigid-body dynamics |
-| Low-level motor map | Twelve CAN nodes, `0x141`–`0x14C`, bound to the corresponding USD motor axes | Source-grounded simulation; no physical CAN authority |
+| Leg motor map | Twelve low-level CAN nodes, `0x141`–`0x14C`, bound to the corresponding USD motor axes | Source-grounded simulation; no physical CAN authority |
+| Arm motor map | Ten selectable USD shafts: eight RMD-X8 arm drives and two torso-mounted RMD-X10 shoulder-pitch drives | Arm CAN IDs are not present in the observed leg firmware and remain deliberately unmapped |
 | Calf/ankle linkage | Four X8 crank axes, tie rods, ankle contacts, foot pivot, and damped least-squares closure projection | Isaac/PhysX remains dynamics-authoritative |
+| Foot-ground contact | Actual foot-body bounds produce left/right heel and toe patches, unilateral no-penetration projection, gravity settling, and four load-cell values | Root motion is constrained only on Z; no friction, balance, impact, lateral, or rotational dynamics |
 | Knee safety datum | Both knees are limited to encoder `180°`–`360°`; ROS/RL use `0`–`π` rad from the same lock datum | Software constraint; not a certified physical stop |
 | Walking demo | Forward alternating gait with loading, rearward push-off, early swing, moderated knee lift, advance, and placement | Demonstration trajectory, not a learned or dynamically stable gait |
 | Actuator CAD | STEP-derived housing/output GLB previews, technical lines, explode control, and original STEP downloads | Browser previews are simplified visualization caches |
@@ -64,8 +68,10 @@ flowchart LR
     FW[Dropbear ESP32 source] --> BT[Browser low-level twin]
     BT --> CAN[12-axis CAN state]
     CAN --> USD[Dropbear USD articulation]
+    ARM[10 arm shafts: 8 X8 + 2 X10] --> USD
     USD --> CLS[Calf rod and ankle closure solver]
-    CLS --> UI[Foot, ankle, motor and residual telemetry]
+    CLS --> GND[Heel/toe ground patches and Z-only root guide]
+    GND --> UI[Contact, load, ankle, motor and residual telemetry]
 
     ROS[ROS 2 joint trajectory controller] --> WS[Loopback WebSocket bridge]
     WS -. browser adapter pending .-> CAN
@@ -108,6 +114,51 @@ The right outer X8 uses an explicit mirrored-Z browser adaptation because this
 USD revision authors `RL_Revolute81` as X while the mirrored mechanism and the
 other three calf shafts are Z-aligned. The adaptation and its rationale are
 recorded in the articulation manifest.
+
+## Arm-motor-to-USD map
+
+The arm category adds one inspectable shaft at each remaining authored arm
+axis. The two shoulder-pitch motors attached to the torso are RMD-X10 units,
+matching the hip-yaw motor class; all remaining arm motors are RMD-X8 units.
+
+| Side | Physical axis | USD joint | Motor | Mount |
+|---|---|---|---|---|
+| Left | Shoulder pitch | `LH_yaw` | RMD-X10 | Torso |
+| Left | Shoulder yaw | `LH_pitch` | RMD-X8 | Arm |
+| Left | Shoulder roll | `LH_roll` | RMD-X8 | Arm |
+| Left | Elbow pitch | `LH_elbow_joint` | RMD-X8 | Arm |
+| Left | Wrist roll | `LH_wrist_roll` | RMD-X8 | Arm |
+| Right | Shoulder pitch | `RH_yaw` | RMD-X10 | Torso |
+| Right | Shoulder yaw | `RH_pitch` | RMD-X8 | Arm |
+| Right | Shoulder roll | `RH_roll` | RMD-X8 | Arm |
+| Right | Elbow pitch | `RH_elbow_joint` | RMD-X8 | Arm |
+| Right | Wrist roll | `RH_wrist_roll` | RMD-X8 | Arm |
+
+The source USD calls the torso-root axes `LH_yaw` and `RH_yaw`; the dashboard
+keeps those authored names visible while applying the physical shoulder-pitch
+semantic supplied for the installed robot. No arm CAN IDs are invented. The
+arm inspector therefore reports `AUX · CAN UNMAPPED` until an authoritative
+firmware or wiring map is added.
+
+## Foot contact and vertical constraint
+
+The browser derives heel and toe patches from the lowest vertices of each
+actual foot body in the current USD pose. A small software plant then:
+
+1. integrates gravity along the world Z axis;
+2. projects any ground penetration back to the plane;
+3. detects heel and toe contact within a 4 mm band; and
+4. distributes the 42 kg simulated mass across the active patches.
+
+Those four patch loads feed the dashboard’s optional load-cell channels, and
+the root-Z offset and contact state remain inspectable in the robot view. This
+lets a retracting foot settle naturally onto the rendered floor while the
+walking motion continues.
+
+The guide is intentionally unilateral and vertical only. It does not simulate
+friction, tangential constraints, impulses, center-of-pressure balance,
+self-collision, or body attitude. Isaac/PhysX remains the required environment
+for dynamically reliable walking and contact validation.
 
 ## Walking demonstration
 
@@ -158,7 +209,8 @@ alternating gait.
 The five engineering views are:
 
 - **Robot Sim** — complete USD visualization, motor selection, live gait and
-  linkage telemetry, faults, and configurable 50–200% render resolution;
+  linkage/contact telemetry, separate leg and arm motor categories, faults,
+  and configurable 50–200% render resolution;
 - **Actuator CAD** — STEP-derived actuator solids with technical lines and
   articulation controls;
 - **Controller Lab** — ESP32 board and pin/signal inspection;
@@ -231,9 +283,10 @@ npm run verify:dashboard
 npm run test:visual
 ```
 
-The web suite checks the source map, all twelve CAN bindings, X8 driver axes,
-knee lock, staged gait, STEP/GLB availability, closure behavior, control
-protocols, and the critical Playwright journey.
+The web suite checks the source map, all twelve leg CAN bindings, all ten arm
+shafts and their 8× X8 / 2× X10 split, heel/toe contact loads, Z-only
+no-penetration behavior, knee lock, staged gait, STEP/GLB availability,
+closure behavior, control protocols, and the critical Playwright journey.
 
 Run the ROS protocol and RL unit tests from the repository root:
 

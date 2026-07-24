@@ -2,10 +2,12 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import {
+  DROPBEAR_ARM_MOTOR_BINDINGS,
   DROPBEAR_USD_BINDINGS,
   DROPBEAR_USD_SOURCE,
   dropbearUsdBinding,
 } from "./dropbear_usd.js";
+import { VerticalGroundConstraint } from "./vertical_ground_constraint.js";
 
 const ROBOT_ROOT = "/assets/robot";
 const AXES = Object.freeze({
@@ -80,9 +82,14 @@ function solveSymmetric(matrix, vector) {
 }
 
 export class Robot3D {
-  constructor(canvas, { onJoint = () => {}, onStatus = () => {} } = {}) {
+  constructor(canvas, {
+    onJoint = () => {},
+    onArmMotor = () => {},
+    onStatus = () => {},
+  } = {}) {
     this.canvas = canvas;
     this.onJoint = onJoint;
+    this.onArmMotor = onArmMotor;
     this.onStatus = onStatus;
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color("#080809");
@@ -123,20 +130,33 @@ export class Robot3D {
     this.bodyMeshes = new Map();
     this.bindingMarkers = new Map();
     this.bindingByBody = new Map();
+    this.armBindingByBody = new Map();
+    this.armMotorShafts = new Map();
+    this.contactMarkers = new Map();
+    this.footContactPoints = new Map();
     this.raycastMeshes = [];
     this.manifest = null;
     this.ready = false;
     this.active = true;
     this.selectedCanId = 0x141;
+    this.selectedArmMotorId = null;
     this.poseVersion = 0;
     this.lastDrawAt = 0;
     this.pendingJoints = [];
     this.passiveAngles = new Map();
     this.closureResidualMm = 0;
     this.neutralFootZ = new Map();
+    this.groundConstraint = new VerticalGroundConstraint({ massKg: 42 });
+    this.groundContact = this.groundConstraint.lastState;
+    this.armMotorStates = DROPBEAR_ARM_MOTOR_BINDINGS.map((binding) => ({
+      id: binding.id,
+      angleDeg: 0,
+      velocityDegS: 0,
+      torqueNm: 0,
+    }));
     this.legTelemetry = {
-      left: { footHeightMm: 0, ankleDeg: 0, outerCalfDeg: 180, innerCalfDeg: 180 },
-      right: { footHeightMm: 0, ankleDeg: 0, outerCalfDeg: 180, innerCalfDeg: 180 },
+      left: { footHeightMm: 0, ankleDeg: 0, outerCalfDeg: 180, innerCalfDeg: 180, contact: false, heelLoadKg: 0, toeLoadKg: 0 },
+      right: { footHeightMm: 0, ankleDeg: 0, outerCalfDeg: 180, innerCalfDeg: 180, contact: false, heelLoadKg: 0, toeLoadKg: 0 },
     };
 
     this._buildStage();
@@ -199,7 +219,9 @@ export class Robot3D {
       this._validateManifest();
       this._buildBodies(gltf.scene);
       this._buildKinematicGraph();
+      this._buildFootContactGeometry();
       this._buildJointMarkers();
+      this._buildArmMotorShafts();
       this.setJointStates(this.pendingJoints, this.selectedCanId);
       this._captureNeutralFootReferences();
       this.fit();
@@ -220,6 +242,23 @@ export class Robot3D {
     for (const expected of DROPBEAR_USD_BINDINGS) {
       const actual = this.manifest.canBindings.find((binding) => binding.canIdNumber === expected.canId);
       if (!actual || actual.usdJoint !== expected.usdJoint) throw new Error(`binding mismatch at ${expected.canLabel}`);
+    }
+    const jointNames = new Set(this.manifest.joints.map((joint) => joint.name));
+    if (this.manifest.armMotorBindings?.length !== DROPBEAR_ARM_MOTOR_BINDINGS.length) {
+      throw new Error("expected 10 arm motor/USD bindings");
+    }
+    for (const binding of DROPBEAR_ARM_MOTOR_BINDINGS) {
+      if (!jointNames.has(binding.usdJoint)) throw new Error(`arm motor joint missing: ${binding.usdJoint}`);
+      const actual = this.manifest.armMotorBindings.find((entry) => entry.id === binding.id);
+      if (
+        !actual
+        || actual.usdJoint !== binding.usdJoint
+        || actual.motor !== binding.motor
+        || actual.mount !== binding.mount
+        || actual.firmwareCanId !== null
+      ) {
+        throw new Error(`arm motor binding mismatch: ${binding.id}`);
+      }
     }
   }
 
@@ -268,6 +307,60 @@ export class Robot3D {
     }
     for (const [bodyPath, canId] of this.bindingByBody) {
       for (const mesh of this.bodyMeshes.get(bodyPath) || []) mesh.userData.canId = canId;
+    }
+  }
+
+  _buildFootContactGeometry() {
+    const cornerValues = (box) => {
+      const points = [];
+      for (const x of [box.min.x, box.max.x]) {
+        for (const y of [box.min.y, box.max.y]) {
+          for (const z of [box.min.z, box.max.z]) points.push(new THREE.Vector3(x, y, z));
+        }
+      }
+      return points;
+    };
+    for (const [side, prefix] of [["left", "LL_"], ["right", "RL_"]]) {
+      const bodyPath = `/humanoid/${prefix}skateboard_bearing_left_2`;
+      const group = this.bodyGroups.get(bodyPath);
+      if (!group) continue;
+      const bodyBox = new THREE.Box3();
+      for (const mesh of this.bodyMeshes.get(bodyPath) || []) {
+        if (!mesh.geometry.boundingBox) mesh.geometry.computeBoundingBox();
+        for (const point of cornerValues(mesh.geometry.boundingBox)) {
+          bodyBox.expandByPoint(point.applyMatrix4(mesh.matrix));
+        }
+      }
+      const patchCorners = (x) => [
+        new THREE.Vector3(x, bodyBox.min.y, bodyBox.min.z),
+        new THREE.Vector3(x, bodyBox.min.y, bodyBox.max.z),
+        new THREE.Vector3(x, bodyBox.max.y, bodyBox.min.z),
+        new THREE.Vector3(x, bodyBox.max.y, bodyBox.max.z),
+      ];
+      this.footContactPoints.set(side, {
+        bodyPath,
+        heel: patchCorners(bodyBox.min.x),
+        toe: patchCorners(bodyBox.max.x),
+      });
+    }
+
+    const markerGeometry = new THREE.RingGeometry(0.018, 0.027, 28);
+    for (const side of ["left", "right"]) {
+      for (const patch of ["heel", "toe"]) {
+        const marker = new THREE.Mesh(
+          markerGeometry,
+          new THREE.MeshBasicMaterial({
+            color: "#fbbf24",
+            transparent: true,
+            opacity: 0.35,
+            side: THREE.DoubleSide,
+            depthTest: false,
+          }),
+        );
+        marker.renderOrder = 9;
+        this.scene.add(marker);
+        this.contactMarkers.set(`${side}:${patch}`, marker);
+      }
     }
   }
 
@@ -330,8 +423,46 @@ export class Robot3D {
     }
   }
 
-  setJointStates(joints, selectedCanId = this.selectedCanId) {
+  _buildArmMotorShafts() {
+    for (const binding of DROPBEAR_ARM_MOTOR_BINDINGS) {
+      const isX10 = binding.motor === "RMD-X10";
+      const shaft = new THREE.Mesh(
+        new THREE.CylinderGeometry(
+          isX10 ? 0.016 : 0.012,
+          isX10 ? 0.016 : 0.012,
+          isX10 ? 0.092 : 0.070,
+          24,
+        ),
+        new THREE.MeshStandardMaterial({
+          color: isX10 ? "#a78bfa" : binding.side === "left" ? "#facc15" : "#d8dde2",
+          emissive: isX10 ? "#39235e" : binding.side === "left" ? "#443700" : "#28292c",
+          emissiveIntensity: 0.45,
+          metalness: 0.82,
+          roughness: 0.22,
+        }),
+      );
+      shaft.userData.armMotorId = binding.id;
+      shaft.castShadow = true;
+      shaft.renderOrder = 7;
+      this.root.add(shaft);
+      this.armMotorShafts.set(binding.id, { shaft, binding });
+      this.raycastMeshes.push(shaft);
+      const joint = this.jointByName.get(binding.usdJoint);
+      if (joint) {
+        this.armBindingByBody.set(joint.body1, binding.id);
+        for (const mesh of this.bodyMeshes.get(joint.body1) || []) mesh.userData.armMotorId = binding.id;
+      }
+    }
+  }
+
+  setJointStates(
+    joints,
+    selectedCanId = this.selectedCanId,
+    armMotorStates = this.armMotorStates,
+    poseDt = 0,
+  ) {
     this.pendingJoints = joints || [];
+    this.armMotorStates = armMotorStates || this.armMotorStates;
     this.selectedCanId = Number(selectedCanId);
     if (!this.manifest || !this.bodyGroups.size) return;
     const radiansByUsdJoint = new Map();
@@ -339,14 +470,68 @@ export class Robot3D {
       const binding = this.bindingByCan.get(state.id);
       if (binding) radiansByUsdJoint.set(binding.usdJoint, THREE.MathUtils.degToRad(state.angle - 180));
     }
+    for (const state of this.armMotorStates) {
+      const binding = DROPBEAR_ARM_MOTOR_BINDINGS.find((candidate) => candidate.id === state.id);
+      if (binding) radiansByUsdJoint.set(binding.usdJoint, THREE.MathUtils.degToRad(state.angleDeg || 0));
+    }
     this._solveLegClosures(radiansByUsdJoint);
-    this.currentMatrices = this._calculateMatrices(radiansByUsdJoint);
+    const rawMatrices = this._calculateMatrices(radiansByUsdJoint);
+    this.currentMatrices = this._applyVerticalGroundConstraint(rawMatrices, poseDt);
     for (const [path, group] of this.bodyGroups) group.matrix.copy(this.currentMatrices.get(path));
 
     this._updateLegTelemetry();
     this._updateMarkers(radiansByUsdJoint);
+    this._updateArmMotorShafts(radiansByUsdJoint);
     this._updateHighlight();
     this.poseVersion += 1;
+  }
+
+  _rawFootPatches(matrices) {
+    const result = {};
+    for (const side of ["left", "right"]) {
+      const contact = this.footContactPoints.get(side);
+      const bodyMatrix = matrices.get(contact?.bodyPath);
+      if (!contact || !bodyMatrix) continue;
+      const lowest = (points) => points
+        .map((point) => point.clone().applyMatrix4(bodyMatrix))
+        .reduce((best, point) => point.z < best.z ? point : best);
+      const heelPoint = lowest(contact.heel);
+      const toePoint = lowest(contact.toe);
+      result[side] = {
+        heelZ: heelPoint.z,
+        toeZ: toePoint.z,
+        heelPoint,
+        toePoint,
+      };
+    }
+    return result;
+  }
+
+  _applyVerticalGroundConstraint(rawMatrices, poseDt) {
+    const rawFeet = this._rawFootPatches(rawMatrices);
+    this.groundContact = this.groundConstraint.solve(rawFeet, poseDt);
+    const translation = new THREE.Matrix4().makeTranslation(0, 0, this.groundContact.offsetZ);
+    const translated = new Map(
+      [...rawMatrices].map(([path, matrix]) => [path, translation.clone().multiply(matrix)]),
+    );
+    for (const side of ["left", "right"]) {
+      for (const patch of ["heel", "toe"]) {
+        const marker = this.contactMarkers.get(`${side}:${patch}`);
+        const point = rawFeet[side]?.[`${patch}Point`];
+        const patchState = this.groundContact[side];
+        if (!marker || !point || !patchState) continue;
+        marker.position.set(
+          point.x,
+          point.y,
+          point.z + this.groundContact.offsetZ + 0.0015,
+        );
+        const active = patchState[`${patch}Contact`];
+        marker.material.color.set(active ? "#34d399" : "#fbbf24");
+        marker.material.opacity = active ? 0.9 : 0.24;
+        marker.scale.setScalar(active ? 1.08 : 0.82);
+      }
+    }
+    return translated;
   }
 
   _captureNeutralFootReferences() {
@@ -362,14 +547,20 @@ export class Robot3D {
       const footMatrix = this.currentMatrices.get(`/humanoid/${prefix}skateboard_bearing_left_2`);
       if (!footMatrix) continue;
       const footPosition = new THREE.Vector3().setFromMatrixPosition(footMatrix);
-      const referenceZ = this.neutralFootZ.get(side) ?? footPosition.z;
+      const contact = this.groundContact?.[side];
       const outerCalf = this.pendingJoints.find((joint) => joint.side === side && joint.key === "outer_calf");
       const innerCalf = this.pendingJoints.find((joint) => joint.side === side && joint.key === "inner_calf");
       this.legTelemetry[side] = {
-        footHeightMm: (footPosition.z - referenceZ) * 1000,
+        footHeightMm: contact?.footHeightMm ?? footPosition.z * 1000,
         ankleDeg: THREE.MathUtils.radToDeg(this.passiveAngles.get(`${prefix}Revolute88`) || 0),
         outerCalfDeg: outerCalf?.angle ?? 180,
         innerCalfDeg: innerCalf?.angle ?? 180,
+        contact: Boolean(contact?.contact),
+        heelContact: Boolean(contact?.heelContact),
+        toeContact: Boolean(contact?.toeContact),
+        loadKg: contact?.loadKg ?? 0,
+        heelLoadKg: contact?.heelLoadKg ?? 0,
+        toeLoadKg: contact?.toeLoadKg ?? 0,
       };
     }
   }
@@ -491,9 +682,33 @@ export class Robot3D {
     }
   }
 
+  _updateArmMotorShafts(radiansByUsdJoint) {
+    for (const { shaft, binding } of this.armMotorShafts.values()) {
+      const joint = this.jointByName.get(binding.usdJoint);
+      if (!joint) continue;
+      const bodyMatrix = this.currentMatrices.get(joint.body0) || this.initialMatrices.get(joint.body0);
+      if (!bodyMatrix) continue;
+      const anchor = new THREE.Vector3(...joint.localPos0).applyMatrix4(bodyMatrix);
+      const bodyRotation = new THREE.Quaternion().setFromRotationMatrix(bodyMatrix);
+      const axis = jointAxis(joint).applyQuaternion(bodyRotation).normalize();
+      shaft.position.copy(anchor);
+      shaft.quaternion.setFromUnitVectors(AXES.Y, axis);
+      const selected = binding.id === this.selectedArmMotorId;
+      shaft.scale.setScalar(selected ? 1.32 : 1);
+      shaft.material.emissiveIntensity = selected ? 1.1 : 0.45;
+      shaft.rotation.y = radiansByUsdJoint.get(binding.usdJoint) || 0;
+    }
+  }
+
   _updateHighlight() {
     for (const [bodyPath, meshes] of this.bodyMeshes) {
-      const active = this.bindingByBody.get(bodyPath) === this.selectedCanId;
+      const canActive = this.bindingByBody.get(bodyPath) === this.selectedCanId;
+      const armMotorId = this.armBindingByBody.get(bodyPath);
+      const armActive = armMotorId === this.selectedArmMotorId;
+      const active = canActive || armActive;
+      const armBinding = armActive
+        ? DROPBEAR_ARM_MOTOR_BINDINGS.find((binding) => binding.id === armMotorId)
+        : null;
       for (const mesh of meshes) {
         const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
         materials.forEach((material, index) => {
@@ -502,7 +717,8 @@ export class Robot3D {
           material.emissive.copy(base.emissive);
           material.emissiveIntensity = base.emissiveIntensity;
           if (active) {
-            material.emissive.set(dropbearUsdBinding(this.selectedCanId)?.side === "left" ? "#6f5b00" : "#626268");
+            const side = armBinding?.side || dropbearUsdBinding(this.selectedCanId)?.side;
+            material.emissive.set(side === "left" ? "#6f5b00" : "#626268");
             material.emissiveIntensity = 0.46;
           }
         });
@@ -520,13 +736,23 @@ export class Robot3D {
       this.pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
       this.raycaster.setFromCamera(this.pointer, this.camera);
       const hit = this.raycaster.intersectObjects(this.raycastMeshes, false)
-        .find((entry) => entry.object.userData.canId);
-      if (hit) this.onJoint(hit.object.userData.canId);
+        .find((entry) => entry.object.userData.canId || entry.object.userData.armMotorId);
+      if (hit?.object.userData.canId) this.onJoint(hit.object.userData.canId);
+      if (hit?.object.userData.armMotorId) this.onArmMotor(hit.object.userData.armMotorId);
     });
   }
 
   bindingForCan(canId) {
     return this.bindingByCan?.get(Number(canId)) || dropbearUsdBinding(canId);
+  }
+
+  setArmSelection(id = null) {
+    this.selectedArmMotorId = id;
+  }
+
+  resetGroundConstraint() {
+    this.groundConstraint.reset();
+    this.groundContact = this.groundConstraint.lastState;
   }
 
   setActive(on) {

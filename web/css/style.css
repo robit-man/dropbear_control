@@ -311,6 +311,7 @@ select:focus, input:focus { border-color: var(--cyan); outline: none; }
   letter-spacing: .02em;
 }
 .leg-telemetry-card dd.lift { color: var(--amber); }
+.leg-telemetry-card dd.contact { color: var(--green); text-shadow: 0 0 7px rgba(52,211,153,.4); }
 .robot-asset-chip { position: absolute; top: 14px; right: 14px; z-index: 3; display: grid; gap: 3px; text-align: right; pointer-events: none; }
 .robot-asset-chip span { color: #dce7ef; font: 700 11px "IBM Plex Mono"; letter-spacing: .09em; }
 .robot-asset-chip b { color: var(--cyan); font: 600 7px "IBM Plex Mono"; letter-spacing: .1em; }
@@ -344,12 +345,23 @@ select:focus, input:focus { border-color: var(--cyan); outline: none; }
   background: rgba(6,10,15,.84);
   backdrop-filter: blur(10px);
 }
-.stage-readout div { min-width: 92px; padding: 8px 10px; border-right: 1px solid var(--line); }
+.stage-readout div { min-width: 86px; padding: 8px 10px; border-right: 1px solid var(--line); }
 .stage-readout div:last-child { border: 0; }
 .stage-readout span { display: block; color: var(--quiet); font: 600 7px "IBM Plex Mono"; letter-spacing: .1em; }
 .stage-readout b { display: block; font: 600 11px "IBM Plex Mono"; margin-top: 3px; color: #d8e3ec; }
 
 .joint-panel { min-height: 650px; }
+.motor-category-tabs { display: flex; border: 1px solid var(--line); padding: 2px; background: var(--bg); }
+.motor-category-tabs button {
+  border: 0;
+  background: transparent;
+  color: var(--quiet);
+  padding: 6px 8px;
+  font: 600 7px "IBM Plex Mono";
+  letter-spacing: .08em;
+}
+.motor-category-tabs button b { color: inherit; font-weight: 700; }
+.motor-category-tabs button.active { color: var(--bg); background: var(--amber); }
 .joint-list { padding: 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; max-height: 500px; overflow: auto; }
 .joint-card {
   border: 1px solid var(--line);
@@ -363,6 +375,16 @@ select:focus, input:focus { border-color: var(--cyan); outline: none; }
 .joint-card::before { content: ""; position: absolute; left: 0; top: 9px; bottom: 9px; width: 2px; background: var(--side-color); opacity: .55; }
 .joint-card:hover { border-color: #3a4d5d; }
 .joint-card.active { border-color: var(--side-color); background: color-mix(in srgb, var(--side-color) 7%, #0a0f15); }
+.joint-card.arm-card { cursor: pointer; }
+.joint-card.arm-card.x10::after {
+  content: "TORSO";
+  position: absolute;
+  right: 8px;
+  bottom: 6px;
+  color: #a78bfa;
+  font: 600 6px "IBM Plex Mono";
+  letter-spacing: .1em;
+}
 .joint-card-top { display: flex; justify-content: space-between; gap: 7px; align-items: center; }
 .joint-card b { font-size: 10px; font-weight: 650; }
 .joint-card code { color: var(--side-color); font-size: 8px; }

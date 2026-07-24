@@ -232,6 +232,12 @@ export class DropbearSim {
     }));
     this.loadCells = [0, 0, 0, 0];
     this.loadCellsEnabled = false;
+    this.footContacts = {
+      valid: false,
+      guide: "Z_ONLY",
+      left: { contact: false, heelLoadKg: 0, toeLoadKg: 0 },
+      right: { contact: false, heelLoadKg: 0, toeLoadKg: 0 },
+    };
     this.gait = {
       left: { phase: 0, mode: "hold", swing: false, contact: 1 },
       right: { phase: 0.5, mode: "hold", swing: false, contact: 1 },
@@ -324,6 +330,31 @@ export class DropbearSim {
     target.desiredPosition = clamp(Number(position), target.minAngle, target.maxAngle);
     target.impedanceEnabled = Boolean(enabled);
     return true;
+  }
+
+  setFootContactState(state) {
+    if (!state?.valid) {
+      this.footContacts = {
+        ...this.footContacts,
+        valid: false,
+      };
+      return;
+    }
+    this.footContacts = {
+      valid: true,
+      guide: state.guide,
+      offsetZ: Number(state.offsetZ) || 0,
+      velocityZ: Number(state.velocityZ) || 0,
+      left: { ...state.left },
+      right: { ...state.right },
+    };
+    this.loadCellsEnabled = true;
+    this.loadCells = [
+      this.footContacts.left.heelLoadKg,
+      this.footContacts.left.toeLoadKg,
+      this.footContacts.right.heelLoadKg,
+      this.footContacts.right.toeLoadKg,
+    ];
   }
 
   setJointTorque(id, hundredthNm) {
@@ -530,7 +561,14 @@ export class DropbearSim {
         this.imu[i].gz = drift * 8;
       }
       const stepPhase = Math.sin(this.time * Math.PI * 2);
-      if (this.loadCellsEnabled && this.scenario === "walk") {
+      if (this.loadCellsEnabled && this.footContacts.valid) {
+        this.loadCells = [
+          this.footContacts.left.heelLoadKg,
+          this.footContacts.left.toeLoadKg,
+          this.footContacts.right.heelLoadKg,
+          this.footContacts.right.toeLoadKg,
+        ];
+      } else if (this.loadCellsEnabled && this.scenario === "walk") {
         const leftLoad = 42 * this.gait.left.contact;
         const rightLoad = 42 * this.gait.right.contact;
         this.loadCells = [leftLoad * 0.52, leftLoad * 0.48, rightLoad * 0.48, rightLoad * 0.52];

@@ -7,11 +7,22 @@ import {
 } from "./dropbear.js";
 import { Board3D } from "./board_3d.js";
 import { CAD_EVIDENCE, CadViewer } from "./cad_viewer.js";
-import { DROPBEAR_USD_SOURCE, dropbearUsdBinding } from "./dropbear_usd.js";
+import {
+  DROPBEAR_ARM_MOTOR_BINDINGS,
+  DROPBEAR_USD_SOURCE,
+  dropbearArmMotorBinding,
+  dropbearUsdBinding,
+} from "./dropbear_usd.js";
 import { Robot3D } from "./robot_3d.js";
 
 const $ = (id) => document.getElementById(id);
 const sim = new DropbearSim();
+const armMotorStates = DROPBEAR_ARM_MOTOR_BINDINGS.map((binding) => ({
+  id: binding.id,
+  angleDeg: 0,
+  velocityDegS: 0,
+  torqueNm: 0,
+}));
 
 const ui = {
   view: "sim",
@@ -23,6 +34,10 @@ const ui = {
   scopeSampleAt: 0,
   scopeHistory: [],
   cadManual: false,
+  motorCategory: "legs",
+  axisCategory: "leg",
+  selectedArmMotorId: null,
+  lastRobotSimTime: 0,
 };
 
 function selectedJoint() {
@@ -63,7 +78,22 @@ const cad = new CadViewer($("cad-canvas"), {
 });
 
 const robot = new Robot3D($("robot-canvas"), {
-  onJoint: (canId) => selectJoint(canId),
+  onJoint: (canId) => {
+    ui.motorCategory = "legs";
+    document.querySelectorAll("[data-motor-category]").forEach((entry) => {
+      entry.classList.toggle("active", entry.dataset.motorCategory === "legs");
+    });
+    makeJointCards();
+    selectJoint(canId);
+  },
+  onArmMotor: (id) => {
+    ui.motorCategory = "arms";
+    document.querySelectorAll("[data-motor-category]").forEach((entry) => {
+      entry.classList.toggle("active", entry.dataset.motorCategory === "arms");
+    });
+    makeJointCards();
+    selectArmMotor(id);
+  },
   onStatus: (message, kind) => {
     $("robot-load-status").className = `load-status robot-load-status ${kind}`;
     $("robot-load-status").innerHTML = "<span></span>";
@@ -97,6 +127,29 @@ function setupNavigation() {
 function makeJointCards() {
   const list = $("joint-list");
   list.innerHTML = "";
+  if (ui.motorCategory === "arms") {
+    for (const definition of DROPBEAR_ARM_MOTOR_BINDINGS) {
+      const state = armMotorStates.find((entry) => entry.id === definition.id);
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `joint-card arm-card ${definition.motor === "RMD-X10" ? "x10" : "x8"}`;
+      button.dataset.armMotorId = definition.id;
+      button.style.setProperty("--side-color", definition.side === "left" ? "var(--left)" : "var(--right)");
+      button.innerHTML = `
+        <div class="joint-card-top">
+          <b>${definition.label}</b>
+          <code>${definition.motor}</code>
+        </div>
+        <div class="joint-card-state">
+          <span>SHAFT<em data-field="angle">${state.angleDeg.toFixed(1)}°</em></span>
+          <span><i class="joint-dot live"></i>USD<em>${definition.usdJoint}</em></span>
+        </div>`;
+      button.addEventListener("click", () => selectArmMotor(definition.id));
+      list.appendChild(button);
+    }
+    $("motor-map-title").textContent = "Installed arm motor map";
+    return;
+  }
   for (const definition of JOINT_DEFINITIONS) {
     const button = document.createElement("button");
     button.type = "button";
@@ -115,9 +168,13 @@ function makeJointCards() {
     button.addEventListener("click", () => selectJoint(definition.id));
     list.appendChild(button);
   }
+  $("motor-map-title").textContent = "Installed leg motor map";
 }
 
 function selectJoint(id) {
+  ui.axisCategory = "leg";
+  ui.selectedArmMotorId = null;
+  robot.setArmSelection(null);
   ui.selectedJointId = Number(id);
   ui.scopeHistory = [];
   ui.cadManual = false;
@@ -138,7 +195,55 @@ function selectJoint(id) {
   $("impedance-toggle").checked = target.impedanceEnabled;
   $("impedance-toggle").disabled = !target.impedanceCapable;
   $("position-target").disabled = !target.impedanceCapable;
+  $("torque-target").disabled = false;
+  $("fault-sensor").disabled = false;
+  $("fault-thermal").disabled = false;
   document.querySelectorAll(".joint-card").forEach((card) => card.classList.toggle("active", Number(card.dataset.jointId) === target.id));
+}
+
+function selectArmMotor(id) {
+  const binding = dropbearArmMotorBinding(id);
+  const state = armMotorStates.find((entry) => entry.id === id);
+  if (!binding || !state) return;
+  ui.axisCategory = "arm";
+  ui.selectedArmMotorId = id;
+  robot.setArmSelection(id);
+  $("selected-name").textContent = binding.label;
+  $("selected-can").textContent = `${binding.motor} · AUX`;
+  $("selected-usd").textContent = `USD ${binding.usdJoint} · ${binding.sourceSemantic.toUpperCase()}`;
+  $("cad-joint-name").textContent = binding.label;
+  $("position-target").min = "-120";
+  $("position-target").max = "120";
+  $("position-target").value = String(state.angleDeg);
+  $("position-target").disabled = false;
+  $("position-output").textContent = `${state.angleDeg.toFixed(0)}°`;
+  $("torque-target").value = "0";
+  $("torque-target").disabled = true;
+  $("torque-output").textContent = "0.00 N·m";
+  $("impedance-toggle").checked = false;
+  $("impedance-toggle").disabled = true;
+  $("fault-sensor").disabled = true;
+  $("fault-thermal").disabled = true;
+  document.querySelectorAll(".arm-card").forEach((card) => {
+    card.classList.toggle("active", card.dataset.armMotorId === id);
+  });
+}
+
+function setupMotorCategories() {
+  document.querySelectorAll("[data-motor-category]").forEach((button) => {
+    button.addEventListener("click", () => {
+      ui.motorCategory = button.dataset.motorCategory;
+      document.querySelectorAll("[data-motor-category]").forEach((entry) => {
+        entry.classList.toggle("active", entry === button);
+      });
+      makeJointCards();
+      if (ui.motorCategory === "arms") {
+        selectArmMotor(ui.selectedArmMotorId || DROPBEAR_ARM_MOTOR_BINDINGS[0].id);
+      } else {
+        selectJoint(ui.selectedJointId);
+      }
+    });
+  });
 }
 
 function setupSimControls() {
@@ -156,7 +261,19 @@ function setupSimControls() {
   $("sim-toggle").addEventListener("click", () => sim.setPlay(!sim.playMode));
   $("sim-reset").addEventListener("click", () => {
     sim.reset();
+    robot.resetGroundConstraint();
+    armMotorStates.forEach((state) => {
+      state.angleDeg = 0;
+      state.velocityDegS = 0;
+      state.torqueNm = 0;
+    });
+    ui.lastRobotSimTime = 0;
     ui.scopeHistory = [];
+    ui.motorCategory = "legs";
+    document.querySelectorAll("[data-motor-category]").forEach((entry) => {
+      entry.classList.toggle("active", entry.dataset.motorCategory === "legs");
+    });
+    makeJointCards();
     selectJoint(0x141);
     appendTerminal("[dashboard] simulation reset", "warn");
   });
@@ -173,8 +290,16 @@ function setupSimControls() {
   });
   $("robot-fit").addEventListener("click", () => robot.fit());
   $("position-target").addEventListener("input", (event) => {
-    const target = selectedJoint();
     const value = Number(event.target.value);
+    if (ui.axisCategory === "arm") {
+      const state = armMotorStates.find((entry) => entry.id === ui.selectedArmMotorId);
+      if (state) state.angleDeg = value;
+      $("position-output").textContent = `${value.toFixed(0)}°`;
+      const cardValue = document.querySelector(`[data-arm-motor-id="${ui.selectedArmMotorId}"] [data-field="angle"]`);
+      if (cardValue) cardValue.textContent = `${value.toFixed(1)}°`;
+      return;
+    }
+    const target = selectedJoint();
     sim.setJointTarget(target.id, value, true);
     $("impedance-toggle").checked = target.impedanceEnabled;
     $("position-output").textContent = `${value.toFixed(0)}°`;
@@ -335,6 +460,7 @@ function drawScope() {
 
 function renderLive() {
   const target = selectedJoint();
+  const selectedArm = armMotorStates.find((entry) => entry.id === ui.selectedArmMotorId);
   const runningButton = $("sim-toggle");
   runningButton.classList.toggle("stop", sim.playMode);
   runningButton.setAttribute("aria-pressed", String(sim.playMode));
@@ -344,14 +470,28 @@ function renderLive() {
   $("sim-time").textContent = `${sim.time.toFixed(2)} s`;
   $("control-state").textContent = sim.playMode ? sim.scenario.toUpperCase() : "STOP";
   $("can-load").textContent = `${sim.canUtilization.toFixed(1)}%`;
-  $("sel-angle").textContent = `${target.angle.toFixed(1)}°`;
-  $("sel-velocity").textContent = `${target.velocity.toFixed(1)}°/s`;
-  $("sel-torque").textContent = `${target.torque.toFixed(2)} N·m`;
-  $("sel-sensor").textContent = target.sensorPin == null ? "NO ANALOG" : `GPIO${target.sensorPin} · ${target.adc}`;
-  $("fault-sensor").textContent = target.sensorStuck ? "RELEASE SENSOR" : "FREEZE SENSOR";
-  $("fault-thermal").textContent = target.temperature > 80 ? "CLEAR THERMAL" : "THERMAL FAULT";
+  $("sel-angle").textContent = ui.axisCategory === "arm"
+    ? `${(selectedArm?.angleDeg || 0).toFixed(1)}°`
+    : `${target.angle.toFixed(1)}°`;
+  $("sel-velocity").textContent = ui.axisCategory === "arm"
+    ? `${(selectedArm?.velocityDegS || 0).toFixed(1)}°/s`
+    : `${target.velocity.toFixed(1)}°/s`;
+  $("sel-torque").textContent = ui.axisCategory === "arm"
+    ? `${(selectedArm?.torqueNm || 0).toFixed(2)} N·m`
+    : `${target.torque.toFixed(2)} N·m`;
+  $("sel-sensor").textContent = ui.axisCategory === "arm"
+    ? "AUX · CAN UNMAPPED"
+    : target.sensorPin == null ? "NO ANALOG" : `GPIO${target.sensorPin} · ${target.adc}`;
+  $("fault-sensor").textContent = ui.axisCategory === "arm"
+    ? "NO SENSOR MAP"
+    : target.sensorStuck ? "RELEASE SENSOR" : "FREEZE SENSOR";
+  $("fault-thermal").textContent = ui.axisCategory === "arm"
+    ? "NO THERMAL MAP"
+    : target.temperature > 80 ? "CLEAR THERMAL" : "THERMAL FAULT";
+  $("fault-sensor").disabled = ui.axisCategory === "arm";
+  $("fault-thermal").disabled = ui.axisCategory === "arm";
 
-  for (const card of document.querySelectorAll(".joint-card")) {
+  for (const card of document.querySelectorAll(".joint-card[data-joint-id]")) {
     const joint = sim.getJoint(Number(card.dataset.jointId));
     card.querySelector('[data-field="angle"]').textContent = `${joint.angle.toFixed(1)}°`;
     card.querySelector('[data-field="torque"]').textContent = `${joint.torque.toFixed(2)} N·m`;
@@ -359,7 +499,15 @@ function renderLive() {
     dot.className = `joint-dot ${joint.temperature > 80 || sim.faults.canDrop ? "warn" : sim.playMode ? "live" : ""}`;
   }
 
-  robot.setJointStates(sim.joints, ui.selectedJointId);
+  const poseDt = Math.max(0, sim.time - ui.lastRobotSimTime);
+  ui.lastRobotSimTime = sim.time;
+  robot.setJointStates(
+    sim.joints,
+    ui.axisCategory === "leg" ? ui.selectedJointId : null,
+    armMotorStates,
+    poseDt,
+  );
+  sim.setFootContactState(robot.groundContact);
   for (const side of ["left", "right"]) {
     const leg = robot.legTelemetry[side];
     const gait = sim.gait[side];
@@ -369,13 +517,21 @@ function renderLive() {
       : "HOLD";
     footHeight.textContent = `${signed(leg.footHeightMm, 0)} mm`;
     footHeight.classList.toggle("lift", leg.footHeightMm > 15);
+    const contactLabel = leg.heelContact && leg.toeContact
+      ? "HEEL + TOE"
+      : leg.heelContact ? "HEEL" : leg.toeContact ? "TOE" : "OPEN";
+    const contactOutput = $(`${side}-foot-contact`);
+    contactOutput.textContent = contactLabel;
+    contactOutput.classList.toggle("contact", leg.contact);
+    $(`${side}-foot-load`).textContent = `${leg.heelLoadKg.toFixed(1)} / ${leg.toeLoadKg.toFixed(1)} kg`;
     $(`${side}-ankle-angle`).textContent = `${signed(leg.ankleDeg)}°`;
     $(`${side}-calf-pair`).textContent = `${signed(leg.outerCalfDeg - 180)}° / ${signed(leg.innerCalfDeg - 180)}°`;
   }
   const closureText = $("closure-status-text");
   if (closureText && robot.ready) {
-    closureText.textContent = `X8 CRANK → TIE ROD → ANKLE/FOOT PIVOT · MAX CLOSURE ${robot.closureResidualMm.toFixed(3)} mm`;
+    closureText.textContent = `Z GUIDE ${signed(robot.groundContact.offsetZ * 1000, 0)} mm · SOLE CONTACT · X8 CRANK → TIE ROD → ANKLE/FOOT PIVOT · CLOSURE ${robot.closureResidualMm.toFixed(3)} mm`;
   }
+  $("root-z-offset").textContent = `${signed(robot.groundContact.offsetZ * 1000, 0)} mm`;
   drawScope();
   board.setActivity({
     running: sim.running,
@@ -413,6 +569,7 @@ function frame(now) {
 
 setupNavigation();
 makeJointCards();
+setupMotorCategories();
 setupSimControls();
 setupCadControls();
 setupBoardControls();
@@ -426,6 +583,8 @@ window.dropbearTwin = {
   robot,
   board,
   cad,
+  armMotorStates,
+  armMotorBindings: DROPBEAR_ARM_MOTOR_BINDINGS,
   source: DROPBEAR_SOURCE,
   usdSource: DROPBEAR_USD_SOURCE,
   cadEvidence: CAD_EVIDENCE,

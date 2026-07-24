@@ -22,6 +22,28 @@ export const DROPBEAR_USD_BINDINGS = Object.freeze([
   { canId: 0x14C, canLabel: "0x14C", side: "right", firmwareJoint: "hip_yaw", usdJoint: "PG_right_leg_roll", closure: false },
 ]);
 
+// Arm axes are present in the ground-truth USD but are not assigned CAN IDs by
+// the observed two-ESP32 leg firmware. The torso rotor bodies identify the two
+// shoulder-pitch drives as RMD-X10; the remaining arm axes use RMD-X8. The USD
+// calls those torso-root joints LH_yaw/RH_yaw, so the physical semantic
+// correction is kept explicit instead of silently relabeling the source.
+export const DROPBEAR_ARM_MOTOR_BINDINGS = Object.freeze([
+  { id: "arm-left-shoulder-pitch", side: "left", label: "Left shoulder pitch", semanticJoint: "shoulder_pitch", usdJoint: "LH_yaw", motor: "RMD-X10", mount: "torso", sourceSemantic: "authored as LH_yaw" },
+  { id: "arm-left-shoulder-yaw", side: "left", label: "Left shoulder yaw", semanticJoint: "shoulder_yaw", usdJoint: "LH_pitch", motor: "RMD-X8", mount: "arm", sourceSemantic: "authored as LH_pitch" },
+  { id: "arm-left-shoulder-roll", side: "left", label: "Left shoulder roll", semanticJoint: "shoulder_roll", usdJoint: "LH_roll", motor: "RMD-X8", mount: "arm", sourceSemantic: "authored as LH_roll" },
+  { id: "arm-left-elbow-pitch", side: "left", label: "Left elbow pitch", semanticJoint: "elbow_pitch", usdJoint: "LH_elbow_joint", motor: "RMD-X8", mount: "arm", sourceSemantic: "authored as LH_elbow_joint" },
+  { id: "arm-left-wrist-roll", side: "left", label: "Left wrist roll", semanticJoint: "wrist_roll", usdJoint: "LH_wrist_roll", motor: "RMD-X8", mount: "arm", sourceSemantic: "authored as LH_wrist_roll" },
+  { id: "arm-right-shoulder-pitch", side: "right", label: "Right shoulder pitch", semanticJoint: "shoulder_pitch", usdJoint: "RH_yaw", motor: "RMD-X10", mount: "torso", sourceSemantic: "authored as RH_yaw" },
+  { id: "arm-right-shoulder-yaw", side: "right", label: "Right shoulder yaw", semanticJoint: "shoulder_yaw", usdJoint: "RH_pitch", motor: "RMD-X8", mount: "arm", sourceSemantic: "authored as RH_pitch" },
+  { id: "arm-right-shoulder-roll", side: "right", label: "Right shoulder roll", semanticJoint: "shoulder_roll", usdJoint: "RH_roll", motor: "RMD-X8", mount: "arm", sourceSemantic: "authored as RH_roll" },
+  { id: "arm-right-elbow-pitch", side: "right", label: "Right elbow pitch", semanticJoint: "elbow_pitch", usdJoint: "RH_elbow_joint", motor: "RMD-X8", mount: "arm", sourceSemantic: "authored as RH_elbow_joint" },
+  { id: "arm-right-wrist-roll", side: "right", label: "Right wrist roll", semanticJoint: "wrist_roll", usdJoint: "RH_wrist_roll", motor: "RMD-X8", mount: "arm", sourceSemantic: "authored as RH_wrist_roll" },
+]);
+
 export function dropbearUsdBinding(canId) {
   return DROPBEAR_USD_BINDINGS.find((binding) => binding.canId === Number(canId));
+}
+
+export function dropbearArmMotorBinding(id) {
+  return DROPBEAR_ARM_MOTOR_BINDINGS.find((binding) => binding.id === id);
 }

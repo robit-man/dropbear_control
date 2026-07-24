@@ -7355,11 +7355,125 @@
       "mappingBasis": "physical USD axis and body location"
     }
   ],
+  "armMotorBindings": [
+    {
+      "id": "arm-left-shoulder-pitch",
+      "side": "left",
+      "physicalJoint": "shoulder_pitch",
+      "usdJoint": "LH_yaw",
+      "usdPath": "/humanoid/joints/LH_yaw",
+      "motor": "RMD-X10",
+      "mount": "torso",
+      "firmwareCanId": null,
+      "mappingBasis": "Physical torso motor identification; authored USD joint name retained."
+    },
+    {
+      "id": "arm-left-shoulder-yaw",
+      "side": "left",
+      "physicalJoint": "shoulder_yaw",
+      "usdJoint": "LH_pitch",
+      "usdPath": "/humanoid/joints/LH_pitch",
+      "motor": "RMD-X8",
+      "mount": "arm",
+      "firmwareCanId": null,
+      "mappingBasis": "Physical arm motor identification; authored USD joint name retained."
+    },
+    {
+      "id": "arm-left-shoulder-roll",
+      "side": "left",
+      "physicalJoint": "shoulder_roll",
+      "usdJoint": "LH_roll",
+      "usdPath": "/humanoid/joints/LH_roll",
+      "motor": "RMD-X8",
+      "mount": "arm",
+      "firmwareCanId": null,
+      "mappingBasis": "Physical arm motor identification; authored USD joint name retained."
+    },
+    {
+      "id": "arm-left-elbow-pitch",
+      "side": "left",
+      "physicalJoint": "elbow_pitch",
+      "usdJoint": "LH_elbow_joint",
+      "usdPath": "/humanoid/joints/LH_elbow_joint",
+      "motor": "RMD-X8",
+      "mount": "arm",
+      "firmwareCanId": null,
+      "mappingBasis": "Physical arm motor identification; authored USD joint name retained."
+    },
+    {
+      "id": "arm-left-wrist-roll",
+      "side": "left",
+      "physicalJoint": "wrist_roll",
+      "usdJoint": "LH_wrist_roll",
+      "usdPath": "/humanoid/joints/LH_wrist_roll",
+      "motor": "RMD-X8",
+      "mount": "arm",
+      "firmwareCanId": null,
+      "mappingBasis": "Physical arm motor identification; authored USD joint name retained."
+    },
+    {
+      "id": "arm-right-shoulder-pitch",
+      "side": "right",
+      "physicalJoint": "shoulder_pitch",
+      "usdJoint": "RH_yaw",
+      "usdPath": "/humanoid/joints/RH_yaw",
+      "motor": "RMD-X10",
+      "mount": "torso",
+      "firmwareCanId": null,
+      "mappingBasis": "Physical torso motor identification; authored USD joint name retained."
+    },
+    {
+      "id": "arm-right-shoulder-yaw",
+      "side": "right",
+      "physicalJoint": "shoulder_yaw",
+      "usdJoint": "RH_pitch",
+      "usdPath": "/humanoid/joints/RH_pitch",
+      "motor": "RMD-X8",
+      "mount": "arm",
+      "firmwareCanId": null,
+      "mappingBasis": "Physical arm motor identification; authored USD joint name retained."
+    },
+    {
+      "id": "arm-right-shoulder-roll",
+      "side": "right",
+      "physicalJoint": "shoulder_roll",
+      "usdJoint": "RH_roll",
+      "usdPath": "/humanoid/joints/RH_roll",
+      "motor": "RMD-X8",
+      "mount": "arm",
+      "firmwareCanId": null,
+      "mappingBasis": "Physical arm motor identification; authored USD joint name retained."
+    },
+    {
+      "id": "arm-right-elbow-pitch",
+      "side": "right",
+      "physicalJoint": "elbow_pitch",
+      "usdJoint": "RH_elbow_joint",
+      "usdPath": "/humanoid/joints/RH_elbow_joint",
+      "motor": "RMD-X8",
+      "mount": "arm",
+      "firmwareCanId": null,
+      "mappingBasis": "Physical arm motor identification; authored USD joint name retained."
+    },
+    {
+      "id": "arm-right-wrist-roll",
+      "side": "right",
+      "physicalJoint": "wrist_roll",
+      "usdJoint": "RH_wrist_roll",
+      "usdPath": "/humanoid/joints/RH_wrist_roll",
+      "motor": "RMD-X8",
+      "mount": "arm",
+      "firmwareCanId": null,
+      "mappingBasis": "Physical arm motor identification; authored USD joint name retained."
+    }
+  ],
   "browserKinematics": {
     "mode": "USD spanning-tree forward kinematics with damped least-squares passive-joint closure projection",
     "loopClosure": "Calf X8 and knee motor axes are commanded coordinates; passive leg joints are projected against retained USD closure anchors in-browser. Isaac/PhysX remains dynamics-authoritative.",
+    "groundContact": "Lowest heel/toe foot-body patches drive a unilateral Z-only root guide with gravity settling and no-penetration projection. No friction, impact, lateral, rotational, or rigid-body dynamics are claimed.",
     "adaptations": {
-      "RL_Revolute81": "Use mirrored Z revolute basis in-browser. The source revision authors this lone outer-calf X8 axis as X while its mirrored mate and the other calf driver axes are Z; X cannot close the crank/rod/ankle contact geometry."
+      "RL_Revolute81": "Use mirrored Z revolute basis in-browser. The source revision authors this lone outer-calf X8 axis as X while its mirrored mate and the other calf driver axes are Z; X cannot close the crank/rod/ankle contact geometry.",
+      "armShoulderPitch": "Expose the two torso-mounted RMD-X10 axes as physical shoulder pitch while retaining their authored LH_yaw and RH_yaw USD joint names."
     },
     "calfLinkages": [
       {

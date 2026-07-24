@@ -19,7 +19,12 @@ plant. Do not use it as the sole safety basis for powered hardware.
   through `0x14C`) bind to their actual USD joints and anchors. Eight
   non-calf motors and four X8 calf cranks drive browser forward kinematics;
   the retained passive rods and ankle/foot pivots are projected against the
-  true USD closure anchors. Isaac/PhysX remains authoritative for dynamics.
+  true USD closure anchors. A separate arm category exposes ten installed
+  shafts: eight RMD-X8 arm motors and the two torso-mounted RMD-X10
+  shoulder-pitch motors. Arm firmware IDs remain unmapped rather than guessed.
+  Heel and toe patches derived from the rendered foot bodies feed a
+  gravity-settled, Z-only no-penetration guide and four load-cell channels.
+  Isaac/PhysX remains authoritative for dynamics.
   The alternating-step demo uses explicit loading, stance, extended rearward
   push-off, moderated knee lift, continued forward advance during knee
   extension, peak forward hip pitch at near-lock heel placement, and a loaded
@@ -68,6 +73,41 @@ The last four USD names preserve the source model’s naming. The mapping uses
 the physical world-space axes and body locations: the `*_leg_pitch` USD axes
 are physical hip roll, while the `*_leg_roll` axes are physical hip yaw.
 
+## Arm motor to USD articulation
+
+| Side | Physical axis | USD joint | Motor | Firmware map |
+|---|---|---|---|---|
+| Left | Shoulder pitch | `LH_yaw` | RMD-X10 | Unmapped |
+| Left | Shoulder yaw | `LH_pitch` | RMD-X8 | Unmapped |
+| Left | Shoulder roll | `LH_roll` | RMD-X8 | Unmapped |
+| Left | Elbow pitch | `LH_elbow_joint` | RMD-X8 | Unmapped |
+| Left | Wrist roll | `LH_wrist_roll` | RMD-X8 | Unmapped |
+| Right | Shoulder pitch | `RH_yaw` | RMD-X10 | Unmapped |
+| Right | Shoulder yaw | `RH_pitch` | RMD-X8 | Unmapped |
+| Right | Shoulder roll | `RH_roll` | RMD-X8 | Unmapped |
+| Right | Elbow pitch | `RH_elbow_joint` | RMD-X8 | Unmapped |
+| Right | Wrist roll | `RH_wrist_roll` | RMD-X8 | Unmapped |
+
+The physical shoulder-pitch identification comes from the torso-mounted X10
+drives. The USD authors those root joints as `LH_yaw` and `RH_yaw`; both names
+are shown in the inspector so the physical semantic correction stays
+auditable. Selecting an arm card or shaft allows the corresponding USD axis to
+be exercised without implying low-level CAN authority.
+
+## Foot contact model
+
+`VerticalGroundConstraint` samples the lowest heel and toe vertices on both
+foot bodies after forward kinematics. It integrates gravity on the root Z
+coordinate, projects penetration out of the ground, and distributes the
+simulated 42 kg mass across patches within a 4 mm contact band. The four
+resulting loads are routed to the optional left-heel, left-toe, right-heel,
+and right-toe load-cell channels.
+
+This is a unilateral vertical software constraint. It adds useful contact
+sensing and natural vertical settling, but does not model friction, impacts,
+lateral motion, body rotation, center-of-pressure stability, self-collision,
+or full rigid-body dynamics.
+
 ## Run it
 
 From the repository root:
@@ -91,26 +131,28 @@ npm run test:visual
 ```
 
 `npm test` covers the existing protocol/plant checks plus the source-grounded
-Dropbear map and runtime. The dashboard smoke and Playwright visual checks
-require the server to be running on port 8000. Set `DASHBOARD_BASE`,
-`BASE_URL`, or `VISUAL_OUT` to override their defaults.
+leg and arm maps, vertical ground constraint, and runtime. The dashboard smoke
+and Playwright visual checks require the server to be running on port 8000.
+Set `DASHBOARD_BASE`, `BASE_URL`, or `VISUAL_OUT` to override their defaults.
 
 ## Key files
 
 | Path | Purpose |
 |---|---|
 | `index.html` | Five-view engineering workspace |
-| `js/dropbear.js` | Source map, task scheduler, serial grammar, and simplified joint plant |
-| `js/dropbear_usd.js` | Auditable 12-motor CAN-to-USD binding map |
-| `js/robot_3d.js` | Full USD body renderer, motor anchors, and browser forward kinematics |
+| `js/dropbear.js` | Source map, task scheduler, serial grammar, load-cell state, and simplified joint plant |
+| `js/dropbear_usd.js` | Auditable 12-leg-CAN and 10-arm-motor USD binding maps |
+| `js/vertical_ground_constraint.js` | Heel/toe sensing, gravity settling, and Z-only no-penetration projection |
+| `js/robot_3d.js` | Full USD body renderer, leg/arm motor shafts, contact patches, and browser forward kinematics |
 | `js/board_3d.js` | Interactive dimensional ESP32 controller and signal routes |
 | `js/cad_viewer.js` | STEP-derived GLB rendering and articulation |
 | `js/app.js` | Dashboard interaction and live telemetry wiring |
 | `assets/cad/*.glb` | Optimized browser caches derived from the exact candidate solids |
 | `assets/robot/dropbear-usd-browser.glb` | Decimated visual cache of the actual Dropbear USD |
-| `assets/robot/dropbear-articulation.json` | Body, joint, closure, source, and CAN binding manifest |
-| `test/dropbear.test.mjs` | Low-level source-map/runtime regression |
-| `test/visual_review.mjs` | Critical interactive journey and screenshot review |
+| `assets/robot/dropbear-articulation.json` | Body, joint, closure, source, leg-CAN, and arm-motor binding manifest |
+| `test/dropbear.test.mjs` | Low-level source-map, leg/arm inventory, and runtime regression |
+| `test/vertical_ground_constraint.test.mjs` | Ground-contact plant regression |
+| `test/visual_review.mjs` | Critical interactive journey, shaft motion, contact, and screenshot review |
 
 ## Dropbear USD license
 

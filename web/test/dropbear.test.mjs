@@ -10,8 +10,10 @@ import {
   sampleAlternatingStep,
 } from "../js/dropbear.js";
 import {
+  DROPBEAR_ARM_MOTOR_BINDINGS,
   DROPBEAR_USD_BINDINGS,
   DROPBEAR_USD_SOURCE,
+  dropbearArmMotorBinding,
   dropbearUsdBinding,
 } from "../js/dropbear_usd.js";
 
@@ -101,6 +103,25 @@ assert.deepEqual(
 );
 assert.equal(DROPBEAR_USD_BINDINGS.some((binding) => binding.closure), false);
 assert.equal(dropbearUsdBinding(0x14A)?.firmwareJoint, "hip_roll");
+assert.equal(DROPBEAR_ARM_MOTOR_BINDINGS.length, 10);
+assert.equal(
+  DROPBEAR_ARM_MOTOR_BINDINGS.filter((binding) => binding.motor === "RMD-X8").length,
+  8,
+);
+assert.deepEqual(
+  DROPBEAR_ARM_MOTOR_BINDINGS
+    .filter((binding) => binding.motor === "RMD-X10")
+    .map((binding) => [binding.side, binding.semanticJoint, binding.usdJoint, binding.mount]),
+  [
+    ["left", "shoulder_pitch", "LH_yaw", "torso"],
+    ["right", "shoulder_pitch", "RH_yaw", "torso"],
+  ],
+);
+assert.equal(
+  DROPBEAR_ARM_MOTOR_BINDINGS.every((binding) => !Object.hasOwn(binding, "canId")),
+  true,
+);
+assert.equal(dropbearArmMotorBinding("arm-right-elbow-pitch")?.usdJoint, "RH_elbow_joint");
 
 const sim = new DropbearSim();
 assert.equal(sim.playMode, false);
@@ -110,6 +131,17 @@ assert.equal(sim.getJoint("knee", "left").minAngle, 180);
 assert.equal(sim.getJoint("knee", "right").maxAngle, 360);
 sim.setJointTarget(0x145, 90, true);
 assert.equal(sim.getJoint("knee", "left").desiredPosition, 180);
+sim.setFootContactState({
+  valid: true,
+  guide: "Z_ONLY",
+  offsetZ: -0.114,
+  velocityZ: 0,
+  left: { heelLoadKg: 12, toeLoadKg: 9 },
+  right: { heelLoadKg: 11, toeLoadKg: 10 },
+});
+assert.equal(sim.loadCellsEnabled, true);
+assert.deepEqual(sim.loadCells, [12, 9, 11, 10]);
+assert.equal(sim.footContacts.guide, "Z_ONLY");
 
 const guardedAngle = sim.joints[0].angle;
 for (let index = 0; index < 30; index += 1) sim.step(0.01);

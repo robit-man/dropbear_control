@@ -47,6 +47,17 @@ check("deprecated decorative brand mark removed", !index.body.includes('class="b
 check("Hyperspawn identity applied", index.body.includes("HYPERSPAWN<em>_</em>"));
 check("configurable USD resolution control present", index.body.includes('id="usd-resolution"'));
 check("paired foot and X8 telemetry present", index.body.includes('id="left-foot-height"') && index.body.includes('id="right-calf-pair"'));
+check(
+  "geometry contact telemetry present",
+  index.body.includes('id="left-foot-contact"')
+    && index.body.includes('id="right-foot-contact"')
+    && index.body.includes('id="root-z-offset"'),
+);
+check(
+  "separate leg and arm motor categories present",
+  index.body.includes('data-motor-category="legs"')
+    && index.body.includes('data-motor-category="arms"'),
+);
 
 const dropbear = await request(`${base}/js/dropbear.js`);
 check("Dropbear simulator module served", dropbear.status === 200);
@@ -66,7 +77,41 @@ check("dashboard instantiates CAD viewer", app.body.includes("new CadViewer"));
 check("dashboard instantiates controller viewer", app.body.includes("new Board3D"));
 check("dashboard instantiates full USD robot viewer", app.body.includes("new Robot3D"));
 check("dashboard exposes inspectable twin", app.body.includes("window.dropbearTwin"));
+check("dashboard exposes inspectable arm motor state", app.body.includes("armMotorBindings: DROPBEAR_ARM_MOTOR_BINDINGS"));
 check("USD resolution persists and updates renderer", app.body.includes("dropbear-usd-resolution") && app.body.includes("setResolutionScale"));
+check("geometry contact feeds the load-cell simulator", app.body.includes("sim.setFootContactState(robot.groundContact)"));
+
+const usdBindings = await request(`${base}/js/dropbear_usd.js`);
+const armBindingSource = usdBindings.body.split("export const DROPBEAR_ARM_MOTOR_BINDINGS")[1]?.split("export function dropbearUsdBinding")[0] || "";
+check("USD binding module served", usdBindings.status === 200);
+check(
+  "arm map declares eight X8 and two torso X10 drives",
+  (armBindingSource.match(/motor: "RMD-X8"/g) || []).length === 8
+    && (armBindingSource.match(/motor: "RMD-X10"/g) || []).length === 2
+    && (armBindingSource.match(/mount: "torso"/g) || []).length === 2,
+);
+check(
+  "shoulder-pitch source semantics remain explicit",
+  usdBindings.body.includes('semanticJoint: "shoulder_pitch", usdJoint: "LH_yaw"')
+    && usdBindings.body.includes('semanticJoint: "shoulder_pitch", usdJoint: "RH_yaw"'),
+);
+
+const robotModule = await request(`${base}/js/robot_3d.js`);
+check(
+  "robot viewer builds arm shafts and vertical ground contact",
+  robotModule.body.includes("_buildArmMotorShafts")
+    && robotModule.body.includes("VerticalGroundConstraint")
+    && robotModule.body.includes("_rawFootPatches"),
+);
+
+const groundConstraint = await request(`${base}/js/vertical_ground_constraint.js`);
+check(
+  "Z-only unilateral ground constraint served",
+  groundConstraint.status === 200
+    && groundConstraint.body.includes('guide: "Z_ONLY"')
+    && groundConstraint.body.includes("heelLoadKg")
+    && groundConstraint.body.includes("toeLoadKg"),
+);
 
 const robotGlb = await request(`${base}/assets/robot/dropbear-usd-browser.glb`, "HEAD");
 const robotManifestResponse = await request(`${base}/assets/robot/dropbear-articulation.json`);
@@ -85,6 +130,21 @@ check(
     && robotManifest?.statistics?.closureConstraints === 27,
 );
 check("all 12 CAN motors bind to USD joints", robotManifest?.canBindings?.length === 12);
+check(
+  "all ten arm motors bind to existing USD joints without invented CAN IDs",
+  robotManifest?.armMotorBindings?.length === 10
+    && robotManifest.armMotorBindings.every(
+      (binding) => binding.firmwareCanId === null
+        && robotManifest.joints.some((joint) => joint.name === binding.usdJoint),
+    ),
+);
+check(
+  "arm manifest retains eight X8 and two torso X10 drives",
+  robotManifest?.armMotorBindings?.filter((binding) => binding.motor === "RMD-X8").length === 8
+    && robotManifest?.armMotorBindings?.filter(
+      (binding) => binding.motor === "RMD-X10" && binding.mount === "torso",
+    ).length === 2,
+);
 check(
   "four calf CAN nodes bind to X8 driver axes",
   JSON.stringify(robotManifest?.canBindings?.slice(0, 4).map((binding) => binding.usdJoint))

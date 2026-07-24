@@ -119,6 +119,8 @@
                   <span>LEFT LEG</span><b id="left-gait-phase">HOLD</b>
                   <dl>
                     <div><dt>FOOT</dt><dd id="left-foot-height">+0 mm</dd></div>
+                    <div><dt>CONTACT</dt><dd id="left-foot-contact">OPEN</dd></div>
+                    <div><dt>HEEL / TOE</dt><dd id="left-foot-load">0.0 / 0.0 kg</dd></div>
                     <div><dt>ANKLE</dt><dd id="left-ankle-angle">+0.0°</dd></div>
                     <div><dt>X8 O / I</dt><dd id="left-calf-pair">+0.0° / +0.0°</dd></div>
                   </dl>
@@ -127,6 +129,8 @@
                   <span>RIGHT LEG</span><b id="right-gait-phase">HOLD</b>
                   <dl>
                     <div><dt>FOOT</dt><dd id="right-foot-height">+0 mm</dd></div>
+                    <div><dt>CONTACT</dt><dd id="right-foot-contact">OPEN</dd></div>
+                    <div><dt>HEEL / TOE</dt><dd id="right-foot-load">0.0 / 0.0 kg</dd></div>
                     <div><dt>ANKLE</dt><dd id="right-ankle-angle">+0.0°</dd></div>
                     <div><dt>X8 O / I</dt><dd id="right-calf-pair">+0.0° / +0.0°</dd></div>
                   </dl>
@@ -137,11 +141,12 @@
                 <b>3c37aed · Z-UP · METRES</b>
               </div>
               <button id="robot-fit" class="button subtle robot-fit">FIT USD</button>
-              <div id="closure-status" class="robot-closure-note"><i></i><span id="closure-status-text">4 RMD-X8 SHAFTS · CRANK → TIE ROD → ANKLE/FOOT PIVOT · SOLVING CLOSURES…</span></div>
+              <div id="closure-status" class="robot-closure-note"><i></i><span id="closure-status-text">Z GUIDE · SOLE CONTACT · X8 CRANK → TIE ROD → ANKLE/FOOT PIVOT · SOLVING…</span></div>
               <div class="stage-readout">
                 <div><span>SIM TIME</span><b id="sim-time">0.00 s</b></div>
                 <div><span>CONTROL</span><b id="control-state">STOP</b></div>
                 <div><span>CAN LOAD</span><b id="can-load">0.0%</b></div>
+                <div><span>ROOT Z</span><b id="root-z-offset">+0 mm</b></div>
               </div>
             </div>
           </article>
@@ -149,10 +154,13 @@
           <article class="panel joint-panel">
             <div class="panel-head">
               <div>
-                <span class="panel-kicker">CAN FLEET</span>
-                <h2>Installed joint map</h2>
+                <span class="panel-kicker">MOTOR FLEET</span>
+                <h2 id="motor-map-title">Installed leg motor map</h2>
               </div>
-              <span class="count-chip">12 NODES</span>
+              <div class="motor-category-tabs" aria-label="Motor category">
+                <button class="active" data-motor-category="legs">LEGS <b>12</b></button>
+                <button data-motor-category="arms">ARMS <b>10</b></button>
+              </div>
             </div>
             <div id="joint-list" class="joint-list"></div>
           </article>
