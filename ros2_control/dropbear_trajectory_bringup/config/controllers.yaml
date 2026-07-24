@@ -1,0 +1,51 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 100
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    dropbear_joint_trajectory_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+dropbear_joint_trajectory_controller:
+  ros__parameters:
+    joints:
+      - LL_Revolute81
+      - LL_Revolute67
+      - RL_Revolute67
+      - RL_Revolute81
+      - LL_knee_actuator_joint
+      - LL_hip_joint
+      - RL_hip_joint
+      - RL_knee_actuator_joint
+      - PG_left_leg_roll
+      - PG_left_leg_pitch
+      - PG_right_leg_pitch
+      - PG_right_leg_roll
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    state_publish_rate: 50.0
+    action_monitor_rate: 20.0
+    allow_partial_joints_goal: false
+    allow_integration_in_goal_trajectories: false
+    interpolate_from_desired_state: true
+    open_loop_control: false
+    constraints:
+      stopped_velocity_tolerance: 0.02
+      goal_time: 0.5
+      LL_Revolute81: {trajectory: 0.15, goal: 0.05}
+      LL_Revolute67: {trajectory: 0.15, goal: 0.05}
+      RL_Revolute67: {trajectory: 0.15, goal: 0.05}
+      RL_Revolute81: {trajectory: 0.15, goal: 0.05}
+      LL_knee_actuator_joint: {trajectory: 0.12, goal: 0.04}
+      LL_hip_joint: {trajectory: 0.12, goal: 0.04}
+      RL_hip_joint: {trajectory: 0.12, goal: 0.04}
+      RL_knee_actuator_joint: {trajectory: 0.12, goal: 0.04}
+      PG_left_leg_roll: {trajectory: 0.10, goal: 0.035}
+      PG_left_leg_pitch: {trajectory: 0.10, goal: 0.035}
+      PG_right_leg_pitch: {trajectory: 0.10, goal: 0.035}
+      PG_right_leg_roll: {trajectory: 0.10, goal: 0.035}

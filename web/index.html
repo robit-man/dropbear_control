@@ -1,198 +1,390 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MyActuator Dashboard</title>
-  <link rel="icon" href="data:," />
-  <link rel="stylesheet" href="css/style.css" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a0a0b">
+  <title>Dropbear Low-Level Digital Twin</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/css/style.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "/node_modules/three/build/three.module.js",
+        "three/addons/": "/node_modules/three/examples/jsm/"
+      }
+    }
+  </script>
 </head>
 <body>
   <header class="topbar">
-    <div class="brand">MyActuator <span>Dashboard</span></div>
-    <div class="conn">
-      <button id="btn-sim" class="btn primary">Start Simulation</button>
-      <button id="btn-connect" class="btn">Connect ESP32 (WebSerial)</button>
-      <span id="conn-status" class="status-pill offline">offline</span>
+    <div class="brand-lockup">
+      <div>
+        <strong>HYPERSPAWN<em>_</em></strong>
+        <span>DROPBEAR · LOW-LEVEL DIGITAL TWIN</span>
+      </div>
+    </div>
+    <div class="source-chip" title="Grounded in the current Dropbear low-level-control source">
+      <span class="live-dot"></span>
+      SOURCE <b>13cf5ec</b>
+    </div>
+    <div class="runbar">
+      <label class="resolution-control" title="Scale the USD viewport render resolution">
+        <span>USD RES</span>
+        <input id="usd-resolution" type="range" min="50" max="200" step="25" value="100" aria-label="USD viewport resolution">
+        <output id="usd-resolution-output">100%</output>
+      </label>
+      <label class="compact-select">
+        <span>RATE</span>
+        <select id="sim-speed" aria-label="Simulation rate">
+          <option value="0.25">0.25×</option>
+          <option value="1" selected>1×</option>
+          <option value="2">2×</option>
+          <option value="4">4×</option>
+        </select>
+      </label>
+      <button id="sim-reset" class="icon-button" title="Reset simulation" aria-label="Reset simulation">↺</button>
+      <button id="sim-toggle" class="run-button" aria-pressed="false"><span class="run-icon">▶</span> PLAY</button>
+      <div id="system-state" class="system-state paused"><span></span>GUARDED PAUSE</div>
     </div>
   </header>
 
-  <div class="shell">
-    <!-- Left sidebar: module navigation -->
-    <nav class="sidebar">
-      <div class="nav-group">
-        <div class="nav-label">Monitor</div>
-        <button class="nav-item active" data-module="fleet">
-          <span class="nav-ico">▤</span> Fleet
+  <div class="app-shell">
+    <aside class="rail">
+      <nav aria-label="Workspace">
+        <button class="rail-item active" data-view-target="sim">
+          <span class="rail-icon">⌁</span><span>Robot Sim</span>
         </button>
-        <button class="nav-item" data-module="detail">
-          <span class="nav-ico">◉</span> Motor Detail
+        <button class="rail-item" data-view-target="cad">
+          <span class="rail-icon">◇</span><span>Actuator CAD</span>
         </button>
+        <button class="rail-item" data-view-target="controller">
+          <span class="rail-icon">▦</span><span>Controller Lab</span>
+        </button>
+        <button class="rail-item" data-view-target="firmware">
+          <span class="rail-icon">›_</span><span>Firmware</span>
+        </button>
+        <button class="rail-item" data-view-target="evidence">
+          <span class="rail-icon">◎</span><span>Evidence</span>
+        </button>
+      </nav>
+      <div class="rail-foot">
+        <span>2 × ESP32</span>
+        <span>12 × CAN</span>
+        <span>1 Mbps</span>
       </div>
-      <div class="nav-group">
-        <div class="nav-label">Configure</div>
-        <button class="nav-item" data-module="hardware">
-          <span class="nav-ico">⚙</span> Hardware
-        </button>
-        <button class="nav-item" data-module="console">
-          <span class="nav-ico">⌘</span> Command Console
-        </button>
-      </div>
-      <div class="nav-group">
-        <div class="nav-label">Reference</div>
-        <button class="nav-item" data-module="docs">
-          <span class="nav-ico">❏</span> Command Reference
-        </button>
-        <button class="nav-item" data-module="log">
-          <span class="nav-ico">≣</span> Event Log
-        </button>
-      </div>
-    </nav>
+    </aside>
 
-    <!-- Primary dashboard: one module shown at a time -->
-    <main class="primary">
-      <!-- Fleet module -->
-      <section class="module" data-view="fleet">
-        <div class="module-head"><h2>Fleet</h2></div>
-        <div class="legacy-add">
-          <select id="legacy-select">
-            <option value="">Legacy variant…</option>
-            <option value="RMD-X6">RMD-X6 (incremental)</option>
-            <option value="RMD-X8">RMD-X8 (incremental)</option>
-            <option value="RMD-X10">RMD-X10 (incremental)</option>
-            <option value="RMD-X10Pro">RMD-X10 Pro (incremental)</option>
-          </select>
-          <button id="btn-add-legacy" class="btn small">Add</button>
-        </div>
-        <div id="fleet-list" class="fleet-list"></div>
-      </section>
-
-      <!-- Motor Detail module -->
-      <section class="module hidden" data-view="detail">
-        <div class="module-head"><h2>Motor Detail</h2></div>
-        <div id="detail-empty" class="empty">Select a motor from the Fleet module.</div>
-        <div id="detail" class="detail-body hidden">
-          <div class="detail-head">
-            <h3 id="d-model">—</h3>
-            <span id="d-series" class="tag">—</span>
-            <span id="d-state" class="tag state">—</span>
+    <main class="workspace">
+      <section class="view active" data-view="sim">
+        <div class="view-heading">
+          <div>
+            <div class="eyebrow">DIGITAL TWIN / ROBOT</div>
+            <h1>Dropbear low-level control room</h1>
+            <p>Source-routed firmware loops, joint state, CAN traffic, sensor feedback, and guarded motion in one interactive workspace.</p>
           </div>
-
-          <div class="viz">
-            <canvas id="motor-canvas" width="220" height="220"></canvas>
-          </div>
-
-          <div class="telemetry">
-            <div class="metric"><label>Position</label><span id="m-pos">0.00 rad</span></div>
-            <div class="metric"><label>Velocity</label><span id="m-vel">0.00 rad/s</span></div>
-            <div class="metric"><label>Torque</label><span id="m-torq">0.00 N·m</span></div>
-            <div class="metric"><label>Temp</label><span id="m-temp">25 °C</span></div>
-            <div class="metric"><label>Fault</label><span id="m-fault">NONE</span></div>
-            <div class="metric"><label>Uptime</label><span id="m-uptime">0 s</span></div>
-          </div>
-
-          <div class="enc-cal">
-            <h3>Encoder / Calibration</h3>
-            <div class="metric"><label>Encoder</label><span id="m-enc">—</span></div>
-            <div class="metric"><label>Resolution</label><span id="m-res">—</span></div>
-            <div class="metric"><label>Zeroed Pos</label><span id="m-zeroed">0.00 rad</span></div>
-            <div class="ctl-row">
-              <label>AS5600</label>
-              <input type="checkbox" id="c-as5600" />
-              <span class="muted" id="as5600-note">output-shaft mag. encoder</span>
-            </div>
-            <div class="ctl-row">
-              <button id="c-calibrate" class="btn small primary">Calibrate Zero</button>
-            </div>
-          </div>
-
-          <div class="controls">
-            <h3>Control</h3>
-            <div class="ctl-row">
-              <button id="c-enable" class="btn small">Enable</button>
-              <button id="c-disable" class="btn small">Disable</button>
-              <button id="c-clear" class="btn small">Clear Fault</button>
-            </div>
-            <div class="ctl-row">
-              <label>Mode</label>
-              <select id="c-mode">
-                <option value="position">Position</option>
-                <option value="velocity">Velocity</option>
-                <option value="torque">Torque</option>
+          <div class="scenario-bar">
+            <label>
+              <span>SCENARIO</span>
+              <select id="scenario">
+                <option value="neutral">Neutral hold</option>
+                <option value="walk">Alternating step</option>
+                <option value="balance">Balance transfer</option>
+                <option value="sensor-sweep">Sensor sweep</option>
+                <option value="manual">Manual torque</option>
               </select>
-              <input id="c-target" type="number" step="0.1" value="0" />
-                <label><input type="checkbox" id="c-unit-deg"> deg</label>
-              <button id="c-send" class="btn small primary">Send</button>
-            </div>
-            <div class="ctl-row">
-              <label>Fault inject</label>
-              <button id="c-overtemp" class="btn small warn">Overheat</button>
-            </div>
+            </label>
+            <button id="run-demo" class="button accent">RUN FULL DEMO</button>
           </div>
         </div>
+
+        <div class="sim-grid">
+          <article class="panel robot-panel">
+            <div class="panel-head">
+              <div>
+                <span class="panel-kicker">FULL USD SIM / LIVE MOTOR BINDING</span>
+                <h2>Dropbear closed-loop articulation</h2>
+              </div>
+              <div class="usd-statline">
+                <span><b>93</b> BODIES</span>
+                <span><b>116</b> JOINTS</span>
+                <span class="closure"><b>27</b> CLOSURES</span>
+              </div>
+            </div>
+            <div class="robot-stage">
+              <canvas id="robot-canvas" aria-label="Interactive full Dropbear USD robot simulation"></canvas>
+              <div id="robot-load-status" class="load-status robot-load-status loading"><span></span>Loading Dropbear USD…</div>
+              <div class="robot-asset-chip">
+                <span>DROPBEAR.USD</span>
+                <b>3c37aed · Z-UP · METRES</b>
+              </div>
+              <button id="robot-fit" class="button subtle robot-fit">FIT USD</button>
+              <div id="closure-status" class="robot-closure-note"><i></i><span id="closure-status-text">4 RMD-X8 SHAFTS · CRANK → TIE ROD → ANKLE/FOOT PIVOT · SOLVING CLOSURES…</span></div>
+              <div class="stage-readout">
+                <div><span>SIM TIME</span><b id="sim-time">0.00 s</b></div>
+                <div><span>CONTROL</span><b id="control-state">STOP</b></div>
+                <div><span>CAN LOAD</span><b id="can-load">0.0%</b></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel joint-panel">
+            <div class="panel-head">
+              <div>
+                <span class="panel-kicker">CAN FLEET</span>
+                <h2>Installed joint map</h2>
+              </div>
+              <span class="count-chip">12 NODES</span>
+            </div>
+            <div id="joint-list" class="joint-list"></div>
+          </article>
+
+          <article class="panel inspector-panel">
+            <div class="panel-head">
+              <div>
+                <span class="panel-kicker">SELECTED AXIS</span>
+                <h2 id="selected-name">Left outer calf</h2>
+              </div>
+              <div class="selected-binding">
+                <span id="selected-usd" class="usd-joint-chip">USD LL_Revolute29 · CLOSURE</span>
+                <span id="selected-can" class="can-chip">0x141</span>
+              </div>
+            </div>
+            <div class="metric-strip">
+              <div><span>ANGLE</span><b id="sel-angle">180.0°</b></div>
+              <div><span>VELOCITY</span><b id="sel-velocity">0.0°/s</b></div>
+              <div><span>TORQUE</span><b id="sel-torque">0.00 N·m</b></div>
+              <div><span>SENSOR</span><b id="sel-sensor">GPIO14</b></div>
+            </div>
+            <div class="control-grid">
+              <label class="range-control">
+                <span>POSITION SETPOINT <output id="position-output">180°</output></span>
+                <input id="position-target" type="range" min="0" max="360" step="1" value="180">
+              </label>
+              <label class="range-control">
+                <span>MANUAL TORQUE <output id="torque-output">0.00 N·m</output></span>
+                <input id="torque-target" type="range" min="-300" max="300" step="1" value="0">
+              </label>
+              <div class="toggle-row">
+                <label class="switch"><input id="impedance-toggle" type="checkbox"><span></span>IMPEDANCE</label>
+                <button id="fault-sensor" class="button subtle">FREEZE SENSOR</button>
+                <button id="fault-thermal" class="button subtle">THERMAL FAULT</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel scope-panel">
+            <div class="panel-head">
+              <div>
+                <span class="panel-kicker">REAL-TIME TRACE</span>
+                <h2>Setpoint / angle / torque</h2>
+              </div>
+              <div class="scope-legend"><span class="desired">SET</span><span class="angle">POS</span><span class="torque">TRQ</span></div>
+            </div>
+            <div class="scope-wrap"><canvas id="scope-canvas"></canvas></div>
+          </article>
+        </div>
       </section>
 
-      <!-- Hardware module -->
-      <section class="module hidden" data-view="hardware">
-        <div class="module-head"><h2>Hardware</h2></div>
-        <div class="ctl-row">
-          <label>Board</label>
-          <select id="hw-board">
-            <option value="esp32dev">ESP32 30-pin DevKitC</option>
-            <option value="esp32-s3-devkitc-1">ESP32-S3 DevKitC</option>
-            <option value="esp32-c3-devkitm-1">ESP32-C3 DevKitM</option>
-          </select>
+      <section class="view" data-view="cad">
+        <div class="view-heading">
+          <div>
+            <div class="eyebrow">GEOMETRY / EXACT SOURCE CACHE</div>
+            <h1>Tracked STEP actuator</h1>
+            <p>The cached housing and output solids rendered as a source-derived browser preview—not a decorative cylinder. Full-resolution STEP remains linked beside it.</p>
+          </div>
+          <div id="cad-status" class="load-status loading"><span></span>Loading geometry…</div>
         </div>
-        <div id="hw-pins" class="pin-grid"></div>
-        <div class="ctl-row">
-          <button id="hw-apply" class="btn small primary">Apply Config</button>
+        <div class="cad-layout">
+          <article class="panel cad-stage-panel">
+            <div class="cad-canvas-wrap">
+              <canvas id="cad-canvas" aria-label="Interactive STEP-derived MyActuator CAD model"></canvas>
+              <div class="cad-watermark"><span>RMD-X12-320</span><b>STEP CANDIDATE</b></div>
+              <div class="cad-dimensions"><span>WORLD UNITS</span><b>METRES · +Z ARTICULATION</b></div>
+            </div>
+            <div class="cad-toolbar">
+              <label class="switch"><input id="cad-lines" type="checkbox" checked><span></span>TECHNICAL LINES</label>
+              <label class="switch"><input id="cad-explode" type="checkbox"><span></span>EXPLODE OUTPUT</label>
+              <label class="switch"><input id="cad-housing" type="checkbox" checked><span></span>HOUSING</label>
+              <label class="switch"><input id="cad-output" type="checkbox" checked><span></span>OUTPUT</label>
+              <button id="cad-fit" class="button subtle">FIT MODEL</button>
+            </div>
+          </article>
+          <aside class="cad-aside">
+            <article class="panel evidence-card">
+              <span class="panel-kicker">SOURCE INTEGRITY</span>
+              <h2>Exact cached export</h2>
+              <dl>
+                <div><dt>Source SHA-256</dt><dd title="9b1710aef09916c8da02b4e6b750da6bbfe2ba44cad6ba03cd1b53e3858e5eea">9b1710ae…e5eea</dd></div>
+                <div><dt>Housing</dt><dd>314,848 tris</dd></div>
+                <div><dt>Output</dt><dd>109,818 tris</dd></div>
+                <div><dt>Axis</dt><dd>Canonical +Z</dd></div>
+              </dl>
+              <div class="evidence-warning">The interactive preview is quantized and simplified from the exact cached solids for responsive browser rendering; the linked STEP files remain full-resolution. Installed Dropbear joint-to-product binding is still unresolved.</div>
+              <div class="download-row">
+                <a href="/cad-candidate/step-e7d99e7e0d9683017c1a/housing-candidate.step">HOUSING STEP ↓</a>
+                <a href="/cad-candidate/step-e7d99e7e0d9683017c1a/output-candidate.step">OUTPUT STEP ↓</a>
+              </div>
+            </article>
+            <article class="panel cad-control-card">
+              <span class="panel-kicker">LIVE ARTICULATION</span>
+              <h2 id="cad-joint-name">Left outer calf</h2>
+              <label class="range-control">
+                <span>OUTPUT ANGLE <output id="cad-angle-output">180.0°</output></span>
+                <input id="cad-angle" type="range" min="120" max="240" step="0.5" value="180">
+              </label>
+              <p>The output solid follows the selected simulated joint. Drag to orbit, wheel to zoom, and enable explode to inspect the separation.</p>
+            </article>
+          </aside>
         </div>
-        <h3 class="hw-sub">Signal / Data Flow</h3>
-        <div id="hw-flow" class="flow-grid"></div>
-        <div class="muted hw-note">Pin map mirrors firmware/include/config.h. 30-pin preset loaded by default. Active pins light up from the selected motor's live simulation state.</div>
       </section>
 
-      <!-- Command Console module -->
-      <section class="module hidden" data-view="console">
-        <div class="module-head"><h2>Command Console</h2></div>
-        <div class="ctl-row">
-          <label>Command</label>
-          <select id="cmd-select"></select>
+      <section class="view" data-view="controller">
+        <div class="view-heading">
+          <div>
+            <div class="eyebrow">HARDWARE / SIGNAL LAB</div>
+            <h1>ESP32 DevKit V1 controller twin</h1>
+            <p>A dimensioned 1:1 world model with live Dropbear signal routes, external buses, pin roles, and dual-controller state.</p>
+          </div>
+          <div class="controller-tabs" role="group" aria-label="Controller selection">
+            <button class="controller-tab active" data-controller="left">LEFT ESP32</button>
+            <button class="controller-tab" data-controller="right">RIGHT ESP32</button>
+          </div>
         </div>
-        <div id="cmd-params" class="cmd-params"></div>
-        <div class="ctl-row">
-          <button id="cmd-send" class="btn small primary">Issue Command</button>
-          <span id="cmd-target-label" class="muted">target: —</span>
+        <div class="controller-layout">
+          <article class="panel board-stage-panel">
+            <div class="board-canvas-wrap">
+              <canvas id="board-canvas" aria-label="Interactive 1:1 dimensional ESP32 DevKit V1 model with active signal lines"></canvas>
+              <div class="board-scale">
+                <span>NOMINAL MODEL</span>
+                <b>51.5 × 28.5 × 1.6 mm</b>
+              </div>
+              <div class="board-instruction">DRAG ORBIT · WHEEL ZOOM · CLICK PINS / MODULES</div>
+            </div>
+            <div class="bus-legend" id="bus-legend"></div>
+          </article>
+          <aside class="controller-aside">
+            <article class="panel pin-inspector">
+              <span class="panel-kicker">PICKED NET</span>
+              <h2 id="pin-title">MCP2515 / CAN</h2>
+              <p id="pin-detail">GPIO5 chip select, GPIO17 interrupt, and the inferred default VSPI transport are active.</p>
+              <button id="board-reset-view" class="button subtle">RESET CAMERA</button>
+            </article>
+            <article class="panel pin-map-panel">
+              <div class="panel-head">
+                <div><span class="panel-kicker">FIRMWARE PIN MAP</span><h2>Active routes</h2></div>
+                <span id="pin-count" class="count-chip">19 NETS</span>
+              </div>
+              <div id="pin-map" class="pin-map"></div>
+            </article>
+          </aside>
         </div>
-        <div class="muted hw-note">Full command array from contracts/ (source of truth). Drive-state + link commands are dashboard control extensions.</div>
       </section>
 
-      <!-- Command Reference module -->
-      <section class="module hidden" data-view="docs">
-        <div class="module-head"><h2>Command Reference</h2></div>
-        <div class="docs-tabs">
-          <button class="doc-tab active" data-tab="commands">Commands</button>
-          <button class="doc-tab" data-tab="params">Params</button>
-          <button class="doc-tab" data-tab="status">Status Word</button>
-          <button class="doc-tab" data-tab="faults">Faults</button>
-          <button class="doc-tab" data-tab="native">Native</button>
+      <section class="view" data-view="firmware">
+        <div class="view-heading">
+          <div>
+            <div class="eyebrow">FIRMWARE / SERIAL + RTOS</div>
+            <h1>Low-level firmware console</h1>
+            <p>Exercise the observed 115200-baud command surface and watch controller tasks, CSV sensor output, and CAN effects.</p>
+          </div>
+          <div class="controller-tabs" role="group" aria-label="Console controller selection">
+            <button class="console-controller-tab active" data-console-controller="left">LEFT PORT</button>
+            <button class="console-controller-tab" data-console-controller="right">RIGHT PORT</button>
+          </div>
         </div>
-        <div id="doc-commands" class="doc-body"></div>
-        <div id="doc-params" class="doc-body hidden"></div>
-        <div id="doc-status" class="doc-body hidden"></div>
-        <div id="doc-faults" class="doc-body hidden"></div>
-        <div id="doc-native" class="doc-body hidden"></div>
-        <div class="muted hw-note">Source: contracts/ (PROTOCOLS_CONTRACT.md, MOTOR_RMD_X_CONTRACT.md §6) + native RMD-X command set from vendor docs. Vendor site was unreachable at authoring time; native array cross-checked against the RMD-X CAN protocol guide.</div>
+        <div class="firmware-grid">
+          <article class="panel terminal-panel">
+            <div class="terminal-chrome"><i></i><i></i><i></i><span>dropbear@esp32 · 115200 8N1</span></div>
+            <div id="terminal-output" class="terminal-output" aria-live="polite"></div>
+            <form id="terminal-form" class="terminal-input">
+              <span>&gt;</span>
+              <input id="terminal-command" autocomplete="off" spellcheck="false" value="chirality" aria-label="Firmware serial command">
+              <button type="submit">SEND</button>
+            </form>
+            <div class="quick-commands">
+              <button data-command="play">play</button><button data-command="stop">stop</button>
+              <button data-command="chirality">chirality</button><button data-command="calibrate">calibrate</button>
+              <button data-command="raw on">raw on</button><button data-command="raw off">raw off</button>
+              <button data-command="help">help</button>
+            </div>
+          </article>
+          <article class="panel rtos-panel">
+            <div class="panel-head"><div><span class="panel-kicker">FREERTOS</span><h2>Observed task schedule</h2></div><span class="count-chip">2 CORES</span></div>
+            <div id="task-list" class="task-list"></div>
+          </article>
+          <article class="panel stream-panel">
+            <div class="panel-head"><div><span class="panel-kicker">ADC STREAM</span><h2>Normalized joint CSV</h2></div><span class="count-chip">1 kHz SOURCE</span></div>
+            <code id="csv-output">180.0,180.0,180.0,180.0,180.0</code>
+            <div class="csv-labels"><span>OUTER</span><span>INNER</span><span>HIP</span><span>KNEE</span><span>ROLL</span></div>
+          </article>
+          <article class="panel fault-panel">
+            <div class="panel-head"><div><span class="panel-kicker">FAULT LAB</span><h2>Link injection</h2></div></div>
+            <div class="fault-buttons">
+              <button id="fault-can" class="button danger">DROP CAN</button>
+              <button id="fault-serial" class="button danger">DROP SERIAL</button>
+              <button id="fault-imu" class="button danger">DRIFT IMU</button>
+            </div>
+          </article>
+          <article class="panel diagnostics-panel">
+            <div class="panel-head"><div><span class="panel-kicker">SOURCE DIAGNOSTICS</span><h2>Observed hazards</h2></div><span class="count-chip warning">2 OPEN</span></div>
+            <div class="diagnostic warn"><b>STOP ID ROUTING</b><p>The source stop branch calls <code>sendStopCommand(i)</code> for indices 0–11, not actuator IDs 0x141–0x14C.</p></div>
+            <div class="diagnostic warn"><b>IMPEDANCE PARSER</b><p>The desired-velocity substring begins at <code>thirdSpace + 2</code>, overlapping the intended position field.</p></div>
+          </article>
+        </div>
       </section>
 
-      <!-- Event Log module -->
-      <section class="module hidden" data-view="log">
-        <div class="module-head"><h2>Event Log</h2></div>
-        <div id="log" class="log"></div>
+      <section class="view" data-view="evidence">
+        <div class="view-heading">
+          <div>
+            <div class="eyebrow">PROVENANCE / LIMITS</div>
+            <h1>What this twin knows</h1>
+            <p>Every strong claim is tied to a tracked source; every unresolved binding remains visibly unresolved.</p>
+          </div>
+        </div>
+        <div class="evidence-grid">
+          <article class="panel provenance-panel usd-provenance">
+            <span class="panel-kicker">ROBOT GEOMETRY / KINEMATICS</span>
+            <h2>Actual Dropbear USD</h2>
+            <p>The browser renders the tracked <code>dropbear.usd</code> from Dropbear RL: 93 rigid bodies, 116 physical joints, 27 loop-closure constraints, and the exact 12 CAN-to-USD motor map derived from physical axes and body locations.</p>
+            <a class="source-link" href="https://github.com/Hyperspawn/dropbear_rl" target="_blank" rel="noreferrer">OPEN DROPBEAR RL ↗</a>
+            <code>3c37aedce6d445205671d5714d05ae28b8c90e2c · CC-BY-NC-SA-4.0</code>
+          </article>
+          <article class="panel provenance-panel">
+            <span class="panel-kicker">ROBOT SOURCE</span>
+            <h2>Dropbear low-level control</h2>
+            <p>ESP32 DevKit V1, MCP2515, 12 CAN actuator IDs, analog joint sensors, IMU path, serial commands, SPIFFS state, and FreeRTOS cadence come from the current low-level-control directory.</p>
+            <a class="source-link" href="https://github.com/Hyperspawn/Dropbear/tree/main/Control%20System/Low%20Level%20Control" target="_blank" rel="noreferrer">OPEN SOURCE DIRECTORY ↗</a>
+            <code>13cf5ecaa39b8b89c794fe905dcea0490cfa7726</code>
+          </article>
+          <article class="panel provenance-panel">
+            <span class="panel-kicker">INTERACTION REFERENCE</span>
+            <h2>ESP board simulator pattern</h2>
+            <p>Board hotspots, live GPIO state, component exploration, and active visual routes were reconstructed from the authorized open-source material behind the ESP Boards interactive demo. Account, billing, analytics, and platform branding were excluded.</p>
+            <a class="source-link" href="https://learn.espboards.dev/demo" target="_blank" rel="noreferrer">OPEN REFERENCE DEMO ↗</a>
+          </article>
+          <article class="panel provenance-panel">
+            <span class="panel-kicker">CAD SOURCE</span>
+            <h2>Tracked STEP candidate</h2>
+            <p>The actuator viewer loads the exact local candidate exports generated from the cached STEP source. Geometry is real; installed-product binding and semantic review are not complete.</p>
+            <code>sha256: 9b1710aef099…e5eea</code>
+          </article>
+          <article class="panel limits-panel">
+            <span class="panel-kicker">MODEL BOUNDARY</span>
+            <h2>Simulation, not certification</h2>
+            <ul>
+              <li>Task and bus timing are source-grounded.</li>
+              <li>Joint dynamics are stable synthetic approximations.</li>
+              <li>The browser uses the USD spanning tree for forward kinematics and retains all 27 closure constraints in its manifest; Isaac/PhysX remains authoritative for closed-loop dynamics.</li>
+              <li>The DevKit V1 geometry is a nominal clone envelope, because the installed PCB vendor/revision is not identified in source.</li>
+              <li>No commands leave the browser unless a future hardware transport is explicitly connected.</li>
+            </ul>
+          </article>
+        </div>
       </section>
     </main>
   </div>
 
-  <script type="module" src="js/app.js"></script>
+  <script type="module" src="/js/app.js"></script>
 </body>
 </html>

@@ -1,57 +1,116 @@
-# MyActuator Web Dashboard
+# Dropbear Low-Level-Control Digital Twin
 
-Prototype browser dashboard for exercising the repository's internal 64-byte
-frame and a synthetic motor model. It is not the authoritative MYACTUATOR
-protocol simulator and is not approved for powered-hardware control.
+This is a browser engineering dashboard for the current Dropbear low-level
+controller. It is grounded in the ESP32 source at
+`Control System/Low Level Control` revision
+`13cf5ecaa39b8b89c794fe905dcea0490cfa7726` and the actual Dropbear RL/USD
+robot at revision `3c37aedce6d445205671d5714d05ae28b8c90e2c`.
 
-It is a pure front-end (ES modules, no build step) that mirrors the host-side
-Python protocol library (`host/myactuator_lib/`) and the firmware contracts in
-`contracts/`.
+The dashboard starts in a guarded pause even though the observed firmware
+sets `playMode=true` during setup. It is a deterministic, source-grounded
+simulation—not ESP32 instruction-set emulation and not a validated rigid-body
+plant. Do not use it as the sole safety basis for powered hardware.
 
-## Layout
+## What is included
 
-| Path | What it is |
-|------|------------|
-| `index.html` | Dashboard shell (fleet / detail / event log). |
-| `css/style.css` | Dark control-room theme. |
-| `js/protocol.js` | Faithful JS port of the 64-byte unified frame + CRC-16/CCITT-FALSE. |
-| `js/motors.js` | Motor catalog from the per-series contracts + model-number decoder. |
-| `js/sim.js` | In-browser motor simulation (physics + fault injection + status frames). |
-| `js/webserial.js` | WebSerial transport (connect/send/receive 64-byte frames). |
-| `js/app.js` | Dashboard controller wiring the above to the DOM. |
-| `test/*.mjs` | Node verification of protocol + sim. |
-| `serve.py` | Tiny static server (WebSerial needs a secure context; localhost qualifies). |
+- **Robot Sim** — the tracked `dropbear.usd`, adapted into a 294,204-triangle
+  browser cache while retaining a manifest of 93 rigid bodies, 116 physical
+  joints, and 27 loop-closure constraints. All 12 RMD CAN axes (`0x141`
+  through `0x14C`) bind to their actual USD joints and anchors. Eight
+  spanning-tree motors drive browser forward kinematics; the four calf motors
+  are loop-closure axes whose live states are shown at the true constraints.
+  Isaac/PhysX remains authoritative for closure solving.
+- **Actuator CAD** — interactive housing and output solids derived from the
+  cached STEP candidates, with technical edges, visibility controls,
+  articulation, and exploded output. Full-resolution STEP files stay
+  downloadable; browser previews are simplified caches.
+- **Controller Lab** — a nominal 51.5 × 28.5 mm ESP32 DevKit V1 model with
+  active CAN, SPI, ADC, I2C, UART, and optional HX711 routes. The 19-route pin
+  table distinguishes values stated in source from inferred default VSPI pins.
+- **Firmware** — two-controller serial console, exact command grammar,
+  1 kHz/100 Hz task telemetry, five-value CSV stream, and CAN/serial/IMU
+  fault controls.
+- **Evidence** — firmware and RL/USD revisions, CAD provenance, license and
+  attribution, simulation boundaries, and observed firmware hazards.
+
+## CAN to USD articulation
+
+| CAN | Firmware axis | USD joint | Browser path |
+|---|---|---|---|
+| `0x141` | left outer calf X8 | `LL_Revolute81` | motor driver axis |
+| `0x142` | left inner calf X8 | `LL_Revolute67` | motor driver axis |
+| `0x143` | right inner calf X8 | `RL_Revolute67` | motor driver axis |
+| `0x144` | right outer calf X8 | `RL_Revolute81` | motor driver axis |
+| `0x145` | left knee | `LL_knee_actuator_joint` | forward kinematics |
+| `0x146` | left hip pitch | `LL_hip_joint` | forward kinematics |
+| `0x147` | right hip pitch | `RL_hip_joint` | forward kinematics |
+| `0x148` | right knee | `RL_knee_actuator_joint` | forward kinematics |
+| `0x149` | left hip yaw | `PG_left_leg_roll` | forward kinematics |
+| `0x14A` | left hip roll | `PG_left_leg_pitch` | forward kinematics |
+| `0x14B` | right hip roll | `PG_right_leg_pitch` | forward kinematics |
+| `0x14C` | right hip yaw | `PG_right_leg_roll` | forward kinematics |
+
+Each calf mapping is solved as a three-point linkage in the browser:
+X8 motor crank → tie-rod pivot → ankle closure, with the ankle/foot bearing as
+the rocker pivot. The retained USD anchor residual is shown live in the robot
+viewport. The right outer X8 has an explicit mirrored-axis adaptation because
+this source USD revision authors `RL_Revolute81` as X while its mirrored mate
+and the other calf motor axes are Z; the authored X axis cannot close the
+linkage.
+
+The last four USD names preserve the source model’s naming. The mapping uses
+the physical world-space axes and body locations: the `*_leg_pitch` USD axes
+are physical hip roll, while the `*_leg_roll` axes are physical hip yaw.
 
 ## Run it
 
+From the repository root:
+
 ```bash
-cd /home/roko/Documents/Projects/myactuator
 python3 web/serve.py 8000
-# open http://localhost:8000 in Chrome/Edge
 ```
 
-Click **Start Simulation** to spin up a 6-motor fleet (one per series) and
-watch live position/velocity/torque/temperature. Select a motor, enable it,
-pick a control mode (position / velocity / torque), and send setpoints. The
-**Overheat** button injects a thermal fault to exercise the fault path.
-
-## Experimental WebSerial path
-
-The UI can open an ESP32 USB CDC port and exchange the repository's internal
-64-byte prototype frames. This is not MYACTUATOR native CAN framing. The
-current serial/controller/driver path has not demonstrated real TX/RX,
-feedback, command leases, physical stop or fault behavior, and it is not wired
-through the canonical V4.4 codec and safety core. Do not use this path on a
-powered actuator.
+Open <http://localhost:8000>. The small server also exposes local Three.js
+modules, the exact generated CAD candidates, and the optimized browser caches
+without a frontend build step.
 
 ## Verify
 
 ```bash
 cd web
 npm test
+npm run verify:dashboard
+npm run test:visual
 ```
 
-The protocol test cross-checks the JS CRC-16/CCITT against the Python host
-library (`host/myactuator_lib/protocol/frame.py`) so the two legacy prototype
-paths stay in lockstep. These tests provide no rigid-body, plant or hardware
-evidence.
+`npm test` covers the existing protocol/plant checks plus the source-grounded
+Dropbear map and runtime. The dashboard smoke and Playwright visual checks
+require the server to be running on port 8000. Set `DASHBOARD_BASE`,
+`BASE_URL`, or `VISUAL_OUT` to override their defaults.
+
+## Key files
+
+| Path | Purpose |
+|---|---|
+| `index.html` | Five-view engineering workspace |
+| `js/dropbear.js` | Source map, task scheduler, serial grammar, and simplified joint plant |
+| `js/dropbear_usd.js` | Auditable 12-motor CAN-to-USD binding map |
+| `js/robot_3d.js` | Full USD body renderer, motor anchors, and browser forward kinematics |
+| `js/board_3d.js` | Interactive dimensional ESP32 controller and signal routes |
+| `js/cad_viewer.js` | STEP-derived GLB rendering and articulation |
+| `js/app.js` | Dashboard interaction and live telemetry wiring |
+| `assets/cad/*.glb` | Optimized browser caches derived from the exact candidate solids |
+| `assets/robot/dropbear-usd-browser.glb` | Decimated visual cache of the actual Dropbear USD |
+| `assets/robot/dropbear-articulation.json` | Body, joint, closure, source, and CAN binding manifest |
+| `test/dropbear.test.mjs` | Low-level source-map/runtime regression |
+| `test/visual_review.mjs` | Critical interactive journey and screenshot review |
+
+## Dropbear USD license
+
+The source `dropbear.usd` comes from
+<https://github.com/Hyperspawn/dropbear_rl> and is licensed
+CC-BY-NC-SA-4.0. Attribution: Hyperspawn Robotics — Priyanshu Pareek and Cole
+Myers. The local GLB is an adapted, decimated browser rendering; source
+revision, SHA-256, license, attribution, and adaptation notes are retained in
+`assets/robot/dropbear-articulation.json` and
+`assets/robot/ATTRIBUTION.md`.

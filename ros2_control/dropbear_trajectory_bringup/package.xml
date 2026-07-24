@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>dropbear_trajectory_bringup</name>
+  <version>0.1.0</version>
+  <description>
+    ROS 2 JointTrajectoryController bringup and dashboard passthrough for the
+    twelve Dropbear USD motor axes.
+  </description>
+  <maintainer email="dropbear-maintainers@invalid.example">Dropbear maintainers</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_python</buildtool_depend>
+
+  <exec_depend>controller_manager</exec_depend>
+  <exec_depend>control_msgs</exec_depend>
+  <exec_depend>joint_state_broadcaster</exec_depend>
+  <exec_depend>joint_trajectory_controller</exec_depend>
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>python3-websockets</exec_depend>
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>trajectory_msgs</exec_depend>
+
+  <test_depend>ament_pytest</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

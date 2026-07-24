@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!--
+  Controller-interface description only. The browser renders the tracked
+  dropbear.usd; this deliberately does not claim to be a canonical URDF
+  conversion of its closed-loop mechanism.
+-->
+<robot name="dropbear_control_passthrough">
+  <link name="dropbear_control_root"/>
+
+  <link name="actuator_0x141"/><link name="actuator_0x142"/>
+  <link name="actuator_0x143"/><link name="actuator_0x144"/>
+  <link name="actuator_0x145"/><link name="actuator_0x146"/>
+  <link name="actuator_0x147"/><link name="actuator_0x148"/>
+  <link name="actuator_0x149"/><link name="actuator_0x14A"/>
+  <link name="actuator_0x14B"/><link name="actuator_0x14C"/>
+
+  <joint name="LL_Revolute81" type="revolute"><parent link="dropbear_control_root"/><child link="actuator_0x141"/><origin xyz="-0.30 0.12 0.25"/><axis xyz="0 1 0"/><limit lower="-3.141592653589793" upper="3.141592653589793" effort="40" velocity="4"/></joint>
+  <joint name="LL_Revolute67" type="revolute"><parent link="dropbear_control_root"/><child link="actuator_0x142"/><origin xyz="-0.28 0.08 0.25"/><axis xyz="0 1 0"/><limit lower="-3.141592653589793" upper="3.141592653589793" effort="40" velocity="4"/></joint>
+  <joint name="RL_Revolute67" type="revolute"><parent link="dropbear_control_root"/><child link="actuator_0x143"/><origin xyz="0.28 -0.08 0.25"/><axis xyz="0 1 0"/><limit lower="-3.141592653589793" upper="3.141592653589793" effort="40" velocity="4"/></joint>
+  <joint name="RL_Revolute81" type="revolute"><parent link="dropbear_control_root"/><child link="actuator_0x144"/><origin xyz="0.30 -0.12 0.25"/><axis xyz="0 1 0"/><limit lower="-3.141592653589793" upper="3.141592653589793" effort="40" velocity="4"/></joint>
+  <joint name="LL_knee_actuator_joint" type="revolute"><parent link="dropbear_control_root"/><child link="actuator_0x145"/><origin xyz="-0.22 0.10 0.70"/><axis xyz="0 1 0"/><limit lower="0.0" upper="3.141592653589793" effort="80" velocity="4"/></joint>
+  <joint name="LL_hip_joint" type="revolute"><parent link="dropbear_control_root"/><child link="actuator_0x146"/><origin xyz="-0.16 0.10 1.10"/><axis xyz="0 1 0"/><limit lower="-3.141592653589793" upper="3.141592653589793" effort="80" velocity="4"/></joint>
+  <joint name="RL_hip_joint" type="revolute"><parent link="dropbear_control_root"/><child link="actuator_0x147"/><origin xyz="0.16 -0.10 1.10"/><axis xyz="0 1 0"/><limit lower="-3.141592653589793" upper="3.141592653589793" effort="80" velocity="4"/></joint>
+  <joint name="RL_knee_actuator_joint" type="revolute"><parent link="dropbear_control_root"/><child link="actuator_0x148"/><origin xyz="0.22 -0.10 0.70"/><axis xyz="0 1 0"/><limit lower="0.0" upper="3.141592653589793" effort="80" velocity="4"/></joint>
+  <joint name="PG_left_leg_roll" type="revolute"><parent link="dropbear_control_root"/><child link="actuator_0x149"/><origin xyz="-0.12 0.08 1.25"/><axis xyz="0 0 1"/><limit lower="-3.141592653589793" upper="3.141592653589793" effort="80" velocity="4"/></joint>
+  <joint name="PG_left_leg_pitch" type="revolute"><parent link="dropbear_control_root"/><child link="actuator_0x14A"/><origin xyz="-0.10 0.08 1.30"/><axis xyz="1 0 0"/><limit lower="-3.141592653589793" upper="3.141592653589793" effort="80" velocity="4"/></joint>
+  <joint name="PG_right_leg_pitch" type="revolute"><parent link="dropbear_control_root"/><child link="actuator_0x14B"/><origin xyz="0.10 -0.08 1.30"/><axis xyz="1 0 0"/><limit lower="-3.141592653589793" upper="3.141592653589793" effort="80" velocity="4"/></joint>
+  <joint name="PG_right_leg_roll" type="revolute"><parent link="dropbear_control_root"/><child link="actuator_0x14C"/><origin xyz="0.12 -0.08 1.25"/><axis xyz="0 0 1"/><limit lower="-3.141592653589793" upper="3.141592653589793" effort="80" velocity="4"/></joint>
+
+  <ros2_control name="dropbear_sil_passthrough" type="system">
+    <hardware>
+      <plugin>mock_components/GenericSystem</plugin>
+      <param name="calculate_dynamics">true</param>
+    </hardware>
+    <joint name="LL_Revolute81"><command_interface name="position" min="-3.141592653589793" max="3.141592653589793"/><state_interface name="position"><param name="initial_value">0.0</param></state_interface><state_interface name="velocity"/></joint>
+    <joint name="LL_Revolute67"><command_interface name="position" min="-3.141592653589793" max="3.141592653589793"/><state_interface name="position"><param name="initial_value">0.0</param></state_interface><state_interface name="velocity"/></joint>
+    <joint name="RL_Revolute67"><command_interface name="position" min="-3.141592653589793" max="3.141592653589793"/><state_interface name="position"><param name="initial_value">0.0</param></state_interface><state_interface name="velocity"/></joint>
+    <joint name="RL_Revolute81"><command_interface name="position" min="-3.141592653589793" max="3.141592653589793"/><state_interface name="position"><param name="initial_value">0.0</param></state_interface><state_interface name="velocity"/></joint>
+    <joint name="LL_knee_actuator_joint"><command_interface name="position" min="0.0" max="3.141592653589793"/><state_interface name="position"><param name="initial_value">0.0</param></state_interface><state_interface name="velocity"/></joint>
+    <joint name="LL_hip_joint"><command_interface name="position" min="-3.141592653589793" max="3.141592653589793"/><state_interface name="position"><param name="initial_value">0.0</param></state_interface><state_interface name="velocity"/></joint>
+    <joint name="RL_hip_joint"><command_interface name="position" min="-3.141592653589793" max="3.141592653589793"/><state_interface name="position"><param name="initial_value">0.0</param></state_interface><state_interface name="velocity"/></joint>
+    <joint name="RL_knee_actuator_joint"><command_interface name="position" min="0.0" max="3.141592653589793"/><state_interface name="position"><param name="initial_value">0.0</param></state_interface><state_interface name="velocity"/></joint>
+    <joint name="PG_left_leg_roll"><command_interface name="position" min="-3.141592653589793" max="3.141592653589793"/><state_interface name="position"><param name="initial_value">0.0</param></state_interface><state_interface name="velocity"/></joint>
+    <joint name="PG_left_leg_pitch"><command_interface name="position" min="-3.141592653589793" max="3.141592653589793"/><state_interface name="position"><param name="initial_value">0.0</param></state_interface><state_interface name="velocity"/></joint>
+    <joint name="PG_right_leg_pitch"><command_interface name="position" min="-3.141592653589793" max="3.141592653589793"/><state_interface name="position"><param name="initial_value">0.0</param></state_interface><state_interface name="velocity"/></joint>
+    <joint name="PG_right_leg_roll"><command_interface name="position" min="-3.141592653589793" max="3.141592653589793"/><state_interface name="position"><param name="initial_value">0.0</param></state_interface><state_interface name="velocity"/></joint>
+  </ros2_control>
+</robot>

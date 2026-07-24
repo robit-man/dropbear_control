@@ -1,568 +1,415 @@
-// web/js/app.js
-//
-// Dashboard controller: wires the protocol/motors/sim/webserial modules to the
-// DOM. Supports two modes:
-//   - Simulation: runs the in-browser MotorSim fleet and renders live state.
-//   - WebSerial: connects to the ESP32 and exchanges 64-byte frames. (Requires
-//     a firmware serial frame parser; see webserial.js header.)
-
-import { Frame, FrameType } from "./protocol.js";
-import { defaultFleet, decodeModel, LEGACY_VARIANTS, legacySpec } from "./motors.js";
-import { MotorSim, MotorState, FaultCode } from "./sim.js";
-import { WebSerialTransport } from "./webserial.js";
-import { livePinView, DATA_FLOW } from "./pins.js";
 import {
-  COMMANDS, commandGroups, buildCommand, describeFrame,
-  STATUS_WORD_BITS, FAULT_CODES, PARAM_ADDRESSES, FRAME_TYPES,
-  NATIVE_RMDX_COMMANDS,
-} from "./commands.js";
+  CONTROLLER_PINS,
+  DROPBEAR_SOURCE,
+  DropbearSim,
+  JOINT_DEFINITIONS,
+  TASKS,
+} from "./dropbear.js";
+import { Board3D } from "./board_3d.js";
+import { CAD_EVIDENCE, CadViewer } from "./cad_viewer.js";
+import { DROPBEAR_USD_SOURCE, dropbearUsdBinding } from "./dropbear_usd.js";
+import { Robot3D } from "./robot_3d.js";
 
 const $ = (id) => document.getElementById(id);
+const sim = new DropbearSim();
 
-const state = {
-  mode: "idle", // idle | sim | serial
-  fleet: [], // MotorSim[]
-  selected: null, // MotorSim
-  transport: null,
-  seq: 0,
-  raf: null,
-  lastT: 0,
-  hw: null, // { board, pins }
+const ui = {
+  view: "sim",
+  selectedJointId: 0x141,
+  controller: "left",
+  consoleController: "left",
+  lastRender: 0,
+  lastFrame: performance.now(),
+  scopeSampleAt: 0,
+  scopeHistory: [],
+  cadManual: false,
 };
 
-// ---- logging -------------------------------------------------------------
-function log(msg, kind = "") {
-  const el = $("log");
+function selectedJoint() {
+  return sim.getJoint(ui.selectedJointId) || sim.joints[0];
+}
+
+function appendTerminal(text, kind = "") {
+  const output = $("terminal-output");
   const line = document.createElement("div");
-  line.className = "line" + (kind ? " " + kind : "");
-  const t = new Date().toLocaleTimeString();
-  line.innerHTML = `<b>[${t}]</b> ${msg}`;
-  el.prepend(line);
-  while (el.childElementCount > 200) el.removeChild(el.lastChild);
+  line.className = `terminal-line ${kind}`.trim();
+  line.textContent = text;
+  output.appendChild(line);
+  while (output.childElementCount > 180) output.removeChild(output.firstChild);
+  output.scrollTop = output.scrollHeight;
 }
 
-// ---- fleet rendering -----------------------------------------------------
-function renderFleet() {
-  const list = $("fleet-list");
+const board = new Board3D($("board-canvas"), {
+  onPin: (data) => {
+    $("pin-title").textContent = data.component || "Board component";
+    $("pin-detail").textContent = data.detail || "ESP32 DevKit V1 reference component.";
+    document.querySelectorAll(".pin-row").forEach((row) => {
+      row.classList.toggle("active", Number(row.dataset.gpio) === Number(data.gpio));
+    });
+  },
+});
+
+const cad = new CadViewer($("cad-canvas"), {
+  onStatus: (message, kind) => {
+    $("cad-status").className = `load-status ${kind}`;
+    $("cad-status").innerHTML = "<span></span>";
+    $("cad-status").append(document.createTextNode(message));
+  },
+});
+
+const robot = new Robot3D($("robot-canvas"), {
+  onJoint: (canId) => selectJoint(canId),
+  onStatus: (message, kind) => {
+    $("robot-load-status").className = `load-status robot-load-status ${kind}`;
+    $("robot-load-status").innerHTML = "<span></span>";
+    $("robot-load-status").append(document.createTextNode(message));
+  },
+});
+
+function switchView(name) {
+  ui.view = name;
+  const workspace = document.querySelector(".workspace");
+  document.querySelectorAll("[data-view]").forEach((view) => view.classList.toggle("active", view.dataset.view === name));
+  document.querySelectorAll("[data-view-target]").forEach((button) => button.classList.toggle("active", button.dataset.viewTarget === name));
+  robot.setActive(name === "sim");
+  cad.setActive(name === "cad");
+  board.setActive(name === "controller");
+  if (workspace) {
+    workspace.scrollTop = 0;
+    requestAnimationFrame(() => { workspace.scrollTop = 0; });
+  }
+  if (name === "sim") setTimeout(() => robot.resize(), 20);
+  if (name === "cad") setTimeout(() => { cad.resize(); cad.fit(); }, 20);
+  if (name === "controller") setTimeout(() => board.resize(), 20);
+}
+
+function setupNavigation() {
+  document.querySelectorAll("[data-view-target]").forEach((button) => {
+    button.addEventListener("click", () => switchView(button.dataset.viewTarget));
+  });
+}
+
+function makeJointCards() {
+  const list = $("joint-list");
   list.innerHTML = "";
-  for (const m of state.fleet) {
-    const card = document.createElement("div");
-    card.className = "fleet-card" + (state.selected === m ? " active" : "");
-    const fault = m.fault !== FaultCode.NONE;
-    const dot = fault ? "fault" : m.enabled ? "ok" : "idle";
-    card.innerHTML = `
-      <div class="fc-model">${m.spec.model}</div>
-      <div class="fc-sub">${m.spec.series} · ${m.spec.gearbox}</div>
-      <div class="fc-state"><span class="dot ${dot}"></span>${stateName(m.status)}</div>`;
-    card.onclick = () => selectMotor(m);
-    list.appendChild(card);
+  for (const definition of JOINT_DEFINITIONS) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "joint-card";
+    button.dataset.jointId = String(definition.id);
+    button.style.setProperty("--side-color", definition.side === "left" ? "var(--left)" : "var(--right)");
+    button.innerHTML = `
+      <div class="joint-card-top">
+        <b>${definition.label}</b>
+        <code>${definition.canId}</code>
+      </div>
+      <div class="joint-card-state">
+        <span>POSITION<em data-field="angle">180.0°</em></span>
+        <span><i class="joint-dot"></i>TORQUE<em data-field="torque">0.00 N·m</em></span>
+      </div>`;
+    button.addEventListener("click", () => selectJoint(definition.id));
+    list.appendChild(button);
   }
 }
 
-function stateName(s) {
-  return Object.keys(MotorState).find((k) => MotorState[k] === s) || "UNKNOWN";
-}
-function faultName(f) {
-  return Object.keys(FaultCode).find((k) => FaultCode[k] === f) || "NONE";
-}
-
-// ---- detail panel --------------------------------------------------------
-function selectMotor(m) {
-  state.selected = m;
-  $("detail-empty").classList.add("hidden");
-  $("detail").classList.remove("hidden");
-  $("d-model").textContent = m.spec.model;
-  $("d-series").textContent = m.spec.series;
-  renderFleet();
-  renderDetail();
-}
-
-function renderDetail() {
-  const m = state.selected;
-  if (!m) return;
-  $("d-state").textContent = stateName(m.status);
-  $("d-state").className = "tag state " + (m.fault !== FaultCode.NONE ? "fault" : m.enabled ? "run" : "");
-  $("m-pos").textContent = m.position.toFixed(2) + " rad";
-  $("m-vel").textContent = m.velocity.toFixed(2) + " rad/s";
-  $("m-torq").textContent = m.torque.toFixed(2) + " N·m";
-  $("m-temp").textContent = m.temperature.toFixed(0) + " °C";
-  $("m-fault").textContent = faultName(m.fault);
-  $("m-uptime").textContent = m.uptime.toFixed(0) + " s";
-  const enc = m.spec.encoderType || "absolute";
-  const res = m.spec.encoderResolution || "—";
-  $("m-enc").textContent = enc === "incremental" ? "Incremental" : "Absolute";
-  $("m-res").textContent = res + (enc === "incremental" ? " PPR" : " bit");
-  $("m-zeroed").textContent = (m.zeroedPosition || 0).toFixed(2) + " rad";
-  $("c-as5600").checked = !!m.as5600;
-  drawMotor(m);
+function selectJoint(id) {
+  ui.selectedJointId = Number(id);
+  ui.scopeHistory = [];
+  ui.cadManual = false;
+  const target = selectedJoint();
+  $("selected-name").textContent = target.label;
+  $("selected-can").textContent = target.canId;
+  const usdBinding = dropbearUsdBinding(target.id);
+  $("selected-usd").textContent = usdBinding
+    ? `USD ${usdBinding.usdJoint}${usdBinding.closure ? " · CLOSURE" : " · FK"}`
+    : "USD BINDING UNRESOLVED";
+  $("cad-joint-name").textContent = target.label;
+  $("position-target").value = String(Math.round(target.desiredPosition));
+  $("position-target").min = String(target.minAngle);
+  $("position-target").max = String(target.maxAngle);
+  $("position-output").textContent = `${Math.round(target.desiredPosition)}°`;
+  $("torque-target").value = String(Math.round(target.command * 100));
+  $("torque-output").textContent = `${target.command.toFixed(2)} N·m`;
+  $("impedance-toggle").checked = target.impedanceEnabled;
+  $("impedance-toggle").disabled = !target.impedanceCapable;
+  $("position-target").disabled = !target.impedanceCapable;
+  document.querySelectorAll(".joint-card").forEach((card) => card.classList.toggle("active", Number(card.dataset.jointId) === target.id));
 }
 
-// ---- canvas visualization ------------------------------------------------
-function drawMotor(m) {
-  const c = $("motor-canvas");
-  const ctx = c.getContext("2d");
-  const w = c.width, h = c.height;
-  const cx = w / 2, cy = h / 2;
-  ctx.clearRect(0, 0, w, h);
-
-  // housing
-  ctx.strokeStyle = "#2a2a2a";
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.arc(cx, cy, 90, 0, Math.PI * 2);
-  ctx.stroke();
-
-  // rotor (rotates with position)
-  const ang = m.position % (Math.PI * 2);
-  ctx.strokeStyle = m.fault !== FaultCode.NONE ? "#fca5a5" : "#facc15";
-  ctx.lineWidth = 6;
-  ctx.beginPath();
-  ctx.moveTo(cx, cy);
-  ctx.lineTo(cx + Math.cos(ang) * 80, cy + Math.sin(ang) * 80);
-  ctx.stroke();
-
-  // hub
-  ctx.fillStyle = "#1c232c";
-  ctx.beginPath();
-  ctx.arc(cx, cy, 18, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.strokeStyle = "#f59e0b";
-  ctx.stroke();
-
-  // temperature ring
-  const t = Math.min(1, Math.max(0, (m.temperature - 25) / 95));
-  ctx.strokeStyle = `rgb(${Math.round(63 + t * 192)}, ${Math.round(182 - t * 127)}, ${Math.round(255 - t * 196)})`;
-  ctx.lineWidth = 4;
-  ctx.beginPath();
-  ctx.arc(cx, cy, 100, -Math.PI / 2, -Math.PI / 2 + t * Math.PI * 2);
-  ctx.stroke();
+function setupSimControls() {
+  const savedResolution = Number(localStorage.getItem("dropbear-usd-resolution") || 100);
+  const resolutionPercent = Math.max(50, Math.min(200, savedResolution));
+  $("usd-resolution").value = String(resolutionPercent);
+  $("usd-resolution-output").textContent = `${resolutionPercent}%`;
+  robot.setResolutionScale(resolutionPercent / 100);
+  $("usd-resolution").addEventListener("input", (event) => {
+    const percent = Number(event.target.value);
+    robot.setResolutionScale(percent / 100);
+    $("usd-resolution-output").textContent = `${percent}%`;
+    localStorage.setItem("dropbear-usd-resolution", String(percent));
+  });
+  $("sim-toggle").addEventListener("click", () => sim.setPlay(!sim.playMode));
+  $("sim-reset").addEventListener("click", () => {
+    sim.reset();
+    ui.scopeHistory = [];
+    selectJoint(0x141);
+    appendTerminal("[dashboard] simulation reset", "warn");
+  });
+  $("sim-speed").addEventListener("change", (event) => { sim.speed = Number(event.target.value); });
+  $("scenario").addEventListener("change", (event) => {
+    sim.setScenario(event.target.value);
+    if (event.target.value === "manual") $("impedance-toggle").checked = false;
+  });
+  $("run-demo").addEventListener("click", () => {
+    $("scenario").value = "walk";
+    sim.setScenario("walk");
+    switchView("sim");
+    appendTerminal("[dashboard] full alternating-step demo started", "ok");
+  });
+  $("robot-fit").addEventListener("click", () => robot.fit());
+  $("position-target").addEventListener("input", (event) => {
+    const target = selectedJoint();
+    const value = Number(event.target.value);
+    sim.setJointTarget(target.id, value, true);
+    $("impedance-toggle").checked = target.impedanceEnabled;
+    $("position-output").textContent = `${value.toFixed(0)}°`;
+  });
+  $("torque-target").addEventListener("input", (event) => {
+    const value = Number(event.target.value);
+    sim.setJointTorque(ui.selectedJointId, value);
+    $("torque-output").textContent = `${(value / 100).toFixed(2)} N·m`;
+  });
+  $("impedance-toggle").addEventListener("change", (event) => {
+    const target = selectedJoint();
+    if (target.impedanceCapable) target.impedanceEnabled = event.target.checked;
+  });
+  $("fault-sensor").addEventListener("click", () => sim.injectFault("sensor", ui.selectedJointId));
+  $("fault-thermal").addEventListener("click", () => sim.injectFault("thermal", ui.selectedJointId));
 }
 
-// ---- simulation loop -----------------------------------------------------
-function tick(ts) {
-  if (state.mode !== "sim") return;
-  if (!state.lastT) state.lastT = ts;
-  const dt = Math.min(0.05, (ts - state.lastT) / 1000);
-  state.lastT = ts;
-
-  for (const m of state.fleet) {
-    m.step(dt);
-    if (state.transport && state.transport.connected) {
-      state.transport.send(m.toStatusFrame(state.seq++)).catch(() => {});
-    }
-  }
-  renderFleet();
-  renderDetail();
-  renderPinGrid(); // keep live pin/signal + data-flow view in sync with sim
-  state.raf = requestAnimationFrame(tick);
+function setupCadControls() {
+  $("cad-lines").addEventListener("change", (event) => cad.setWireframe(event.target.checked));
+  $("cad-explode").addEventListener("change", (event) => cad.setExploded(event.target.checked));
+  $("cad-housing").addEventListener("change", (event) => cad.setHousingVisible(event.target.checked));
+  $("cad-output").addEventListener("change", (event) => cad.setOutputVisible(event.target.checked));
+  $("cad-fit").addEventListener("click", () => cad.fit());
+  $("cad-angle").addEventListener("input", (event) => {
+    ui.cadManual = true;
+    const value = Number(event.target.value);
+    cad.setJointAngle(value);
+    $("cad-angle-output").textContent = `${value.toFixed(1)}°`;
+  });
 }
 
-function startSim() {
-  if (state.mode === "sim") return;
-  state.mode = "sim";
-  state.fleet = defaultFleet().map((spec) => new MotorSim(spec));
-  state.selected = state.fleet[0];
-  $("conn-status").textContent = "sim";
-  $("conn-status").className = "status-pill sim";
-  $("btn-sim").textContent = "Stop Simulation";
-  log("Simulation started with " + state.fleet.length + " motors.", "ok");
-  renderFleet();
-  selectMotor(state.selected);
-  state.lastT = 0;
-  state.raf = requestAnimationFrame(tick);
-}
-
-function stopSim() {
-  if (state.mode !== "sim") return;
-  state.mode = "idle";
-  if (state.raf) cancelAnimationFrame(state.raf);
-  state.raf = null;
-  state.fleet = [];
-  state.selected = null;
-  $("conn-status").textContent = "offline";
-  $("conn-status").className = "status-pill offline";
-  $("btn-sim").textContent = "Start Simulation";
-  $("detail").classList.add("hidden");
-  $("detail-empty").classList.remove("hidden");
-  renderFleet();
-  log("Simulation stopped.", "ok");
-}
-
-function toggleSim() {
-  if (state.mode === "sim") stopSim();
-  else startSim();
-}
-
-// ---- controls ------------------------------------------------------------
-function wireControls() {
-  $("c-enable").onclick = () => {
-    if (!state.selected) return;
-    state.selected.enable();
-    log(`Enable motor ${state.selected.id}`);
-    renderDetail();
-  };
-  $("c-disable").onclick = () => {
-    if (!state.selected) return;
-    state.selected.disable();
-    log(`Disable motor ${state.selected.id}`);
-    renderDetail();
-  };
-  $("c-clear").onclick = () => {
-    if (!state.selected) return;
-    state.selected.clearFault();
-    log(`Clear fault motor ${state.selected.id}`, "ok");
-    renderDetail();
-  };
-  $("c-send").onclick = () => {
-    if (!state.selected) return;
-    const mode = $("c-mode").value;
-    let v = parseFloat($("c-target").value) || 0;
-    const useDeg = $("c-unit-deg").checked;
-    if (mode === "position") {
-      if (useDeg) v = v * Math.PI / 180;
-      state.selected.setPosition(v);
-    } else if (mode === "velocity") state.selected.setVelocity(v);
-    else state.selected.setTorque(v);
-    log(`Motor ${state.selected.id} ${mode} -> ${v}`);
-    renderDetail();
-  };
-  $("c-overtemp").onclick = () => {
-    if (!state.selected) return;
-    state.selected.temperature = 130;
-    log(`Injected overheat on motor ${state.selected.id}`, "err");
-    renderDetail();
-  };
-  $("c-as5600").onchange = () => {
-    if (!state.selected) return;
-    const on = $("c-as5600").checked;
-    state.selected.setAs5600(on);
-    log(`AS5600 on motor ${state.selected.id} ${on ? "attached" : "detached"}`, on ? "ok" : "");
-    renderDetail();
-  };
-  $("c-calibrate").onclick = () => {
-    if (!state.selected) return;
-    const off = state.selected.calibrate();
-    log(`Calibrated zero on motor ${state.selected.id} @ ${off.toFixed(2)} rad`, "ok");
-    renderDetail();
-  };
-  $("cmd-send").onclick = issueCommand;
-}
-
-// ---- command console -----------------------------------------------------
-let selectedCmd = null; // currently selected COMMANDS entry
-
-function renderCommandSelect() {
-  const sel = $("cmd-select");
-  sel.innerHTML = "";
-  const groups = commandGroups();
-  for (const [group, cmds] of Object.entries(groups)) {
-    const og = document.createElement("optgroup");
-    og.label = group;
-    for (const c of cmds) {
-      const opt = document.createElement("option");
-      opt.value = c.id;
-      opt.textContent = c.label;
-      og.appendChild(opt);
-    }
-    sel.appendChild(og);
-  }
-  sel.onchange = () => renderCommandParams();
-  renderCommandParams();
-}
-
-function renderCommandParams() {
-  const id = $("cmd-select").value;
-  selectedCmd = COMMANDS.find((c) => c.id === id) || null;
-  const box = $("cmd-params");
-  box.innerHTML = "";
-  if (!selectedCmd) return;
-  for (const p of selectedCmd.params) {
-    const row = document.createElement("div");
-    row.className = "ctl-row";
-    const label = document.createElement("label");
-    label.textContent = p.label;
-    const input = document.createElement(p.options ? "select" : "input");
-    if (p.options) {
-      for (const o of p.options) {
-        const o2 = document.createElement("option");
-        o2.value = String(o.v);
-        o2.textContent = o.t;
-        input.appendChild(o2);
+function setupBoardControls() {
+  const groups = [...new Map(CONTROLLER_PINS.map((pin) => [pin.bus, pin.color])).entries()];
+  $("bus-legend").innerHTML = "";
+  for (const [bus, color] of groups) {
+    const button = document.createElement("button");
+    button.style.setProperty("--bus-color", color);
+    button.innerHTML = `<i></i>${bus}`;
+    button.addEventListener("click", () => {
+      const pin = CONTROLLER_PINS.find((entry) => entry.bus === bus);
+      if (pin) {
+        board.focusPin(pin.gpio);
+        $("pin-title").textContent = `${bus} SIGNAL GROUP`;
+        $("pin-detail").textContent = CONTROLLER_PINS.filter((entry) => entry.bus === bus)
+          .map((entry) => `GPIO${entry.gpio} ${entry.role}`).join(" · ");
       }
-    } else if (p.type === "raw") {
-      input.type = "text";
-      input.placeholder = "e.g. 01 02 03";
-      input.value = String(p.def ?? "");
-    } else {
-      input.type = "number";
-      input.step = p.scale && p.scale < 1 ? "0.001" : "1";
-      input.value = String(p.def ?? 0);
-    }
-    input.dataset.key = p.key;
-    row.appendChild(label);
-    row.appendChild(input);
-    box.appendChild(row);
+    });
+    $("bus-legend").appendChild(button);
   }
-  const note = document.createElement("div");
-  note.className = "doc-note";
-  note.textContent = selectedCmd.desc + "  [" + selectedCmd.doc + "]";
-  box.appendChild(note);
+
+  const map = $("pin-map");
+  map.innerHTML = "";
+  for (const pin of CONTROLLER_PINS) {
+    const row = document.createElement("button");
+    row.type = "button";
+    row.className = "pin-row";
+    row.dataset.gpio = String(pin.gpio);
+    row.style.setProperty("--pin-color", pin.color);
+    row.innerHTML = `<code>GPIO${pin.gpio}</code><b>${pin.bus}</b><span>${pin.role}${pin.inferred ? " · inferred VSPI default" : ""}${pin.optional ? " · optional example" : ""}</span><i></i>`;
+    row.addEventListener("click", () => {
+      board.focusPin(pin.gpio);
+      $("pin-title").textContent = `GPIO${pin.gpio} / ${pin.label}`;
+      $("pin-detail").textContent = `${pin.bus} · ${pin.role}${pin.inferred ? ". SPI pin is inferred from Arduino ESP32 VSPI defaults because the firmware sets only CS/INT explicitly." : "."}`;
+      document.querySelectorAll(".pin-row").forEach((entry) => entry.classList.toggle("active", entry === row));
+    });
+    map.appendChild(row);
+  }
+  $("pin-count").textContent = `${CONTROLLER_PINS.length} NETS`;
+  $("board-reset-view").addEventListener("click", () => board.resetView());
+  document.querySelectorAll(".controller-tab").forEach((button) => {
+    button.addEventListener("click", () => {
+      ui.controller = button.dataset.controller;
+      document.querySelectorAll(".controller-tab").forEach((entry) => entry.classList.toggle("active", entry === button));
+      $("pin-title").textContent = `${ui.controller.toUpperCase()} ESP32`;
+      $("pin-detail").textContent = `Chirality ${sim.controllers[ui.controller].chirality}; ${sim.controllers[ui.controller].csv}`;
+    });
+  });
 }
 
-function issueCommand() {
-  if (!selectedCmd) return;
-  if (!state.selected) {
-    log("Select a motor first.", "err");
-    return;
-  }
-  const values = {};
-  for (const inp of $("cmd-params").querySelectorAll("[data-key]")) {
-    values[inp.dataset.key] = inp.value;
-  }
-  const frame = buildCommand(selectedCmd, state.selected.id, values, state.seq++);
-  const summary = describeFrame(frame);
-  log("TX " + summary, "ok");
+function setupFirmware() {
+  $("task-list").innerHTML = TASKS.map((task, index) => `
+    <div class="task-row">
+      <div class="task-row-top"><b>${task.name}</b><code>CORE ${task.core} · ${task.periodMs} ms</code></div>
+      <p>${task.role}</p>
+      <div class="task-meter"><i style="width:${12 + index * 4}px;animation-delay:${-index * .23}s"></i></div>
+    </div>`).join("");
 
-  // Apply locally in simulation mode; otherwise forward over the transport.
-  if (state.mode === "sim") {
-    state.selected.applyFrame(frame);
-    renderDetail();
-  } else if (state.transport && state.transport.connected) {
-    state.transport.send(frame).catch((e) => log("Send failed: " + e.message, "err"));
-  } else {
-    log("No active link (start simulation or connect ESP32).", "err");
-  }
+  const submit = (command) => {
+    appendTerminal(`${ui.consoleController}> ${command}`, "command");
+    const result = sim.command(command, ui.consoleController);
+    appendTerminal(result.output, result.ok ? "ok" : "err");
+  };
+  $("terminal-form").addEventListener("submit", (event) => {
+    event.preventDefault();
+    const command = $("terminal-command").value;
+    submit(command);
+    $("terminal-command").select();
+  });
+  document.querySelectorAll("[data-command]").forEach((button) => {
+    button.addEventListener("click", () => {
+      $("terminal-command").value = button.dataset.command;
+      submit(button.dataset.command);
+    });
+  });
+  document.querySelectorAll(".console-controller-tab").forEach((button) => {
+    button.addEventListener("click", () => {
+      ui.consoleController = button.dataset.consoleController;
+      document.querySelectorAll(".console-controller-tab").forEach((entry) => entry.classList.toggle("active", entry === button));
+      appendTerminal(`[dashboard] selected ${ui.consoleController} serial port`, "warn");
+    });
+  });
+  $("fault-can").addEventListener("click", () => sim.injectFault("can"));
+  $("fault-serial").addEventListener("click", () => sim.injectFault("serial"));
+  $("fault-imu").addEventListener("click", () => sim.injectFault("imu"));
+
+  appendTerminal(`Dropbear low-level twin · source ${DROPBEAR_SOURCE.commit.slice(0, 8)}`, "ok");
+  appendTerminal("Serial 115200 · MCP2515 CAN 1000 kbps · MCP clock 8 MHz");
+  appendTerminal("Guarded pause active. Source firmware would set playMode=true during setup.", "warn");
 }
 
-// ---- command reference / docs ---------------------------------------------
-function renderDocs() {
-  // Commands table
-  const cmdBody = $("doc-commands");
-  let html = `<table class="doc-table"><thead><tr><th>Command</th><th>Byte</th><th>Frame</th><th>Description</th><th>Source</th></tr></thead><tbody>`;
-  for (const c of COMMANDS) {
-    const ft = FRAME_TYPES.find((f) => f.id === c.frameType);
-    html += `<tr><td>${c.label}</td><td><code>0x${c.commandType.toString(16).padStart(2, "0")}</code></td><td>${ft ? ft.name : "—"}</td><td>${c.desc}</td><td>${c.doc}</td></tr>`;
+function drawScope() {
+  const canvas = $("scope-canvas");
+  const rect = canvas.getBoundingClientRect();
+  const ratio = Math.min(devicePixelRatio, 2);
+  const width = Math.max(300, Math.round(rect.width * ratio));
+  const height = Math.max(150, Math.round(rect.height * ratio));
+  if (canvas.width !== width || canvas.height !== height) {
+    canvas.width = width;
+    canvas.height = height;
   }
-  html += `</tbody></table>`;
-  cmdBody.innerHTML = html;
-
-  // Params table
-  const pBody = $("doc-params");
-  let ph = `<table class="doc-table"><thead><tr><th>Address</th><th>Name</th><th>Size</th><th>Default</th><th>Description</th></tr></thead><tbody>`;
-  for (const p of PARAM_ADDRESSES) {
-    ph += `<tr><td><code>${p.addr}</code></td><td>${p.name}</td><td>${p.size}</td><td>${p.def}</td><td>${p.desc}</td></tr>`;
-  }
-  ph += `</tbody></table>`;
-  pBody.innerHTML = ph;
-
-  // Status word table
-  const sBody = $("doc-status");
-  let sh = `<table class="doc-table"><thead><tr><th>Bit</th><th>Name</th><th>Description</th></tr></thead><tbody>`;
-  for (const b of STATUS_WORD_BITS) {
-    sh += `<tr><td>${b.bit}</td><td>${b.name}</td><td>${b.desc}</td></tr>`;
-  }
-  sh += `</tbody></table>`;
-  sBody.innerHTML = sh;
-
-  // Faults tables (one per source)
-  const fBody = $("doc-faults");
-  let fh = "";
-  for (const [src, rows] of Object.entries(FAULT_CODES)) {
-    fh += `<div class="doc-note">${src}</div>`;
-    fh += `<table class="doc-table"><thead><tr><th>Code</th><th>Name</th><th>Description</th></tr></thead><tbody>`;
-    for (const r of rows) {
-      fh += `<tr><td><code>${r.code}</code></td><td>${r.name}</td><td>${r.desc}</td></tr>`;
-    }
-    fh += `</tbody></table>`;
-  }
-  fBody.innerHTML = fh;
-
-  // Native RMD-X command array (vendor CAN command bytes)
-  const nBody = $("doc-native");
-  let nh = `<div class="doc-note">Native MyActuator RMD-X CAN command set (vendor docs). Issue any of these via the "Raw Native Command" entry in the Command Console. Motion (0xB1–0xB6), encoder-zero (0xC2), and clear-fault (0xDA) commands drive the simulation; read commands are acknowledged.</div>`;
-  nh += `<table class="doc-table"><thead><tr><th>Code</th><th>Dir</th><th>Name</th><th>Description</th></tr></thead><tbody>`;
-  for (const c of NATIVE_RMDX_COMMANDS) {
-    nh += `<tr><td><code>${c.code}</code></td><td>${c.dir}</td><td>${c.name}</td><td>${c.desc}</td></tr>`;
-  }
-  nh += `</tbody></table>`;
-  nBody.innerHTML = nh;
-
-  // Tab switching
-  for (const tab of document.querySelectorAll(".doc-tab")) {
-    tab.onclick = () => {
-      document.querySelectorAll(".doc-tab").forEach((t) => t.classList.remove("active"));
-      tab.classList.add("active");
-      const which = tab.dataset.tab;
-      for (const id of ["commands", "params", "status", "faults", "native"]) {
-        $("doc-" + id).classList.toggle("hidden", id !== which);
-      }
-    };
-  }
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, width, height);
+  ctx.fillStyle = "#080d13";
+  ctx.fillRect(0, 0, width, height);
+  ctx.strokeStyle = "#152430";
+  ctx.lineWidth = 1;
+  for (let x = 0; x <= width; x += width / 12) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke(); }
+  for (let y = 0; y <= height; y += height / 6) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke(); }
+  const history = ui.scopeHistory;
+  if (history.length < 2) return;
+  const t0 = history[0].t;
+  const tSpan = Math.max(0.001, history.at(-1).t - t0);
+  const plot = (field, color, min, max) => {
+    ctx.beginPath();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = ratio * 1.25;
+    history.forEach((sample, index) => {
+      const x = (sample.t - t0) / tSpan * width;
+      const y = height - (sample[field] - min) / (max - min) * height;
+      if (index === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+  };
+  plot("desired", "#fbbf24", 90, 270);
+  plot("angle", "#22d3ee", 90, 270);
+  plot("torque", "#fb7185", -3.2, 3.2);
 }
 
-// ---- legacy variants + hardware config -----------------------------------
-const BOARD_PINS = {
-  esp32dev: {
-    label: "ESP32 30-pin DevKitC",
-    pins: { PIN_ENCODER_A: 4, PIN_ENCODER_B: 5, PIN_ENCODER_Z: 16, PIN_MOTOR_PWM_A: 18, PIN_MOTOR_PWM_B: 19, PIN_CURRENT_SENSE: 34, PIN_TEMP_SENSE: 35, PIN_CAN_TX: 22, PIN_CAN_RX: 23, PIN_RS485_TX: 17, PIN_RS485_RX: 15, PIN_STATUS_LED: 2, PIN_FAULT_LED: 25 },
-  },
-  "esp32-s3-devkitc-1": {
-    label: "ESP32-S3 DevKitC",
-    pins: { PIN_ENCODER_A: 1, PIN_ENCODER_B: 2, PIN_ENCODER_Z: 3, PIN_MOTOR_PWM_A: 4, PIN_MOTOR_PWM_B: 5, PIN_CURRENT_SENSE: 6, PIN_TEMP_SENSE: 7, PIN_CAN_TX: 8, PIN_CAN_RX: 9, PIN_RS485_TX: 10, PIN_RS485_RX: 11, PIN_STATUS_LED: 12, PIN_FAULT_LED: 13 },
-  },
-  "esp32-c3-devkitm-1": {
-    label: "ESP32-C3 DevKitM",
-    pins: { PIN_ENCODER_A: 0, PIN_ENCODER_B: 1, PIN_ENCODER_Z: 2, PIN_MOTOR_PWM_A: 3, PIN_MOTOR_PWM_B: 4, PIN_CURRENT_SENSE: 5, PIN_TEMP_SENSE: 6, PIN_CAN_TX: 7, PIN_CAN_RX: 8, PIN_RS485_TX: 9, PIN_RS485_RX: 10, PIN_STATUS_LED: 11, PIN_FAULT_LED: 12 },
-  },
+function renderLive() {
+  const target = selectedJoint();
+  const runningButton = $("sim-toggle");
+  runningButton.classList.toggle("stop", sim.playMode);
+  runningButton.setAttribute("aria-pressed", String(sim.playMode));
+  runningButton.innerHTML = sim.playMode ? '<span class="run-icon">■</span> STOP' : '<span class="run-icon">▶</span> PLAY';
+  $("system-state").className = `system-state ${sim.playMode ? "running" : "paused"}`;
+  $("system-state").innerHTML = `<span></span>${sim.playMode ? "CONTROL ACTIVE" : "GUARDED PAUSE"}`;
+  $("sim-time").textContent = `${sim.time.toFixed(2)} s`;
+  $("control-state").textContent = sim.playMode ? sim.scenario.toUpperCase() : "STOP";
+  $("can-load").textContent = `${sim.canUtilization.toFixed(1)}%`;
+  $("sel-angle").textContent = `${target.angle.toFixed(1)}°`;
+  $("sel-velocity").textContent = `${target.velocity.toFixed(1)}°/s`;
+  $("sel-torque").textContent = `${target.torque.toFixed(2)} N·m`;
+  $("sel-sensor").textContent = target.sensorPin == null ? "NO ANALOG" : `GPIO${target.sensorPin} · ${target.adc}`;
+  $("fault-sensor").textContent = target.sensorStuck ? "RELEASE SENSOR" : "FREEZE SENSOR";
+  $("fault-thermal").textContent = target.temperature > 80 ? "CLEAR THERMAL" : "THERMAL FAULT";
+
+  for (const card of document.querySelectorAll(".joint-card")) {
+    const joint = sim.getJoint(Number(card.dataset.jointId));
+    card.querySelector('[data-field="angle"]').textContent = `${joint.angle.toFixed(1)}°`;
+    card.querySelector('[data-field="torque"]').textContent = `${joint.torque.toFixed(2)} N·m`;
+    const dot = card.querySelector(".joint-dot");
+    dot.className = `joint-dot ${joint.temperature > 80 || sim.faults.canDrop ? "warn" : sim.playMode ? "live" : ""}`;
+  }
+
+  robot.setJointStates(sim.joints, ui.selectedJointId);
+  const closureText = $("closure-status-text");
+  if (closureText && robot.ready) {
+    closureText.textContent = `X8 CRANK → TIE ROD → ANKLE/FOOT PIVOT · MAX CLOSURE ${robot.closureResidualMm.toFixed(3)} mm`;
+  }
+  drawScope();
+  board.setActivity({
+    running: sim.running,
+    playMode: sim.playMode,
+    loadCellsEnabled: sim.loadCellsEnabled,
+    time: sim.time,
+  });
+  if (!ui.cadManual) {
+    cad.setJointAngle(target.angle);
+    $("cad-angle").value = String(Math.max(120, Math.min(240, target.angle)));
+    $("cad-angle-output").textContent = `${target.angle.toFixed(1)}°`;
+  }
+  $("csv-output").textContent = sim.controllers[ui.consoleController].csv;
+  $("fault-can").textContent = sim.faults.canDrop ? "RESTORE CAN" : "DROP CAN";
+  $("fault-serial").textContent = sim.faults.serialDrop ? "RESTORE SERIAL" : "DROP SERIAL";
+  $("fault-imu").textContent = sim.faults.imuDrift ? "CLEAR IMU DRIFT" : "DRIFT IMU";
+}
+
+function frame(now) {
+  const dt = Math.min(0.05, (now - ui.lastFrame) / 1000);
+  ui.lastFrame = now;
+  sim.step(dt);
+  if (now - ui.scopeSampleAt > 38) {
+    const target = selectedJoint();
+    ui.scopeHistory.push({ t: sim.time, angle: target.angle, desired: target.desiredPosition, torque: target.torque });
+    while (ui.scopeHistory.length > 260) ui.scopeHistory.shift();
+    ui.scopeSampleAt = now;
+  }
+  if (now - ui.lastRender > 65) {
+    renderLive();
+    ui.lastRender = now;
+  }
+  requestAnimationFrame(frame);
+}
+
+setupNavigation();
+makeJointCards();
+setupSimControls();
+setupCadControls();
+setupBoardControls();
+setupFirmware();
+selectJoint(0x141);
+renderLive();
+requestAnimationFrame(frame);
+
+window.dropbearTwin = {
+  sim,
+  robot,
+  board,
+  cad,
+  source: DROPBEAR_SOURCE,
+  usdSource: DROPBEAR_USD_SOURCE,
+  cadEvidence: CAD_EVIDENCE,
 };
-
-function renderPinGrid() {
-  const board = $("hw-board").value;
-  const pins = BOARD_PINS[board].pins;
-  const grid = $("hw-pins");
-  grid.innerHTML = "";
-  const view = livePinView(pins, state.selected);
-  for (const p of view) {
-    const row = document.createElement("div");
-    row.className = "pin-row" + (p.active ? " active" : "");
-    row.dataset.cls = p.cls;
-    row.innerHTML =
-      `<span class="pin-dot ${p.cls}"></span>` +
-      `<label>${p.name}</label>` +
-      `<span class="pin-gpio">GPIO ${p.gpio}</span>` +
-      `<span class="pin-metric">${p.metric}</span>`;
-    grid.appendChild(row);
-  }
-  renderDataFlow();
-}
-
-// Pin -> signal -> motor data-flow panel. Reflects which edges are live given
-// the selected motor's state (mirrors the per-pin active logic in pins.js).
-function renderDataFlow() {
-  const box = $("hw-flow");
-  if (!box) return;
-  const m = state.selected;
-  const live = (metric) => {
-    if (!m) return false;
-    if (metric === "torque") return m.enabled && Math.abs(m.torque) > 0.01;
-    if (metric === "velocity / position" || metric === "position (homing)") return m.enabled && Math.abs(m.velocity) > 0.001;
-    if (metric === "temperature") return true;
-    if (metric === "command / status frames" || metric === "Modbus frames") return m.enabled;
-    if (metric === "enabled state") return m.enabled;
-    if (metric === "fault state") return m.fault !== 0;
-    return false;
-  };
-  box.innerHTML = "";
-  for (const e of DATA_FLOW) {
-    const on = live(e.into);
-    const row = document.createElement("div");
-    row.className = "flow-row" + (on ? " active" : "");
-    const pins = e.pin2 ? `${e.pin} + ${e.pin2}` : e.pin;
-    row.innerHTML = `<span class="flow-pins">${pins}</span><span class="flow-arrow">→</span><span class="flow-via">${e.via}</span><span class="flow-arrow">→</span><span class="flow-into">${e.into}</span>`;
-    box.appendChild(row);
-  }
-}
-
-function setupHardware() {
-  $("hw-board").onchange = () => {
-    renderPinGrid();
-    log(`Board set to ${BOARD_PINS[$("hw-board").value].label}`, "ok");
-  };
-  $("hw-apply").onclick = () => {
-    const board = $("hw-board").value;
-    const pins = {};
-    for (const inp of $("hw-pins").querySelectorAll("input[data-pin]")) {
-      pins[inp.dataset.pin] = parseInt(inp.value, 10) || 0;
-    }
-    state.hw = { board, pins };
-    log(`Applied ${BOARD_PINS[board].label} pin map: ` + Object.entries(pins).map(([k, v]) => `${k}=${v}`).join(" "), "ok");
-  };
-  renderPinGrid();
-}
-
-function addLegacyVariant() {
-  const key = $("legacy-select").value;
-  if (!key || !LEGACY_VARIANTS[key]) return;
-  const id = state.fleet.length ? Math.max(...state.fleet.map((m) => m.id)) + 1 : 1;
-  const spec = legacySpec(key, id);
-  const sim = new MotorSim(spec);
-  state.fleet.push(sim);
-  if (!state.selected) state.selected = sim;
-  log(`Added legacy variant ${spec.model} (incremental encoder)`, "ok");
-  renderFleet();
-  renderDetail();
-}
-
-// ---- webserial -----------------------------------------------------------
-async function connectSerial() {
-  if (!WebSerialTransport.isSupported()) {
-    log("WebSerial not supported in this browser (use Chrome/Edge).", "err");
-    return;
-  }
-  try {
-    const t = new WebSerialTransport();
-    await t.connect(115200);
-    t.onFrame = (f) => onSerialFrame(f);
-    state.transport = t;
-    state.mode = "serial";
-    $("conn-status").textContent = "online";
-    $("conn-status").className = "status-pill online";
-    log("ESP32 connected over WebSerial.", "ok");
-  } catch (e) {
-    log("WebSerial connect failed: " + e.message, "err");
-  }
-}
-
-function onSerialFrame(f) {
-  // In simulation we mirror incoming status frames into the selected motor
-  // for visualization; a real firmware parser would dispatch by motor id.
-  if (f.frameType !== FrameType.STATUS_REPORT) return;
-  const dv = new DataView(f.payload.buffer, f.payload.byteOffset, f.payload.byteLength);
-  const pos = dv.getInt32(0, true) / 1000;
-  const vel = dv.getInt32(4, true) / 1000;
-  const torq = dv.getInt16(8, true) / 100;
-  const temp = f.payload[10];
-  const st = dv.getUint16(11, true);
-  const fault = f.payload[13];
-  log(`RX status m${f.motorId} pos=${pos.toFixed(2)} vel=${vel.toFixed(2)} T=${temp}°C`);
-  if (state.selected && state.selected.id === f.motorId) {
-    state.selected.position = pos;
-    state.selected.velocity = vel;
-    state.selected.torque = torq;
-    state.selected.temperature = temp;
-    state.selected.status = st;
-    state.selected.fault = fault;
-    renderDetail();
-  }
-}
-
-// ---- sidebar module navigation ------------------------------------------
-function showModule(name) {
-  for (const m of document.querySelectorAll(".module")) {
-    m.classList.toggle("hidden", m.dataset.view !== name);
-  }
-  for (const nav of document.querySelectorAll(".nav-item")) {
-    nav.classList.toggle("active", nav.dataset.module === name);
-  }
-}
-
-function setupSidebar() {
-  for (const nav of document.querySelectorAll(".nav-item")) {
-    nav.onclick = () => showModule(nav.dataset.module);
-  }
-}
-
-// ---- boot ----------------------------------------------------------------
-function boot() {
-  setupSidebar();
-  $("btn-sim").onclick = toggleSim;
-  $("btn-connect").onclick = connectSerial;
-  wireControls();
-  $("btn-add-legacy").onclick = addLegacyVariant;
-  setupHardware();
-  renderCommandSelect();
-  renderDocs();
-  log("Dashboard ready. Start simulation or connect an ESP32.");
-}
-
-boot();

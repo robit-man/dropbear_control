@@ -1,121 +1,111 @@
-// web/test/visual_review.mjs
-// Playwright visual review of the MyActuator dashboard.
-// Loads the page, drives the simulation through idle/driven/faulted states,
-// and captures screenshots + DOM assertions for the pin grid and data-flow panel.
-
-import { chromium } from "playwright";
 import { mkdirSync } from "node:fs";
+import { chromium } from "playwright";
 
-const BASE = process.env.BASE_URL || "http://localhost:8123";
-const OUT = "/tmp/visual_review";
+const BASE = process.env.BASE_URL || "http://localhost:8000";
+const OUT = process.env.VISUAL_OUT || "/tmp/dropbear-visual-review";
 mkdirSync(OUT, { recursive: true });
 
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const browser = await chromium.launch();
+const page = await browser.newPage({ viewport: { width: 1600, height: 1000 }, deviceScaleFactor: 1 });
+const errors = [];
+page.on("console", (message) => {
+  if (message.type() === "error") errors.push(`console: ${message.text()}`);
+});
+page.on("pageerror", (error) => errors.push(`page: ${error.message}`));
 
-function pinSummary(page) {
-  return page.$$eval("#hw-pins .pin-row", (rows) =>
-    rows.map((r) => ({
-      name: r.querySelector("label")?.textContent,
-      gpio: r.querySelector(".pin-gpio")?.textContent,
-      cls: r.dataset.cls,
-      active: r.classList.contains("active"),
-      metric: r.querySelector(".pin-metric")?.textContent,
-    }))
+await page.goto(BASE, { waitUntil: "networkidle" });
+await page.waitForFunction(() => Boolean(window.dropbearTwin?.sim));
+await page.waitForFunction(() => window.dropbearTwin?.robot?.ready === true);
+await page.waitForFunction(() => window.dropbearTwin?.robot?.poseVersion > 2);
+await page.locator("#usd-resolution").fill("150");
+await page.waitForFunction(() => window.dropbearTwin.robot.resolutionScale === 1.5);
+if ((await page.locator("#usd-resolution-output").textContent()) !== "150%") {
+  throw new Error("USD resolution output did not update");
+}
+
+await page.screenshot({ path: `${OUT}/01-guarded-sim.png` });
+if ((await page.locator(".joint-card").count()) !== 12) throw new Error("Expected twelve joint cards");
+if ((await page.locator("#system-state").textContent())?.trim() !== "GUARDED PAUSE") throw new Error("Guarded pause missing");
+if (!(await page.locator("#robot-load-status").textContent())?.includes("294,204")) throw new Error("Full USD model did not load");
+const initialUsdPose = await page.evaluate(() => Array.from(
+  window.dropbearTwin.robot.bodyGroups
+    .get("/humanoid/LL_RMD_X10_S2_MIR4__3_Stator_1").matrix.elements,
+));
+const initialCalfPose = await page.evaluate(() => Array.from(
+  window.dropbearTwin.robot.bodyGroups
+    .get("/humanoid/LL_calf_motor_driver_ext_2").matrix.elements,
+));
+
+await page.click("#run-demo");
+await page.waitForTimeout(900);
+const runState = (await page.locator("#system-state").textContent())?.trim();
+const canLoad = Number.parseFloat(await page.locator("#can-load").textContent());
+if (runState !== "CONTROL ACTIVE") throw new Error(`Unexpected run state: ${runState}`);
+if (!(canLoad > 10)) throw new Error(`CAN load did not become active: ${canLoad}`);
+const usdPoseDelta = await page.evaluate((before) => {
+  const after = Array.from(
+    window.dropbearTwin.robot.bodyGroups
+      .get("/humanoid/LL_RMD_X10_S2_MIR4__3_Stator_1").matrix.elements,
   );
-}
-
-function flowSummary(page) {
-  return page.$$eval("#hw-flow .flow-row", (rows) =>
-    rows.map((r) => ({
-      text: r.textContent.replace(/\s+/g, " ").trim(),
-      active: r.classList.contains("active"),
-    }))
+  return after.reduce((sum, value, index) => sum + Math.abs(value - before[index]), 0);
+}, initialUsdPose);
+if (!(usdPoseDelta > 0.0001)) throw new Error("CAN state did not move the USD articulation");
+const calfPoseDelta = await page.evaluate((before) => {
+  const after = Array.from(
+    window.dropbearTwin.robot.bodyGroups
+      .get("/humanoid/LL_calf_motor_driver_ext_2").matrix.elements,
   );
+  return after.reduce((sum, value, index) => sum + Math.abs(value - before[index]), 0);
+}, initialCalfPose);
+if (!(calfPoseDelta > 0.0001)) throw new Error("Outer calf CAN state did not move the X8 driver");
+const closureResidualMm = await page.evaluate(() => window.dropbearTwin.robot.closureResidualMm);
+if (!(closureResidualMm < 0.5)) throw new Error(`Calf linkage did not close: ${closureResidualMm} mm`);
+await page.screenshot({ path: `${OUT}/02-running-sim.png` });
+
+await page.locator(".joint-card").nth(4).click();
+if (await page.locator("#position-target").getAttribute("min") !== "180") {
+  throw new Error("Knee lock did not set the 180° browser lower bound");
 }
+await page.locator("#position-target").fill("210");
+await page.click("#fault-sensor");
+await page.waitForFunction(() => document.querySelector("#fault-sensor")?.textContent === "RELEASE SENSOR");
 
-async function main() {
-  const browser = await chromium.launch();
-  const page = await browser.newPage({ viewport: { width: 1600, height: 1000 } });
-  const errors = [];
-  page.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
-  page.on("pageerror", (e) => errors.push("PAGEERROR: " + e.message));
+await page.click('[data-view-target="cad"]');
+await page.waitForFunction(() => document.querySelector("#cad-status")?.textContent?.includes("96,640"));
+if (!(await page.locator("#cad-lines").isChecked())) throw new Error("Technical CAD lines should default on");
+await page.locator("#cad-explode").check({ force: true });
+await page.locator("#cad-angle").fill("215");
+await page.waitForTimeout(350);
+await page.screenshot({ path: `${OUT}/03-step-cad.png` });
 
-  await page.goto(BASE, { waitUntil: "networkidle" });
-  await sleep(400);
+await page.click('[data-view-target="controller"]');
+await page.waitForTimeout(400);
+if ((await page.locator("#pin-map .pin-row").count()) !== 19) throw new Error("Expected nineteen controller routes");
+await page.screenshot({ path: `${OUT}/04-controller-overview.png` });
+await page.locator("#pin-map .pin-row").filter({ hasText: "GPIO5" }).click();
+if (!(await page.locator("#pin-title").textContent())?.includes("GPIO5")) throw new Error("Pin focus did not update");
+await page.waitForTimeout(250);
+await page.screenshot({ path: `${OUT}/05-controller-pin-focus.png` });
 
-  // ---- 1. Initial idle state (no sim) ----
-  await page.screenshot({ path: `${OUT}/01-idle.png`, fullPage: true });
-  const idlePins = await pinSummary(page);
-  const idleFlow = await flowSummary(page);
-  console.log("IDLE pins active:", idlePins.filter((p) => p.active).length, "/", idlePins.length);
-  console.log("IDLE flow active:", idleFlow.filter((f) => f.active).length, "/", idleFlow.length);
+await page.click('[data-view-target="firmware"]');
+await page.locator("#terminal-command").fill("torque left hip_yaw 125");
+await page.locator("#terminal-form").press("Enter");
+if (!(await page.locator("#terminal-output").textContent())?.includes("set to 125")) throw new Error("Firmware command did not execute");
+await page.click("#fault-can");
+await page.waitForFunction(() => document.querySelector("#fault-can")?.textContent === "RESTORE CAN");
+await page.screenshot({ path: `${OUT}/06-firmware-console.png` });
+await page.click("#fault-can");
 
-  // ---- 2. Start simulation ----
-  await page.click("#btn-sim");
-  await sleep(600);
-  // First motor is auto-selected by startSim(); open its module, then drive it.
-  await page.click('[data-module="detail"]');
-  await page.click("#c-enable");
-  // Drive a sustained torque command so the bridge pins show real current.
-  await page.selectOption("#c-mode", "torque");
-  await page.fill("#c-target", "3.0");
-  await page.click("#c-send");
-  // Also command velocity so encoder/quad pins are clearly moving.
-  await page.selectOption("#c-mode", "velocity");
-  await page.fill("#c-target", "4.0");
-  await page.click("#c-send");
-  await sleep(1200);
+await page.click('[data-view-target="evidence"]');
+await page.locator('[data-view="evidence"] h1').waitFor({ state: "visible" });
+await page.waitForTimeout(350);
+if (!(await page.locator('[data-view="evidence"]').textContent())?.includes("Actual Dropbear USD")) throw new Error("USD provenance missing");
+await page.screenshot({ path: `${OUT}/07-evidence.png` });
 
-  await page.screenshot({ path: `${OUT}/02-driven.png`, fullPage: true });
-  const drivenPins = await pinSummary(page);
-  const drivenFlow = await flowSummary(page);
-  console.log("DRIVEN pins active:", drivenPins.filter((p) => p.active).length, "/", drivenPins.length);
-  console.log("DRIVEN flow active:", drivenFlow.filter((f) => f.active).length, "/", drivenFlow.length);
-  console.log("DRIVEN sample metrics:",
-    drivenPins.slice(0, 6).map((p) => `${p.name}=${p.metric}${p.active ? "*" : ""}`).join(" | "));
+await browser.close();
 
-  // ---- 3. Fault injection ----
-  await page.click("#c-overtemp");
-  await sleep(500);
-  await page.screenshot({ path: `${OUT}/03-faulted.png`, fullPage: true });
-  const faultPins = await pinSummary(page);
-  const faultFlow = await flowSummary(page);
-  console.log("FAULT pins active:", faultPins.filter((p) => p.active).length, "/", faultPins.length);
-  console.log("FAULT flow active:", faultFlow.filter((f) => f.active).length, "/", faultFlow.length);
-  const faultLed = faultPins.find((p) => p.name === "PIN_FAULT_LED");
-  console.log("FAULT_LED active:", faultLed?.active, "metric:", faultLed?.metric);
-
-  // ---- 4. Close-up of hardware panel only ----
-  await page.click('[data-module="hardware"]');
-  await sleep(300);
-  const hw = await page.$('[data-view="hardware"]');
-  if (hw) await hw.screenshot({ path: `${OUT}/04-hardware-closeup.png` });
-
-  // ---- 5. Switch board to S3 and re-capture ----
-  await page.selectOption("#hw-board", "esp32-s3-devkitc-1");
-  await sleep(300);
-  await page.screenshot({ path: `${OUT}/05-s3-board.png`, fullPage: true });
-  const s3Pins = await pinSummary(page);
-  console.log("S3 board pins:", s3Pins.length, "first gpio:", s3Pins[0]?.gpio);
-
-  await browser.close();
-
-  // ---- Report ----
-  const report = {
-    consoleErrors: errors,
-    idle: { pinsActive: idlePins.filter((p) => p.active).length, total: idlePins.length, flowActive: idleFlow.filter((f) => f.active).length },
-    driven: { pinsActive: drivenPins.filter((p) => p.active).length, total: drivenPins.length, flowActive: drivenFlow.filter((f) => f.active).length },
-    faulted: { pinsActive: faultPins.filter((p) => p.active).length, total: faultPins.length, flowActive: faultFlow.filter((f) => f.active).length, faultLedActive: faultLed?.active },
-    s3PinCount: s3Pins.length,
-  };
-  console.log("\n=== REPORT ===");
-  console.log(JSON.stringify(report, null, 2));
-  if (errors.length) {
-    console.log("\nCONSOLE ERRORS DETECTED:");
-    errors.forEach((e) => console.log("  - " + e));
-  } else {
-    console.log("\nNo console/page errors.");
-  }
+if (errors.length) {
+  console.error(errors.join("\n"));
+  process.exit(1);
 }
-
-main().catch((e) => { console.error(e); process.exit(1); });
+console.log(`VISUAL REVIEW PASSED · screenshots: ${OUT}`);
