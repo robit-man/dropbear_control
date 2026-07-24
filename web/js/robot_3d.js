@@ -585,14 +585,14 @@ export class Robot3D {
           new THREE.Euler(
             Number(pose.roll) || 0,
             Number(pose.pitch) || 0,
-            0,
+            Number(pose.yaw) || 0,
             "XYZ",
           ),
         );
         const rootTransform = new THREE.Matrix4()
           .makeTranslation(
             Number(pose.x) || 0,
-            0,
+            Number(pose.y) || 0,
             this.neutralGroundOffsetZ + heightDelta + extraZ + pivotZ,
           )
           .multiply(rotation)

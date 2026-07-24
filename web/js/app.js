@@ -31,6 +31,72 @@ const RL_SOURCES = Object.freeze([
   { value: "latest", label: "Latest completed local policy" },
   { value: "live", label: "Live policy from active training" },
 ]);
+const RL_TRAINING_PROFILES = Object.freeze({
+  "gentle-forward": Object.freeze({
+    label: "Gentle forward",
+    updates: 250,
+    steps: 128,
+    envs: 8,
+    epochs: 4,
+    batchSize: 512,
+    targetSpeed: 0.26,
+    targetTurnRate: 0,
+    episodeSeconds: 8,
+    physicsBackend: "mujoco-usd-proxy-v1",
+    device: "cpu",
+    verticalConstraint: false,
+    armSwing: true,
+    rewardWeights: Object.freeze({
+      torso: 1.75,
+      com: 1.20,
+      gaitContact: 0.90,
+      gaitSymmetry: 1.10,
+      speed: 0.55,
+      legSwing: 0.28,
+      height: 8.0,
+      lateralTilt: 5.0,
+      dorsalTilt: 4.5,
+      kneeContraction: 0.18,
+      armSwing: 0.35,
+      energy: 0.018,
+      smoothness: 0.065,
+      closure: 300.0,
+      fall: 7.0,
+    }),
+  }),
+  "circle-walk": Object.freeze({
+    label: "Circle walk",
+    updates: 400,
+    steps: 160,
+    envs: 8,
+    epochs: 5,
+    batchSize: 640,
+    targetSpeed: 0.22,
+    targetTurnRate: 0.28,
+    episodeSeconds: 10,
+    physicsBackend: "mujoco-usd-proxy-v1",
+    device: "cpu",
+    verticalConstraint: false,
+    armSwing: true,
+    rewardWeights: Object.freeze({
+      torso: 1.90,
+      com: 1.35,
+      gaitContact: 1.00,
+      gaitSymmetry: 0.42,
+      speed: 0.95,
+      legSwing: 0.38,
+      height: 8.5,
+      lateralTilt: 6.0,
+      dorsalTilt: 5.0,
+      kneeContraction: 0.12,
+      armSwing: 0.50,
+      energy: 0.018,
+      smoothness: 0.055,
+      closure: 325.0,
+      fall: 8.0,
+    }),
+  }),
+});
 const armMotorStates = DROPBEAR_ARM_MOTOR_BINDINGS.map((binding) => ({
   id: binding.id,
   angleDeg: 0,
@@ -695,6 +761,9 @@ async function pollPhysicsRuntime() {
     const physx = status.backends?.find(
       (backend) => backend.id === "isaac-physx-usd",
     );
+    const mujoco = status.backends?.find(
+      (backend) => backend.id === "mujoco-usd-proxy-v1",
+    );
     chip.classList.toggle("verified", sourceVerified);
     chip.querySelector("span").textContent = sourceVerified
       ? "SOURCE USD VERIFIED"
@@ -702,6 +771,7 @@ async function pollPhysicsRuntime() {
     chip.querySelector("b").textContent = [
       `${Number(status.groundTruth?.totalAuthoredMassKg || 0).toFixed(3)} KG`,
       "FORCE CONTACT",
+      mujoco?.available ? "MUJOCO RL READY" : "MUJOCO OFFLINE",
       physx?.available ? "PHYSX READY" : "PHYSX OFFLINE",
     ].join(" · ");
   } catch (error) {
@@ -746,6 +816,12 @@ function renderRLStatus(status) {
   $("rl-closure").textContent = Number.isFinite(metric.closure_max_m) ? `${(metric.closure_max_m * 1000).toFixed(3)} mm` : "—";
   $("rl-torso-tilt").textContent = Number.isFinite(metric.torso_tilt_degrees) ? `${metric.torso_tilt_degrees.toFixed(2)}°` : "—";
   $("rl-com-variation").textContent = Number.isFinite(metric.com_variation_m) ? `${(metric.com_variation_m * 1000).toFixed(2)} mm` : "—";
+  $("rl-gait-symmetry").textContent = Number.isFinite(metric.gait_symmetry_percent) ? `${metric.gait_symmetry_percent.toFixed(1)}%` : "—";
+  $("rl-leg-swing").textContent = Number.isFinite(metric.leg_swing_percent) ? `${metric.leg_swing_percent.toFixed(1)}%` : "—";
+  $("rl-knee-contraction").textContent = Number.isFinite(metric.knee_contraction_degrees) ? `${metric.knee_contraction_degrees.toFixed(1)}°` : "—";
+  $("rl-lateral-tilt").textContent = Number.isFinite(metric.lateral_tilt_degrees) ? `${metric.lateral_tilt_degrees.toFixed(2)}°` : "—";
+  $("rl-dorsal-tilt").textContent = Number.isFinite(metric.dorsal_tilt_degrees) ? `${metric.dorsal_tilt_degrees.toFixed(2)}°` : "—";
+  $("rl-turn-rate").textContent = Number.isFinite(metric.turn_rate) ? `${metric.turn_rate.toFixed(3)} rad/s` : "—";
   const strip = $("global-training-strip");
   const hasExperiment = Boolean(status.experimentId);
   strip.hidden = !hasExperiment;
@@ -863,24 +939,20 @@ async function loadPolicy(url, label, { play = false, loop = false } = {}) {
 }
 
 const rewardWeightDefaults = Object.freeze({
-  torso: 1.25,
-  com: 0.75,
-  gaitContact: 0.85,
-  speed: 0.60,
-  height: 7.0,
-  armSwing: 0.42,
-  energy: 0.012,
-  smoothness: 0.035,
-  closure: 250.0,
-  fall: 5.0,
+  ...RL_TRAINING_PROFILES["gentle-forward"].rewardWeights,
 });
 
 const rewardWeightInputSuffix = Object.freeze({
   torso: "torso",
   com: "com",
   gaitContact: "gait-contact",
+  gaitSymmetry: "gait-symmetry",
   speed: "speed",
+  legSwing: "leg-swing",
   height: "height",
+  lateralTilt: "lateral-tilt",
+  dorsalTilt: "dorsal-tilt",
+  kneeContraction: "knee-contraction",
   armSwing: "arm-swing",
   energy: "energy",
   smoothness: "smoothness",
@@ -916,12 +988,14 @@ function warmStartConfig() {
 
 function advancedRLConfig() {
   return {
+    motionProfile: $("rl-motion-profile").value,
     updates: Number($("rl-updates").value),
     steps: Number($("rl-steps").value),
     envs: Number($("rl-envs").value),
     epochs: Number($("rl-epochs").value),
     batchSize: Number($("rl-batch-size").value),
     targetSpeed: Number($("rl-target-speed").value),
+    targetTurnRate: Number($("rl-target-turn-rate").value),
     episodeSeconds: Number($("rl-episode-seconds").value),
     seed: Number($("rl-seed").value),
     device: $("rl-device").value,
@@ -939,6 +1013,8 @@ function quickRLConfig() {
     updates: Number($("sim-rl-updates").value),
     epochs: Number($("sim-rl-epochs").value),
     targetSpeed: Number($("sim-rl-target-speed").value),
+    targetTurnRate: Number($("sim-rl-target-turn-rate").value),
+    motionProfile: $("sim-rl-motion-profile").value,
     device: $("sim-rl-device").value,
     verticalConstraint: $("sim-rl-vertical-constraint").checked,
     armSwing: $("sim-rl-arm-swing").checked,
@@ -977,6 +1053,8 @@ function applyRLSessionConfig(session) {
     "rl-epochs": config.epochs,
     "rl-batch-size": config.batchSize,
     "rl-target-speed": config.targetSpeed,
+    "rl-target-turn-rate": config.targetTurnRate ?? 0,
+    "rl-motion-profile": config.motionProfile || "custom",
     "rl-episode-seconds": config.episodeSeconds,
     "rl-seed": config.seed,
     "rl-device": config.device,
@@ -984,6 +1062,8 @@ function applyRLSessionConfig(session) {
     "sim-rl-updates": config.updates,
     "sim-rl-epochs": config.epochs,
     "sim-rl-target-speed": config.targetSpeed,
+    "sim-rl-target-turn-rate": config.targetTurnRate ?? 0,
+    "sim-rl-motion-profile": config.motionProfile || "custom",
     "sim-rl-device": config.device,
   };
   for (const [id, value] of Object.entries(values)) {
@@ -1041,11 +1121,12 @@ function renderRLSessions(payload) {
           <span>UPDATES<b>${config.updates ?? "—"}</b></span>
           <span>EPOCHS<b>${config.epochs ?? "—"} / U</b></span>
           <span>TARGET<b>${formatSessionValue(config.targetSpeed, 2, " M/S")}</b></span>
+          <span>TURN<b>${formatSessionValue(config.targetTurnRate, 2, " RAD/S")}</b></span>
         </div>
         <div class="rl-session-card-metrics">
           <span>REWARD<b>${formatSessionValue(evaluation.meanReward ?? progress.reward, 3)}</b></span>
           <span>UPRIGHT<b>${formatSessionValue(evaluation.uprightPercent ?? progress.upright_percent, 1, "%")}</b></span>
-          <span>BACKEND<b>${config.physicsBackend === "teaching-plant-v2" ? "PREVIEW" : config.physicsBackend || "—"}</b></span>
+          <span>BACKEND<b>${config.physicsBackend === "mujoco-usd-proxy-v1" ? "MUJOCO" : config.physicsBackend === "teaching-plant-v2" ? "PREVIEW" : config.physicsBackend || "—"}</b></span>
         </div>`;
       card.addEventListener("click", () => selectRLSession(session.experimentId));
       list.appendChild(card);
@@ -1139,6 +1220,58 @@ function watchTrainingOnSim() {
   pollRLStatus();
 }
 
+function applyRLTrainingProfile(profileId, { announce = true } = {}) {
+  const profile = RL_TRAINING_PROFILES[profileId];
+  if (!profile) return;
+  const values = {
+    "rl-motion-profile": profileId,
+    "sim-rl-motion-profile": profileId,
+    "rl-updates": profile.updates,
+    "sim-rl-updates": profile.updates,
+    "rl-steps": profile.steps,
+    "rl-envs": profile.envs,
+    "rl-epochs": profile.epochs,
+    "sim-rl-epochs": profile.epochs,
+    "rl-batch-size": profile.batchSize,
+    "rl-target-speed": profile.targetSpeed,
+    "sim-rl-target-speed": profile.targetSpeed,
+    "rl-target-turn-rate": profile.targetTurnRate,
+    "sim-rl-target-turn-rate": profile.targetTurnRate,
+    "rl-episode-seconds": profile.episodeSeconds,
+    "rl-device": profile.device,
+    "sim-rl-device": profile.device,
+    "rl-physics-backend": profile.physicsBackend,
+  };
+  for (const [id, value] of Object.entries(values)) {
+    $(id).value = String(value);
+  }
+  $("rl-vertical-constraint").checked = profile.verticalConstraint;
+  $("sim-rl-vertical-constraint").checked = profile.verticalConstraint;
+  $("rl-arm-swing").checked = profile.armSwing;
+  $("sim-rl-arm-swing").checked = profile.armSwing;
+  writeRewardWeights("rl", profile.rewardWeights);
+  writeRewardWeights("sim-rl", profile.rewardWeights);
+  if (announce) {
+    const radius = profile.targetTurnRate
+      ? ` · nominal radius ${(profile.targetSpeed / Math.abs(profile.targetTurnRate)).toFixed(2)} m`
+      : "";
+    appendTerminal(
+      `[rl] ${profile.label} profile loaded · ${profile.targetSpeed.toFixed(2)} m/s · ${profile.targetTurnRate.toFixed(2)} rad/s${radius}`,
+      "ok",
+    );
+  }
+}
+
+function markRLProfileCustom(event) {
+  if (
+    event.target.id === "rl-motion-profile"
+    || event.target.id === "sim-rl-motion-profile"
+    || event.target.id === "sim-rl-auto-replay"
+  ) return;
+  $("rl-motion-profile").value = "custom";
+  $("sim-rl-motion-profile").value = "custom";
+}
+
 function setupRLLab() {
   for (const [key, suffix] of Object.entries(rewardWeightInputSuffix)) {
     const advanced = $(`rl-weight-${suffix}`);
@@ -1154,6 +1287,19 @@ function setupRLLab() {
     writeRewardWeights("rl");
     writeRewardWeights("sim-rl");
   });
+  for (const id of ["rl-motion-profile", "sim-rl-motion-profile"]) {
+    $(id).addEventListener("change", (event) => {
+      const profileId = event.target.value;
+      if (profileId === "custom") {
+        $("rl-motion-profile").value = "custom";
+        $("sim-rl-motion-profile").value = "custom";
+        return;
+      }
+      applyRLTrainingProfile(profileId);
+    });
+  }
+  $("rl-form").addEventListener("input", markRLProfileCustom);
+  $("sim-training-panel").addEventListener("input", markRLProfileCustom);
   $("rl-session-new").addEventListener("click", () => {
     ui.selectedRLSessionId = null;
     $("rl-session-warm-start").checked = false;
@@ -1206,6 +1352,7 @@ function setupRLLab() {
     ui.policyMode = true;
     policyPlayer.seek(Number(event.target.value));
   });
+  applyRLTrainingProfile("gentle-forward", { announce: false });
   pollRLStatus();
   pollRLSessions();
   window.setInterval(pollRLStatus, 800);

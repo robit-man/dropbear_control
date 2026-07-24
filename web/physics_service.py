@@ -78,6 +78,21 @@ class PhysicsRuntimeRegistry:
                 "fullRigidBody": False,
                 "physicallyValidated": False,
             },
+            "activeRLPhysics": {
+                "backend": "mujoco-usd-proxy-v1",
+                "available": bool(source_verified and mujoco_available),
+                "connectedRigidBodies": 90,
+                "treeJoints": 84,
+                "closureConstraints": 27,
+                "actuators": 22,
+                "sourceRigidBodies": manifest["statistics"]["rigidBodies"],
+                "sourcePhysicsJoints": manifest["statistics"]["physicsJoints"],
+                "gravityMps2": manifest["stage"]["gravityMagnitudeMps2"],
+                "forceBased": True,
+                "collisionModel": "authored-inertia-derived-ellipsoid-proxy",
+                "exactCollisionGeometry": False,
+                "physicallyValidated": False,
+            },
             "backends": [
                 {
                     "id": "isaac-physx-usd",
@@ -89,13 +104,17 @@ class PhysicsRuntimeRegistry:
                     ],
                 },
                 {
-                    "id": "mujoco-usd",
-                    "available": False,
+                    "id": "mujoco-usd-proxy-v1",
+                    "available": bool(source_verified and mujoco_available),
                     "authoritative": False,
-                    "blockers": [
+                    "blockers": [] if source_verified and mujoco_available else [
                         *([] if source_verified else ["verified_source_usd_missing"]),
                         *([] if mujoco_available else ["mujoco_runtime_missing"]),
-                        "dropbear_usd_to_mjcf_closed_chain_compilation_pending",
+                    ],
+                    "limitations": [
+                        "collision_shapes_are_inertia_derived_proxies",
+                        "self_collision_disabled_pending_source_pair_filter",
+                        "not_physically_correlated",
                     ],
                 },
                 {

@@ -83,7 +83,9 @@ check(
     && index.body.includes('id="rl-weight-arm-swing"')
     && index.body.includes('id="sim-rl-weight-arm-swing"')
     && index.body.includes('id="rl-weight-closure"')
-    && index.body.includes("10 COEFFICIENTS"),
+    && index.body.includes('id="rl-weight-gait-symmetry"')
+    && index.body.includes('id="rl-weight-knee-contraction"')
+    && index.body.includes("15 COEFFICIENTS"),
 );
 check(
   "persistent RL session controls are present",

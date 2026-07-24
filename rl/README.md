@@ -1,20 +1,26 @@
 # Dropbear PyTorch walking RL
 
-This package provides a compact PPO teaching plant for local walking-policy
-experiments. It uses the exact dashboard motor order—12 leg sources followed
-by 10 arm sources—and exports deterministic rollouts that the full browser USD
-can replay while training continues.
+This package provides a PPO walking lab with two selectable dynamics backends.
+It uses the exact dashboard motor order—12 leg sources followed by 10 arm
+sources—and exports deterministic rollouts that the full browser USD can
+replay while training continues.
 
-It is intentionally not a replacement for the Dropbear USD in Isaac/PhysX.
-The local plant makes policy iteration, reward shaping, falling, contact
-timing, closure violations, and arm counter-swing observable; authoritative
-contact dynamics and final validation remain in Isaac/PhysX.
+`mujoco-usd-proxy-v1` compiles the source-physics manifest into MuJoCo 3.6:
+90 connected USD bodies, 84 tree joints, 27 retained closure constraints, 22
+actuators, a free base, gravity, friction, impacts, and contact-force sensing.
+Mass, COM, principal axes, inertia, joint axes, and limits come from the USD.
+Collision envelopes are conservative inertia-derived ellipsoids because the
+source collision groups have no finite external envelopes. They currently
+collide with the floor only; self-collision is disabled until a grounded
+collision-pair filter is available. The original `teaching-plant-v2` remains
+available as a fast fallback. Neither replaces final Isaac/PhysX, HIL, or
+hardware validation.
 
 ## Modelled state
 
 - 22 motor positions, velocities, and actions;
-- optional free-root height, vertical velocity, forward velocity, torso
-  roll/pitch, and angular rates;
+- optional free-root height, vertical velocity, forward/lateral velocity,
+  yaw/yaw rate, torso roll/pitch, and angular rates;
 - left/right heel and toe contact weights and load;
 - the authored baseline walking phase;
 - two leg closed-chain projections;
@@ -47,9 +53,10 @@ The reward is led by:
 1. low torso roll/pitch and low torso angular rate;
 2. low center-of-mass height/lateral variation and vertical COM speed;
 3. a smooth reference-motion bias toward the hand-authored alternating walk;
-4. target forward speed and heel/toe timing;
-5. realistic contralateral arm swing; and
-6. low energy, action variation, and leg/arm closure residual.
+4. target forward speed/turn rate, half-cycle gait symmetry, and heel/toe
+   timing;
+5. controlled leg swing, knee contraction, and contralateral arm swing; and
+6. low lateral/dorsal tilt, energy, action variation, and closure residual.
 
 The baseline gait is a bias, not a hard script. PPO can depart from it when
 that improves torso and COM stability. The actor mean is zero-initialized, so
@@ -57,11 +64,22 @@ the deterministic update-zero policy is exactly that baseline. Every live
 preview is ranked on the same seed, and the final checkpoint restores the
 best stable preview after all requested updates finish.
 
-All ten top-level coefficients are configurable and serialized into each
-policy as `config.rewardWeights`: torso, COM, gait/contact, speed, height, arm
-swing, energy, smoothness, closure, and fall. Reward coefficients favor their
-behavior; penalty coefficients suppress their error. Zero disables a term.
-The checked-in behavior remains the default profile.
+All 15 top-level coefficients are configurable and serialized into each policy
+as `config.rewardWeights`: torso, COM, gait/contact, asynchronous symmetry,
+speed/turn, leg swing, height, lateral tilt, dorsal tilt, knee contraction,
+arm swing, energy, smoothness, closure, and fall. Reward coefficients favor
+their behavior; penalty coefficients suppress their error. Zero disables a
+term.
+
+The dashboard ships two complete parameter profiles:
+
+- **Gentle forward** — `0.26 m/s`, no commanded turn, strong asynchronous
+  symmetry and upright/COM control, moderate leg swing, shallow-knee bias, and
+  `250 × 4 = 1,000` policy epochs.
+- **Circle walk · left** — `0.22 m/s`, `0.28 rad/s` turn rate (nominal
+  `0.79 m` radius), inner/outer stride scaling, hip-yaw bias, stronger
+  speed/turn tracking, and a reduced symmetry weight to preserve the required
+  curved-gait asymmetry.
 
 For a reproducible fine-tune, add:
 
@@ -69,7 +87,7 @@ For a reproducible fine-tune, add:
 --init-checkpoint artifacts/rl/experiments/<source>/checkpoint.pt
 ```
 
-The checkpoint must match the 88-observation, 22-action dimensions and exact
+The checkpoint must match the 90-observation, 22-action dimensions and exact
 joint order. Its deterministic corrected-plant rollout becomes protected
 update zero before the requested optimization epochs begin.
 
@@ -102,28 +120,25 @@ experiment-scoped artifacts. From the RL Lab, a stored run can be selected to:
 - warm-start a new run from its dimension- and joint-order-checked checkpoint.
 
 Starting a new run never overwrites or deletes an older session. Session
-configuration records `physicsBackend`; current local PPO runs are explicitly
-`teaching-plant-v2`, not PhysX.
+configuration records `physicsBackend`, `motionProfile`, and
+`targetTurnRate`; replay and warm-start preserve the selected run's contract.
 
 ## Command line
 
 ```bash
 python3 -m rl.train_walk \
-  --updates 200 \
-  --steps 256 \
-  --envs 128 \
-  --epochs 5 \
-  --reward-torso 1.25 \
-  --reward-com 0.75 \
-  --reward-gait-contact 0.85 \
-  --reward-speed 0.60 \
-  --penalty-height 7.0 \
-  --penalty-arm-swing 0.42 \
-  --penalty-energy 0.012 \
-  --penalty-smoothness 0.035 \
-  --penalty-closure 250 \
-  --penalty-fall 5 \
-  --device cuda \
+  --updates 250 --steps 128 --envs 8 --epochs 4 \
+  --motion-profile gentle-forward \
+  --physics-backend mujoco-usd-proxy-v1 \
+  --target-speed 0.26 --target-turn-rate 0 \
+  --reward-torso 1.75 --reward-com 1.20 \
+  --reward-gait-contact 0.90 --reward-gait-symmetry 1.10 \
+  --reward-speed 0.55 --reward-leg-swing 0.28 \
+  --penalty-height 8.0 --penalty-lateral-tilt 5.0 \
+  --penalty-dorsal-tilt 4.5 --penalty-knee-contraction 0.18 \
+  --penalty-arm-swing 0.35 --penalty-energy 0.018 \
+  --penalty-smoothness 0.065 --penalty-closure 300 \
+  --penalty-fall 7 --device cpu \
   --no-vertical-constraint \
   --arm-swing
 ```

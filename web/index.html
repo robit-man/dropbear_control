@@ -131,13 +131,21 @@
           <div>
             <span class="panel-kicker">LIVE PPO / CURRENT FULL USD STAGE</span>
             <h2>Train while policy updates replay here</h2>
-            <p>Training runs in the local teaching plant. Each exported update is loaded into this full model with root state, all 22 motor axes, and retained leg/elbow closures.</p>
+            <p>Training runs in the selected force-physics backend. Each exported update is loaded into this full model with root state, all 22 motor axes, and retained leg/elbow closures.</p>
           </div>
-          <label><span>TRAINING UPDATES</span><input id="sim-rl-updates" type="number" min="1" max="10000" value="12"></label>
+          <label><span>TRAINING PROFILE</span>
+            <select id="sim-rl-motion-profile">
+              <option value="gentle-forward">Gentle forward</option>
+              <option value="circle-walk">Circle walk · left</option>
+              <option value="custom">Custom</option>
+            </select>
+          </label>
+          <label><span>TRAINING UPDATES</span><input id="sim-rl-updates" type="number" min="1" max="10000" value="250"></label>
           <label><span>EPOCHS / UPDATE</span><input id="sim-rl-epochs" type="number" min="1" max="20" value="4"></label>
-          <label><span>TARGET M/S</span><input id="sim-rl-target-speed" type="number" min="0" max="1.2" step="0.05" value="0.35"></label>
+          <label><span>TARGET M/S</span><input id="sim-rl-target-speed" type="number" min="0" max="1.2" step="0.01" value="0.26"></label>
+          <label><span>TURN RATE RAD/S</span><input id="sim-rl-target-turn-rate" type="number" min="-1.2" max="1.2" step="0.01" value="0"></label>
           <label><span>DEVICE</span>
-            <select id="sim-rl-device"><option value="auto">Auto</option><option value="cpu">CPU</option><option value="cuda">CUDA</option></select>
+            <select id="sim-rl-device"><option value="auto">Auto</option><option value="cpu" selected>CPU</option><option value="cuda">CUDA</option></select>
           </label>
           <div class="sim-training-switches">
             <label class="switch"><input id="sim-rl-vertical-constraint" type="checkbox"><span></span>VERTICAL GUIDE</label>
@@ -145,19 +153,24 @@
             <label class="switch"><input id="sim-rl-auto-replay" type="checkbox" checked><span></span>REPLAY EACH UPDATE</label>
           </div>
           <details class="reward-tuning">
-            <summary>REWARD / PENALTY BIAS <span>10 COEFFICIENTS</span></summary>
+            <summary>REWARD / PENALTY BIAS <span>15 COEFFICIENTS</span></summary>
             <p>Higher reward weights favor a behavior; higher penalty weights suppress it. Arm swing must also be enabled above.</p>
             <div class="reward-weight-grid">
-              <label><span>TORSO REWARD</span><input id="sim-rl-weight-torso" type="number" min="0" max="20" step="0.05" value="1.25"></label>
-              <label><span>COM REWARD</span><input id="sim-rl-weight-com" type="number" min="0" max="20" step="0.05" value="0.75"></label>
-              <label><span>GAIT + CONTACT</span><input id="sim-rl-weight-gait-contact" type="number" min="0" max="20" step="0.05" value="0.85"></label>
-              <label><span>SPEED REWARD</span><input id="sim-rl-weight-speed" type="number" min="0" max="20" step="0.05" value="0.60"></label>
-              <label><span>HEIGHT PENALTY</span><input id="sim-rl-weight-height" type="number" min="0" max="100" step="0.1" value="7.0"></label>
-              <label><span>ARM SWING PENALTY</span><input id="sim-rl-weight-arm-swing" type="number" min="0" max="20" step="0.01" value="0.42"></label>
-              <label><span>ENERGY PENALTY</span><input id="sim-rl-weight-energy" type="number" min="0" max="20" step="0.001" value="0.012"></label>
-              <label><span>SMOOTHNESS PENALTY</span><input id="sim-rl-weight-smoothness" type="number" min="0" max="20" step="0.001" value="0.035"></label>
-              <label><span>CLOSURE PENALTY</span><input id="sim-rl-weight-closure" type="number" min="0" max="5000" step="10" value="250"></label>
-              <label><span>FALL PENALTY</span><input id="sim-rl-weight-fall" type="number" min="0" max="100" step="0.5" value="5.0"></label>
+              <label><span>TORSO REWARD</span><input id="sim-rl-weight-torso" type="number" min="0" max="20" step="0.05" value="1.75"></label>
+              <label><span>COM REWARD</span><input id="sim-rl-weight-com" type="number" min="0" max="20" step="0.05" value="1.20"></label>
+              <label><span>GAIT + CONTACT</span><input id="sim-rl-weight-gait-contact" type="number" min="0" max="20" step="0.05" value="0.90"></label>
+              <label title="Matches each leg to the opposite leg one half gait-cycle earlier."><span>ASYNC SYMMETRY</span><input id="sim-rl-weight-gait-symmetry" type="number" min="0" max="20" step="0.05" value="1.10"></label>
+              <label><span>SPEED + TURN</span><input id="sim-rl-weight-speed" type="number" min="0" max="20" step="0.05" value="0.55"></label>
+              <label title="Strengthens the authored hip excursion and swing-knee profile."><span>LEG SWING REWARD</span><input id="sim-rl-weight-leg-swing" type="number" min="0" max="20" step="0.05" value="0.28"></label>
+              <label><span>HEIGHT PENALTY</span><input id="sim-rl-weight-height" type="number" min="0" max="100" step="0.1" value="8.0"></label>
+              <label title="Penalizes lateral torso roll and roll rate."><span>LATERAL ROLL</span><input id="sim-rl-weight-lateral-tilt" type="number" min="0" max="100" step="0.1" value="5.0"></label>
+              <label title="Penalizes dorsal/ventral torso pitch and pitch rate."><span>DORSAL PITCH</span><input id="sim-rl-weight-dorsal-tilt" type="number" min="0" max="100" step="0.1" value="4.5"></label>
+              <label title="Higher values suppress contraction beyond the 180-degree knee lock datum."><span>KNEE CONTRACTION</span><input id="sim-rl-weight-knee-contraction" type="number" min="0" max="20" step="0.01" value="0.18"></label>
+              <label><span>ARM SWING PENALTY</span><input id="sim-rl-weight-arm-swing" type="number" min="0" max="20" step="0.01" value="0.35"></label>
+              <label><span>ENERGY PENALTY</span><input id="sim-rl-weight-energy" type="number" min="0" max="20" step="0.001" value="0.018"></label>
+              <label><span>SMOOTHNESS PENALTY</span><input id="sim-rl-weight-smoothness" type="number" min="0" max="20" step="0.001" value="0.065"></label>
+              <label><span>CLOSURE PENALTY</span><input id="sim-rl-weight-closure" type="number" min="0" max="5000" step="10" value="300"></label>
+              <label><span>FALL PENALTY</span><input id="sim-rl-weight-fall" type="number" min="0" max="100" step="0.5" value="7.0"></label>
             </div>
             <button id="sim-rl-reset-weights" type="button" class="reward-reset">RESET PROVEN DEFAULTS</button>
           </details>
@@ -459,7 +472,7 @@
           <div>
             <div class="eyebrow">PYTORCH / LOCAL POLICY LAB</div>
             <h1>Teach the 22-motor Dropbear to walk</h1>
-            <p>Run bounded PPO experiments against the local teaching plant, remove the vertical guide, retain leg and elbow closures, and replay the exported motor and root state on the full browser USD.</p>
+            <p>Run bounded PPO experiments with source-derived MuJoCo gravity, force contacts, and retained leg/elbow closures, then replay every exported motor and free-root state on the full browser USD.</p>
           </div>
           <div id="rl-server-state" class="load-status ok"><span></span>TRAINER READY</div>
         </div>
@@ -471,26 +484,35 @@
                 <span class="panel-kicker">EXPERIMENT CONFIGURATION</span>
                 <h2>PPO curriculum</h2>
               </div>
-              <span class="count-chip">22 ACTIONS · 88 OBS</span>
+              <span class="count-chip">22 ACTIONS · 90 OBS</span>
             </div>
             <form id="rl-form" class="rl-config-grid">
-              <label><span>TRAINING UPDATES</span><input id="rl-updates" type="number" min="1" max="10000" value="12"></label>
+              <label><span>TRAINING PROFILE</span>
+                <select id="rl-motion-profile">
+                  <option value="gentle-forward">Gentle forward</option>
+                  <option value="circle-walk">Circle walk · left</option>
+                  <option value="custom">Custom</option>
+                </select>
+              </label>
+              <label><span>TRAINING UPDATES</span><input id="rl-updates" type="number" min="1" max="10000" value="250"></label>
               <label><span>ROLLOUT STEPS</span><input id="rl-steps" type="number" min="16" max="2048" value="128"></label>
-              <label><span>PARALLEL ENVS</span><input id="rl-envs" type="number" min="1" max="512" value="32"></label>
+              <label><span>PARALLEL ENVS</span><input id="rl-envs" type="number" min="1" max="512" value="8"></label>
               <label><span>EPOCHS / UPDATE</span><input id="rl-epochs" type="number" min="1" max="20" value="4"></label>
-              <label><span>BATCH SIZE</span><input id="rl-batch-size" type="number" min="32" max="32768" value="1024"></label>
-              <label><span>TARGET SPEED M/S</span><input id="rl-target-speed" type="number" min="0" max="1.2" step="0.05" value="0.35"></label>
+              <label><span>BATCH SIZE</span><input id="rl-batch-size" type="number" min="32" max="32768" value="512"></label>
+              <label><span>TARGET SPEED M/S</span><input id="rl-target-speed" type="number" min="0" max="1.2" step="0.01" value="0.26"></label>
+              <label><span>TURN RATE RAD/S</span><input id="rl-target-turn-rate" type="number" min="-1.2" max="1.2" step="0.01" value="0"></label>
               <label><span>EPISODE SECONDS</span><input id="rl-episode-seconds" type="number" min="1" max="30" step="1" value="8"></label>
               <label><span>SEED</span><input id="rl-seed" type="number" min="0" value="7"></label>
               <label><span>DEVICE</span>
                 <select id="rl-device">
                   <option value="auto">Auto</option>
-                  <option value="cpu">CPU</option>
+                  <option value="cpu" selected>CPU</option>
                   <option value="cuda">CUDA</option>
                 </select>
               </label>
               <label><span>PHYSICS BACKEND</span>
                 <select id="rl-physics-backend">
+                  <option value="mujoco-usd-proxy-v1">MuJoCo · USD mass/inertia</option>
                   <option value="teaching-plant-v2">Teaching preview · PyTorch</option>
                 </select>
               </label>
@@ -499,19 +521,24 @@
                 <label class="switch"><input id="rl-arm-swing" type="checkbox" checked><span></span>ARM SWING</label>
               </div>
               <details class="reward-tuning">
-                <summary>REWARD / PENALTY BIAS <span>10 COEFFICIENTS</span></summary>
+                <summary>REWARD / PENALTY BIAS <span>15 COEFFICIENTS</span></summary>
                 <p>Coefficients are persisted with the checkpoint and browser policy. Zero disables a term.</p>
                 <div class="reward-weight-grid">
-                  <label><span>TORSO REWARD</span><input id="rl-weight-torso" type="number" min="0" max="20" step="0.05" value="1.25"></label>
-                  <label><span>COM REWARD</span><input id="rl-weight-com" type="number" min="0" max="20" step="0.05" value="0.75"></label>
-                  <label><span>GAIT + CONTACT</span><input id="rl-weight-gait-contact" type="number" min="0" max="20" step="0.05" value="0.85"></label>
-                  <label><span>SPEED REWARD</span><input id="rl-weight-speed" type="number" min="0" max="20" step="0.05" value="0.60"></label>
-                  <label><span>HEIGHT PENALTY</span><input id="rl-weight-height" type="number" min="0" max="100" step="0.1" value="7.0"></label>
-                  <label><span>ARM SWING PENALTY</span><input id="rl-weight-arm-swing" type="number" min="0" max="20" step="0.01" value="0.42"></label>
-                  <label><span>ENERGY PENALTY</span><input id="rl-weight-energy" type="number" min="0" max="20" step="0.001" value="0.012"></label>
-                  <label><span>SMOOTHNESS PENALTY</span><input id="rl-weight-smoothness" type="number" min="0" max="20" step="0.001" value="0.035"></label>
-                  <label><span>CLOSURE PENALTY</span><input id="rl-weight-closure" type="number" min="0" max="5000" step="10" value="250"></label>
-                  <label><span>FALL PENALTY</span><input id="rl-weight-fall" type="number" min="0" max="100" step="0.5" value="5.0"></label>
+                  <label><span>TORSO REWARD</span><input id="rl-weight-torso" type="number" min="0" max="20" step="0.05" value="1.75"></label>
+                  <label><span>COM REWARD</span><input id="rl-weight-com" type="number" min="0" max="20" step="0.05" value="1.20"></label>
+                  <label><span>GAIT + CONTACT</span><input id="rl-weight-gait-contact" type="number" min="0" max="20" step="0.05" value="0.90"></label>
+                  <label title="Matches each leg to the opposite leg one half gait-cycle earlier."><span>ASYNC SYMMETRY</span><input id="rl-weight-gait-symmetry" type="number" min="0" max="20" step="0.05" value="1.10"></label>
+                  <label><span>SPEED + TURN</span><input id="rl-weight-speed" type="number" min="0" max="20" step="0.05" value="0.55"></label>
+                  <label title="Strengthens the authored hip excursion and swing-knee profile."><span>LEG SWING REWARD</span><input id="rl-weight-leg-swing" type="number" min="0" max="20" step="0.05" value="0.28"></label>
+                  <label><span>HEIGHT PENALTY</span><input id="rl-weight-height" type="number" min="0" max="100" step="0.1" value="8.0"></label>
+                  <label title="Penalizes lateral torso roll and roll rate."><span>LATERAL ROLL</span><input id="rl-weight-lateral-tilt" type="number" min="0" max="100" step="0.1" value="5.0"></label>
+                  <label title="Penalizes dorsal/ventral torso pitch and pitch rate."><span>DORSAL PITCH</span><input id="rl-weight-dorsal-tilt" type="number" min="0" max="100" step="0.1" value="4.5"></label>
+                  <label title="Higher values suppress contraction beyond the 180-degree knee lock datum."><span>KNEE CONTRACTION</span><input id="rl-weight-knee-contraction" type="number" min="0" max="20" step="0.01" value="0.18"></label>
+                  <label><span>ARM SWING PENALTY</span><input id="rl-weight-arm-swing" type="number" min="0" max="20" step="0.01" value="0.35"></label>
+                  <label><span>ENERGY PENALTY</span><input id="rl-weight-energy" type="number" min="0" max="20" step="0.001" value="0.018"></label>
+                  <label><span>SMOOTHNESS PENALTY</span><input id="rl-weight-smoothness" type="number" min="0" max="20" step="0.001" value="0.065"></label>
+                  <label><span>CLOSURE PENALTY</span><input id="rl-weight-closure" type="number" min="0" max="5000" step="10" value="300"></label>
+                  <label><span>FALL PENALTY</span><input id="rl-weight-fall" type="number" min="0" max="100" step="0.5" value="7.0"></label>
                 </div>
                 <button id="rl-reset-weights" type="button" class="reward-reset">RESET PROVEN DEFAULTS</button>
               </details>
@@ -521,8 +548,8 @@
               </div>
             </form>
             <div class="rl-boundary">
-              <b>TEACHING PLANT</b>
-              <p>Free-root height, roll, pitch, heel/toe load, arm counter-swing, both leg loops, and both three-constraint elbow loops are optimized here. Isaac/PhysX remains the dynamics authority before ROS or hardware use.</p>
+              <b>SOURCE-DERIVED RIGID BODY</b>
+              <p>MuJoCo compiles the connected source graph as 90 bodies, 84 tree joints, 27 loop closures, and 22 actuators with authored mass/inertia, gravity, impact, Coulomb friction, and a free root. Floor contacts use inertia-derived proxies; self-collision remains disabled until source-grounded pair filters or exact PhysX collision meshes are available.</p>
             </div>
           </article>
 
@@ -543,6 +570,12 @@
               <div><span>CLOSURE</span><b id="rl-closure">—</b></div>
               <div><span>TORSO TILT</span><b id="rl-torso-tilt">—</b></div>
               <div><span>COM σ</span><b id="rl-com-variation">—</b></div>
+              <div><span>ASYNC SYMMETRY</span><b id="rl-gait-symmetry">—</b></div>
+              <div><span>LEG SWING</span><b id="rl-leg-swing">—</b></div>
+              <div><span>KNEE DEPTH</span><b id="rl-knee-contraction">—</b></div>
+              <div><span>LATERAL TILT</span><b id="rl-lateral-tilt">—</b></div>
+              <div><span>DORSAL TILT</span><b id="rl-dorsal-tilt">—</b></div>
+              <div><span>TURN RATE</span><b id="rl-turn-rate">—</b></div>
             </div>
             <div id="rl-log" class="rl-log" aria-live="polite">
               <div><span>READY</span>Configure a bounded local experiment or load the tracked reference policy.</div>
@@ -652,6 +685,6 @@
     </main>
   </div>
 
-  <script type="module" src="/js/app.js?v=20260724-physics-sessions1"></script>
+  <script type="module" src="/js/app.js?v=20260724-mujoco-profiles1"></script>
 </body>
 </html>

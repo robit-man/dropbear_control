@@ -6,7 +6,16 @@ function interpolateArray(left = [], right = [], amount = 0) {
 }
 
 function interpolateFrame(left, right, amount) {
-  const baseKeys = ["height", "x", "vx", "roll", "pitch"];
+  const baseKeys = [
+    "height",
+    "x",
+    "y",
+    "vx",
+    "roll",
+    "pitch",
+    "yaw",
+    "yawRate",
+  ];
   return {
     time: lerp(left.time, right.time, amount),
     phase: lerp(left.phase ?? 0, right.phase ?? 0, amount),

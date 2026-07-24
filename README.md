@@ -20,8 +20,9 @@ workspace:
 - the actual Dropbear USD structure, adapted into a browser-renderable cache
   while retaining its rigid bodies, physical joints, and loop closures;
 - a ROS 2 Jazzy `joint_trajectory_controller` software-in-the-loop path; and
-- a 22-motor PyTorch PPO teaching plant with free-root balance, contact,
-  center-of-mass, arm-swing, leg-closure, and elbow-closure state.
+- a 22-motor PyTorch PPO lab with a source-derived MuJoCo rigid-body backend,
+  free-root balance, contact forces, center-of-mass, arm-swing, and retained
+  leg/elbow loop-closure state.
 
 The browser dashboard is the primary interactive surface. It renders the
 Dropbear USD, drives the exact CAN-to-USD joint bindings, projects passive calf
@@ -36,7 +37,7 @@ progress.
 
 | Area | Implemented now | Boundary |
 |---|---|---|
-| Browser USD twin | 90 rendered bodies from a 294,204-triangle cache; the source-physics manifest retains 93 rigid bodies, 93 masses/inertias, 93 collision groups, 117 physical joints, 29 force drives, and 27 retained closures | Browser articulation is kinematic; full-body dynamics remain an external backend |
+| Browser USD twin | 90 rendered bodies from a 294,204-triangle cache; the source-physics manifest retains 93 rigid bodies, 93 masses/inertias, 93 collision groups, 117 physical joints, 29 force drives, and 27 retained closures | Browser playback is a synchronized renderer; training dynamics execute in the selected server-side backend |
 | Leg motor map | Twelve low-level CAN nodes, `0x141`–`0x14C`, bound to the corresponding USD motor axes | Source-grounded simulation; no physical CAN authority |
 | Arm motor map | Ten selectable USD shafts: eight RMD-X8 arm drives and two torso-mounted RMD-X10 shoulder-pitch drives | Arm CAN IDs are not present in the observed leg firmware and remain deliberately unmapped |
 | Elbow linkage | `LH/RH_Revolute41` actuator input drives five passive joints against three retained loop constraints on each arm | Kinematic DLS closure; Isaac/PhysX remains dynamics-authoritative |
@@ -49,7 +50,7 @@ progress.
 | Controller lab | Dimensional ESP32 DevKit reference with 19 source/inferred signal routes | Board-level visualization, not circuit simulation |
 | Firmware console | Source-shaped serial grammar, task cadence, CAN traffic, sensor stream, and fault injection | Clean-room behavioral twin, not instruction-set emulation |
 | ROS 2 | Jazzy bringup, `joint_trajectory_controller`, mock hardware, action/topic demo, validation, and local WebSocket bridge | ROS side is SIL; the dashboard does not yet auto-switch to WebSocket state |
-| Walking RL | Local 22-action/88-observation PPO experiments launched from Robot Sim or RL Lab; up to 10,000 training updates, ten adjustable reward/penalty coefficients, persistent run sessions, exact parameter recall, checkpoint warm-start, prior-policy replay, update-by-update USD replay, site-wide epoch/state telemetry, free-root balance, contacts, four closed-chain mechanisms, and a tracked 1,000-epoch reference policy | Teaching plant and policy-generation lab; every session identifies its backend and is not promoted to Isaac/PhysX validation |
+| Walking RL | Local 22-action/90-observation PPO experiments launched from Robot Sim or RL Lab; source-derived MuJoCo or teaching-plant backend; 15 adjustable reward terms; tuned gentle-forward and circle-walk profiles; persistent sessions; checkpoint warm-start; update-by-update USD replay; free-root gravity/contact; 27 retained loop constraints; and a tracked 1,000-epoch reference policy | MuJoCo uses exact authored mass/inertia/joint data with inertia-derived collision proxies because the source USD collision groups do not expose finite external envelopes; Isaac/PhysX and hardware validation remain required |
 | Physical hardware path | Existing host, firmware, evidence, and fail-closed admission scaffolding | Deliberately disabled pending reviewed hardware evidence and HIL gates |
 
 ## Ground-truth revisions
@@ -95,7 +96,8 @@ flowchart LR
     ROS[ROS 2 joint trajectory controller] --> WS[Loopback WebSocket bridge]
     WS -. browser adapter pending .-> CAN
 
-    PPO[22-motor PyTorch PPO] --> LIVE[Per-update policy rollout]
+    MJ[USD-derived MuJoCo: gravity, friction, contacts] --> PPO[22-motor PyTorch PPO]
+    PPO --> LIVE[Per-update policy rollout]
     LIVE --> USD
     PPO -. Isaac/PhysX validation required .-> USD
 ```
@@ -190,12 +192,18 @@ roll, and pitch. An untrained or failed policy therefore falls instead of
 being held upright. Exported policies can drive the same root state from their
 recorded height/attitude/contact sequence.
 
-This root-contact kernel is force based, but it still does not solve all 93
-rigid bodies, authored collision meshes, friction, tangential impulses, or
-self-collision. `/api/physics/status` therefore reports the verified source
-USD and browser force contact separately from the high-fidelity
-`isaac-physx-usd` backend. The latter is admitted only when Isaac Sim is
-installed; it is currently offline on the bundled local Python runtime.
+The browser root-contact kernel remains a lightweight playback model. RL runs
+can now select `mujoco-usd-proxy-v1`, which compiles 90 connected USD bodies,
+84 tree joints, all 27 retained closure constraints, and 22 actuators into
+MuJoCo 3.6. It uses authored mass, COM, principal axes, inertia, joint limits,
+gravity, friction, impact/contact forces, and a free floating base. Since the
+source USD collision groups contain no usable finite external envelopes, the
+local backend derives conservative ellipsoid collision proxies from each
+body's inertia. These proxies currently collide with the floor only;
+self-collision remains disabled until a source-grounded collision-pair filter
+is available. The dashboard reports those limitations separately from
+`isaac-physx-usd`, which remains the authoritative validation target when
+Isaac Sim is installed.
 
 ## Walking demonstration
 
@@ -310,31 +318,45 @@ and update-by-update full-USD replay. For a command-line run:
 
 ```bash
 python3 -m rl.train_walk \
-  --updates 200 --steps 256 --envs 128 --epochs 5 \
-  --device cuda --no-vertical-constraint --arm-swing
+  --updates 250 --steps 128 --envs 8 --epochs 4 --batch-size 512 \
+  --motion-profile gentle-forward \
+  --physics-backend mujoco-usd-proxy-v1 \
+  --device cpu --no-vertical-constraint --arm-swing
 ```
 
-The environment has 22 motor actions and 88 observations. Its leading reward
+The environment has 22 motor actions and 90 observations. Its leading reward
 terms hold torso attitude/angular rate stable and minimize COM height/lateral
 variation; the authored alternating walk supplies a smooth reference bias.
-Speed, contact timing, contralateral arm swing, energy, action smoothness, and
-all leg/elbow closure residuals remain explicit secondary terms.
+Speed/turn-rate tracking, half-cycle asynchronous symmetry, contact timing,
+leg swing, knee contraction, contralateral arm swing, energy, action
+smoothness, and all leg/elbow closure residuals remain explicit terms.
 The dashboard accepts `1`–`10,000` training updates. Expand **Reward / Penalty
-Bias** on either training form to set the ten coefficients independently:
-torso, COM, gait/contact, speed, height, arm swing, energy, smoothness, closure,
-and fall. The current proven coefficients remain the defaults, zero disables a
-term, and the exact profile is written into the experiment state, checkpoint,
-and exported browser policy.
+Bias** on either training form to set all 15 coefficients independently:
+torso, COM, gait/contact, asynchronous symmetry, speed/turn, leg swing, height,
+lateral tilt, dorsal tilt, knee contraction, arm swing, energy, smoothness,
+closure, and fall. Zero disables a term, and the exact profile is written into
+the experiment state, checkpoint, and exported browser policy.
+
+**Gentle forward** is tuned for a casual `0.26 m/s` symmetric walk with strong
+upright/COM terms, conservative knee depth, and natural arm counter-swing
+(`250 updates × 4 PPO epochs = 1,000 epochs`). **Circle walk · left** targets
+`0.22 m/s` and `0.28 rad/s`—a nominal `0.79 m` radius—with inner/outer stride
+scaling, hip-yaw bias, a less rigid symmetry term, and stronger turn tracking.
+Selecting a profile fills every optimizer, physics, motion, and reward field;
+the resulting session remains freely editable and reproducible.
 
 The same profile is available from the CLI, for example:
 
 ```bash
 python3 -m rl.train_walk \
-  --updates 1000 --steps 256 --envs 128 --epochs 5 \
-  --reward-torso 1.5 --reward-com 1.0 \
-  --reward-gait-contact 0.7 --reward-speed 0.8 \
-  --penalty-arm-swing 0.65 --penalty-energy 0.015 \
-  --device cuda --no-vertical-constraint --arm-swing
+  --updates 250 --steps 128 --envs 8 --epochs 4 \
+  --motion-profile gentle-forward --target-speed 0.26 \
+  --physics-backend mujoco-usd-proxy-v1 \
+  --reward-torso 1.75 --reward-com 1.20 \
+  --reward-gait-contact 0.90 --reward-gait-symmetry 1.10 \
+  --reward-leg-swing 0.28 --penalty-lateral-tilt 5.0 \
+  --penalty-dorsal-tilt 4.5 --penalty-knee-contraction 0.18 \
+  --device cpu --no-vertical-constraint --arm-swing
 ```
 
 The actor mean is initialized to zero residual, so update zero is exactly the

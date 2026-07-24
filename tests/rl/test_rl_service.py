@@ -13,12 +13,19 @@ def test_training_manager_accepts_ten_thousand_updates_and_reward_weights(
     config = manager._validated_config(
         {
             "updates": 10_000,
+            "motionProfile": "circle-walk",
+            "targetTurnRate": 0.28,
             "rewardWeights": {
                 "torso": 2.0,
                 "com": 1.1,
                 "gaitContact": 0.4,
+                "gaitSymmetry": 1.4,
                 "speed": 0.9,
+                "legSwing": 0.38,
                 "height": 8.5,
+                "lateralTilt": 6.0,
+                "dorsalTilt": 5.0,
+                "kneeContraction": 0.12,
                 "armSwing": 1.75,
                 "energy": 0.02,
                 "smoothness": 0.08,
@@ -30,7 +37,14 @@ def test_training_manager_accepts_ten_thousand_updates_and_reward_weights(
     assert config["updates"] == 10_000
     assert config["rewardWeights"]["armSwing"] == 1.75
     assert config["rewardWeights"]["closure"] == 400.0
+    assert config["rewardWeights"]["gaitSymmetry"] == 1.4
+    assert config["rewardWeights"]["legSwing"] == 0.38
+    assert config["rewardWeights"]["lateralTilt"] == 6.0
+    assert config["rewardWeights"]["dorsalTilt"] == 5.0
+    assert config["rewardWeights"]["kneeContraction"] == 0.12
     assert config["physicsBackend"] == "teaching-plant-v2"
+    assert config["motionProfile"] == "circle-walk"
+    assert config["targetTurnRate"] == 0.28
 
 
 def test_training_manager_rejects_out_of_range_updates_and_nonfinite_weights(

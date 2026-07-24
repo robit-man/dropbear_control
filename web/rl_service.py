@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections import deque
 from datetime import datetime, timezone
 import json
+import importlib.util
 import math
 from pathlib import Path
 import subprocess
@@ -79,10 +80,25 @@ class RLTrainingManager:
         physics_backend = str(
             payload.get("physicsBackend", "teaching-plant-v2")
         )
-        if physics_backend not in {"teaching-plant-v2"}:
+        if physics_backend not in {
+            "teaching-plant-v2",
+            "mujoco-usd-proxy-v1",
+        }:
             raise ValueError(
                 "physicsBackend is not available on this local runtime"
             )
+        if (
+            physics_backend == "mujoco-usd-proxy-v1"
+            and importlib.util.find_spec("mujoco") is None
+        ):
+            raise ValueError("MuJoCo physics backend is not installed")
+        if physics_backend == "mujoco-usd-proxy-v1" and device == "cuda":
+            raise ValueError("MuJoCo physics backend requires the CPU device")
+        motion_profile = str(
+            payload.get("motionProfile", "gentle-forward")
+        )
+        if motion_profile not in {"gentle-forward", "circle-walk", "custom"}:
+            raise ValueError("motionProfile is not supported")
         init_checkpoint = None
         if payload.get("initCheckpoint"):
             candidate = (self.project_root / str(payload["initCheckpoint"])).resolve()
@@ -102,48 +118,76 @@ class RLTrainingManager:
             raise ValueError("rewardWeights must be an object")
         reward_weights = {
             "torso": self._bounded_float(
-                reward_payload, "torso", 1.25, 0.0, 20.0
+                reward_payload, "torso", 1.75, 0.0, 20.0
             ),
             "com": self._bounded_float(
-                reward_payload, "com", 0.75, 0.0, 20.0
+                reward_payload, "com", 1.20, 0.0, 20.0
             ),
             "gaitContact": self._bounded_float(
-                reward_payload, "gaitContact", 0.85, 0.0, 20.0
+                reward_payload, "gaitContact", 0.90, 0.0, 20.0
+            ),
+            "gaitSymmetry": self._bounded_float(
+                reward_payload, "gaitSymmetry", 1.10, 0.0, 20.0
             ),
             "speed": self._bounded_float(
-                reward_payload, "speed", 0.60, 0.0, 20.0
+                reward_payload, "speed", 0.55, 0.0, 20.0
+            ),
+            "legSwing": self._bounded_float(
+                reward_payload, "legSwing", 0.28, 0.0, 20.0
             ),
             "height": self._bounded_float(
-                reward_payload, "height", 7.0, 0.0, 100.0
+                reward_payload, "height", 8.0, 0.0, 100.0
+            ),
+            "lateralTilt": self._bounded_float(
+                reward_payload, "lateralTilt", 5.0, 0.0, 100.0
+            ),
+            "dorsalTilt": self._bounded_float(
+                reward_payload, "dorsalTilt", 4.5, 0.0, 100.0
+            ),
+            "kneeContraction": self._bounded_float(
+                reward_payload, "kneeContraction", 0.18, 0.0, 20.0
             ),
             "armSwing": self._bounded_float(
-                reward_payload, "armSwing", 0.42, 0.0, 20.0
+                reward_payload, "armSwing", 0.35, 0.0, 20.0
             ),
             "energy": self._bounded_float(
-                reward_payload, "energy", 0.012, 0.0, 20.0
+                reward_payload, "energy", 0.018, 0.0, 20.0
             ),
             "smoothness": self._bounded_float(
-                reward_payload, "smoothness", 0.035, 0.0, 20.0
+                reward_payload, "smoothness", 0.065, 0.0, 20.0
             ),
             "closure": self._bounded_float(
-                reward_payload, "closure", 250.0, 0.0, 5000.0
+                reward_payload, "closure", 300.0, 0.0, 5000.0
             ),
             "fall": self._bounded_float(
-                reward_payload, "fall", 5.0, 0.0, 100.0
+                reward_payload, "fall", 7.0, 0.0, 100.0
             ),
         }
         return {
             "updates": self._bounded_int(payload, "updates", 12, 1, 10_000),
             "steps": self._bounded_int(payload, "steps", 128, 16, 2048),
-            "envs": self._bounded_int(payload, "envs", 32, 1, 512),
+            "envs": self._bounded_int(
+                payload,
+                "envs",
+                8 if physics_backend == "mujoco-usd-proxy-v1" else 32,
+                1,
+                32 if physics_backend == "mujoco-usd-proxy-v1" else 512,
+            ),
             "epochs": self._bounded_int(payload, "epochs", 4, 1, 20),
             "batchSize": self._bounded_int(payload, "batchSize", 1024, 32, 32768),
             "seed": self._bounded_int(payload, "seed", 7, 0, 2_147_483_647),
             "targetSpeed": self._bounded_float(
                 payload,
                 "targetSpeed",
-                0.35,
+                0.26,
                 0.0,
+                1.2,
+            ),
+            "targetTurnRate": self._bounded_float(
+                payload,
+                "targetTurnRate",
+                0.0,
+                -1.2,
                 1.2,
             ),
             "episodeSeconds": self._bounded_float(
@@ -159,6 +203,7 @@ class RLTrainingManager:
             "device": device,
             "initCheckpoint": init_checkpoint,
             "physicsBackend": physics_backend,
+            "motionProfile": motion_profile,
         }
 
     @staticmethod
@@ -192,7 +237,11 @@ class RLTrainingManager:
                 "epochs": policy_config.get("ppoEpochs", 4),
                 "batchSize": policy_config.get("batchSize", 1024),
                 "seed": policy_config.get("seed", 7),
-                "targetSpeed": policy_config.get("targetSpeed", 0.35),
+                "targetSpeed": policy_config.get("targetSpeed", 0.26),
+                "targetTurnRate": policy_config.get("targetTurnRate", 0.0),
+                "motionProfile": policy_config.get(
+                    "motionProfile", "custom"
+                ),
                 "episodeSeconds": policy_config.get(
                     "episodeSeconds", 8.0
                 ),
@@ -503,6 +552,12 @@ class RLTrainingManager:
                 str(config["seed"]),
                 "--target-speed",
                 str(config["targetSpeed"]),
+                "--target-turn-rate",
+                str(config["targetTurnRate"]),
+                "--motion-profile",
+                config["motionProfile"],
+                "--physics-backend",
+                config["physicsBackend"],
                 "--episode-seconds",
                 str(config["episodeSeconds"]),
                 "--reward-torso",
@@ -511,10 +566,20 @@ class RLTrainingManager:
                 str(config["rewardWeights"]["com"]),
                 "--reward-gait-contact",
                 str(config["rewardWeights"]["gaitContact"]),
+                "--reward-gait-symmetry",
+                str(config["rewardWeights"]["gaitSymmetry"]),
                 "--reward-speed",
                 str(config["rewardWeights"]["speed"]),
+                "--reward-leg-swing",
+                str(config["rewardWeights"]["legSwing"]),
                 "--penalty-height",
                 str(config["rewardWeights"]["height"]),
+                "--penalty-lateral-tilt",
+                str(config["rewardWeights"]["lateralTilt"]),
+                "--penalty-dorsal-tilt",
+                str(config["rewardWeights"]["dorsalTilt"]),
+                "--penalty-knee-contraction",
+                str(config["rewardWeights"]["kneeContraction"]),
                 "--penalty-arm-swing",
                 str(config["rewardWeights"]["armSwing"]),
                 "--penalty-energy",

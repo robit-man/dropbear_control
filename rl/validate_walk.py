@@ -11,7 +11,7 @@ from typing import Any, Dict
 
 import torch
 
-from .dropbear_ppo import ACTION_NAMES, DropbearWalkEnv
+from .dropbear_ppo import ACTION_NAMES, DropbearWalkEnv, RewardWeights
 from .train_walk import policy_selection_score, write_json_atomic
 
 
@@ -24,7 +24,13 @@ def authored_reference_rollout(policy: Dict[str, Any]) -> Dict[str, Any]:
         vertical_constraint=bool(config["verticalConstraint"]),
         arm_swing=bool(config["armSwing"]),
         target_speed=float(config["targetSpeed"]),
+        target_turn_rate=float(config.get("targetTurnRate", 0.0)),
+        motion_profile=str(config.get("motionProfile", "custom")),
+        physics_backend=str(
+            config.get("physicsBackend", "teaching-plant-v2")
+        ),
         episode_seconds=float(config.get("episodeSeconds", 8.0)),
+        reward_weights=RewardWeights.from_dict(config.get("rewardWeights")),
         seed=int(config["seed"]) + 1000,
     )
     env.reset()
@@ -43,9 +49,12 @@ def authored_reference_rollout(policy: Dict[str, Any]) -> Dict[str, Any]:
                     "base": {
                         "height": round(float(env.base_height[0]), 7),
                         "x": round(float(env.base_x[0]), 7),
+                        "y": round(float(env.base_y[0]), 7),
                         "vx": round(float(env.base_vx[0]), 7),
                         "roll": round(float(env.base_roll[0]), 7),
                         "pitch": round(float(env.base_pitch[0]), 7),
+                        "yaw": round(float(env.base_yaw[0]), 7),
+                        "yawRate": round(float(env.base_yaw_rate[0]), 7),
                     },
                     "contactLoadsKg": [
                         round(float(value), 5)
@@ -59,9 +68,21 @@ def authored_reference_rollout(policy: Dict[str, Any]) -> Dict[str, Any]:
                 "upright": float(info["upright"][0]),
                 "fallen": float(info["fallen"][0]),
                 "speed": float(info["speed"][0]),
+                "turnRate": float(info["turn_rate"][0]),
                 "arm": float(info["arm_swing_error"][0]),
                 "comHeight": float(info["com_height"][0]),
                 "comLateral": abs(float(info["com_lateral"][0])),
+                "symmetry": float(info["gait_symmetry_reward"][0]),
+                "lateralTilt": math.degrees(
+                    abs(float(info["base_roll"][0]))
+                ),
+                "dorsalTilt": math.degrees(
+                    abs(float(info["base_pitch"][0]))
+                ),
+                "legSwing": float(info["leg_swing_reward"][0]),
+                "kneeContraction": math.degrees(
+                    float(info["knee_contraction"][0].mean())
+                ),
                 "tilt": math.degrees(
                     math.hypot(
                         float(info["base_roll"][0]),
@@ -83,6 +104,17 @@ def authored_reference_rollout(policy: Dict[str, Any]) -> Dict[str, Any]:
         "uprightPercent": 100.0 * sum(row["upright"] for row in rows) / count,
         "fallPercent": 100.0 * sum(row["fallen"] for row in rows) / count,
         "meanSpeed": sum(row["speed"] for row in rows) / count,
+        "meanTurnRate": sum(row["turnRate"] for row in rows) / count,
+        "turnRateError": (
+            sum(
+                abs(
+                    row["turnRate"]
+                    - float(config.get("targetTurnRate", 0.0))
+                )
+                for row in rows
+            )
+            / count
+        ),
         "armSwingError": sum(row["arm"] for row in rows) / count,
         "comHeightRangeM": (
             max((row["comHeight"] for row in rows), default=0.0)
@@ -95,6 +127,33 @@ def authored_reference_rollout(policy: Dict[str, Any]) -> Dict[str, Any]:
         "torsoTiltMeanDegrees": sum(row["tilt"] for row in rows) / count,
         "torsoTiltPeakDegrees": max(
             (row["tilt"] for row in rows),
+            default=0.0,
+        ),
+        "gaitSymmetryScore": (
+            100.0 * sum(row["symmetry"] for row in rows) / count
+        ),
+        "lateralTiltMeanDegrees": (
+            sum(row["lateralTilt"] for row in rows) / count
+        ),
+        "lateralTiltPeakDegrees": max(
+            (row["lateralTilt"] for row in rows),
+            default=0.0,
+        ),
+        "dorsalTiltMeanDegrees": (
+            sum(row["dorsalTilt"] for row in rows) / count
+        ),
+        "dorsalTiltPeakDegrees": max(
+            (row["dorsalTilt"] for row in rows),
+            default=0.0,
+        ),
+        "legSwingScore": (
+            100.0 * sum(row["legSwing"] for row in rows) / count
+        ),
+        "kneeContractionMeanDegrees": (
+            sum(row["kneeContraction"] for row in rows) / count
+        ),
+        "kneeContractionPeakDegrees": max(
+            (row["kneeContraction"] for row in rows),
             default=0.0,
         ),
         "closureMaxM": max((row["closure"] for row in rows), default=0.0),
@@ -141,15 +200,18 @@ def main() -> None:
     trained = policy["evaluation"]
     baseline = reference["evaluation"]
     target_speed = float(config["targetSpeed"])
+    target_turn_rate = float(config.get("targetTurnRate", 0.0))
     episode_seconds = float(config.get("episodeSeconds", 8.0))
     trained_score = policy_selection_score(
         trained,
         target_speed=target_speed,
+        target_turn_rate=target_turn_rate,
         episode_seconds=episode_seconds,
     )
     baseline_score = policy_selection_score(
         baseline,
         target_speed=target_speed,
+        target_turn_rate=target_turn_rate,
         episode_seconds=episode_seconds,
     )
     completed_policy_epochs = int(config["updates"]) * int(config["ppoEpochs"])
@@ -159,6 +221,10 @@ def main() -> None:
         "armSwing": config["armSwing"] is True,
         "forward": float(trained["meanSpeed"]) > 0.05,
         "targetSpeed": abs(float(trained["meanSpeed"]) - target_speed) <= 0.12,
+        "targetTurnRate": (
+            abs(float(trained.get("meanTurnRate", 0.0)) - target_turn_rate)
+            <= max(0.12, abs(target_turn_rate) * 0.45)
+        ),
         "closedChains": float(trained["closureMaxM"]) <= 5e-4,
         "stableNonRegression": trained_score >= baseline_score,
     }
@@ -172,6 +238,11 @@ def main() -> None:
             "comLateralPeakM",
             "torsoTiltMeanDegrees",
             "torsoTiltPeakDegrees",
+            "gaitSymmetryScore",
+            "lateralTiltMeanDegrees",
+            "dorsalTiltMeanDegrees",
+            "legSwingScore",
+            "kneeContractionMeanDegrees",
             "durationSeconds",
         )
     }

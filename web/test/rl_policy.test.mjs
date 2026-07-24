@@ -9,7 +9,16 @@ const frames = [
     q: Array(22).fill(0),
     dq: Array(22).fill(0),
     contactLoadsKg: [21, 0, 21, 0],
-    base: { height: 0.8, x: 0, vx: 0, roll: 0, pitch: 0 },
+    base: {
+      height: 0.8,
+      x: 0,
+      y: 0,
+      vx: 0,
+      roll: 0,
+      pitch: 0,
+      yaw: 0,
+      yawRate: 0,
+    },
   },
   {
     time: 1,
@@ -17,7 +26,16 @@ const frames = [
     q: Array(22).fill(1),
     dq: Array(22).fill(2),
     contactLoadsKg: [0, 21, 0, 21],
-    base: { height: 0.7, x: 0.2, vx: 0.3, roll: 0.1, pitch: -0.1 },
+    base: {
+      height: 0.7,
+      x: 0.2,
+      y: 0.1,
+      vx: 0.3,
+      roll: 0.1,
+      pitch: -0.1,
+      yaw: 0.4,
+      yawRate: 0.2,
+    },
   },
 ];
 const seen = [];
@@ -32,6 +50,9 @@ player.seek(0.5);
 assert.equal(seen.at(-1).q.length, 22);
 assert.equal(seen.at(-1).q[0], 0.5);
 assert.equal(seen.at(-1).base.height, 0.75);
+assert.equal(seen.at(-1).base.y, 0.05);
+assert.equal(seen.at(-1).base.yaw, 0.2);
+assert.equal(seen.at(-1).base.yawRate, 0.1);
 assert.deepEqual(seen.at(-1).contactLoadsKg, [10.5, 10.5, 10.5, 10.5]);
 
 player.loop = true;

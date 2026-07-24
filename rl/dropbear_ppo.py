@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Dict, Tuple
 
 import torch
@@ -66,24 +67,73 @@ class FourBarGeometry:
 class RewardWeights:
     """User-tunable coefficients for every top-level walking objective."""
 
-    torso_stability: float = 1.25
-    com_stability: float = 0.75
-    gait_contact: float = 0.85
-    speed_tracking: float = 0.60
-    height_penalty: float = 7.0
-    arm_swing_penalty: float = 0.42
-    energy_penalty: float = 0.012
-    smoothness_penalty: float = 0.035
-    closure_penalty: float = 250.0
-    fall_penalty: float = 5.0
+    torso_stability: float = 1.75
+    com_stability: float = 1.20
+    gait_contact: float = 0.90
+    gait_symmetry: float = 1.10
+    speed_tracking: float = 0.55
+    leg_swing: float = 0.28
+    height_penalty: float = 8.0
+    lateral_tilt_penalty: float = 5.0
+    dorsal_tilt_penalty: float = 4.5
+    knee_contraction_penalty: float = 0.18
+    arm_swing_penalty: float = 0.35
+    energy_penalty: float = 0.018
+    smoothness_penalty: float = 0.065
+    closure_penalty: float = 300.0
+    fall_penalty: float = 7.0
+
+    @classmethod
+    def from_dict(cls, payload: Dict[str, float] | None) -> "RewardWeights":
+        values = payload or {}
+        defaults = cls()
+        return cls(
+            torso_stability=float(values.get("torso", defaults.torso_stability)),
+            com_stability=float(values.get("com", defaults.com_stability)),
+            gait_contact=float(values.get("gaitContact", defaults.gait_contact)),
+            gait_symmetry=float(
+                values.get("gaitSymmetry", defaults.gait_symmetry)
+            ),
+            speed_tracking=float(values.get("speed", defaults.speed_tracking)),
+            leg_swing=float(values.get("legSwing", defaults.leg_swing)),
+            height_penalty=float(values.get("height", defaults.height_penalty)),
+            lateral_tilt_penalty=float(
+                values.get("lateralTilt", defaults.lateral_tilt_penalty)
+            ),
+            dorsal_tilt_penalty=float(
+                values.get("dorsalTilt", defaults.dorsal_tilt_penalty)
+            ),
+            knee_contraction_penalty=float(
+                values.get(
+                    "kneeContraction",
+                    defaults.knee_contraction_penalty,
+                )
+            ),
+            arm_swing_penalty=float(
+                values.get("armSwing", defaults.arm_swing_penalty)
+            ),
+            energy_penalty=float(values.get("energy", defaults.energy_penalty)),
+            smoothness_penalty=float(
+                values.get("smoothness", defaults.smoothness_penalty)
+            ),
+            closure_penalty=float(
+                values.get("closure", defaults.closure_penalty)
+            ),
+            fall_penalty=float(values.get("fall", defaults.fall_penalty)),
+        )
 
     def as_dict(self) -> Dict[str, float]:
         return {
             "torso": self.torso_stability,
             "com": self.com_stability,
             "gaitContact": self.gait_contact,
+            "gaitSymmetry": self.gait_symmetry,
             "speed": self.speed_tracking,
+            "legSwing": self.leg_swing,
             "height": self.height_penalty,
+            "lateralTilt": self.lateral_tilt_penalty,
+            "dorsalTilt": self.dorsal_tilt_penalty,
+            "kneeContraction": self.knee_contraction_penalty,
             "armSwing": self.arm_swing_penalty,
             "energy": self.energy_penalty,
             "smoothness": self.smoothness_penalty,
@@ -96,7 +146,10 @@ class RewardWeights:
 class WalkPlantConfig:
     vertical_constraint: bool = True
     arm_swing: bool = True
-    target_speed: float = 0.35
+    target_speed: float = 0.26
+    target_turn_rate: float = 0.0
+    motion_profile: str = "gentle-forward"
+    physics_backend: str = "teaching-plant-v2"
     episode_seconds: float = 8.0
     # Sum of all 93 authored rigid-body masses in the verified source USD.
     mass_kg: float = 56.22897759778425
@@ -195,7 +248,11 @@ class DropbearWalkEnv:
         *,
         vertical_constraint: bool = True,
         arm_swing: bool = True,
-        target_speed: float = 0.35,
+        target_speed: float = 0.26,
+        target_turn_rate: float = 0.0,
+        motion_profile: str = "gentle-forward",
+        physics_backend: str = "teaching-plant-v2",
+        project_root: Path | None = None,
         episode_seconds: float = 8.0,
         reward_weights: RewardWeights | None = None,
         seed: int = 7,
@@ -207,6 +264,9 @@ class DropbearWalkEnv:
             vertical_constraint=bool(vertical_constraint),
             arm_swing=bool(arm_swing),
             target_speed=float(target_speed),
+            target_turn_rate=float(target_turn_rate),
+            motion_profile=str(motion_profile),
+            physics_backend=str(physics_backend),
             episode_seconds=float(episode_seconds),
             reward_weights=reward_weights or RewardWeights(),
         )
@@ -225,10 +285,18 @@ class DropbearWalkEnv:
             self.config.target_speed,
             device=self.device,
         )
+        self.target_turn_rate = torch.full(
+            (self.num_envs,),
+            self.config.target_turn_rate,
+            device=self.device,
+        )
         self.base_height = torch.zeros(self.num_envs, device=self.device)
         self.base_vz = torch.zeros_like(self.base_height)
         self.base_x = torch.zeros_like(self.base_height)
+        self.base_y = torch.zeros_like(self.base_height)
         self.base_vx = torch.zeros_like(self.base_height)
+        self.base_yaw = torch.zeros_like(self.base_height)
+        self.base_yaw_rate = torch.zeros_like(self.base_height)
         self.base_roll = torch.zeros_like(self.base_height)
         self.base_pitch = torch.zeros_like(self.base_height)
         self.base_roll_rate = torch.zeros_like(self.base_height)
@@ -242,6 +310,48 @@ class DropbearWalkEnv:
         self.previous_com_height = torch.zeros_like(self.base_height)
         self.episode_return = torch.zeros_like(self.base_height)
         self.episode_steps = torch.zeros(self.num_envs, dtype=torch.long, device=self.device)
+        # One half of the authored 1.2 Hz gait is the temporal offset between
+        # equivalent left/right states. The ring buffer makes symmetry a
+        # genuinely asynchronous comparison instead of a same-frame mirror.
+        self.symmetry_lag_steps = max(1, round(0.5 / 1.2 / self.dt))
+        self.symmetry_feature_dim = 14
+        self.symmetry_history = torch.zeros(
+            self.symmetry_lag_steps,
+            self.num_envs,
+            2,
+            self.symmetry_feature_dim,
+            device=self.device,
+        )
+        self.symmetry_history_valid = torch.zeros(
+            self.symmetry_lag_steps,
+            self.num_envs,
+            dtype=torch.bool,
+            device=self.device,
+        )
+        self.symmetry_position_scale = torch.tensor(
+            [0.25, 0.25, 0.80, 0.70, 0.35, 0.35],
+            device=self.device,
+        )
+        self.symmetry_velocity_scale = torch.tensor(
+            [2.0, 2.0, 4.0, 4.0, 3.0, 3.0],
+            device=self.device,
+        )
+        self.symmetry_cursor = 0
+        self.physics = None
+        if self.config.physics_backend == "mujoco-usd-proxy-v1":
+            if self.device.type != "cpu":
+                raise ValueError("MuJoCo Dropbear backend currently requires CPU")
+            from .mujoco_physics import MujocoDropbearBatch
+
+            self.physics = MujocoDropbearBatch(
+                project_root or Path(__file__).resolve().parents[1],
+                self.num_envs,
+                control_dt=self.dt,
+            )
+        elif self.config.physics_backend != "teaching-plant-v2":
+            raise ValueError(
+                f"unsupported physics backend: {self.config.physics_backend}"
+            )
 
         center = torch.zeros(len(ACTION_NAMES), device=self.device)
         scale = torch.tensor(
@@ -269,7 +379,7 @@ class DropbearWalkEnv:
     def observation_dim(self) -> int:
         # q + dq + leg and arm closed-chain state + base state + contacts +
         # phase sin/cos + previous action.
-        return len(ACTION_NAMES) * 3 + 8 + 8 + 4 + 2
+        return len(ACTION_NAMES) * 3 + 8 + 10 + 4 + 2
 
     @property
     def action_dim(self) -> int:
@@ -292,7 +402,10 @@ class DropbearWalkEnv:
         self.base_height[mask] = self.config.nominal_height_m
         self.base_vz[mask] = 0
         self.base_x[mask] = 0
+        self.base_y[mask] = 0
         self.base_vx[mask] = 0
+        self.base_yaw[mask] = 0
+        self.base_yaw_rate[mask] = 0
         self.base_roll[mask] = spread[mask] * 0.035
         self.base_pitch[mask] = -spread[mask] * 0.025
         self.base_roll_rate[mask] = 0
@@ -306,8 +419,16 @@ class DropbearWalkEnv:
         self.com_vertical_speed[mask] = 0
         self.episode_return[mask] = 0
         self.episode_steps[mask] = 0
+        self.symmetry_history[:, mask] = 0
+        self.symmetry_history_valid[:, mask] = False
+        if self.physics is not None:
+            self.physics.reset(
+                self.q.detach().cpu().numpy(),
+                mask.detach().cpu().numpy(),
+            )
 
     def reset(self) -> torch.Tensor:
+        self.symmetry_cursor = 0
         mask = torch.ones(self.num_envs, dtype=torch.bool, device=self.device)
         self._reset_mask(mask)
         self._update_contact_state()
@@ -406,6 +527,8 @@ class DropbearWalkEnv:
                 self.base_pitch_rate,
                 self.base_vx,
                 self.target_speed,
+                self.base_yaw_rate,
+                self.target_turn_rate,
             ),
             dim=1,
         )
@@ -448,7 +571,18 @@ class DropbearWalkEnv:
             - 0.25 * self.base_pitch
         )
         self.base_vx = (self.base_vx + self.dt * forward_acc).clamp(-1.5, 1.8)
-        self.base_x += self.dt * self.base_vx
+        hip_yaw_moment = self.q[:, 8] - self.q[:, 11]
+        yaw_acc = (
+            1.8 * hip_yaw_moment
+            + 1.35 * (self.target_turn_rate - self.base_yaw_rate)
+            - 0.85 * self.base_yaw_rate
+        )
+        self.base_yaw_rate = (
+            self.base_yaw_rate + self.dt * yaw_acc
+        ).clamp(-1.2, 1.2)
+        self.base_yaw += self.dt * self.base_yaw_rate
+        self.base_x += self.dt * self.base_vx * torch.cos(self.base_yaw)
+        self.base_y += self.dt * self.base_vx * torch.sin(self.base_yaw)
 
         if self.config.vertical_constraint:
             self.base_height.fill_(self.config.nominal_height_m)
@@ -504,9 +638,18 @@ class DropbearWalkEnv:
         gait = torch.sin(phase)
         left_swing = torch.relu(gait)
         right_swing = torch.relu(-gait)
-        hip_target = torch.stack((0.45 * gait, -0.45 * gait), dim=1)
+        turn_ratio = (self.target_turn_rate / 0.60).clamp(-1.0, 1.0)
+        left_scale = 1.0 - 0.18 * turn_ratio
+        right_scale = 1.0 + 0.18 * turn_ratio
+        hip_target = torch.stack(
+            (0.45 * left_scale * gait, -0.45 * right_scale * gait),
+            dim=1,
+        )
         knee_target = torch.stack(
-            (0.12 + 0.62 * left_swing, 0.12 + 0.62 * right_swing),
+            (
+                0.12 + 0.62 * left_scale * left_swing,
+                0.12 + 0.62 * right_scale * right_swing,
+            ),
             dim=1,
         )
         contact_target = torch.stack(
@@ -531,6 +674,9 @@ class DropbearWalkEnv:
         reference[:, 3] = 0.06 + 0.16 * right_swing
         reference[:, 9] = -0.07 * gait
         reference[:, 10] = 0.07 * gait
+        turn_bias = 0.24 * (self.target_turn_rate / 0.60).clamp(-1.0, 1.0)
+        reference[:, 8] = turn_bias
+        reference[:, 11] = -turn_bias
         reference[:, 12] = -0.52 * gait
         reference[:, 17] = 0.52 * gait
         reference[:, 15] = 0.44
@@ -562,6 +708,55 @@ class DropbearWalkEnv:
             + 0.012 * torch.sin(self.base_pitch) * hip_mean
         )
 
+    def _asynchronous_gait_symmetry(
+        self,
+    ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        """Compare each leg to the other leg one half gait-cycle earlier.
+
+        Same-frame left/right equality would reward standing still. A 180°
+        temporal offset instead measures whether the two legs execute the same
+        motion at opposite points in the gait cycle, including motor position,
+        velocity, and heel/toe contact.
+        """
+
+        left_indices = [0, 1, 4, 5, 8, 9]
+        right_indices = [3, 2, 7, 6, 11, 10]
+        left = torch.cat(
+            (
+                self.q[:, left_indices] / self.symmetry_position_scale,
+                self.dq[:, left_indices] / self.symmetry_velocity_scale,
+                self.contact_weights[:, :2],
+            ),
+            dim=1,
+        )
+        right = torch.cat(
+            (
+                self.q[:, right_indices] / self.symmetry_position_scale,
+                self.dq[:, right_indices] / self.symmetry_velocity_scale,
+                self.contact_weights[:, 2:],
+            ),
+            dim=1,
+        )
+        current = torch.stack((left, right), dim=1)
+        lagged = self.symmetry_history[self.symmetry_cursor]
+        valid = self.symmetry_history_valid[self.symmetry_cursor].clone()
+        error = 0.5 * (
+            (current[:, 0] - lagged[:, 1]).square().mean(1)
+            + (current[:, 1] - lagged[:, 0]).square().mean(1)
+        )
+        error = torch.where(valid, error, torch.zeros_like(error))
+        reward = torch.where(
+            valid,
+            torch.exp(-1.5 * error),
+            torch.zeros_like(error),
+        )
+        self.symmetry_history[self.symmetry_cursor] = current.detach()
+        self.symmetry_history_valid[self.symmetry_cursor] = True
+        self.symmetry_cursor = (
+            self.symmetry_cursor + 1
+        ) % self.symmetry_lag_steps
+        return reward, error, valid
+
     def step(self, action: torch.Tensor):
         action = action.to(self.device).clamp(-1.0, 1.0)
         # PPO controls a residual around the proven browser walking sequence.
@@ -569,6 +764,8 @@ class DropbearWalkEnv:
         # authority to alter every motor for balance and COM stabilization.
         reference = self._reference_motor_targets()
         desired = reference + action * self.action_scale * 0.62
+        desired[:, 4] = desired[:, 4].clamp(0.0, math.pi)
+        desired[:, 7] = desired[:, 7].clamp(0.0, math.pi)
         if not self.config.arm_swing:
             desired[:, 12:22] = 0
             desired[:, 15] = 0.42
@@ -583,11 +780,54 @@ class DropbearWalkEnv:
         self.q[:, 15] = next_q[:, 15].clamp(0.0, 1.35)
         self.q[:, 20] = next_q[:, 20].clamp(0.0, 1.35)
 
-        positions_x = self._update_contact_state()
-        self._integrate_root(positions_x)
+        if self.physics is None:
+            positions_x = self._update_contact_state()
+            self._integrate_root(positions_x)
+        else:
+            physical = self.physics.step(
+                desired.detach().cpu().numpy(),
+                vertical_constraint=self.config.vertical_constraint,
+            )
+            self.q = torch.as_tensor(
+                physical["q"], device=self.device, dtype=torch.float32
+            )
+            self.dq = torch.as_tensor(
+                physical["dq"], device=self.device, dtype=torch.float32
+            )
+            root = torch.as_tensor(
+                physical["root"], device=self.device, dtype=torch.float32
+            )
+            self.base_height = root[:, 0]
+            self.base_vz = root[:, 1]
+            self.base_x = root[:, 2]
+            self.base_y = root[:, 3]
+            self.base_vx = root[:, 4]
+            self.base_roll = root[:, 5]
+            self.base_pitch = root[:, 6]
+            self.base_yaw = root[:, 7]
+            self.base_roll_rate = root[:, 8]
+            self.base_pitch_rate = root[:, 9]
+            self.base_yaw_rate = root[:, 10]
+            self.contact_loads_kg = torch.as_tensor(
+                physical["contactLoadsKg"],
+                device=self.device,
+                dtype=torch.float32,
+            )
+            self.contact_weights = (
+                self.contact_loads_kg / (self.config.mass_kg * 0.25)
+            ).clamp(0.0, 1.5)
+            self.foot_heights = torch.as_tensor(
+                physical["footHeights"],
+                device=self.device,
+                dtype=torch.float32,
+            )
+            if self.config.vertical_constraint:
+                self.base_height.fill_(self.config.nominal_height_m)
+                self.base_vz.zero_()
         self.t += self.dt
         self.episode_steps += 1
-        self._update_contact_state()
+        if self.physics is None:
+            self._update_contact_state()
         self._update_center_of_mass()
 
         _, residual = self._closure()
@@ -612,6 +852,35 @@ class DropbearWalkEnv:
         gait_error = gait_error + 1.4 * calf_manifold_error
 
         phase = self._phase()
+        gait = torch.sin(phase)
+        swing_target = torch.stack(
+            (torch.relu(gait), torch.relu(-gait)),
+            dim=1,
+        )
+        hip_swing_intensity = (
+            self.q[:, [5, 6]].abs() / 0.45
+        ).clamp(0.0, 2.0)
+        knee_swing_intensity = (
+            torch.relu(self.q[:, [4, 7]] - 0.12) / 0.62
+        ).clamp(0.0, 2.0)
+        leg_swing_error = (
+            0.65
+            * (
+                hip_swing_intensity
+                - gait.abs()[:, None]
+            ).square().mean(1)
+            + 0.35
+            * (knee_swing_intensity - swing_target).square().mean(1)
+        )
+        leg_swing_reward = torch.exp(-2.0 * leg_swing_error)
+        knee_contraction_error = torch.relu(
+            self.q[:, [4, 7]] - 0.12
+        ).square().mean(1)
+        (
+            gait_symmetry_reward,
+            gait_symmetry_error,
+            gait_symmetry_ready,
+        ) = self._asynchronous_gait_symmetry()
         arm_target = torch.stack(
             (
                 -0.52 * torch.sin(phase),
@@ -634,6 +903,14 @@ class DropbearWalkEnv:
             + 0.18 * self.base_roll_rate.square()
             + 0.18 * self.base_pitch_rate.square()
         )
+        lateral_tilt_error = (
+            self.base_roll.square()
+            + 0.12 * self.base_roll_rate.square()
+        )
+        dorsal_tilt_error = (
+            self.base_pitch.square()
+            + 0.12 * self.base_pitch_rate.square()
+        )
         # Keep whole-body COM quiet while allowing the periodic motion needed
         # for a step. Lateral drift and vertical COM velocity are both costly.
         com_stability_error = (
@@ -644,6 +921,9 @@ class DropbearWalkEnv:
         )
         height_error = (self.base_height - self.config.nominal_height_m).square()
         speed_error = (self.base_vx - self.target_speed).square()
+        turn_rate_error = (
+            self.base_yaw_rate - self.target_turn_rate
+        ).square()
         energy = self.dq.square().mean(1)
         smoothness = (action - self.prev_action).square().mean(1)
 
@@ -653,14 +933,21 @@ class DropbearWalkEnv:
         torso_stability_reward = torch.exp(-torso_stability_error)
         com_stability_reward = torch.exp(-com_stability_error)
         baseline_walk_bias = torch.exp(-1.4 * gait_error)
-        velocity_reward = torch.exp(-2.2 * speed_error)
+        velocity_reward = torch.exp(
+            -2.2 * speed_error - 1.8 * turn_rate_error
+        )
         weights = self.config.reward_weights
         reward = (
             weights.torso_stability * torso_stability_reward
             + weights.com_stability * com_stability_reward
             + weights.gait_contact * baseline_walk_bias
+            + weights.gait_symmetry * gait_symmetry_reward
             + weights.speed_tracking * velocity_reward
+            + weights.leg_swing * leg_swing_reward
             - weights.height_penalty * height_error
+            - weights.lateral_tilt_penalty * lateral_tilt_error
+            - weights.dorsal_tilt_penalty * dorsal_tilt_error
+            - weights.knee_contraction_penalty * knee_contraction_error
             - weights.arm_swing_penalty * arm_error
             - weights.energy_penalty * energy
             - weights.smoothness_penalty * smoothness
@@ -694,15 +981,29 @@ class DropbearWalkEnv:
             "arm_closure_residual": arm_residual.detach(),
             "physical_elbow_angle": physical_elbow.detach(),
             "speed": self.base_vx.detach(),
+            "turn_rate": self.base_yaw_rate.detach(),
+            "turn_rate_error": turn_rate_error.detach(),
+            "base_x": self.base_x.detach(),
+            "base_y": self.base_y.detach(),
+            "base_yaw": self.base_yaw.detach(),
             "base_height": self.base_height.detach(),
             "base_roll": self.base_roll.detach(),
             "base_pitch": self.base_pitch.detach(),
             "torso_stability_error": torso_stability_error.detach(),
+            "lateral_tilt_error": lateral_tilt_error.detach(),
+            "dorsal_tilt_error": dorsal_tilt_error.detach(),
             "com_height": self.com_height.detach(),
             "com_lateral": self.com_lateral.detach(),
             "com_vertical_speed": self.com_vertical_speed.detach(),
             "com_stability_error": com_stability_error.detach(),
             "baseline_walk_bias": baseline_walk_bias.detach(),
+            "gait_symmetry_reward": gait_symmetry_reward.detach(),
+            "gait_symmetry_error": gait_symmetry_error.detach(),
+            "gait_symmetry_ready": gait_symmetry_ready.detach(),
+            "leg_swing_reward": leg_swing_reward.detach(),
+            "leg_swing_error": leg_swing_error.detach(),
+            "knee_contraction_error": knee_contraction_error.detach(),
+            "knee_contraction": self.q[:, [4, 7]].detach(),
             "contacts": self.contact_weights.detach(),
             "contact_loads_kg": self.contact_loads_kg.detach(),
             "upright": upright.detach(),
@@ -711,6 +1012,8 @@ class DropbearWalkEnv:
             "gait_error": gait_error.detach(),
             "calf_manifold_error": calf_manifold_error.detach(),
             "vertical_constraint": self.config.vertical_constraint,
+            "physics_backend": self.config.physics_backend,
+            "motion_profile": self.config.motion_profile,
             "reward_weights": weights.as_dict(),
         }
         return obs, reward, done, info
