@@ -110,7 +110,10 @@
           <div class="scenario-bar">
             <div class="playback-mode-control">
               <span>PLAYBACK SOURCE</span>
-              <button id="playback-mode" class="playback-mode-button" type="button" data-mode="preset" aria-label="Toggle playback source between preset and trained policy">PRESET</button>
+              <div class="playback-mode-buttons">
+                <button id="playback-mode" class="playback-mode-button" type="button" data-mode="preset" aria-pressed="false" aria-label="Toggle playback source between preset and trained policy">PRESET</button>
+                <button id="playback-family" class="playback-mode-button" type="button" data-family="classic" aria-pressed="false" aria-label="Toggle playback family between classic and GR00T WBC">CLASSIC</button>
+              </div>
             </div>
             <label class="playback-source-select">
               <span id="playback-source-label">MOTION PRESET</span>
@@ -694,6 +697,31 @@
             </div>
           </article>
 
+          <article class="panel gr00t-bridge-panel">
+            <div class="panel-head">
+              <div>
+                <span class="panel-kicker">G1 → DROPBEAR USD MOTOR BRIDGE</span>
+                <h2>Pose retarget test</h2>
+              </div>
+              <span id="gr00t-bridge-state" class="count-chip">CHECKING</span>
+            </div>
+            <div class="gr00t-bridge-gates">
+              <div id="gr00t-bridge-pose"><i></i><span>G1 q[29]</span><b>CHECKING</b></div>
+              <div id="gr00t-bridge-token"><i></i><span>64D TOKEN DECODER</span><b>CHECKING</b></div>
+              <div id="gr00t-bridge-target"><i></i><span>DROPBEAR USD MOTORS</span><b>22 AXES</b></div>
+              <div id="gr00t-bridge-physx"><i></i><span>USD GRAPH / PASSIVE LOOPS</span><b>CHECKING</b></div>
+            </div>
+            <p class="gr00t-bridge-note">The preview submits NVIDIA’s published G1 standing q[29] fixture—not a VLA token—then maps it through task-space targets, the retained 93-body USD graph, and its passive knee/calf/elbow loops into the exact 22 Dropbear motor coordinates. A real 64D token remains blocked unless the pinned G1 SONIC shadow decoder is loaded; contact forces still require Isaac/PhysX.</p>
+            <div class="gr00t-bridge-actions">
+              <button id="gr00t-preview-g1-pose" type="button" class="button accent" disabled>RETARGET G1 STAND</button>
+              <button id="gr00t-preview-sonic-token" type="button" class="button subtle" disabled>DECODE PINNED SONIC STAND</button>
+              <span>STATIC SOFTWARE-IN-THE-LOOP PREVIEW · NO MOTOR AUTHORITY</span>
+            </div>
+            <div id="gr00t-bridge-result" class="gr00t-bridge-result" aria-live="polite">
+              <span>Waiting for the decoded-pose bridge contract.</span>
+            </div>
+          </article>
+
           <article class="panel gr00t-training-panel">
             <div class="panel-head">
               <div>
@@ -749,23 +777,23 @@
                 <span class="panel-kicker">DROPBEAR EMBODIMENT</span>
                 <h2>Control and closure contract</h2>
               </div>
-              <span class="count-chip">22 ACTIONS · 784 UPSTREAM OBS</span>
+              <span class="count-chip">G1 994 OBS · DROPBEAR 22 AXES</span>
             </div>
             <div class="gr00t-contract-flow">
               <div><span>LANGUAGE / VLA</span><b>PROMPT OR CAMERA POLICY</b></div>
               <i>→</i>
-              <div><span>MOTION INTENT</span><b>64-D TOKEN / SMPL / JOINT REF</b></div>
+              <div><span>G1 SONIC</span><b>64-D TOKEN → CANONICAL G1 q[29]</b></div>
               <i>→</i>
-              <div><span>UPSTREAM SONIC ABI</span><b>784 OBS · 22 MOTOR RESIDUALS</b></div>
+              <div><span>DROPBEAR RETARGET</span><b>22 USD MOTOR TARGETS + CLOSURE SEED</b></div>
               <i>→</i>
               <div><span>ROS 2 WBC</span><b>WATCHDOG + LIMITS + STAND BLEND</b></div>
             </div>
             <ul class="gr00t-contract-list">
               <li>Policy coordinates are motor shafts; the local adapter validates reduced knee/elbow closure projections, while full passive-link transforms remain Isaac/PhysX-authoritative.</li>
-              <li>The locally verified CUDA PoC consumes 90 robot observations plus the 64-D token. The pinned upstream decoder ABI consumes 784 values; no NVIDIA checkpoint is represented as locally trained.</li>
-              <li>Prompt-router tokens and state-derived local training tokens are separate schemas. Prompt-conditioned neural inference remains blocked until a compatible GR00T/VLA checkpoint is trained and admitted.</li>
+              <li>The locally verified Dropbear residual PoC consumes 90 robot observations plus its separate 64-D training token. The released G1 shadow decoder consumes the NVIDIA 994-value dynamic-policy observation; no NVIDIA checkpoint is represented as locally trained.</li>
+              <li>Prompt-router tokens, state-derived local training tokens, decoded G1 poses, and NVIDIA SONIC latents remain separate schemas. The API rejects catalog/synthetic tokens at the NVIDIA token boundary.</li>
               <li>Both knees retain the 180° lock datum mapped to policy 0 rad, with a software range of 0–π.</li>
-              <li>Local runtime frames are replay/stale guarded. ZMQ v4 remains an upstream integration patch point; this repository does not claim a live ZMQ transport.</li>
+              <li>Local runtime frames are replay/stale guarded. A standalone PolicyClient-compatible ZMQ transport is included, but it is not connected to this dashboard and no live NVIDIA policy server is claimed.</li>
             </ul>
             <a class="source-link" href="https://nvlabs.github.io/GR00T-WholeBodyControl/" target="_blank" rel="noreferrer">OPEN NVIDIA GR00T-WBC DOCS ↗</a>
           </article>
@@ -837,6 +865,6 @@
     </main>
   </div>
 
-  <script type="module" src="/js/app.js?v=20260724-gr00t-wbc2"></script>
+  <script type="module" src="/js/app.js?v=20260724-unified-playback2"></script>
 </body>
 </html>

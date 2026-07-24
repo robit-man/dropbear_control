@@ -15,6 +15,22 @@ from .embodiment import (
 )
 from .order_converter import DropbearOrderConverter
 from .action_adapter import UpstreamSonicActionAdapter
+from .g1_shadow_decoder import (
+    G1ShadowDecoder,
+    G1ShadowDecoderError,
+    G1ShadowDecoderUnavailable,
+)
+from .policy_client import (
+    G1SonicPolicyClient,
+    G1SonicPolicyClientError,
+    G1SonicProtocolError,
+    G1SonicServerError,
+    G1SonicTransportTimeout,
+    G1SonicTransportUnavailable,
+    SafePolicyWireSerializer,
+    policy_client_contract,
+    validate_unitree_g1_sonic_response,
+)
 
 __all__ = [
     "ACTION_COUNT",
@@ -23,6 +39,18 @@ __all__ = [
     "OBSERVATION_DIM",
     "USD_JOINT_NAMES",
     "DropbearOrderConverter",
+    "G1ShadowDecoder",
+    "G1ShadowDecoderError",
+    "G1ShadowDecoderUnavailable",
+    "G1SonicPolicyClient",
+    "G1SonicPolicyClientError",
+    "G1SonicProtocolError",
+    "G1SonicServerError",
+    "G1SonicTransportTimeout",
+    "G1SonicTransportUnavailable",
+    "SafePolicyWireSerializer",
     "UpstreamSonicActionAdapter",
+    "policy_client_contract",
+    "validate_unitree_g1_sonic_response",
     "verify_source_assets",
 ]

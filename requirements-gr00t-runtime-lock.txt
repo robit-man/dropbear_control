@@ -6,5 +6,8 @@
 # TensorRT build and must not consume this file.
 onnx==1.22.0
 onnxruntime-gpu==1.24.4; platform_machine == "x86_64"
+huggingface-hub==1.10.1
+msgpack==1.2.1
+msgpack-numpy==0.4.8
 pyzmq==27.1.0
 tensorrt-cu12==10.13.3.9; platform_machine == "x86_64"

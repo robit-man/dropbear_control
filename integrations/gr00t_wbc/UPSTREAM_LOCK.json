@@ -19,6 +19,33 @@
     "controllerRateHz": 50,
     "latentTokenDimension": 64
   },
+  "g1Kinematics": {
+    "sourcePath": "gear_sonic/data/robots/g1/g1_29dof.xml",
+    "sha256": "439c1ec0806583d73b492da9484b0cb9e9eae215e0d9506e3c2fa69016733532",
+    "jointCount": 29,
+    "role": "body-space-retarget-source"
+  },
+  "releasedG1ShadowDecoder": {
+    "repository": "nvidia/GEAR-SONIC",
+    "modelPath": "gear_sonic_deploy/policy/release/model_decoder.onnx",
+    "sha256": "c7241a123eaa36b5d64bad19540efde93cac1ad443bd4572fd12ca99898118ed",
+    "input": {
+      "name": "obs_dict",
+      "shape": [
+        1,
+        994
+      ]
+    },
+    "output": {
+      "name": "action",
+      "shape": [
+        1,
+        29
+      ]
+    },
+    "role": "preview-and-retarget-teacher-only",
+    "hardwareAuthorized": false
+  },
   "integrationMode": "overlay-no-vendored-upstream-code-or-weights",
   "sourceCodeVendored": false,
   "modelWeightsVendored": false

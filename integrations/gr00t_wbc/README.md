@@ -31,6 +31,24 @@ as a native Dropbear SONIC checkpoint.
 - Exact knee, calf, and elbow closure topology plus fail-closed reduced
   projections. Full passive poses, collision response, and constraint impulses
   remain the responsibility of the source USD in Isaac/PhysX.
+- A digest-pinned, CUDA-only runner for NVIDIA's released G1 SONIC decoder,
+  including the exact 994-value tensor layout populated by a declared
+  kinematic shadow history, official action scaling, canonical 29-joint
+  ordering, cadence checks, and fail-closed runtime behavior. Shadow history
+  is not represented as measured G1 plant/IMU feedback.
+- Exact dependency-light forward kinematics from the pinned G1 MJCF and from
+  the retained 93-body Dropbear USD articulation cache.
+- A bounded body-space retargeter that converts decoded G1 feet, lower legs,
+  shoulders, forearms, and wrists into the actual 22 Dropbear motor
+  coordinates while solving the retained passive knee/calf/elbow loops.
+- A strict dashboard API for a decoded G1 q[29], one verified 64D token, or a
+  complete 1–40-frame NVIDIA token chunk. Responses contain exact q[22]
+  references, provenance, task residuals, passive angles, and explicit
+  non-authority flags.
+- A standalone, optional PolicyClient-compatible ZMQ helper with safe
+  msgpack-numpy decoding and exact `UNITREE_G1_SONIC` output validation. It is
+  not automatically connected to the dashboard; an external adapter must
+  forward validated chunks into the strict HTTP retarget endpoint.
 - A motion-reference converter that resamples dashboard policy rollouts to an
   exact 50 Hz timeline and emits the versioned
   `dropbear-sonic-motion-reference-v1` JSON/CSV bundle.
@@ -49,10 +67,11 @@ make the 90+64 checkpoint compatible with the upstream 784-value decoder.
 | Gate | Current state |
 | --- | --- |
 | Dropbear source contract | Delivered and covered by offline tests |
-| Order and reduced-closure adapters | Delivered; full passive projection remains Isaac/PhysX-only |
+| G1 token → Dropbear USD preview | Delivered: verified CUDA G1 decoder, exact G1 FK, retained-USD task-space retarget, passive-loop solve, q[22] API/browser playback |
+| Order and closure adapters | Delivered for the retained browser/USD graph; force-level loop and contact authority remains Isaac/PhysX-only |
 | Local CUDA PoC | Torch CUDA training, ONNX Runtime CUDA comparison, safety-runtime tests, and TensorRT 10.13 engine-build verification are available |
 | Native upstream Dropbear SONIC | Blocked: upstream registration, Isaac training, and a Dropbear checkpoint are not present |
-| Natural-language VLA | Blocked: no Isaac-GR00T VLA service, camera/state modality, learned token adapter, or prompt-labelled Dropbear dataset is installed |
+| Natural-language VLA | Transport/shape boundary is implemented, but no local Isaac-GR00T policy server, N1.7 checkpoint, camera/state stream, or prompt-labelled Dropbear dataset is installed |
 | Authoritative physics | Blocked until the original USD passes a recorded Isaac/PhysX gravity, contact, collision, and closure evaluation |
 | Hardware | Denied; the ROS boundary is SIL-only and no HIL admission exists |
 
@@ -62,6 +81,36 @@ make the 90+64 checkpoint compatible with the upstream 784-value decoder.
 python3 -c \
   'from integrations.gr00t_wbc import verify_source_assets; print(verify_source_assets())'
 ```
+
+## Exercise the released G1 bridge
+
+The released decoder is a separately licensed, ignored cache. Fetch and verify
+it after bootstrapping the pinned source:
+
+```bash
+tools/bootstrap_gr00t_wbc.sh
+tools/setup_gr00t_runtime.sh
+tools/fetch_gr00t_g1_decoder.sh
+./.gr00t-venv/bin/python tools/verify_gr00t_g1_bridge.py --device 0
+```
+
+The strict bridge is exposed by the loopback dashboard at
+`POST /api/gr00t/retarget`. Its three source schemas are:
+
+- canonical decoded G1 `q[29]` in the pinned body order;
+- one NVIDIA SONIC 64D token with a session-contiguous sequence; or
+- one NVIDIA SONIC token chunk containing 1–40 frames.
+
+Token input is rejected unless the pinned ONNX digest is present and ONNX
+Runtime CUDA is the active provider with CPU fallback disabled. The bridge
+does not accept the dashboard's deterministic prompt-router token.
+
+The upstream VLA returns a 40-frame horizon at 2.5 Hz whose frame semantics
+are 50 Hz. The HTTP bridge validates contiguous frame sequences but does not
+timestamp or prove wall-clock decode cadence; the browser schedules a nominal
+20 ms best-effort preview. The output is suitable for visualization and for
+generating teacher data. It is not collision/contact validation and carries
+no hardware authority.
 
 ## Convert the checked-in walking reference
 

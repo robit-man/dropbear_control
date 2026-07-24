@@ -13,7 +13,7 @@ page.on("console", (message) => {
 });
 page.on("pageerror", (error) => errors.push(`page: ${error.message}`));
 
-await page.goto(BASE, { waitUntil: "networkidle" });
+await page.goto(BASE, { waitUntil: "domcontentloaded", timeout: 60_000 });
 await page.waitForFunction(() => Boolean(window.dropbearTwin?.sim));
 await page.waitForFunction(() => window.dropbearTwin?.robot?.ready === true);
 await page.waitForFunction(() => window.dropbearTwin?.robot?.poseVersion > 2);
@@ -226,6 +226,68 @@ if ((await page.locator("#system-state").textContent())?.trim() !== "CONTROL ACT
   throw new Error("Unified Play button did not start trained-policy playback");
 }
 await page.click("#sim-toggle");
+
+const retargetEventsBefore = await page.evaluate(() => {
+  window.__dropbearRetargetEventCount = 0;
+  window.addEventListener(
+    "dropbear:retargeted-pose",
+    () => { window.__dropbearRetargetEventCount += 1; },
+  );
+  return window.__dropbearRetargetEventCount;
+});
+await page.click("#playback-family");
+await page.waitForFunction(
+  () => document.querySelector("#playback-family")?.dataset.family === "gr00t"
+    && Array.from(document.querySelectorAll("#scenario option")).length === 2
+    && Array.from(document.querySelectorAll("#scenario option")).every(
+      (option) => !option.disabled,
+    ),
+  null,
+  { timeout: 15000 },
+);
+if ((await page.locator("#playback-mode").textContent())?.trim() !== "TRAINED") {
+  throw new Error("GR00T family did not retain the TRAINED playback state");
+}
+if ((await page.locator("#playback-source-label").textContent())?.trim() !== "GR00T WBC SOURCE") {
+  throw new Error("GR00T family did not swap the source dropdown");
+}
+const g1PoseBefore = await page.evaluate(() => [
+  ...window.dropbearTwin.sim.joints.map((joint) => joint.angle),
+  ...window.dropbearTwin.armMotorStates.map((motor) => motor.angleDeg),
+]);
+await page.locator("#scenario").selectOption("g1-published-stand");
+await page.click("#sim-toggle");
+await page.waitForFunction(
+  () => window.__dropbearRetargetEventCount === 1
+    && document.querySelector("#sim-toggle")?.disabled === false,
+  null,
+  { timeout: 15000 },
+);
+const g1ChangedAxes = await page.evaluate((before) => [
+  ...window.dropbearTwin.sim.joints.map((joint) => joint.angle),
+  ...window.dropbearTwin.armMotorStates.map((motor) => motor.angleDeg),
+].filter((value, index) => Math.abs(value - before[index]) > 1e-5).length, g1PoseBefore);
+if (g1ChangedAxes !== 22) {
+  throw new Error(`Expected all 22 Dropbear targets to update, got ${g1ChangedAxes}`);
+}
+
+await page.locator("#scenario").selectOption("sonic-release-stand");
+await page.click("#sim-toggle");
+await page.click("#playback-family");
+await page.waitForFunction(
+  () => document.querySelector("#sim-toggle")?.disabled === false,
+  null,
+  { timeout: 15000 },
+);
+if ((await page.locator("#playback-family").textContent())?.trim() !== "CLASSIC") {
+  throw new Error("An in-flight GR00T completion overrode the newer CLASSIC selection");
+}
+if (await page.evaluate(() => window.__dropbearRetargetEventCount) !== retargetEventsBefore + 1) {
+  throw new Error("Canceled GR00T playback dispatched a stale retarget pose");
+}
+if ((await page.locator("#scenario option").count()) < 4) {
+  throw new Error("CLASSIC family did not restore current RL policy sources");
+}
 
 await page.locator(".joint-card").nth(4).click();
 if (await page.locator("#position-target").getAttribute("min") !== "180") {

@@ -1,0 +1,335 @@
+{
+  "checkedAt": "2026-07-24T17:37:58.737812+00:00",
+  "checks": {
+    "cudaDecoderAvailable": true,
+    "cudaPrimaryProvider": true,
+    "dropbearOutputHas22Values": true,
+    "g1OutputHas29FiniteValues": true,
+    "hardwareAuthorityDenied": true,
+    "maximumClosureResidualBelow1mm": true,
+    "maximumPreviewBodyErrorBelow15cm": true,
+    "taskResidualDidNotRegress": true
+  },
+  "contactDynamicsAuthoritative": false,
+  "decoder": {
+    "availabilityReason": null,
+    "available": true,
+    "dropbearDynamicsAuthority": false,
+    "faultLatched": false,
+    "hardwareAuthorized": false,
+    "mode": "preview-teacher-only",
+    "model": {
+      "input": {
+        "dtype": "float32",
+        "name": "obs_dict",
+        "shape": [
+          1,
+          994
+        ]
+      },
+      "output": {
+        "dtype": "float32",
+        "name": "action",
+        "order": "IsaacLab",
+        "shape": [
+          1,
+          29
+        ]
+      },
+      "path": "references/GR00T-WholeBodyControl/gear_sonic_deploy/policy/release/model_decoder.onnx",
+      "sha256": "c7241a123eaa36b5d64bad19540efde93cac1ad443bd4572fd12ca99898118ed",
+      "verified": true
+    },
+    "observation": {
+      "bodyPositionSemantics": "default-relative-radians-IsaacLab-order",
+      "bodyVelocitySemantics": "radians-per-second-IsaacLab-order",
+      "dimension": 994,
+      "gravitySemantics": "projected-gravity-body-frame",
+      "historyFrames": 10,
+      "historyOrder": "oldest-to-newest-zero-padded",
+      "lastActionSemantics": "raw-normalized-IsaacLab-order",
+      "slices": {
+        "base_angular_velocity_history": [
+          64,
+          94
+        ],
+        "body_joint_position_history": [
+          94,
+          384
+        ],
+        "body_joint_velocity_history": [
+          384,
+          674
+        ],
+        "last_action_history": [
+          674,
+          964
+        ],
+        "projected_gravity_history": [
+          964,
+          994
+        ],
+        "token_state": [
+          0,
+          64
+        ]
+      }
+    },
+    "runtime": {
+      "cpuFallbackAllowed": false,
+      "cudaRequired": true,
+      "deviceCount": 4,
+      "deviceId": 0,
+      "deviceName": "NVIDIA A100 80GB PCIe",
+      "providers": [
+        "CUDAExecutionProvider",
+        "CPUExecutionProvider"
+      ],
+      "torchCudaVersion": "13.0",
+      "torchVersion": "2.12.0+cu130"
+    },
+    "schema": "dropbear-g1-sonic-shadow-decoder-v1",
+    "shadowState": {
+      "absolutePositionRad": [
+        -0.20382335782051086,
+        0.03972756490111351,
+        0.09950032830238342,
+        0.510099470615387,
+        -0.16378986835479736,
+        -0.012949311174452305,
+        -0.22649800777435303,
+        -0.1455812007188797,
+        -0.0447382815182209,
+        0.46007466316223145,
+        -0.07360312342643738,
+        -0.028430653735995293,
+        0.14206503331661224,
+        -0.05143919959664345,
+        -0.40088924765586853,
+        0.2468877136707306,
+        0.19168907403945923,
+        0.08813665807247162,
+        0.38284245133399963,
+        -0.1072140634059906,
+        -0.019311456009745598,
+        0.014728742651641369,
+        -0.16457150876522064,
+        -0.1905093938112259,
+        -0.009106767363846302,
+        0.1737668812274933,
+        0.05056672915816307,
+        -0.01609964109957218,
+        -0.006410686299204826
+      ],
+      "jointOrder": [
+        "left_hip_pitch_joint",
+        "left_hip_roll_joint",
+        "left_hip_yaw_joint",
+        "left_knee_joint",
+        "left_ankle_pitch_joint",
+        "left_ankle_roll_joint",
+        "right_hip_pitch_joint",
+        "right_hip_roll_joint",
+        "right_hip_yaw_joint",
+        "right_knee_joint",
+        "right_ankle_pitch_joint",
+        "right_ankle_roll_joint",
+        "waist_yaw_joint",
+        "waist_roll_joint",
+        "waist_pitch_joint",
+        "left_shoulder_pitch_joint",
+        "left_shoulder_roll_joint",
+        "left_shoulder_yaw_joint",
+        "left_elbow_joint",
+        "left_wrist_roll_joint",
+        "left_wrist_pitch_joint",
+        "left_wrist_yaw_joint",
+        "right_shoulder_pitch_joint",
+        "right_shoulder_roll_joint",
+        "right_shoulder_yaw_joint",
+        "right_elbow_joint",
+        "right_wrist_roll_joint",
+        "right_wrist_pitch_joint",
+        "right_wrist_yaw_joint"
+      ],
+      "lastPositionClampCount": 0,
+      "lastVelocityClampCount": 0,
+      "maximumJointSpeedRadS": 35.0,
+      "order": "MuJoCo/body-actuated",
+      "physicsAuthoritative": false,
+      "positionLimitsRad": [
+        [
+          -2.5307,
+          2.8798
+        ],
+        [
+          -0.5236,
+          2.9671
+        ],
+        [
+          -2.7576,
+          2.7576
+        ],
+        [
+          -0.087267,
+          2.8798
+        ],
+        [
+          -0.87267,
+          0.5236
+        ],
+        [
+          -0.2618,
+          0.2618
+        ],
+        [
+          -2.5307,
+          2.8798
+        ],
+        [
+          -2.9671,
+          0.5236
+        ],
+        [
+          -2.7576,
+          2.7576
+        ],
+        [
+          -0.087267,
+          2.8798
+        ],
+        [
+          -0.87267,
+          0.5236
+        ],
+        [
+          -0.2618,
+          0.2618
+        ],
+        [
+          -2.618,
+          2.618
+        ],
+        [
+          -0.52,
+          0.52
+        ],
+        [
+          -0.52,
+          0.52
+        ],
+        [
+          -3.0892,
+          2.6704
+        ],
+        [
+          -1.5882,
+          2.2515
+        ],
+        [
+          -2.618,
+          2.618
+        ],
+        [
+          -1.0472,
+          2.0944
+        ],
+        [
+          -1.97222,
+          1.97222
+        ],
+        [
+          -1.61443,
+          1.61443
+        ],
+        [
+          -1.61443,
+          1.61443
+        ],
+        [
+          -3.0892,
+          2.6704
+        ],
+        [
+          -2.2515,
+          1.5882
+        ],
+        [
+          -2.618,
+          2.618
+        ],
+        [
+          -1.0472,
+          2.0944
+        ],
+        [
+          -1.97222,
+          1.97222
+        ],
+        [
+          -1.61443,
+          1.61443
+        ],
+        [
+          -1.61443,
+          1.61443
+        ]
+      ]
+    },
+    "streamState": {
+      "framesDecoded": 1,
+      "lastSequence": 0,
+      "timestampsValidated": false
+    },
+    "tokenStream": {
+      "componentAbsLimit": 1.25,
+      "controlRateHz": 50,
+      "dimension": 64,
+      "nominalRefreshFrames": 20,
+      "nominalRefreshRateHz": 2.5,
+      "periodNs": 20000000,
+      "sequenceSemantics": "global-contiguous-frame-sequence",
+      "timestampToleranceNs": 5000000,
+      "vlaActionHorizonFrames": 40,
+      "vlaActionHorizonSeconds": 0.8
+    },
+    "upstream": {
+      "commit": "4141c34280abb67c82e115342a8720f4a83d750d",
+      "repository": "https://github.com/NVlabs/GR00T-WholeBodyControl.git"
+    }
+  },
+  "hardwareAuthorized": false,
+  "role": "preview-and-retarget-teacher-only",
+  "schema": "dropbear-g1-usd-bridge-smoke-v1",
+  "source": {
+    "decodedG1JointCount": 29,
+    "fixture": "LATENT_INITIAL_MOTION_TOKEN",
+    "tokenDimension": 64
+  },
+  "status": "passed",
+  "target": {
+    "bodyPositionErrorsM": {
+      "left_foot": 0.05837146128425418,
+      "left_forearm": 0.06443176779489466,
+      "left_lower_leg": 0.06839837461395698,
+      "left_upper_arm": 0.014824081802057631,
+      "left_wrist": 0.056234114178660394,
+      "right_foot": 0.061396824873886514,
+      "right_forearm": 0.020531696769525966,
+      "right_lower_leg": 0.0674505346132075,
+      "right_upper_arm": 0.015117434440333978,
+      "right_wrist": 0.09396078771544836
+    },
+    "dropbearMotorCount": 22,
+    "finalTaskError": 0.9424396431406984,
+    "iterationsAccepted": 1,
+    "maximumBodyPositionErrorM": 0.09396078771544836,
+    "maximumClosureResidualM": 0.0004946852664942412,
+    "seedTaskError": 2.3693397062550052
+  },
+  "timingSeconds": {
+    "decoderInitialization": 1.1666364569973666,
+    "dropbearRetarget": 3.302192439994542,
+    "oneTokenDecode": 0.0004323229950387031
+  }
+}

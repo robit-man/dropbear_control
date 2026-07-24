@@ -78,14 +78,17 @@ check(
 );
 const dashboardStyle = await request(`${base}/css/style.css`);
 const playbackStyle = dashboardStyle.body
-  .split(".playback-mode-button {")[1]
-  ?.split("}")[0] || "";
+  .match(/(?:^|\n)\.playback-mode-button \{([^}]*)\}/)?.[1] || "";
 check(
-  "playback source is one yellow text-only toggle",
+  "playback source has yellow text-only mode and CLASSIC/GR00T toggles",
   dashboardStyle.status === 200
     && playbackStyle.includes("background: var(--cyan)")
     && playbackStyle.includes("border: 1px solid var(--cyan)")
-    && !index.body.includes('type="checkbox" id="playback-mode"'),
+    && index.body.includes('id="playback-mode" class="playback-mode-button"')
+    && index.body.includes('id="playback-family" class="playback-mode-button"')
+    && index.body.includes('data-family="classic"')
+    && !index.body.includes('type="checkbox" id="playback-mode"')
+    && !index.body.includes('type="checkbox" id="playback-family"'),
 );
 check(
   "RL horizon reaches 10,000 updates with explicit reward tuning",

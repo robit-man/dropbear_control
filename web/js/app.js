@@ -15,9 +15,16 @@ import {
 } from "./dropbear_usd.js";
 import { RLPolicyPlayer } from "./rl_policy.js";
 import { Robot3D } from "./robot_3d.js";
-import { setupGr00tLab } from "./gr00t_lab.js";
+import {
+  GR00T_WBC_PLAYBACK_SOURCES,
+  cancelGr00tWbcPlayback,
+  playGr00tWbcSource,
+  setupGr00tLab,
+  waitForGr00tWbcPlaybackIdle,
+} from "./gr00t_lab.js";
 
 const $ = (id) => document.getElementById(id);
+const RAD_TO_DEG = 180 / Math.PI;
 const sim = new DropbearSim();
 const PRESET_SOURCES = Object.freeze([
   { value: "neutral", label: "Neutral hold" },
@@ -37,6 +44,53 @@ const GR00T_PROMPT_PREVIEW_PRESETS = Object.freeze({
   walk: "walk",
 });
 const GR00T_PROMPT_PREVIEW_TURN_EPSILON_RPS = 0.005;
+const DROPBEAR_RETARGET_ACTION_ORDER = Object.freeze([
+  "left_outer_calf",
+  "left_inner_calf",
+  "right_inner_calf",
+  "right_outer_calf",
+  "left_knee",
+  "left_hip_pitch",
+  "right_hip_pitch",
+  "right_knee",
+  "left_hip_yaw",
+  "left_hip_roll",
+  "right_hip_roll",
+  "right_hip_yaw",
+  "left_shoulder_pitch",
+  "left_shoulder_yaw",
+  "left_shoulder_roll",
+  "left_elbow_pitch",
+  "left_wrist_roll",
+  "right_shoulder_pitch",
+  "right_shoulder_yaw",
+  "right_shoulder_roll",
+  "right_elbow_pitch",
+  "right_wrist_roll",
+]);
+let playbackSelectionGeneration = 0;
+let playbackSelectionAbortController = null;
+const beginPlaybackSelection = () => {
+  cancelGr00tWbcPlayback();
+  playbackSelectionAbortController?.abort();
+  playbackSelectionAbortController = null;
+  playbackSelectionGeneration += 1;
+  return playbackSelectionGeneration;
+};
+const isCurrentPlaybackSelection = (generation) => (
+  generation === playbackSelectionGeneration
+);
+const openPlaybackRequest = (generation) => {
+  if (!isCurrentPlaybackSelection(generation)) return null;
+  const controller = new AbortController();
+  playbackSelectionAbortController = controller;
+  return controller;
+};
+const releasePlaybackRequest = (controller) => {
+  if (playbackSelectionAbortController === controller) {
+    playbackSelectionAbortController = null;
+  }
+};
 const RL_TRAINING_PROFILES = Object.freeze({
   "gentle-forward": Object.freeze({
     label: "Gentle forward",
@@ -130,7 +184,18 @@ const ui = {
   watchTraining: false,
   previewLoadedKey: null,
   previewLoading: false,
+  playbackFamily: "classic",
   playbackMode: "preset",
+  playbackSelections: {
+    preset: "neutral",
+    rl: "reference",
+    gr00t: "g1-published-stand",
+  },
+  gr00tAvailability: {
+    decodedG1PoseReady: null,
+    nvidiaTokenReady: null,
+  },
+  gr00tPlayBusy: false,
   autoReplayTraining: true,
   latestRLStatus: null,
   loadedPolicySource: null,
@@ -431,6 +496,24 @@ function setupMotorCategories() {
   });
 }
 
+function rememberPlaybackSelection() {
+  const value = $("scenario")?.value;
+  if (!value) return;
+  const key = ui.playbackFamily === "gr00t" ? "gr00t" : ui.playbackMode;
+  ui.playbackSelections[key] = value;
+}
+
+function syncPlaybackButtons() {
+  const modeButton = $("playback-mode");
+  modeButton.dataset.mode = ui.playbackMode === "rl" ? "trained" : "preset";
+  modeButton.textContent = ui.playbackMode === "rl" ? "TRAINED" : "PRESET";
+  modeButton.setAttribute("aria-pressed", String(ui.playbackMode === "rl"));
+  const familyButton = $("playback-family");
+  familyButton.dataset.family = ui.playbackFamily;
+  familyButton.textContent = ui.playbackFamily === "gr00t" ? "GR00T" : "CLASSIC";
+  familyButton.setAttribute("aria-pressed", String(ui.playbackFamily === "gr00t"));
+}
+
 function populatePlaybackSources(mode, selectedValue = null) {
   const sessionSources = ui.rlSessions
     .filter((session) => session.policyUrl)
@@ -438,34 +521,83 @@ function populatePlaybackSources(mode, selectedValue = null) {
       value: `session:${session.experimentId}`,
       label: `Run ${session.experimentId.slice(-8).toUpperCase()}`,
     }));
-  const sources = mode === "rl"
-    ? [...RL_SOURCES, ...sessionSources]
-    : PRESET_SOURCES;
+  const sources = ui.playbackFamily === "gr00t"
+    ? GR00T_WBC_PLAYBACK_SOURCES
+    : mode === "rl"
+      ? [...RL_SOURCES, ...sessionSources]
+      : PRESET_SOURCES;
   const select = $("scenario");
   select.innerHTML = "";
   for (const source of sources) {
     const option = document.createElement("option");
     option.value = source.value;
     option.textContent = source.label;
-    if (source.value === "latest" && !ui.latestPolicyUrl) option.disabled = true;
-    if (source.value === "live" && !ui.latestRLStatus?.livePolicyUrl) {
+    if (
+      ui.playbackFamily === "gr00t"
+      && ui.gr00tAvailability[source.readiness] !== true
+    ) {
+      option.disabled = true;
+      option.textContent += ui.gr00tAvailability[source.readiness] === false
+        ? " · unavailable"
+        : " · checking";
+    } else if (source.value === "latest" && !ui.latestPolicyUrl) {
+      option.disabled = true;
+    } else if (source.value === "live" && !ui.latestRLStatus?.livePolicyUrl) {
       option.textContent += " · waiting";
     }
     select.appendChild(option);
   }
-  const fallback = mode === "rl" ? "reference" : "neutral";
+  const fallback = ui.playbackFamily === "gr00t"
+    ? "g1-published-stand"
+    : mode === "rl"
+      ? "reference"
+      : "neutral";
   select.value = sources.some((source) => source.value === selectedValue) ? selectedValue : fallback;
-  $("playback-source-label").textContent = mode === "rl" ? "POLICY" : "MOTION PRESET";
+  const selectionKey = ui.playbackFamily === "gr00t" ? "gr00t" : mode;
+  ui.playbackSelections[selectionKey] = select.value || fallback;
+  $("playback-source-label").textContent = ui.playbackFamily === "gr00t"
+    ? "GR00T WBC SOURCE"
+    : mode === "rl"
+      ? "POLICY"
+      : "MOTION PRESET";
 }
 
 function setPlaybackMode(mode, selectedValue = null) {
+  rememberPlaybackSelection();
+  // PRESET/TRAINED is the classic playback axis. Entering either state from
+  // GR00T returns to CLASSIC, preventing a meaningless PRESET + GR00T pair.
+  ui.playbackFamily = "classic";
   ui.playbackMode = mode === "rl" ? "rl" : "preset";
-  $("playback-mode").dataset.mode = ui.playbackMode === "rl" ? "trained" : "preset";
-  $("playback-mode").textContent = ui.playbackMode === "rl" ? "TRAINED" : "PRESET";
-  populatePlaybackSources(ui.playbackMode, selectedValue);
+  syncPlaybackButtons();
+  populatePlaybackSources(
+    ui.playbackMode,
+    selectedValue ?? ui.playbackSelections[ui.playbackMode],
+  );
 }
 
-async function configurePlaybackSource(value, { preserveLiveWatch = false } = {}) {
+function setPlaybackFamily(family, selectedValue = null) {
+  rememberPlaybackSelection();
+  ui.playbackFamily = family === "gr00t" ? "gr00t" : "classic";
+  // GR00T sources are WBC policies/fixtures, never classic motion presets.
+  // Returning to CLASSIC intentionally remains in TRAINED, restoring RL.
+  ui.playbackMode = "rl";
+  syncPlaybackButtons();
+  const key = ui.playbackFamily === "gr00t" ? "gr00t" : "rl";
+  populatePlaybackSources("rl", selectedValue ?? ui.playbackSelections[key]);
+}
+
+async function configurePlaybackSource(
+  value,
+  {
+    preserveLiveWatch = false,
+    generation = beginPlaybackSelection(),
+  } = {},
+) {
+  if (!isCurrentPlaybackSelection(generation)) return false;
+  if (ui.playbackFamily !== "classic") {
+    throw new Error("classic playback configuration requested while GR00T is selected");
+  }
+  ui.playbackSelections[ui.playbackMode] = value;
   policyPlayer.pause();
   if (ui.playbackMode === "preset") {
     ui.policyMode = false;
@@ -477,7 +609,7 @@ async function configurePlaybackSource(value, { preserveLiveWatch = false } = {}
     sim.setPlay(false);
     if (value === "manual") $("impedance-toggle").checked = false;
     appendTerminal(`[dashboard] preset armed · ${value} · press Play to run`, "ok");
-    return;
+    return true;
   }
 
   ui.policyMode = true;
@@ -485,14 +617,27 @@ async function configurePlaybackSource(value, { preserveLiveWatch = false } = {}
   sim.setPlay(false);
   ui.watchTraining = value === "live";
   if (value === "reference") {
-    await loadPolicy("/assets/rl/dropbear-walk-reference.json", "Tracked reference walking policy");
+    if (!await loadPolicy(
+      "/assets/rl/dropbear-walk-reference.json",
+      "Tracked reference walking policy",
+      { generation },
+    )) return false;
   } else if (value === "authored") {
-    await loadPolicy("/assets/rl/dropbear-authored-reference.json", "Authored residual-zero walking baseline");
+    if (!await loadPolicy(
+      "/assets/rl/dropbear-authored-reference.json",
+      "Authored residual-zero walking baseline",
+      { generation },
+    )) return false;
   } else if (value === "latest" && ui.latestPolicyUrl) {
-    await loadPolicy(ui.latestPolicyUrl, "Latest completed local walking policy");
+    if (!await loadPolicy(
+      ui.latestPolicyUrl,
+      "Latest completed local walking policy",
+      { generation },
+    )) return false;
   } else if (value === "live") {
     ui.previewLoadedKey = null;
     await pollRLStatus();
+    if (!isCurrentPlaybackSelection(generation)) return false;
     if (!ui.latestRLStatus?.livePolicyUrl) {
       policyPlayer.clear();
       robot.setExternalRootPose(null, null);
@@ -510,9 +655,13 @@ async function configurePlaybackSource(value, { preserveLiveWatch = false } = {}
     await loadPolicy(
       session.policyUrl,
       `Stored run · ${experimentId.slice(-8).toUpperCase()}`,
+      { generation },
     );
+    if (!isCurrentPlaybackSelection(generation)) return false;
   }
+  if (!isCurrentPlaybackSelection(generation)) return false;
   ui.loadedPolicySource = value;
+  return true;
 }
 
 function setupSimControls() {
@@ -529,6 +678,83 @@ function setupSimControls() {
   });
   setPlaybackMode("preset", "neutral");
   $("sim-toggle").addEventListener("click", async () => {
+    if (ui.gr00tPlayBusy) return;
+    const generation = beginPlaybackSelection();
+    try {
+      await waitForGr00tWbcPlaybackIdle();
+    } catch (error) {
+      if (isCurrentPlaybackSelection(generation)) {
+        appendTerminal(`[gr00t] previous playback did not stop · ${error.message}`, "err");
+      }
+      return;
+    }
+    if (!isCurrentPlaybackSelection(generation)) return;
+    const visibleFamily = $("playback-family").dataset.family === "gr00t"
+      ? "gr00t"
+      : "classic";
+    if (visibleFamily === "gr00t") {
+      const selectedSource = $("scenario").value;
+      const source = GR00T_WBC_PLAYBACK_SOURCES.find(
+        (candidate) => candidate.value === selectedSource,
+      );
+      policyPlayer.pause();
+      sim.setPlay(false);
+      ui.policyMode = false;
+      ui.watchTraining = false;
+      ui.playbackFamily = "gr00t";
+      ui.playbackMode = "rl";
+      ui.playbackSelections.gr00t = selectedSource;
+      if (!source) {
+        appendTerminal(`[gr00t] unknown WBC playback source · ${selectedSource}`, "err");
+        return;
+      }
+      if (ui.gr00tAvailability[source.readiness] !== true) {
+        appendTerminal(
+          `[gr00t] ${selectedSource} unavailable · required decoder gate is closed`,
+          "warn",
+        );
+        return;
+      }
+      const playButton = $("sim-toggle");
+      const requestController = openPlaybackRequest(generation);
+      if (!requestController) return;
+      ui.gr00tPlayBusy = true;
+      playButton.disabled = true;
+      playButton.dataset.busy = "1";
+      playButton.setAttribute("aria-busy", "true");
+      try {
+        const payload = await playGr00tWbcSource(
+          selectedSource,
+          {
+            dispatch: false,
+            signal: requestController.signal,
+          },
+        );
+        if (
+          !isCurrentPlaybackSelection(generation)
+          || $("playback-family").dataset.family !== "gr00t"
+          || $("scenario").value !== selectedSource
+          || ui.gr00tAvailability[source.readiness] !== true
+        ) return;
+        window.dispatchEvent(new CustomEvent(
+          "dropbear:retargeted-pose",
+          { detail: payload },
+        ));
+      } catch (error) {
+        if (!isCurrentPlaybackSelection(generation)) return;
+        appendTerminal(
+          `[gr00t] selected WBC source rejected · ${selectedSource} · ${error.message}`,
+          "err",
+        );
+      } finally {
+        releasePlaybackRequest(requestController);
+        ui.gr00tPlayBusy = false;
+        playButton.disabled = false;
+        delete playButton.dataset.busy;
+        playButton.setAttribute("aria-busy", "false");
+      }
+      return;
+    }
     // The visible mode switch is the playback authority.  Reconcile against it
     // on every click so stale policy/training state can never consume a preset
     // Play command and leave the dashboard in guarded pause.
@@ -560,8 +786,13 @@ function setupSimControls() {
     const selectedPolicy = $("scenario").value;
     ui.policyMode = true;
     if (!policyPlayer.policy || ui.loadedPolicySource !== selectedPolicy) {
-      await configurePlaybackSource(selectedPolicy);
+      const configured = await configurePlaybackSource(
+        selectedPolicy,
+        { generation },
+      );
+      if (!configured || !isCurrentPlaybackSelection(generation)) return;
     }
+    if (!isCurrentPlaybackSelection(generation)) return;
     if (policyPlayer.policy) {
       policyPlayer.seek(0);
       policyPlayer.play();
@@ -572,6 +803,7 @@ function setupSimControls() {
     }
   });
   $("sim-reset").addEventListener("click", () => {
+    beginPlaybackSelection();
     policyPlayer.pause();
     ui.policyMode = false;
     ui.loadedPolicySource = null;
@@ -602,7 +834,38 @@ function setupSimControls() {
     setPlaybackMode(ui.playbackMode === "rl" ? "preset" : "rl");
     await configurePlaybackSource($("scenario").value);
   });
+  $("playback-family").addEventListener("click", async () => {
+    const generation = beginPlaybackSelection();
+    policyPlayer.pause();
+    sim.setPlay(false);
+    ui.policyMode = false;
+    ui.loadedPolicySource = null;
+    ui.watchTraining = false;
+    if (ui.playbackFamily === "classic") {
+      setPlaybackFamily("gr00t");
+      sim.setScenario("manual");
+      appendTerminal(
+        `[gr00t] WBC source armed · ${$("scenario").value} · press Play to apply`,
+        "ok",
+      );
+      return;
+    }
+    setPlaybackFamily("classic");
+    await configurePlaybackSource($("scenario").value, { generation });
+  });
   $("scenario").addEventListener("change", async (event) => {
+    if (ui.playbackFamily === "gr00t") {
+      ui.playbackSelections.gr00t = event.target.value;
+      beginPlaybackSelection();
+      policyPlayer.pause();
+      sim.setPlay(false);
+      ui.policyMode = false;
+      appendTerminal(
+        `[gr00t] WBC source armed · ${event.target.value} · press Play to apply`,
+        "ok",
+      );
+      return;
+    }
     await configurePlaybackSource(event.target.value);
   });
   $("robot-fit").addEventListener("click", () => robot.fit());
@@ -941,23 +1204,38 @@ async function refreshLivePreview(status) {
   if (
     !ui.watchTraining
     || !ui.autoReplayTraining
+    || ui.playbackFamily !== "classic"
+    || ui.playbackMode !== "rl"
+    || $("scenario").value !== "live"
     || !status.livePolicyUrl
     || !status.previewUpdate
     || ui.previewLoading
   ) return;
   const key = `${status.experimentId}:${status.previewUpdate}`;
   if (ui.previewLoadedKey === key) return;
+  const generation = playbackSelectionGeneration;
   ui.previewLoading = true;
   try {
-    await policyPlayer.load(`${status.livePolicyUrl}?update=${status.previewUpdate}`);
+    const policy = await loadPolicy(
+      `${status.livePolicyUrl}?update=${status.previewUpdate}`,
+      `Live policy · update ${status.previewUpdate} / ${status.progress?.updates || "?"}`,
+      { generation, loop: true },
+    );
+    if (
+      !policy
+      || !isCurrentPlaybackSelection(generation)
+      || ui.playbackFamily !== "classic"
+      || ui.playbackMode !== "rl"
+      || $("scenario").value !== "live"
+    ) return;
     ui.previewLoadedKey = key;
     ui.policyMode = true;
     ui.loadedPolicySource = "live";
     policyPlayer.loop = true;
     policyPlayer.play();
-    setPlaybackMode("rl", "live");
     $("rl-policy-title").textContent = `Live policy · update ${status.previewUpdate} / ${status.progress?.updates || "?"}`;
   } catch (error) {
+    if (!isCurrentPlaybackSelection(generation)) return;
     appendTerminal(`[rl] live preview ${status.previewUpdate} unavailable: ${error.message}`, "warn");
   } finally {
     ui.previewLoading = false;
@@ -974,15 +1252,30 @@ async function pollRLStatus() {
   }
 }
 
-async function loadPolicy(url, label, { play = false, loop = false } = {}) {
+async function loadPolicy(
+  url,
+  label,
+  {
+    play = false,
+    loop = false,
+    generation = playbackSelectionGeneration,
+  } = {},
+) {
   try {
-    const policy = await policyPlayer.load(url);
+    const response = await fetch(url, { cache: "no-store" });
+    if (!isCurrentPlaybackSelection(generation)) return null;
+    if (!response.ok) throw new Error(`policy HTTP ${response.status}`);
+    const policy = await response.json();
+    if (!isCurrentPlaybackSelection(generation)) return null;
+    policyPlayer.setPolicy(policy, url);
     ui.policyMode = true;
     policyPlayer.loop = loop;
     $("rl-policy-title").textContent = label;
     if (play) policyPlayer.play();
     appendTerminal(`[rl] loaded ${policy.frames.length} policy frames from ${url}`, "ok");
+    return policy;
   } catch (error) {
+    if (!isCurrentPlaybackSelection(generation)) return null;
     appendTerminal(`[rl] policy load failed: ${error.message}`, "err");
     throw error;
   }
@@ -1198,7 +1491,7 @@ function renderRLSessions(payload) {
     ui.selectedRLSessionId = payload.selectedExperimentId;
   }
   selectRLSession(ui.selectedRLSessionId);
-  if (ui.playbackMode === "rl") {
+  if (ui.playbackFamily === "classic" && ui.playbackMode === "rl") {
     populatePlaybackSources("rl", $("scenario").value);
   }
 }
@@ -1215,8 +1508,10 @@ async function replaySelectedRLSession() {
   const session = selectedRLSession();
   if (!session?.policyUrl) return;
   const source = `session:${session.experimentId}`;
+  const generation = beginPlaybackSelection();
   setPlaybackMode("rl", source);
-  await configurePlaybackSource(source);
+  const configured = await configurePlaybackSource(source, { generation });
+  if (!configured || !isCurrentPlaybackSelection(generation)) return;
   policyPlayer.loop = true;
   policyPlayer.seek(0);
   policyPlayer.play();
@@ -1565,6 +1860,28 @@ function frame(now) {
   requestAnimationFrame(frame);
 }
 
+window.addEventListener("dropbear:gr00t-runtime", (event) => {
+  const next = event.detail || {};
+  const poseReady = Boolean(next.decodedG1PoseReady);
+  const tokenReady = Boolean(next.nvidiaTokenReady);
+  const changed = poseReady !== ui.gr00tAvailability.decodedG1PoseReady
+    || tokenReady !== ui.gr00tAvailability.nvidiaTokenReady;
+  ui.gr00tAvailability.decodedG1PoseReady = poseReady;
+  ui.gr00tAvailability.nvidiaTokenReady = tokenReady;
+  if (changed && ui.playbackFamily === "gr00t") {
+    const selectedSource = GR00T_WBC_PLAYBACK_SOURCES.find(
+      (source) => source.value === $("scenario").value,
+    );
+    if (
+      !selectedSource
+      || ui.gr00tAvailability[selectedSource.readiness] !== true
+    ) {
+      beginPlaybackSelection();
+    }
+    populatePlaybackSources("rl", ui.playbackSelections.gr00t);
+  }
+});
+
 setupNavigation();
 makeJointCards();
 setupMotorCategories();
@@ -1611,6 +1928,129 @@ window.addEventListener("dropbear:prompt-plan", async (event) => {
   } catch (error) {
     appendTerminal(`[gr00t] prompt preview failed: ${error.message}`, "err");
   }
+});
+window.addEventListener("dropbear:retargeted-pose", (event) => {
+  const payload = event.detail || {};
+  const responseFrames = Array.isArray(payload.frames)
+    ? payload.frames
+    : [payload];
+  if (payload.hardwareAuthorized !== false || !responseFrames.length) {
+    appendTerminal("[gr00t] rejected pose without a hardware-locked contract", "err");
+    return;
+  }
+  const frames = [];
+  for (const frame of responseFrames) {
+    if (frame.retarget?.hardwareAuthorized !== false) {
+      appendTerminal("[gr00t] rejected frame without a hardware-locked contract", "err");
+      return;
+    }
+    const target = frame.retarget?.target || {};
+    const order = target.jointOrder;
+    const positions = target.positionsRad;
+    const valid = Array.isArray(order)
+      && Array.isArray(positions)
+      && order.length === DROPBEAR_RETARGET_ACTION_ORDER.length
+      && positions.length === DROPBEAR_RETARGET_ACTION_ORDER.length
+      && order.every(
+        (name, index) => name === DROPBEAR_RETARGET_ACTION_ORDER[index],
+      )
+      && positions.every(Number.isFinite);
+    if (!valid) {
+      appendTerminal("[gr00t] rejected malformed Dropbear retarget frame", "err");
+      return;
+    }
+    const armTargets = [];
+    for (let index = 12; index < order.length; index += 1) {
+      const id = `arm-${order[index].replaceAll("_", "-")}`;
+      const state = armMotorStates.find((candidate) => candidate.id === id);
+      if (!state) {
+        appendTerminal(`[gr00t] no browser motor binding for ${order[index]}`, "err");
+        return;
+      }
+      armTargets.push({ state, position: positions[index] });
+    }
+    frames.push({ order, positions, armTargets });
+  }
+  for (let index = 0; index < sim.joints.length; index += 1) {
+    const state = sim.joints[index];
+    const expected = `${state.side}_${state.key}`;
+    if (DROPBEAR_RETARGET_ACTION_ORDER[index] !== expected) {
+      appendTerminal(`[gr00t] action-order mismatch at ${index}: ${expected}`, "err");
+      return;
+    }
+  }
+  const generation = beginPlaybackSelection();
+  policyPlayer.pause();
+  ui.policyMode = false;
+  ui.loadedPolicySource = null;
+  ui.watchTraining = false;
+  if (
+    GR00T_WBC_PLAYBACK_SOURCES.some(
+      (source) => source.value === payload.playbackSourceId,
+    )
+  ) {
+    setPlaybackFamily("gr00t", payload.playbackSourceId);
+  } else {
+    setPlaybackMode("preset", "manual");
+  }
+  sim.setScenario("manual");
+  sim.setPlay(false);
+  robot.setVerticalConstraintEnabled($("vertical-constraint").checked);
+  switchView("sim");
+
+  const applyFrame = ({ positions, armTargets }) => {
+    for (let index = 0; index < sim.joints.length; index += 1) {
+      const state = sim.joints[index];
+      const angle = Math.min(
+        state.maxAngle,
+        Math.max(state.minAngle, 180 + positions[index] * RAD_TO_DEG),
+      );
+      if (!sim.setJointTarget(state.id, angle, true)) {
+        state.desiredPosition = angle;
+      }
+      state.angle = state.desiredPosition;
+      state.velocity = 0;
+    }
+    for (const { state, position } of armTargets) {
+      state.angleDeg = position * RAD_TO_DEG;
+      state.velocityDegS = 0;
+      state.torqueNm = 0;
+    }
+    renderLive();
+  };
+
+  if (frames.length === 1) {
+    applyFrame(frames[0]);
+    appendTerminal(
+      `[gr00t] ${payload.provenance?.inputClass || "decoded-g1-pose"} → `
+      + "22 Dropbear USD motor targets · static SIL preview · hardware locked",
+      "ok",
+    );
+    return;
+  }
+  const startedAt = performance.now();
+  const playFrame = (index) => {
+    if (!isCurrentPlaybackSelection(generation)) return;
+    applyFrame(frames[index]);
+    if (index + 1 >= frames.length) {
+      appendTerminal(
+        `[gr00t] ${frames.length}-frame q22 horizon complete · nominal 20 ms USD preview · `
+        + "hardware locked",
+        "ok",
+      );
+      return;
+    }
+    const nextDeadline = startedAt + (index + 1) * 20;
+    window.setTimeout(
+      () => playFrame(index + 1),
+      Math.max(0, nextDeadline - performance.now()),
+    );
+  };
+  appendTerminal(
+    `[gr00t] ${frames.length}-frame q22 horizon · starting nominal 20 ms USD preview`,
+    "ok",
+  );
+  playFrame(0);
 });
 pollPhysicsRuntime();
 selectJoint(0x141);

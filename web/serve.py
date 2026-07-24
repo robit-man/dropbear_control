@@ -25,6 +25,7 @@ from rl_service import RLTrainingManager
 from physics_service import PhysicsRuntimeRegistry
 from gr00t_service import (
     DropbearPromptPlanner,
+    Gr00tRetargetService,
     Gr00tRuntimeInspector,
     Gr00tTrainingManager,
 )
@@ -38,8 +39,12 @@ GR00T_TRAINING = Gr00tTrainingManager(
     Path(PROJECT_ROOT), GR00T_INSPECTOR
 )
 GR00T_PROMPT_PLANNER = DropbearPromptPlanner()
+GR00T_RETARGET = Gr00tRetargetService(Path(PROJECT_ROOT))
 CONTROL_TOKEN = secrets.token_urlsafe(32)
-MAX_JSON_BODY_BYTES = 32_768
+# A full GR00T PolicyServer horizon is 40 x 64 float values. Keep a bounded
+# loopback-only ceiling with enough room for unrounded JSON float encodings,
+# provenance, and the strict request envelope.
+MAX_JSON_BODY_BYTES = 128 * 1024
 LOCAL_HOSTS = {"localhost", "127.0.0.1", "::1"}
 ALIASES = {
     "/node_modules/": os.path.join(HERE, "node_modules"),
@@ -266,6 +271,7 @@ class Handler(SimpleHTTPRequestHandler):
         if request_path == "/api/gr00t/status":
             self._send_json(200, {
                 **GR00T_INSPECTOR.snapshot(),
+                "retargetBridge": GR00T_RETARGET.snapshot(),
                 "training": GR00T_TRAINING.snapshot(),
             })
             return
@@ -286,6 +292,7 @@ class Handler(SimpleHTTPRequestHandler):
                 "/api/rl/train",
                 "/api/rl/stop",
                 "/api/gr00t/prompt",
+                "/api/gr00t/retarget",
                 "/api/gr00t/train",
                 "/api/gr00t/stop",
             }
@@ -303,6 +310,8 @@ class Handler(SimpleHTTPRequestHandler):
                     payload.get("prompt")
                 )
                 self._send_json(200, plan.as_payload())
+            elif request_path == "/api/gr00t/retarget":
+                self._send_json(200, GR00T_RETARGET.retarget(payload))
             elif request_path == "/api/gr00t/train":
                 state = GR00T_TRAINING.start(payload)
                 self._send_json(202, state)

@@ -13,7 +13,8 @@ has a verified 22-motor policy order, four retained closed-chain mechanisms,
 and no equivalent hand action space. Passing G1 joint targets directly to
 Dropbear would scramble semantics and bypass its leg and elbow closures.
 
-The target architecture is therefore:
+The implemented preview/teacher architecture and the eventual native path are
+therefore:
 
 ```mermaid
 flowchart LR
@@ -21,10 +22,12 @@ flowchart LR
   V[Camera + robot state] --> T
   T -->|task-conditioned| G[Isaac-GR00T VLA]
   T -->|motion-only| M[Kimodo / MotionBricks / motion library]
-  G --> R[SMPL or canonical body reference]
-  M --> R
-  R --> C[Dropbear constrained retargeter]
-  C --> D[Dropbear 22-axis reference dataset]
+  G --> K[40 x 64D UNITREE_G1_SONIC token chunk]
+  K --> GD[Pinned released G1 CUDA shadow decoder]
+  GD --> GF[Canonical G1 q29 and exact MJCF FK]
+  GF --> C[Dropbear USD task-space retargeter]
+  M --> C
+  C --> D[Dropbear q22 reference clip]
   D --> S[Dropbear SONIC/PPO student]
   S --> A[Policy admission and closure monitor]
   A --> ROS[ROS 2 whole-body trajectory interface]
@@ -37,14 +40,15 @@ separate local or remote service.
 
 ## Delivered state and contract split
 
-The repository now contains a pinned **source overlay**, not a patched or
-runnable copy of NVIDIA's training stack. It also contains a separate local
-CUDA compatibility proof of concept. Their policy interfaces are intentionally
+The repository contains a pinned source overlay, a runnable bridge around the
+separately downloaded released G1 decoder, and a separate local CUDA
+compatibility proof of concept. Their policy interfaces are intentionally
 different:
 
 | Path | Observation input | Action output | Current role |
 | --- | --- | --- | --- |
 | Pinned upstream Dropbear overlay | One 784-value SONIC decoder observation, including the 64-value motion token and ten-frame histories | 22 normalized motor residuals | Target ABI for a native Dropbear encoder/decoder in the pinned upstream Isaac Lab stack |
+| Released G1 shadow + USD retarget | NVIDIA motion-token frames `[1..40,64]`, decoded through the official G1 `[1,994]→[1,29]` ONNX | Closure-evaluated absolute Dropbear q[22] frames | Online preview and offline teacher-data generation against the actual retained Dropbear USD graph |
 | Local compatibility PoC | 90 current Dropbear observations plus a separate 64-value compatibility token | 22 residual actions | Fast teaching-plant training, CUDA/ONNX comparison, safety-runtime tests, and TensorRT engine-build verification |
 
 The local `90 + 64` model is not the upstream decoder, is not compatible with
@@ -63,6 +67,16 @@ Delivered integration material includes:
 - order conversion plus fail-closed reduced knee/calf/elbow closure adapters;
 - an exact-50-Hz reference converter with versioned JSON and CSV output;
 - explicit patch points and licensing records for the pinned upstream commit;
+- a SHA-256-pinned CUDA-only G1 SONIC shadow decoder with the exact 994-value
+  tensor layout populated by explicit kinematic shadow state, action scaling,
+  order conversion, optional timestamp cadence checks, and fail-closed
+  tensor/provider checks;
+- exact G1 MJCF forward kinematics and retained 93-body Dropbear USD forward
+  kinematics with all browser-projected passive-loop solves;
+- limb-anchor-scaled body-space retargeting for feet, lower legs, shoulders,
+  forearms, and wrists, returning exact Dropbear q[22] target frames;
+- a strict loopback API for decoded G1 q[29], one verified token, or a complete
+  1–40-frame token horizon, plus nominal best-effort 20 ms browser scheduling;
 - a guarded 22-axis ROS 2 **SIL-only** JSON boundary; and
 - local Torch CUDA training/export, ONNX Runtime CUDA comparison,
   safety-runtime checks, and TensorRT 10.13 engine-build verification.
@@ -91,10 +105,11 @@ until registered assets are generated and parity-tested.
 into the local compatibility trainer under strict order/frequency checks. This
 does not make the local 90+64 model an upstream 784-input decoder.
 
-Not delivered are a patched upstream checkout, Isaac Lab registration or
-execution, a Dropbear-native SONIC checkpoint, a learned cross-embodiment
-token encoder, an Isaac-GR00T VLA service, a persistent TensorRT serving loop,
-or hardware authority.
+Not delivered are Isaac Lab registration/execution, force-authoritative
+contact validation, a Dropbear-native SONIC checkpoint, an installed N1.7
+Isaac-GR00T policy server with camera/state observations, or hardware
+authority. The G1 decoder is used as a shadow teacher; its output is not
+relabeled as Dropbear dynamics.
 
 ## Why pose transfer is useful
 
@@ -175,30 +190,41 @@ embodiment work is to:
 The existing ROS mock description is a passthrough fixture, not a kinematic
 robot model, and cannot be the GR00T embodiment description.
 
-### Stage 1 — Offline prompt-to-pose preview
+### Stage 1 — G1 token-to-Dropbear USD preview
 
-Build a GPU-side `groot_adapter` process with no hardware output:
+This stage is implemented with no hardware output:
 
 ```text
-POST /v1/motions
+POST /api/gr00t/retarget
 {
-  "prompt": "walk forward cautiously with relaxed arm swing",
-  "durationSeconds": 6,
-  "speed": 0.25,
-  "source": "vla | kimodo | motionbricks | library"
+  "schema": "dropbear-gr00t-retarget-request-v1",
+  "sessionId": "vla-rollout-001",
+  "sequence": 0,
+  "source": {
+    "kind": "nvidia-sonic-motion-token-chunk",
+    "schema": "nvidia-gr00t-sonic-motion-token-chunk-40x64-v1",
+    "motionTokenChunk": [[/* 64 finite values */]],
+    "producer": "isaac-gr00t-policy-server",
+    "checkpoint": "sha256:<checkpoint>",
+    "sequenceStart": 0
+  }
 }
 ```
 
-The result is a versioned canonical body-motion clip, followed by a constrained
-Dropbear `q[22]` clip. Store prompt, model/checkpoint hashes, source frames,
-retarget metrics, contacts, and rejection reasons. The dashboard should show
-teacher pose, retargeted Dropbear pose, and closure/contact residuals side by
-side before a clip can become training data.
+The service validates the complete token horizon before advancing the
+stateful decoder, fills the exact 994-value tensor layout from a declared
+kinematic shadow history, runs the released decoder with CUDA and no CPU
+fallback, evaluates the G1 pose in the pinned MJCF, and solves body targets on
+the Dropbear USD graph. The response includes every
+G1 q[29] and Dropbear q[22] frame, source/checkpoint provenance, passive angles,
+closure residuals, task error, and a ROS WBC reference.
 
 The current deterministic prompt router is only a bounded preview/catalog
 router. It does not run a VLA, infer a learned token, or prove
-language-conditioned control. A GPU-side adapter and the proposed endpoint
-remain future work.
+language-conditioned control. A real N1.7 `PolicyServer` must still supply the
+official `UNITREE_G1_SONIC` action arrays from camera/state/language
+observations. An external caller forwards its validated output at the token
+boundary above; deterministic catalog tokens are rejected.
 
 ### Stage 2 — Distill into the current Dropbear trainer
 
@@ -263,16 +289,25 @@ tracking.
 
 ## Runtime boundary
 
-Keep GR00T optional and out of the dashboard process. No upstream VLA policy
-service or persistent native decoder service is delivered yet; the transport
-between those future services remains an implementation choice:
+Keep the large Isaac-GR00T model optional and out of the dashboard process.
+The repository provides a standalone compatible client for Isaac-GR00T's ZMQ
+`PolicyClient`/`PolicyServer` contract on port 5550. The dashboard does not
+instantiate or configure that client and does not claim server reachability;
+an external adapter must call the client and forward validated token chunks to
+the HTTP retarget endpoint. A `get_action` response contains
+`motion_token [1,40,64]`, `left_hand_joints [1,40,7]`, and
+`right_hand_joints [1,40,7]` for the `UNITREE_G1_SONIC` embodiment. Dropbear
+currently consumes only the whole-body motion token; the G1-specific hands
+have no Dropbear motor counterpart.
 
 ```text
-browser :8000
-  ↕ loopback HTTP/WebSocket (catalog selection, preview, telemetry)
-optional upstream adapter service (not delivered)
-  ↕ versioned motion/reference API (transport not selected)
-native Dropbear decoder service (not delivered; local CUDA PoC only)
+optional Isaac-GR00T PolicyServer :5550
+  ↕ safe ZMQ REQ/REP through standalone G1SonicPolicyClient
+external caller/adapter (not auto-wired)
+  ↓ validated UNITREE_G1_SONIC token chunk over strict loopback HTTP
+Dropbear G1-shadow/retarget boundary :8000
+  → released G1 CUDA decoder → exact G1 FK → Dropbear USD retarget
+  ↕ browser preview, provenance, and telemetry
   ↕ decoded 50 Hz radian-reference contract
 22-axis ROS 2 SIL guard
   ↕ simulation transport
@@ -290,10 +325,11 @@ USD asset license.
 | Gate | State |
 | --- | --- |
 | Source/ordering contract | Delivered and covered by offline checks |
-| Reduced linkage adapters | Delivered for domain and residual checks; full passive projection, collision response, and constraint impulses remain Isaac/PhysX responsibilities |
+| G1 token bridge | Delivered: pinned CUDA decoder, exact tensor layout/order/FK with declared kinematic shadow state, 1–40-frame token contract, and checkpoint-specific release fixture |
+| Dropbear USD pose transfer | Delivered for preview/teacher data: retained 93-body graph, body-space DLS, and passive knee/calf/elbow solves; collision response and constraint impulses remain Isaac/PhysX responsibilities |
 | Local CUDA compatibility PoC | Verified on A100: Torch CUDA training, ONNX Runtime CUDA comparison, safety-runtime checks, and TensorRT 10.13.3.9 FP16 engine build/numerical verification |
 | Native upstream Dropbear SONIC | Blocked on upstream registration, an Isaac run, retargeted training data, and a Dropbear checkpoint |
-| Natural-language VLA | Blocked on the VLA service, camera/state modality, learned token path, and prompt-labelled Dropbear demonstrations |
+| Natural-language VLA | Wire/output contract is implemented; blocked on a compatible N1.7 PolicyServer/checkpoint, camera/state modalities, and prompt-labelled demonstrations |
 | Authoritative physics | Blocked until the original USD passes recorded Isaac/PhysX gravity, contact, collision, and closure evaluation |
 | ROS 2 | Guarded 22-axis SIL messages only; no physical output authority |
 
@@ -308,11 +344,14 @@ Status of the smallest honest prototype:
    ABI.
 3. **Partial:** a deterministic prompt box can resolve bounded phrases to an
    accepted local clip catalog; it is not VLA inference.
-4. **Remaining:** generate and parity-check the Dropbear MJCF/tree projection.
-5. **Remaining:** import and constrain-retarget representative G1/SMPL
-   locomotion and upper-body clips.
-6. **Remaining:** replay accepted `q[22]` references on the full USD and compare
-   reference, learned result, and authored walk numerically and visually.
+4. **Delivered:** released-token → CUDA G1 decoder → exact G1 MJCF FK →
+   constrained Dropbear USD q[22] preview, including full 40-frame horizons.
+5. **Delivered for geometry:** retained USD tree/passive-loop evaluation and
+   browser playback. **Remaining:** force-authoritative Isaac/PhysX settling,
+   contact rejection, and accepted-clip persistence.
+6. **Remaining:** run representative N1.7 prompt/camera rollouts through the
+   bridge, compare them with the authored gait, and curate accepted teacher
+   clips.
 7. **Remaining:** patch/register the overlay in the pinned upstream checkout,
    run Isaac/PhysX validation, and train/export a native 784-input/22-output
    checkpoint.

@@ -52,7 +52,7 @@ progress.
 | Controller lab | Dimensional ESP32 DevKit reference with 19 source/inferred signal routes | Board-level visualization, not circuit simulation |
 | Firmware console | Source-shaped serial grammar, task cadence, CAN traffic, sensor stream, and fault injection | Clean-room behavioral twin, not instruction-set emulation |
 | ROS 2 | Jazzy bringup, `joint_trajectory_controller`, mock hardware, action/topic demo, validation, and local WebSocket bridge | ROS side is SIL; the dashboard does not yet auto-switch to WebSocket state |
-| GR00T-WBC embodiment | Pinned upstream revision; canonical 22-action/784-observation ABI; order conversion; exact source-hash checks; 50 Hz reference conversion; reduced closure validation; upstream action decoder | Overlay only: no NVIDIA code, weights, Isaac run, or Dropbear SONIC checkpoint is vendored or claimed |
+| GR00T-WBC / G1 bridge | Pinned upstream revision and native 22-action/784-observation ABI; digest-verified released G1 CUDA decoder; exact G1 MJCF FK; 40×64 token-stream handling; body-space retargeting through the retained 93-body Dropbear USD graph and passive loops; exact q[22] browser/WBC frames | Preview/teacher bridge only: downloaded weights remain ignored, contact dynamics remain Isaac/PhysX-authoritative, and no native Dropbear SONIC checkpoint or live Isaac-GR00T VLA server is claimed |
 | CUDA compatibility controller | Local 90-observation + 64-token → 22-residual PyTorch controller; CUDA-only training by default; BF16/FP16 AMP; multi-A100; ONNX Runtime CUDA; guarded Torch/ONNX inference; TensorRT 10.13 engine build/numeric verification; persistent dashboard sessions | This is not NVIDIA SONIC, is not prompt-conditioned, and emits a residual around a required authored reference rather than a standalone trajectory |
 | ROS 2 WBC guard | Exact 22-axis JSON contracts, 50 Hz watchdog, guarded activation, stand blending, knee envelope, hard/slew limits, and latched E-stop, always labelled `sil_only` | Separate from the existing 12-leg-axis JTC; no decoder→JTC or hardware transport is claimed |
 | Prompt planner | Inspectable bounded language router and browser preset preview with a 64-D development token | Keyword planning only; its token schema is deliberately not admitted to the state-token-trained CUDA checkpoint |
@@ -108,6 +108,11 @@ flowchart LR
     PPO -. Isaac/PhysX validation required .-> USD
 
     PROMPT[Bounded prompt planner] --> PREVIEW[Preset preview]
+    VLA[Isaac-GR00T UNITREE_G1_SONIC] --> TOK[40 x 64D motion-token chunk]
+    TOK --> G1DEC[Pinned CUDA G1 shadow decoder]
+    G1DEC --> G1FK[Canonical G1 q29 + exact MJCF FK]
+    G1FK --> RETARGET[Dropbear USD task-space retarget]
+    RETARGET --> USD
     GABI[Pinned GR00T ABI: 784 obs / 22 actions] -. future Isaac training .-> SONIC[Upstream Dropbear SONIC]
     CUDA[Local CUDA PoC: 90 obs + 64 token] --> RES[Versioned residual + authored reference]
     RES --> WBC[22-axis ROS WBC SIL guard]
@@ -295,8 +300,15 @@ The seven engineering views are:
 - **RL Lab** — advanced local PPO configuration and experiment diagnostics;
   source selection and playback remain unified on Robot Sim;
 - **GR00T WBC** — pinned upstream ABI status, deterministic prompt planning,
-  CUDA compatibility training/deployment checks, and retained sessions; and
+  CUDA compatibility training/deployment checks, G1-to-USD retarget previews,
+  and retained sessions; and
 - **Evidence** — source revisions, provenance, adaptations, and limitations.
+
+Robot Sim uses one Play control and two adjacent yellow text-only selectors.
+`PRESET + CLASSIC` exposes the authored motion presets, `TRAINED + CLASSIC`
+exposes the current RL policies and stored runs, and `TRAINED + GR00T`
+replaces that dropdown with the verified G1/SONIC WBC bridge sources. The
+state machine does not permit a misleading `PRESET + GR00T` combination.
 
 ## ROS 2 Jazzy SIL
 
@@ -443,20 +455,57 @@ BASELINE** for the same-view comparison.
 
 ### GR00T-WBC and CUDA compatibility path
 
-The repository now pins NVIDIA GR00T-WholeBodyControl at
+The repository pins NVIDIA GR00T-WholeBodyControl at
 `4141c34280abb67c82e115342a8720f4a83d750d` and supplies a clean Dropbear
-overlay: canonical 22-axis policy/source-USD/ROS ordering, declared target
-orders for future Isaac/MuJoCo assets, the upstream 784-value decoder
-observation contract, closure-domain validation, a pinned-reader-shaped 50 Hz
-motion-reference bundle, source hashes, and the upstream fixed-center action
-decoder. The Isaac/MuJoCo mappings are not called verified until generated
-assets pass parity tests. Upstream source and weights are not vendored.
-Reproduce the source
-checkout without downloading weights with:
+overlay: canonical 22-axis policy/source-USD/ROS ordering, the upstream
+784-value native-decoder observation contract, closure validation, a
+pinned-reader-shaped 50 Hz motion-reference bundle, source hashes, and the
+upstream fixed-center action decoder. It also implements the otherwise missing
+cross-embodiment preview path:
+
+```text
+UNITREE_G1_SONIC VLA [1,40,64]
+  → verified released G1 CUDA decoder [1,994]→[1,29]
+  → exact pinned G1 MJCF forward kinematics
+  → limb-anchor-scaled body targets
+  → retained Dropbear USD graph + passive-loop DLS
+  → exact Dropbear q[22] preview/WBC references
+```
+
+This is body-space transfer, not joint-name copying. The decoder reconstructs
+the official 994-value tensor layout using an explicit kinematic G1 shadow
+history, applies the published action scales and standing offsets, and emits
+canonical G1 motor coordinates. The shadow uses commanded q/dq, zero base
+angular velocity, and upright projected gravity; it does not pretend to be
+measured G1 plant/IMU state. Retargeting then solves for Dropbear's actual
+motor shafts while evaluating the checked USD's 93-body graph and closed
+knee/calf/elbow linkages. Full floating-base contact, constraint impulses, and
+clip acceptance remain Isaac/PhysX responsibilities.
+
+Reproduce the pinned source checkout and fetch the separately ignored,
+SHA-256-verified released G1 decoder with:
 
 ```bash
 tools/bootstrap_gr00t_wbc.sh
+tools/fetch_gr00t_g1_decoder.sh
+./.gr00t-venv/bin/python tools/verify_gr00t_g1_bridge.py \
+  --device 0 \
+  --output artifacts/rl/g1-usd-bridge-smoke-latest.json
 ```
+
+The dashboard's `TRAINED + GR00T` playback family exposes both the published
+G1 stand reference and **PINNED SONIC RELEASE STAND** through the same Play
+button used by presets and RL. The latter executes the real CUDA-backed token
+path and applies the resulting q[22] target to the rendered Dropbear USD. The
+strict retarget API also accepts complete 1–40-frame token chunks and returns
+Dropbear target frames on the upstream 50 Hz timeline with source/checkpoint
+provenance and closure diagnostics. The HTTP path validates contiguous
+sequence semantics but does not prove real-time decode cadence; the browser
+schedules best-effort nominal 20 ms playback. The published stand latent is a
+checkpoint-specific NVIDIA fixture, not a claim that an Isaac-GR00T VLA
+generated it locally.
+The checked A100 result is retained in
+[`g1-usd-bridge-smoke-latest.json`](artifacts/rl/g1-usd-bridge-smoke-latest.json).
 
 The runnable CUDA controller in this repository is intentionally a separate
 compatibility prototype. It consumes 90 Dropbear state values plus a 64-value
@@ -495,12 +544,13 @@ physical residual contract, exact 50 Hz reference, ONNX sidecar, and
 TensorRT engine by recorded SHA-256 values. Dashboard sessions are not marked
 complete until that deployment evidence passes.
 
-The remaining upstream path is explicit: install the pinned Isaac Lab/Isaac
-Sim environment, import the full constrained USD with validated collisions,
-train a native Dropbear 784→22 SONIC decoder, train/admit a compatible
-language/token model, and connect its admitted radian references to a reviewed
-22-axis ROS trajectory/hardware transport. Package installation alone never
-opens those gates.
+The remaining upstream path is explicit: run the full constrained USD in
+Isaac Lab/PhysX, collect accepted token/G1/Dropbear target clips, train a native
+Dropbear 784→22 SONIC decoder, fine-tune or admit a
+`UNITREE_G1_SONIC`/Dropbear language-and-vision policy boundary, and connect
+only admitted radian references to a reviewed 22-axis ROS trajectory/hardware
+transport. The geometric teacher bridge and package installation alone never
+open those gates.
 
 See
 [`integrations/gr00t_wbc/README.md`](integrations/gr00t_wbc/README.md),

@@ -58,6 +58,18 @@ class _Planner:
         return _Plan()
 
 
+class _Retarget:
+    def __init__(self, *_args):
+        pass
+
+    def snapshot(self):
+        return {"decodedG1PoseReady": True}
+
+    def retarget(self, payload):
+        chunk = payload.get("source", {}).get("motionTokenChunk", [])
+        return {"state": "retargeted", "receivedFrames": len(chunk)}
+
+
 def _load_server_module():
     rl_service = types.ModuleType("rl_service")
     rl_service.RLTrainingManager = _Manager
@@ -65,6 +77,7 @@ def _load_server_module():
     physics_service.PhysicsRuntimeRegistry = _PhysicsRegistry
     gr00t_service = types.ModuleType("gr00t_service")
     gr00t_service.DropbearPromptPlanner = _Planner
+    gr00t_service.Gr00tRetargetService = _Retarget
     gr00t_service.Gr00tRuntimeInspector = _Manager
     gr00t_service.Gr00tTrainingManager = _Manager
     stubs = {
@@ -236,6 +249,36 @@ class DashboardControlBoundaryTests(unittest.TestCase):
             SERVER.RL_MANAGER.non_finite_snapshot = False
         self.assertEqual(status, 500)
         self.assertEqual(payload["error"], "response is not finite JSON")
+
+    def test_full_precision_40_by_64_token_horizon_fits_bounded_json(self):
+        frame = [
+            ((index % 17) - 8) * 0.123456789012345
+            for index in range(64)
+        ]
+        request_payload = {
+            "schema": "dropbear-gr00t-retarget-request-v1",
+            "sessionId": "http-envelope-regression",
+            "sequence": 0,
+            "source": {
+                "kind": "nvidia-sonic-motion-token-chunk",
+                "schema": "nvidia-gr00t-sonic-motion-token-chunk-40x64-v1",
+                "motionTokenChunk": [frame for _ in range(40)],
+                "producer": "isaac-gr00t-policy-server",
+                "checkpoint": "sha256:test-only",
+                "sequenceStart": 0,
+            },
+        }
+        body = json.dumps(request_payload, separators=(",", ":"))
+        self.assertGreater(len(body), 32_768)
+        self.assertLess(len(body), SERVER.MAX_JSON_BODY_BYTES)
+        status, payload = self.request(
+            "POST",
+            "/api/gr00t/retarget",
+            body=body,
+            headers=self.control_headers(),
+        )
+        self.assertEqual(status, 200)
+        self.assertEqual(payload["receivedFrames"], 40)
 
     def test_loopback_detection_includes_ipv4_mapped_ipv6(self):
         self.assertTrue(SERVER._is_loopback_address("127.0.0.1"))
