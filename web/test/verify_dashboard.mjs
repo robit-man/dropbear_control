@@ -155,6 +155,14 @@ check(
     && app.body.includes("validateHardwareObservation")
     && app.body.includes("applyHardwareObservation"),
 );
+const softwareViewers = await request(`${base}/js/software_viewers.js`);
+check(
+  "measured-state fallback is served when WebGL2 is unavailable",
+  softwareViewers.status === 200
+    && app.body.includes("supportsWebGL2")
+    && softwareViewers.body.includes("DROPBEAR MEASURED-STATE VIEW · 2D FALLBACK")
+    && softwareViewers.body.includes("UNOBSERVED"),
+);
 check("USD resolution persists and updates renderer", app.body.includes("dropbear-usd-resolution") && app.body.includes("setResolutionScale"));
 check("geometry contact feeds the load-cell simulator", app.body.includes("sim.setFootContactState(robot.groundContact)"));
 check(

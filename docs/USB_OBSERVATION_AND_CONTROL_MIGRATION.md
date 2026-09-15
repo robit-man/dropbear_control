@@ -54,6 +54,11 @@ available. Without it, click **USE LIVE STATE**. A missing or stale side stays
 visibly unobserved; it is never filled with simulated data while live state is
 selected.
 
+On remote AGX desktop sessions where Chrome cannot create a WebGL2 context,
+the same URL automatically uses the Canvas 2D measured-state viewer. This
+keeps telemetry, per-joint availability, and control-lock state visible without
+claiming that the simplified stick view is the USD renderer.
+
 The paths are USB-topology identities. All three installed CP2102 bridges
 currently report the same serial number, `0001`, so `/dev/serial/by-id` cannot
 distinguish them. Existing host tools identify `/dev/ttyUSB1` as the right leg,

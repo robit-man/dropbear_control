@@ -16,6 +16,11 @@ import {
 import { RLPolicyPlayer } from "./rl_policy.js";
 import { Robot3D } from "./robot_3d.js";
 import {
+  SoftwarePanelViewer,
+  SoftwareRobotViewer,
+  supportsWebGL2,
+} from "./software_viewers.js";
+import {
   applyHardwareObservation,
   clearHardwareObservationHistory,
   validateHardwareObservation,
@@ -373,7 +378,19 @@ async function revokeHardwareControl() {
   }
 }
 
-const board = new Board3D($("board-canvas"), {
+const webglAvailable = supportsWebGL2();
+
+function createViewer(createWebGL, createSoftware, label) {
+  if (!webglAvailable) return createSoftware();
+  try {
+    return createWebGL();
+  } catch (error) {
+    appendTerminal(`[display] ${label} WebGL failed · ${error.message}`, "warn");
+    return createSoftware();
+  }
+}
+
+const boardOptions = {
   onPin: (data) => {
     $("pin-title").textContent = data.component || "Board component";
     $("pin-detail").textContent = data.detail || "ESP32 DevKit V1 reference component.";
@@ -381,9 +398,17 @@ const board = new Board3D($("board-canvas"), {
       row.classList.toggle("active", Number(row.dataset.gpio) === Number(data.gpio));
     });
   },
-});
+};
 
-const cad = new CadViewer($("cad-canvas"), {
+const board = createViewer(
+  () => new Board3D($("board-canvas"), boardOptions),
+  () => new SoftwarePanelViewer($("board-canvas"), {
+    title: "ESP32 CONTROLLER LAB",
+  }),
+  "controller",
+);
+
+const cadOptions = {
   onStatus: (message, kind) => {
     $("cad-status").className = `load-status ${kind}`;
     $("cad-status").innerHTML = "<span></span>";
@@ -403,9 +428,18 @@ const cad = new CadViewer($("cad-canvas"), {
     $("cad-evidence-note").textContent = model.note;
     $("cad-source-download").href = model.sourceUrl;
   },
-});
+};
 
-const robot = new Robot3D($("robot-canvas"), {
+const cad = createViewer(
+  () => new CadViewer($("cad-canvas"), cadOptions),
+  () => new SoftwarePanelViewer($("cad-canvas"), {
+    title: "ACTUATOR CAD",
+    onStatus: cadOptions.onStatus,
+  }),
+  "CAD",
+);
+
+const robotOptions = {
   onJoint: (canId) => {
     ui.motorCategory = "legs";
     document.querySelectorAll("[data-motor-category]").forEach((entry) => {
@@ -427,7 +461,17 @@ const robot = new Robot3D($("robot-canvas"), {
     $("robot-load-status").innerHTML = "<span></span>";
     $("robot-load-status").append(document.createTextNode(message));
   },
-});
+};
+
+const robot = createViewer(
+  () => new Robot3D($("robot-canvas"), robotOptions),
+  () => new SoftwareRobotViewer($("robot-canvas"), robotOptions),
+  "robot",
+);
+
+if (!webglAvailable) {
+  appendTerminal("[display] WebGL unavailable · using measured-state 2D robot view", "warn");
+}
 
 function applyPolicyFrame(frame, policy) {
   const toDegrees = (radians) => radians * 180 / Math.PI;

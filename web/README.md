@@ -142,6 +142,9 @@ automatically, or click **USE LIVE STATE**. Fresh sides drive their five
 external-sensor axes; stale or absent sides and both hip-yaw axes display as
 unobserved. The hardware endpoint is byte-silent and the frontend command
 channel remains physically locked even after its three-stage acknowledgement.
+If Chrome cannot create a WebGL2 context, the dashboard falls back to a Canvas
+2D robot view that still shows measured joint values and clearly labels
+unobserved axes. CAD and controller views show a matching fallback notice.
 
 The server binds to `127.0.0.1` by default. Control requests use strict JSON,
 same-origin checks, and a per-process token fetched automatically by the
@@ -177,6 +180,7 @@ Set `DASHBOARD_BASE`, `BASE_URL`, or `VISUAL_OUT` to override their defaults.
 | `js/app.js` | Dashboard interaction and live telemetry wiring |
 | `hardware_service.py` | Receive-only ESP32 readers and fail-closed control admission |
 | `js/hardware_observation.js` | Measured-state schema validation and USD application |
+| `js/software_viewers.js` | Canvas 2D measured-state fallback when WebGL2 is unavailable |
 | `rl_service.py` | Loopback-only persistent PPO-session process manager |
 | `physics_service.py` | Verified source-USD and backend-admission status |
 | `assets/robot/dropbear-physics-manifest.json` | Source-extracted masses, inertias, joints, collision groups, and drives |
