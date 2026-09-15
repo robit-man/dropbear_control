@@ -1,3 +1,5 @@
+import { projectHardwareDegrees } from "./hardware_calibration.js";
+
 const SCHEMA = "dropbear-passive-observation-v1";
 const SIDES = Object.freeze(["left", "right"]);
 const SAMPLE_ORDER = Object.freeze([
@@ -71,6 +73,9 @@ export function applyHardwareObservation(sim, payload, nowMs = performance.now()
     joint.observationValid = false;
     joint.observationAgeMs = null;
     joint.observationSource = "unavailable";
+    joint.observationRawDeg = null;
+    joint.observationMechanismDeg = null;
+    joint.observationCalibration = null;
   }
   for (const side of SIDES) {
     sim.controllers[side].serialConnected = false;
@@ -93,19 +98,27 @@ export function applyHardwareObservation(sim, payload, nowMs = performance.now()
       const target = sim.getJoint(firmwareJoint, side);
       if (!target) continue;
       const position = observation.positionDeg;
+      const projection = projectHardwareDegrees(side, firmwareJoint, position);
+      if (!projection.calibrated) {
+        unavailableJoints.push(canonicalName);
+        continue;
+      }
       const prior = previous.get(canonicalName);
       const dtSeconds = prior ? Math.max(0.001, (nowMs - prior.nowMs) / 1000) : 0;
       target.velocity = prior && sample.sequence !== prior.sequence
         ? Math.max(-720, Math.min(720, shortestDegreeDelta(position, prior.position) / dtSeconds))
         : 0;
-      target.angle = position;
+      target.angle = projection.renderDegrees;
       target.rawAngle = position % 360;
       target.torque = 0;
       target.command = 0;
       target.observationValid = true;
       target.observationAgeMs = sample.ageMs;
       target.observationSource = "esp32_external_absolute";
-      target.observationOutOfEnvelope = position < target.minAngle || position > target.maxAngle;
+      target.observationRawDeg = position;
+      target.observationMechanismDeg = projection.mechanismDegrees;
+      target.observationCalibration = projection.calibration;
+      target.observationOutOfEnvelope = !projection.withinUsdLimits;
       previous.set(canonicalName, { position, sequence: sample.sequence, nowMs });
       appliedJoints += 1;
     }
@@ -132,6 +145,9 @@ export function clearHardwareObservationHistory(sim) {
     joint.observationAgeMs = null;
     joint.observationSource = "unavailable";
     joint.observationOutOfEnvelope = false;
+    joint.observationRawDeg = null;
+    joint.observationMechanismDeg = null;
+    joint.observationCalibration = null;
   }
 }
 

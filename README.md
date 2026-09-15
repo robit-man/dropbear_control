@@ -66,9 +66,9 @@ The browser control twin is pinned to:
 | Source | Revision | Use |
 |---|---|---|
 | [`Hyperspawn/Dropbear`](https://github.com/Hyperspawn/Dropbear/tree/main/Control%20System/Low%20Level%20Control) | `13cf5ecaa39b8b89c794fe905dcea0490cfa7726` | ESP32 task, pin, serial, sensor, and CAN behavior |
-| [`Hyperspawn/dropbear_rl`](https://github.com/Hyperspawn/dropbear_rl) | `3c37aedce6d445205671d5714d05ae28b8c90e2c` | `dropbear.usd`, articulation topology, visual meshes, and closed-loop leg geometry |
+| [`robit-man/dropbear-locomotion`](https://github.com/robit-man/dropbear-locomotion) | `a397be863fed2d328c2e8f62c3db2f1e23575eb1` | Corrected `dropbear.usd`, articulation topology, visual meshes, closed-loop leg geometry, and locomotion policy source |
 
-The 421,104,436-byte source USD is locally cached at
+The 421,240,046-byte source USD is locally cached at
 `artifacts/usd/dropbear.usd` and ignored by Git. Its SHA-256 is verified at
 runtime. The tracked GLB is a decimated visual cache;
 `web/assets/robot/dropbear-articulation.json` retains browser kinematics, while
@@ -149,10 +149,9 @@ Each calf side is evaluated as:
 X8 motor crank → tie-rod pivot → ankle contact → foot rocker pivot
 ```
 
-The right outer X8 uses an explicit mirrored-Z browser adaptation because this
-USD revision authors `RL_Revolute81` as X while the mirrored mechanism and the
-other three calf shafts are Z-aligned. The adaptation and its rationale are
-recorded in the articulation manifest.
+The corrected locomotion USD authors the right outer `RL_Revolute81` axis as
+Z. The browser consumes that joint axis directly and records the source
+revision in the articulation manifest.
 
 ## Arm-motor-to-USD map
 

@@ -5,8 +5,8 @@ import {
   JOINT_DEFINITIONS,
   TASKS,
 } from "./dropbear.js";
-import { Board3D } from "./board_3d.js";
 import { CAD_EVIDENCE, CadViewer } from "./cad_viewer.js";
+import { renderControllerDiagnostics } from "./controller_diagnostics.js";
 import {
   DROPBEAR_ARM_MOTOR_BINDINGS,
   DROPBEAR_USD_SOURCE,
@@ -44,10 +44,11 @@ const PRESET_SOURCES = Object.freeze([
   { value: "manual", label: "Manual torque" },
 ]);
 const RL_SOURCES = Object.freeze([
-  { value: "reference", label: "Tracked PPO reference" },
-  { value: "authored", label: "Authored walking baseline" },
-  { value: "latest", label: "Latest completed local policy" },
-  { value: "live", label: "Live policy from active training" },
+  {
+    value: "locomotion-export-required",
+    label: "dropbear-locomotion replay · trajectory export required",
+    disabled: true,
+  },
 ]);
 const GR00T_PROMPT_PREVIEW_PRESETS = Object.freeze({
   stand: "neutral",
@@ -273,6 +274,7 @@ async function pollHardwareObservation() {
     const payload = await response.json();
     const validated = validateHardwareObservation(payload);
     ui.hardwareObservation.latest = payload;
+    renderControllerDiagnostics($("controller-diagnostics"), payload);
     ui.hardwareObservation.error = "";
     if (ui.hardwareObservation.active && validated.availableSides.length > 0) {
       const result = applyHardwareObservation(sim, payload);
@@ -306,6 +308,10 @@ function setHardwareObservationActive(active) {
     sim.scenario = "hardware-observation";
     ui.hardwareObservation.active = true;
     applyHardwareObservation(sim, ui.hardwareObservation.latest);
+    if (!selectedJoint().observationValid) {
+      const firstObserved = sim.joints.find((joint) => joint.observationValid);
+      if (firstObserved) selectJoint(firstObserved.id);
+    }
     appendTerminal(`[hardware] live ${validated.availableSides.join(" + ")} state applied to USD · passive RX · tx bytes 0`, "ok");
   } else {
     ui.hardwareObservation.active = false;
@@ -378,7 +384,8 @@ async function revokeHardwareControl() {
   }
 }
 
-const webglAvailable = supportsWebGL2();
+const requestedRenderer = new URLSearchParams(window.location.search).get("renderer");
+const webglAvailable = requestedRenderer !== "2d" && supportsWebGL2();
 
 function createViewer(createWebGL, createSoftware, label) {
   if (!webglAvailable) return createSoftware();
@@ -390,23 +397,11 @@ function createViewer(createWebGL, createSoftware, label) {
   }
 }
 
-const boardOptions = {
-  onPin: (data) => {
-    $("pin-title").textContent = data.component || "Board component";
-    $("pin-detail").textContent = data.detail || "ESP32 DevKit V1 reference component.";
-    document.querySelectorAll(".pin-row").forEach((row) => {
-      row.classList.toggle("active", Number(row.dataset.gpio) === Number(data.gpio));
-    });
-  },
-};
-
-const board = createViewer(
-  () => new Board3D($("board-canvas"), boardOptions),
-  () => new SoftwarePanelViewer($("board-canvas"), {
-    title: "ESP32 CONTROLLER LAB",
-  }),
-  "controller",
-);
+// Keep the controller inspector on Canvas 2D so the robot owns the only WebGL
+// context. This is also usable when Chrome falls back to SwiftShader.
+const board = new SoftwarePanelViewer($("board-canvas"), {
+  title: "ESP32 PIN MAP",
+});
 
 const cadOptions = {
   onStatus: (message, kind) => {
@@ -621,10 +616,10 @@ function selectJoint(id) {
     ? `USD ${usdBinding.usdJoint}${usdBinding.closure ? " · CLOSURE" : " · FK"}`
     : "USD BINDING UNRESOLVED";
   $("cad-joint-name").textContent = target.label;
-  $("position-target").value = String(Math.round(target.desiredPosition));
-  $("position-target").min = String(target.minAngle);
-  $("position-target").max = String(target.maxAngle);
-  $("position-output").textContent = `${Math.round(target.desiredPosition)}°`;
+  $("position-target").value = String(Math.round(target.desiredPosition - 180));
+  $("position-target").min = String(target.minAngle - 180);
+  $("position-target").max = String(target.maxAngle - 180);
+  $("position-output").textContent = `${Math.round(target.desiredPosition - 180)}° q`;
   $("torque-target").value = String(Math.round(target.command * 100));
   $("torque-output").textContent = `${target.command.toFixed(2)} N·m`;
   $("impedance-toggle").checked = target.impedanceEnabled;
@@ -699,7 +694,7 @@ function rememberPlaybackSelection() {
 function syncPlaybackButtons() {
   const modeButton = $("playback-mode");
   modeButton.dataset.mode = ui.playbackMode === "rl" ? "trained" : "preset";
-  modeButton.textContent = ui.playbackMode === "rl" ? "TRAINED" : "PRESET";
+  modeButton.textContent = ui.playbackMode === "rl" ? "LOCOMOTION" : "DIAGNOSTIC";
   modeButton.setAttribute("aria-pressed", String(ui.playbackMode === "rl"));
   const familyButton = $("playback-family");
   familyButton.dataset.family = ui.playbackFamily;
@@ -708,16 +703,10 @@ function syncPlaybackButtons() {
 }
 
 function populatePlaybackSources(mode, selectedValue = null) {
-  const sessionSources = ui.rlSessions
-    .filter((session) => session.policyUrl)
-    .map((session) => ({
-      value: `session:${session.experimentId}`,
-      label: `Run ${session.experimentId.slice(-8).toUpperCase()}`,
-    }));
   const sources = ui.playbackFamily === "gr00t"
     ? GR00T_WBC_PLAYBACK_SOURCES
     : mode === "rl"
-      ? [...RL_SOURCES, ...sessionSources]
+      ? RL_SOURCES
       : PRESET_SOURCES;
   const select = $("scenario");
   select.innerHTML = "";
@@ -725,7 +714,9 @@ function populatePlaybackSources(mode, selectedValue = null) {
     const option = document.createElement("option");
     option.value = source.value;
     option.textContent = source.label;
-    if (
+    if (source.disabled) {
+      option.disabled = true;
+    } else if (
       ui.playbackFamily === "gr00t"
       && ui.gr00tAvailability[source.readiness] !== true
     ) {
@@ -743,7 +734,7 @@ function populatePlaybackSources(mode, selectedValue = null) {
   const fallback = ui.playbackFamily === "gr00t"
     ? "g1-published-stand"
     : mode === "rl"
-      ? "reference"
+      ? "locomotion-export-required"
       : "neutral";
   select.value = sources.some((source) => source.value === selectedValue) ? selectedValue : fallback;
   const selectionKey = ui.playbackFamily === "gr00t" ? "gr00t" : mode;
@@ -751,7 +742,7 @@ function populatePlaybackSources(mode, selectedValue = null) {
   $("playback-source-label").textContent = ui.playbackFamily === "gr00t"
     ? "GR00T WBC SOURCE"
     : mode === "rl"
-      ? "POLICY"
+      ? "LOCOMOTION POLICY PLAYBACK"
       : "MOTION PRESET";
 }
 
@@ -810,7 +801,12 @@ async function configurePlaybackSource(
   sim.scenario = "rl-policy";
   sim.setPlay(false);
   ui.watchTraining = value === "live";
-  if (value === "reference") {
+  if (value === "locomotion-export-required") {
+    policyPlayer.clear();
+    ui.loadedPolicySource = null;
+    appendTerminal("[policy] dropbear-locomotion checkpoint found; browser trajectory export is not present", "warn");
+    return true;
+  } else if (value === "reference") {
     if (!await loadPolicy(
       "/assets/rl/dropbear-walk-reference.json",
       "Tracked reference walking policy",
@@ -1081,9 +1077,9 @@ function setupSimControls() {
       return;
     }
     const target = selectedJoint();
-    sim.setJointTarget(target.id, value, true);
+    sim.setJointTarget(target.id, 180 + value, true);
     $("impedance-toggle").checked = target.impedanceEnabled;
-    $("position-output").textContent = `${value.toFixed(0)}°`;
+    $("position-output").textContent = `${value.toFixed(0)}° q`;
   });
   $("torque-target").addEventListener("input", (event) => {
     const value = Number(event.target.value);
@@ -2081,7 +2077,9 @@ function renderLive() {
   $("can-load").textContent = `${sim.canUtilization.toFixed(1)}%`;
   $("sel-angle").textContent = ui.axisCategory === "arm"
     ? `${(selectedArm?.angleDeg || 0).toFixed(1)}°`
-    : `${target.angle.toFixed(1)}°`;
+    : target.observationValid
+      ? `${target.observationMechanismDeg.toFixed(1)}° q · ${target.observationRawDeg.toFixed(1)}° raw`
+      : `${(target.angle - 180).toFixed(1)}°`;
   $("sel-velocity").textContent = ui.axisCategory === "arm"
     ? `${(selectedArm?.velocityDegS || 0).toFixed(1)}°/s`
     : `${target.velocity.toFixed(1)}°/s`;
@@ -2110,7 +2108,9 @@ function renderLive() {
     const joint = sim.getJoint(Number(card.dataset.jointId));
     card.querySelector('[data-field="angle"]').textContent = observingHardware && !joint.observationValid
       ? "UNOBSERVED"
-      : `${joint.angle.toFixed(1)}°`;
+      : joint.observationValid
+        ? `${joint.observationMechanismDeg.toFixed(1)}° q · ${joint.observationRawDeg.toFixed(1)}° raw`
+        : `${(joint.angle - 180).toFixed(1)}°`;
     card.querySelector('[data-field="torque"]').textContent = `${joint.torque.toFixed(2)} N·m`;
     const dot = card.querySelector(".joint-dot");
     dot.className = `joint-dot ${joint.temperature > 80 || sim.faults.canDrop || (observingHardware && joint.observationOutOfEnvelope) ? "warn" : observingHardware && joint.observationValid ? "observed" : sim.playMode ? "live" : ""}`;
@@ -2229,8 +2229,6 @@ setupHardwareControls();
 setupCadControls();
 setupBoardControls();
 setupFirmware();
-setupRLLab();
-setupGr00tLab();
 window.addEventListener("dropbear:prompt-plan", async (event) => {
   const plan = event.detail || {};
   const primitive = String(plan.primitive || "").trim().toLowerCase();

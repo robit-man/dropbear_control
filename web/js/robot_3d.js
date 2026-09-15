@@ -22,11 +22,7 @@ function quaternionFromUsd([w, x, y, z]) {
 }
 
 function jointAxis(joint, reverse = false) {
-  // The mirrored right outer X8 is authored as X in this USD revision while
-  // the same physical shaft and the other three calf drivers are Z. Using the
-  // mirrored Z basis is required for its crank/rod/ankle contacts to close.
-  const authoredAxis = joint.name === "RL_Revolute81" ? "Z" : joint.axis;
-  const basis = AXES[authoredAxis] || AXES.X;
+  const basis = AXES[joint.axis] || AXES.X;
   const rotation = quaternionFromUsd(reverse ? joint.localRot1 : joint.localRot0);
   return basis.clone().applyQuaternion(rotation).normalize();
 }
@@ -247,7 +243,9 @@ export class Robot3D {
       this.setJointStates(this.pendingJoints, this.selectedCanId);
       this._captureNeutralFootReferences();
       this.fit();
-      if (this.renderer.compileAsync) await this.renderer.compileAsync(this.scene, this.camera);
+      // Eager compileAsync can stall llvmpipe/SwiftShader for minutes while it
+      // compiles every CAD material. The first render compiles the visible
+      // set and keeps the control console responsive.
       this.renderer.render(this.scene, this.camera);
       this.ready = true;
       const stats = this.manifest.statistics;
@@ -260,6 +258,7 @@ export class Robot3D {
 
   _validateManifest() {
     if (this.manifest.source.commit !== DROPBEAR_USD_SOURCE.commit) throw new Error("USD revision mismatch");
+    if (this.manifest.source.sha256 !== DROPBEAR_USD_SOURCE.sha256) throw new Error("USD digest mismatch");
     if (this.manifest.canBindings.length !== 12) throw new Error("expected 12 CAN/USD bindings");
     for (const expected of DROPBEAR_USD_BINDINGS) {
       const actual = this.manifest.canBindings.find((binding) => binding.canIdNumber === expected.canId);

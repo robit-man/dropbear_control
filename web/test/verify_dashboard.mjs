@@ -35,11 +35,17 @@ function check(name, condition) {
 
 const index = await request(`${base}/`);
 check("index served", index.status === 200);
-check("seven engineering views present", (index.body.match(/data-view="/g) || []).length === 7);
+check(
+  "four control and state views exposed",
+  (index.body.match(/data-view-target=/g) || []).length === 4
+    && !index.body.includes('data-view-target="rl"')
+    && !index.body.includes('data-view-target="gr00t"')
+    && !index.body.includes('data-view-target="evidence"'),
+);
 check("full Dropbear USD simulation present", index.body.includes("Dropbear closed-loop articulation"));
 check("USD robot viewport replaces schematic", index.body.includes('id="robot-canvas"') && !index.body.includes('id="robot-svg"'));
 check("STEP-derived CAD viewport present", index.body.includes('id="cad-canvas"'));
-check("1:1 controller viewport present", index.body.includes('id="board-canvas"'));
+check("live controller functional schematic present", index.body.includes('id="controller-diagnostics"'));
 check("firmware terminal present", index.body.includes('id="terminal-form"'));
 check("current Dropbear source revision shown", index.body.includes("13cf5ec"));
 check("separate dropbear_firmware repository is absent", !index.body.includes("dropbear_firmware"));
@@ -73,41 +79,32 @@ check(
     && index.body.includes('data-motor-category="arms"'),
 );
 check(
-  "RL training, global epoch state, and unified playback controls are present",
-  index.body.includes('data-view="rl"')
-    && index.body.includes('id="rl-epochs"')
-    && index.body.includes('id="rl-vertical-constraint"')
-    && index.body.includes('id="playback-mode"')
-    && index.body.includes('<button id="playback-mode"')
-    && !index.body.includes('<input id="playback-mode"')
-    && index.body.includes('id="sim-training-panel"')
-    && index.body.includes('id="global-training-strip"')
-    && !index.body.includes('id="run-demo"'),
+  "browser training labs are unexposed",
+  index.body.includes('id="playback-mode"')
+    && index.body.includes('id="sim-training-toggle" class="button subtle" aria-expanded="false" hidden')
+    && !index.body.includes('data-view-target="rl"')
+    && !index.body.includes('data-view-target="gr00t"'),
 );
 const dashboardStyle = await request(`${base}/css/style.css`);
 const playbackStyle = dashboardStyle.body
   .match(/(?:^|\n)\.playback-mode-button \{([^}]*)\}/)?.[1] || "";
 check(
-  "playback source has yellow text-only mode and CLASSIC/GR00T toggles",
+  "playback source reserves locomotion policy mode",
   dashboardStyle.status === 200
     && playbackStyle.includes("background: var(--cyan)")
     && playbackStyle.includes("border: 1px solid var(--cyan)")
     && index.body.includes('id="playback-mode" class="playback-mode-button"')
+    && index.body.includes('dropbear-locomotion policy playback')
     && index.body.includes('id="playback-family" class="playback-mode-button"')
-    && index.body.includes('data-family="classic"')
+    && index.body.includes('data-family="classic" aria-pressed="false" aria-label="Legacy playback family" hidden')
     && !index.body.includes('type="checkbox" id="playback-mode"')
     && !index.body.includes('type="checkbox" id="playback-family"'),
 );
 check(
-  "RL horizon reaches 10,000 updates with explicit reward tuning",
-  index.body.includes('id="rl-updates" type="number" min="1" max="10000"')
-    && index.body.includes('id="sim-rl-updates" type="number" min="1" max="10000"')
-    && index.body.includes('id="rl-weight-arm-swing"')
-    && index.body.includes('id="sim-rl-weight-arm-swing"')
-    && index.body.includes('id="rl-weight-closure"')
-    && index.body.includes('id="rl-weight-gait-symmetry"')
-    && index.body.includes('id="rl-weight-knee-contraction"')
-    && index.body.includes("15 COEFFICIENTS"),
+  "controller schematic covers live and locked paths",
+  index.body.includes("Observation and control boundaries")
+    && index.body.includes("TX 0 BYTES")
+    && index.body.includes("READ-ONLY HARDWARE / FUNCTIONAL STATUS"),
 );
 check(
   "persistent RL session controls are present",
@@ -144,7 +141,10 @@ check(
 
 const app = await request(`${base}/js/app.js`);
 check("dashboard instantiates CAD viewer", app.body.includes("new CadViewer"));
-check("dashboard instantiates controller viewer", app.body.includes("new Board3D"));
+check(
+  "dashboard renders controller diagnostics without a second WebGL context",
+  app.body.includes("renderControllerDiagnostics") && !app.body.includes("new Board3D"),
+);
 check("dashboard instantiates full USD robot viewer", app.body.includes("new Robot3D"));
 check("dashboard exposes inspectable twin", app.body.includes("window.dropbearTwin"));
 check("dashboard exposes inspectable arm motor state", app.body.includes("armMotorBindings: DROPBEAR_ARM_MOTOR_BINDINGS"));
@@ -324,7 +324,7 @@ check(
     && physicsStatus?.groundTruth?.authoredMasses === 93
     && physicsStatus?.groundTruth?.collisionGroups === 93
     && physicsStatus?.groundTruth?.physicsJoints === 117
-    && physicsStatus?.groundTruth?.forceDrives === 29,
+    && physicsStatus?.groundTruth?.forceDrives === 28,
 );
 
 const robotGlb = await request(`${base}/assets/robot/dropbear-usd-browser.glb`, "HEAD");
@@ -391,7 +391,11 @@ check(
       (linkage) => linkage.inner?.motorCrank && linkage.outer?.motorCrank && linkage.footPivot,
     ),
 );
-check("ground-truth RL revision retained", robotManifest?.source?.commit === "3c37aedce6d445205671d5714d05ae28b8c90e2c");
+check(
+  "corrected locomotion USD revision retained",
+  robotManifest?.source?.commit === "a397be863fed2d328c2e8f62c3db2f1e23575eb1"
+    && robotManifest?.source?.sha256 === "45586414b065cd982d487cbd868fe982108b3b8ccec64d3dfcf629652ed8db0f",
+);
 
 const motorCadManifestResponse = await request(`${base}/assets/cad/dropbear-motor-cad.json`);
 const motorCadManifest = JSON.parse(motorCadManifestResponse.body);

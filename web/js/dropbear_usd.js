@@ -1,8 +1,8 @@
 export const DROPBEAR_USD_SOURCE = Object.freeze({
-  repository: "https://github.com/Hyperspawn/dropbear_rl",
-  commit: "3c37aedce6d445205671d5714d05ae28b8c90e2c",
-  path: "dropbear_model/Dropbear/usd/dropbear.usd",
-  sha256: "ef4434e0adb5a74cb0fe8e779c49aac4ebdcba48998ed519cf17ab16d822e073",
+  repository: "https://github.com/robit-man/dropbear-locomotion",
+  commit: "a397be863fed2d328c2e8f62c3db2f1e23575eb1",
+  path: "dropbear_walk/isaaclab_asset/dropbear.usd",
+  sha256: "45586414b065cd982d487cbd868fe982108b3b8ccec64d3dfcf629652ed8db0f",
   license: "CC-BY-NC-SA-4.0",
   attribution: "Hyperspawn Robotics — Priyanshu Pareek and Cole Myers",
 });

@@ -77,7 +77,8 @@ for (let index = 0; index < 100; index += 1) {
   }
 }
 
-assert.equal(DROPBEAR_USD_SOURCE.commit, "3c37aedce6d445205671d5714d05ae28b8c90e2c");
+assert.equal(DROPBEAR_USD_SOURCE.commit, "a397be863fed2d328c2e8f62c3db2f1e23575eb1");
+assert.equal(DROPBEAR_USD_SOURCE.repository, "https://github.com/robit-man/dropbear-locomotion");
 assert.equal(DROPBEAR_USD_SOURCE.license, "CC-BY-NC-SA-4.0");
 assert.deepEqual(DROPBEAR_USD_BINDINGS.map((binding) => binding.canId), expectedIds);
 assert.deepEqual(
@@ -134,7 +135,10 @@ assert.equal(sim.playMode, false);
 assert.equal(sim.firmwarePlayDefault, true);
 assert.equal(sim.canBitrate, 1_000_000);
 assert.equal(sim.getJoint("knee", "left").minAngle, 180);
-assert.equal(sim.getJoint("knee", "right").maxAngle, 360);
+assert.equal(sim.getJoint("knee", "right").maxAngle, 210);
+assert.ok(Math.abs(sim.getJoint("knee", "right").angle - 197.188734) < 1e-6);
+assert.ok(Math.abs(sim.getJoint("inner_calf", "right").angle - 168.540844) < 1e-6);
+assert.ok(Math.abs(sim.getJoint("hip_roll", "right").angle - 174.270422) < 1e-6);
 sim.setJointTarget(0x145, 90, true);
 assert.equal(sim.getJoint("knee", "left").desiredPosition, 180);
 sim.setFootContactState({

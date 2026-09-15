@@ -89,6 +89,26 @@ const DEFAULT_IMPEDANCE = Object.freeze({
   hip_yaw: { k: 0, d: 0 },
 });
 
+// Corrected dropbear-locomotion initial pose. These are signed USD joint
+// coordinates in degrees; the simulation stores them around its 180° datum.
+const DEFAULT_STANCE_DEG = Object.freeze({
+  outer_calf: 0,
+  inner_calf: -11.459156,
+  hip_pitch: 0,
+  knee: 17.188734,
+  hip_roll: -5.729578,
+  hip_yaw: 0,
+});
+
+function correctedLimits(definition) {
+  if (definition.key === "outer_calf") return definition.side === "left" ? [-50, 60] : [-60, 50];
+  if (definition.key === "inner_calf") return [-50, 60];
+  if (definition.key === "hip_pitch") return [-50, 30];
+  if (definition.key === "knee") return [0, 30];
+  if (definition.key === "hip_roll") return definition.side === "left" ? [-15, 30] : [-30, 15];
+  return [-30, 30];
+}
+
 const clamp = (value, low, high) => Math.min(high, Math.max(low, value));
 const wrap360 = (value) => ((value % 360) + 360) % 360;
 const lerp = (start, end, amount) => start + (end - start) * amount;
@@ -157,27 +177,27 @@ export function sampleAlternatingStep(timeSeconds, side = "left") {
 
 function makeJoint(definition) {
   const gains = DEFAULT_IMPEDANCE[definition.key];
+  const defaultAngle = 180 + DEFAULT_STANCE_DEG[definition.key];
+  const [minimum, maximum] = correctedLimits(definition);
   return {
     ...definition,
-    angle: 180,
-    rawAngle: 180,
+    angle: defaultAngle,
+    rawAngle: defaultAngle,
     velocity: 0,
     torque: 0,
     command: 0,
-    desiredPosition: 180,
+    desiredPosition: defaultAngle,
     desiredVelocity: 0,
     impedanceEnabled: false,
     stiffness: gains.k,
     damping: gains.d,
-    // 180° is the mechanical knee lock. Both knees only fold in the
-    // positive direction from that datum.
-    minAngle: definition.key === "knee" ? 180 : 0,
-    maxAngle: 360,
+    minAngle: 180 + minimum,
+    maxAngle: 180 + maximum,
     direction: 1,
     adc: definition.sensorPin == null ? null : 2048,
     temperature: 28,
     sensorStuck: false,
-    sensorSnapshot: 180,
+    sensorSnapshot: defaultAngle,
     observationValid: false,
     observationAgeMs: null,
     observationSource: "unavailable",
@@ -285,7 +305,7 @@ export class DropbearSim {
     if (name !== "neutral") this.setPlay(true);
     for (const j of this.joints) {
       j.impedanceEnabled = j.impedanceCapable && name !== "manual";
-      j.desiredPosition = 180;
+      j.desiredPosition = 180 + DEFAULT_STANCE_DEG[j.key];
       j.desiredVelocity = 0;
       if (name === "manual") j.command = 0;
     }

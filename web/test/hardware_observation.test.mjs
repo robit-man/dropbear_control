@@ -37,7 +37,7 @@ function snapshot(leftSequence = 1, rightSequence = 1) {
     complete: true,
     sides: {
       left: side("left", leftSequence, [181, 182, 183, 204, 185]),
-      right: side("right", rightSequence, [186, 187, 188, 209, 190]),
+      right: side("right", rightSequence, [125, 188, 89, 28, 169]),
     },
   };
 }
@@ -45,19 +45,23 @@ function snapshot(leftSequence = 1, rightSequence = 1) {
 const sim = new DropbearSim();
 sim.setScenario("walk");
 const result = applyHardwareObservation(sim, snapshot(), 1_000);
-assert.equal(result.appliedJoints, 10);
-assert.deepEqual(result.unavailableJoints, ["left_hip_yaw", "right_hip_yaw"]);
+assert.equal(result.appliedJoints, 5);
+assert.ok(result.unavailableJoints.includes("left_outer_calf"));
 assert.equal(sim.playMode, false);
 assert.equal(sim.scenario, "hardware-observation");
-assert.equal(sim.getJoint("outer_calf", "left").angle, 181);
-assert.equal(sim.getJoint("knee", "right").angle, 209);
+assert.equal(sim.getJoint("outer_calf", "left").observationValid, false);
+assert.equal(sim.getJoint("outer_calf", "right").angle, 180);
+assert.ok(Math.abs(sim.getJoint("inner_calf", "right").angle - 168.540844) < 1e-6);
+assert.ok(Math.abs(sim.getJoint("knee", "right").angle - 197.188734) < 1e-6);
+assert.equal(sim.getJoint("knee", "right").observationRawDeg, 28);
+assert.ok(Math.abs(sim.getJoint("knee", "right").observationMechanismDeg - 17.188734) < 1e-6);
 assert.equal(sim.getJoint("hip_yaw", "left").observationValid, false);
 assert.equal(sim.controllers.left.csv, "181,182,183,204,185");
 
 const next = snapshot(2, 2);
-next.sides.left.joints.left_outer_calf.positionDeg = 183;
+next.sides.right.joints.right_outer_calf.positionDeg = 127;
 applyHardwareObservation(sim, next, 1_100);
-assert.equal(sim.getJoint("outer_calf", "left").velocity, 20);
+assert.equal(sim.getJoint("outer_calf", "right").velocity, 20);
 
 const notSilent = snapshot();
 notSilent.txBytes = 1;
@@ -68,9 +72,9 @@ missingSide.sides.right.fresh = false;
 assert.equal(validateHardwareObservation(missingSide).complete, false);
 const partialSim = new DropbearSim();
 const partial = applyHardwareObservation(partialSim, missingSide);
-assert.equal(partial.appliedJoints, 5);
+assert.equal(partial.appliedJoints, 0);
 assert.deepEqual(partial.availableSides, ["left"]);
-assert.equal(partialSim.getJoint("knee", "left").observationValid, true);
+assert.equal(partialSim.getJoint("knee", "left").observationValid, false);
 assert.equal(partialSim.getJoint("knee", "right").observationValid, false);
 assert.ok(partial.unavailableJoints.includes("right_knee"));
 

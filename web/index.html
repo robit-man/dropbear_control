@@ -77,25 +77,16 @@
     <aside class="rail">
       <nav aria-label="Workspace">
         <button class="rail-item active" data-view-target="sim">
-          <span class="rail-icon">⌁</span><span>Robot Sim</span>
+          <span class="rail-icon">⌁</span><span>Live Robot</span>
         </button>
         <button class="rail-item" data-view-target="cad">
           <span class="rail-icon">◇</span><span>Actuator CAD</span>
         </button>
         <button class="rail-item" data-view-target="controller">
-          <span class="rail-icon">▦</span><span>Controller Lab</span>
+          <span class="rail-icon">▦</span><span>Controller Health</span>
         </button>
         <button class="rail-item" data-view-target="firmware">
           <span class="rail-icon">›_</span><span>Firmware</span>
-        </button>
-        <button class="rail-item" data-view-target="rl">
-          <span class="rail-icon">λ</span><span>RL Lab</span><i id="rl-rail-state" class="rail-state" hidden></i>
-        </button>
-        <button class="rail-item" data-view-target="gr00t">
-          <span class="rail-icon">◈</span><span>GR00T WBC</span><i id="gr00t-rail-state" class="rail-state" hidden></i>
-        </button>
-        <button class="rail-item" data-view-target="evidence">
-          <span class="rail-icon">◎</span><span>Evidence</span>
         </button>
       </nav>
       <div class="rail-foot">
@@ -110,10 +101,10 @@
         <div class="view-heading">
           <div class="scenario-bar">
             <div class="playback-mode-control">
-              <span>PLAYBACK SOURCE</span>
+              <span>MOTION / POLICY PLAYBACK</span>
               <div class="playback-mode-buttons">
-                <button id="playback-mode" class="playback-mode-button" type="button" data-mode="preset" aria-pressed="false" aria-label="Toggle playback source between preset and trained policy">PRESET</button>
-                <button id="playback-family" class="playback-mode-button" type="button" data-family="classic" aria-pressed="false" aria-label="Toggle playback family between classic and GR00T WBC">CLASSIC</button>
+                <button id="playback-mode" class="playback-mode-button" type="button" data-mode="preset" aria-pressed="false" aria-label="Toggle between diagnostic motion and dropbear-locomotion policy playback">DIAGNOSTIC</button>
+                <button id="playback-family" class="playback-mode-button" type="button" data-family="classic" aria-pressed="false" aria-label="Legacy playback family" hidden>CLASSIC</button>
               </div>
             </div>
             <label class="playback-source-select">
@@ -131,7 +122,7 @@
               <span></span>Z GUIDE
             </label>
             <button id="hardware-observation-toggle" class="button observation-button" type="button" aria-pressed="false">USE LIVE STATE</button>
-            <button id="sim-training-toggle" class="button subtle" aria-expanded="false">TRAIN RL</button>
+            <button id="sim-training-toggle" class="button subtle" aria-expanded="false" hidden>TRAIN RL</button>
           </div>
         </div>
 
@@ -230,7 +221,7 @@
               </div>
               <div class="robot-asset-chip">
                 <span>DROPBEAR.USD</span>
-                <b>3c37aed · Z-UP · METRES</b>
+                <b>a397be8 · Z-UP · METRES</b>
               </div>
               <div id="physics-runtime-status" class="physics-runtime-chip">
                 <span>FORCE CONTACT</span>
@@ -385,9 +376,9 @@
       <section class="view" data-view="controller">
         <div class="view-heading">
           <div>
-            <div class="eyebrow">HARDWARE / SIGNAL LAB</div>
-            <h1>ESP32 DevKit V1 controller twin</h1>
-            <p>A dimensioned 1:1 world model with live Dropbear signal routes, external buses, pin roles, and dual-controller state.</p>
+            <div class="eyebrow">READ-ONLY HARDWARE / FUNCTIONAL STATUS</div>
+            <h1>ESP32 actuator-stack schematic</h1>
+            <p>Live receive paths, calibration gates, missing telemetry, and the locked transmit boundary for both deployed leg controllers.</p>
           </div>
           <div class="controller-tabs" role="group" aria-label="Controller selection">
             <button class="controller-tab active" data-controller="left">LEFT ESP32</button>
@@ -395,15 +386,13 @@
           </div>
         </div>
         <div class="controller-layout">
-          <article class="panel board-stage-panel">
-            <div class="board-canvas-wrap">
-              <canvas id="board-canvas" aria-label="Interactive 1:1 dimensional ESP32 DevKit V1 model with active signal lines"></canvas>
-              <div class="board-scale">
-                <span>NOMINAL MODEL</span>
-                <b>51.5 × 28.5 × 1.6 mm</b>
-              </div>
-              <div class="board-instruction">DRAG ORBIT · WHEEL ZOOM · CLICK PINS / MODULES</div>
+          <article class="panel controller-system-panel">
+            <div class="panel-head">
+              <div><span class="panel-kicker">LIVE FUNCTIONAL DIAGRAM</span><h2>Observation and control boundaries</h2></div>
+              <span class="count-chip">TX 0 BYTES</span>
             </div>
+            <div id="controller-diagnostics" class="controller-diagnostics" aria-live="polite"></div>
+            <canvas id="board-canvas" class="controller-pin-canvas" aria-label="ESP32 pin map"></canvas>
             <div class="bus-legend" id="bus-legend"></div>
           </article>
           <aside class="controller-aside">
@@ -428,8 +417,8 @@
         <div class="view-heading">
           <div>
             <div class="eyebrow">FIRMWARE / SERIAL + RTOS</div>
-            <h1>Low-level firmware console</h1>
-            <p>Exercise the observed 115200-baud command surface and watch controller tasks, CSV sensor output, and CAN effects.</p>
+            <h1>Low-level firmware reference</h1>
+            <p>Inspect the deployed task, pin, CSV, and command contract. Console actions remain inside the browser simulation; physical serial transmit is locked.</p>
           </div>
           <div class="controller-tabs" role="group" aria-label="Console controller selection">
             <button class="console-controller-tab active" data-console-controller="left">LEFT PORT</button>
@@ -830,9 +819,9 @@
           <article class="panel provenance-panel usd-provenance">
             <span class="panel-kicker">ROBOT GEOMETRY / KINEMATICS</span>
             <h2>Actual Dropbear USD</h2>
-            <p>The browser renders the tracked <code>dropbear.usd</code> from Dropbear RL: 93 rigid bodies, 117 physical joints, 27 retained loop-closure constraints, and the exact 12 CAN-to-USD motor map derived from physical axes and body locations.</p>
-            <a class="source-link" href="https://github.com/Hyperspawn/dropbear_rl" target="_blank" rel="noreferrer">OPEN DROPBEAR RL ↗</a>
-            <code>3c37aedce6d445205671d5714d05ae28b8c90e2c · CC-BY-NC-SA-4.0</code>
+            <p>The browser renders the corrected <code>dropbear.usd</code> from dropbear-locomotion: 93 rigid bodies, 117 physical joints, 27 retained loop-closure constraints, and the 12 CAN-to-USD motor map.</p>
+            <a class="source-link" href="https://github.com/robit-man/dropbear-locomotion" target="_blank" rel="noreferrer">OPEN DROPBEAR LOCOMOTION ↗</a>
+            <code>a397be863fed2d328c2e8f62c3db2f1e23575eb1 · CC-BY-NC-SA-4.0</code>
           </article>
           <article class="panel provenance-panel">
             <span class="panel-kicker">ROBOT SOURCE</span>
@@ -897,6 +886,6 @@
     </form>
   </dialog>
 
-  <script type="module" src="/js/app.js?v=20260914-software-viewer"></script>
+  <script type="module" src="/js/app.js?v=20260914-control-console"></script>
 </body>
 </html>

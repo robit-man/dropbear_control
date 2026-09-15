@@ -2,9 +2,10 @@
 
 Place the verified Dropbear source asset at `dropbear.usd`.
 
-- Source: `https://github.com/Hyperspawn/dropbear_rl`
-- Revision: `3c37aedce6d445205671d5714d05ae28b8c90e2c`
-- Expected SHA-256: `ef4434e0adb5a74cb0fe8e779c49aac4ebdcba48998ed519cf17ab16d822e073`
+- Source: `https://github.com/robit-man/dropbear-locomotion`
+- Revision: `a397be863fed2d328c2e8f62c3db2f1e23575eb1`
+- Source path: `dropbear_walk/isaaclab_asset/dropbear.usd`
+- Expected SHA-256: `45586414b065cd982d487cbd868fe982108b3b8ccec64d3dfcf629652ed8db0f`
 
 The 421 MB binary USD is intentionally ignored. The tracked
 `web/assets/robot/dropbear-physics-manifest.json` is reproducibly extracted

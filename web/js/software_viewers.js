@@ -138,7 +138,9 @@ export class SoftwareRobotViewer {
     context.textAlign = align;
     context.fillStyle = measured ? "#22d3ee" : "#626a74";
     context.font = '600 10px "IBM Plex Mono", monospace';
-    const value = measured ? `${Number(joint.angle).toFixed(1)}°` : "UNOBSERVED";
+    const value = measured
+      ? `${Number(joint.observationMechanismDeg).toFixed(1)}° q / ${Number(joint.observationRawDeg).toFixed(1)}° raw`
+      : "UNOBSERVED";
     context.fillText(`${label}  ${value}`, x, y);
   }
 

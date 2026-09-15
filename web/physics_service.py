@@ -11,7 +11,7 @@ from typing import Any
 
 
 EXPECTED_USD_SHA256 = (
-    "ef4434e0adb5a74cb0fe8e779c49aac4ebdcba48998ed519cf17ab16d822e073"
+    "45586414b065cd982d487cbd868fe982108b3b8ccec64d3dfcf629652ed8db0f"
 )
 
 

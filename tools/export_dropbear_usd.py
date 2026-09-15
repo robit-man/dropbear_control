@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
-"""Create a browser cache and articulation manifest from Dropbear's USD.
+"""Create a lightweight browser cache and articulation manifest from Dropbear's USD.
 
-The source asset is not vendored by this repository. Pass a checkout of
-Hyperspawn/dropbear_rl and this tool will:
+The source asset is not vendored by this repository. Pass the released USD
+from robit-man/dropbear-locomotion and this tool will:
 
 1. read the binary USD crate with OpenUSD,
 2. retain the named rigid-body partition,
-3. decimate visual meshes into a responsive GLB cache, and
-4. emit every physical joint plus the low-level CAN-to-USD binding table.
+3. replace the detailed AGX Orin CAD with a proxy envelope,
+4. decimate visual meshes into a responsive GLB cache, and
+5. emit every physical joint plus the low-level CAN-to-USD binding table.
 
 The generated cache is an adaptation of the CC-BY-NC-SA-4.0 source asset.
 It is for visualization; Isaac/PhysX remains authoritative for loop closure.
@@ -19,6 +20,8 @@ import argparse
 import hashlib
 import json
 import math
+import struct
+import subprocess
 from collections import defaultdict
 from pathlib import Path
 
@@ -27,8 +30,18 @@ import trimesh
 from pxr import Gf, Usd, UsdGeom, UsdPhysics, UsdShade
 
 
-SOURCE_COMMIT = "3c37aedce6d445205671d5714d05ae28b8c90e2c"
-SOURCE_REPOSITORY = "https://github.com/Hyperspawn/dropbear_rl"
+SOURCE_COMMIT = "a397be863fed2d328c2e8f62c3db2f1e23575eb1"
+SOURCE_REPOSITORY = "https://github.com/robit-man/dropbear-locomotion"
+SOURCE_SHA256 = "45586414b065cd982d487cbd868fe982108b3b8ccec64d3dfcf629652ed8db0f"
+# The source head assembly contains two extremely detailed AGX carrier-board
+# meshes (755,895 source triangles). Browser rendering needs their occupied
+# envelope, not individual PCB features. Their rigid-body transform, mass,
+# inertia, collision shapes, and every upstream/downstream joint remain in the
+# manifest; only these visual mesh prims are replaced with one 12-triangle box.
+AGX_PROXY_MESH_TOKENS = (
+    "00_top_lvl_p3737_01142022",
+    "245_82972_0000_000_asm_07192018",
+)
 SDK_JOINTS = [
     "LH_yaw", "LH_pitch", "LH_roll", "LH_Revolute41", "LH_wrist_roll",
     "RH_yaw", "RH_pitch", "RH_roll", "RH_Revolute41", "RH_wrist_roll",
@@ -57,15 +70,32 @@ CAN_BINDINGS = [
     (0x14C, "right", "hip_yaw", "PG_right_leg_roll"),
 ]
 
+ARM_BINDINGS = [
+    ("arm-left-shoulder-pitch", "left", "shoulder_pitch", "LH_yaw", "RMD-X10", "torso", False),
+    ("arm-left-shoulder-yaw", "left", "shoulder_yaw", "LH_pitch", "RMD-X8", "arm", False),
+    ("arm-left-shoulder-roll", "left", "shoulder_roll", "LH_roll", "RMD-X8", "arm", False),
+    ("arm-left-elbow-pitch", "left", "elbow_pitch", "LH_Revolute41", "RMD-X8", "arm", True),
+    ("arm-left-wrist-roll", "left", "wrist_roll", "LH_wrist_roll", "RMD-X8", "arm", False),
+    ("arm-right-shoulder-pitch", "right", "shoulder_pitch", "RH_yaw", "RMD-X10", "torso", False),
+    ("arm-right-shoulder-yaw", "right", "shoulder_yaw", "RH_pitch", "RMD-X8", "arm", False),
+    ("arm-right-shoulder-roll", "right", "shoulder_roll", "RH_roll", "RMD-X8", "arm", False),
+    ("arm-right-elbow-pitch", "right", "elbow_pitch", "RH_Revolute41", "RMD-X8", "arm", True),
+    ("arm-right-wrist-roll", "right", "wrist_roll", "RH_wrist_roll", "RMD-X8", "arm", False),
+]
+
 INITIAL_POSITIONS = {
-    "LH_Revolute41": -0.5,
-    "RH_Revolute41": -0.5,
-    "LL_hip_joint": -0.2,
-    "LL_knee_actuator_joint": 0.4,
-    "LL_Revolute28": -0.2,
-    "RL_hip_joint": -0.2,
-    "RL_knee_actuator_joint": 0.4,
-    "RL_Revolute28": -0.2,
+    "LH_elbow_joint": 0.3,
+    "RH_elbow_joint": 0.3,
+    "PG_left_leg_pitch": -0.1,
+    "PG_right_leg_pitch": -0.1,
+    "LL_hip_joint": 0.0,
+    "LL_knee_actuator_joint": 0.3,
+    "LL_Revolute67": -0.2,
+    "LL_Revolute81": 0.0,
+    "RL_hip_joint": 0.0,
+    "RL_knee_actuator_joint": 0.3,
+    "RL_Revolute67": -0.2,
+    "RL_Revolute81": 0.0,
 }
 
 
@@ -75,7 +105,35 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("glb", type=Path, help="Output browser GLB")
     parser.add_argument("manifest", type=Path, help="Output articulation JSON")
     parser.add_argument("--ratio", type=float, default=0.025, help="Target triangle ratio per source mesh")
+    parser.add_argument(
+        "--meshopt-cli",
+        type=Path,
+        help="Optional gltf-transform CLI used to weld and simplify the complete browser GLB",
+    )
+    parser.add_argument(
+        "--meshopt-ratio",
+        type=float,
+        default=0.2,
+        help="Final meshoptimizer vertex ratio when --meshopt-cli is used",
+    )
     return parser.parse_args()
+
+
+def glb_triangle_count(path: Path) -> int:
+    data = path.read_bytes()
+    if len(data) < 20 or data[:4] != b"glTF":
+        raise ValueError(f"not a binary glTF: {path}")
+    json_length, json_type = struct.unpack_from("<II", data, 12)
+    if json_type != 0x4E4F534A:
+        raise ValueError(f"GLB JSON chunk is missing: {path}")
+    document = json.loads(data[20 : 20 + json_length].rstrip(b"\x00 "))
+    triangles = 0
+    for mesh in document.get("meshes", []):
+        for primitive in mesh.get("primitives", []):
+            if primitive.get("mode", 4) != 4 or "indices" not in primitive:
+                continue
+            triangles += document["accessors"][primitive["indices"]]["count"] // 3
+    return triangles
 
 
 def matrix_for_three(matrix: Gf.Matrix4d) -> list[float]:
@@ -131,6 +189,7 @@ def visual_meshes(stage: Usd.Stage, body: Usd.Prim, ratio: float) -> list[tuple[
         return []
     xforms = UsdGeom.XformCache()
     meshes_by_color: dict[tuple, list[trimesh.Trimesh]] = defaultdict(list)
+    agx_proxy_bounds: list[np.ndarray] = []
     for prim in Usd.PrimRange(prototype):
         if not prim.IsA(UsdGeom.Mesh):
             continue
@@ -142,15 +201,27 @@ def visual_meshes(stage: Usd.Stage, body: Usd.Prim, ratio: float) -> list[tuple[
             continue
         faces = indices.reshape((-1, 3)) if np.all(counts == 3) else triangulate(counts, indices)
         mesh = trimesh.Trimesh(vertices=points, faces=faces, process=True, validate=False)
+        mesh.apply_transform(matrix_for_trimesh(xforms.GetLocalToWorldTransform(prim)))
+        if any(token in str(prim.GetPath()) for token in AGX_PROXY_MESH_TOKENS):
+            agx_proxy_bounds.append(mesh.bounds)
+            continue
         if len(mesh.faces) > 160:
             target = max(80, int(len(mesh.faces) * ratio))
             try:
                 mesh = mesh.simplify_quadric_decimation(face_count=target, aggression=7)
             except (ValueError, RuntimeError):
                 pass
-        mesh.apply_transform(matrix_for_trimesh(xforms.GetLocalToWorldTransform(prim)))
         color = tuple(round(component, 4) for component in material_color(prim))
         meshes_by_color[color].append(mesh)
+
+    if agx_proxy_bounds:
+        lower = np.min(np.stack([bounds[0] for bounds in agx_proxy_bounds]), axis=0)
+        upper = np.max(np.stack([bounds[1] for bounds in agx_proxy_bounds]), axis=0)
+        extents = np.maximum(upper - lower, 1e-6)
+        transform = np.eye(4)
+        transform[:3, 3] = (lower + upper) * 0.5
+        proxy = trimesh.creation.box(extents=extents, transform=transform)
+        meshes_by_color[(0.18, 0.20, 0.22, 1.0)].append(proxy)
 
     result = []
     for color, meshes in meshes_by_color.items():
@@ -231,6 +302,11 @@ def mark_spanning_tree(joints: list[dict], root: str) -> tuple[int, int]:
 
 def main() -> None:
     args = parse_args()
+    source_sha256 = hashlib.sha256(args.usd.read_bytes()).hexdigest()
+    if source_sha256 != SOURCE_SHA256:
+        raise SystemExit(
+            f"source USD SHA-256 mismatch: {source_sha256} != {SOURCE_SHA256}"
+        )
     stage = Usd.Stage.Open(str(args.usd))
     if stage is None:
         raise SystemExit(f"Could not open {args.usd}")
@@ -280,8 +356,36 @@ def main() -> None:
 
     glb_bytes = scene.export(file_type="glb")
     args.glb.write_bytes(glb_bytes)
+    meshopt = None
+    if args.meshopt_cli:
+        weld_path = args.glb.with_name(f"{args.glb.stem}.weld.glb")
+        subprocess.run(
+            [str(args.meshopt_cli), "weld", str(args.glb), str(weld_path)],
+            check=True,
+        )
+        subprocess.run(
+            [
+                str(args.meshopt_cli),
+                "simplify",
+                str(weld_path),
+                str(args.glb),
+                "--ratio",
+                str(args.meshopt_ratio),
+                "--error",
+                "1",
+            ],
+            check=True,
+        )
+        weld_path.unlink(missing_ok=True)
+        output_triangles = glb_triangle_count(args.glb)
+        meshopt = {
+            "tool": "@gltf-transform/cli",
+            "version": "4.2.1",
+            "operations": ["weld", "meshoptimizer simplify"],
+            "ratio": args.meshopt_ratio,
+            "error": 1,
+        }
 
-    source_sha256 = hashlib.sha256(args.usd.read_bytes()).hexdigest()
     binding_records = []
     for can_id, side, key, usd_joint in CAN_BINDINGS:
         joint = next(record for record in joints if record["name"] == usd_joint)
@@ -302,16 +406,37 @@ def main() -> None:
             ),
         })
 
+    arm_binding_records = []
+    for identifier, side, physical_joint, usd_joint, motor, mount, closed_loop in ARM_BINDINGS:
+        joint = next(record for record in joints if record["name"] == usd_joint)
+        arm_binding_records.append({
+            "id": identifier,
+            "side": side,
+            "physicalJoint": physical_joint,
+            "usdJoint": usd_joint,
+            "usdPath": joint["path"],
+            "motor": motor,
+            "mount": mount,
+            **({"closedLoop": True} if closed_loop else {}),
+            "firmwareCanId": None,
+            "mappingBasis": (
+                "Physical torso motor identification; authored USD joint name retained."
+                if mount == "torso"
+                else "Physical arm motor identification; authored USD joint name retained."
+            ),
+        })
+
     manifest = {
         "schema": "dropbear-browser-articulation-v1",
         "source": {
             "repository": SOURCE_REPOSITORY,
             "commit": SOURCE_COMMIT,
-            "path": "dropbear_model/Dropbear/usd/dropbear.usd",
+            "path": "dropbear_walk/isaaclab_asset/dropbear.usd",
             "sha256": source_sha256,
             "license": "CC-BY-NC-SA-4.0",
             "attribution": "Hyperspawn Robotics - Priyanshu Pareek and Cole Myers",
             "adaptation": "Visual meshes decimated and material model translated for browser rendering.",
+            "postProcessing": meshopt,
         },
         "stage": {
             "defaultPrim": str(stage.GetDefaultPrim().GetPath()),
@@ -343,12 +468,31 @@ def main() -> None:
         "joints": joints,
         "sdkJointNames": SDK_JOINTS,
         "canBindings": binding_records,
+        "armMotorBindings": arm_binding_records,
         "browserKinematics": {
             "mode": "USD spanning-tree forward kinematics with damped least-squares passive-joint closure projection",
             "loopClosure": "Calf X8 and knee motor axes are commanded coordinates; passive leg joints are projected against retained USD closure anchors in-browser. Isaac/PhysX remains dynamics-authoritative.",
+            "groundContact": "Lowest heel/toe foot-body patches drive a unilateral Z-only root guide with gravity settling and no-penetration projection. No friction, impact, lateral, rotational, or rigid-body dynamics are claimed.",
             "adaptations": {
-                "RL_Revolute81": "Use mirrored Z revolute basis in-browser. The source revision authors this lone outer-calf X8 axis as X while its mirrored mate and the other calf driver axes are Z; X cannot close the crank/rod/ankle contact geometry.",
+                "AGX Orin": "Two detailed carrier-board visual meshes are replaced by one occupied-envelope proxy. Rigid-body mass, inertia, collision geometry, transform, and joint topology are retained.",
+                "RL_Revolute81": "Use the corrected Z revolute basis authored by dropbear-locomotion.",
             },
+            "armLinkages": [
+                {
+                    "side": "left",
+                    "elbowMotor": "LH_Revolute41",
+                    "passiveJoints": ["LH_Revolute42", "LH_elbow_joint", "LH_Revolute32", "LH_Revolute33", "LH_Revolute44"],
+                    "closureConstraints": ["LH_Revolute123", "LH_Revolute125", "LH_Revolute127"],
+                    "wristOutput": "LH_wrist_roll",
+                },
+                {
+                    "side": "right",
+                    "elbowMotor": "RH_Revolute41",
+                    "passiveJoints": ["RH_Revolute42", "RH_elbow_joint", "RH_Revolute32", "RH_Revolute33", "RH_Revolute44"],
+                    "closureConstraints": ["RH_Revolute123", "RH_Revolute125", "RH_Revolute127"],
+                    "wristOutput": "RH_wrist_roll",
+                },
+            ],
             "calfLinkages": [
                 {
                     "side": "left",
