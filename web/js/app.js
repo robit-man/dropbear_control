@@ -16,6 +16,11 @@ import {
 import { RLPolicyPlayer } from "./rl_policy.js";
 import { Robot3D } from "./robot_3d.js";
 import {
+  applyHardwareObservation,
+  clearHardwareObservationHistory,
+  validateHardwareObservation,
+} from "./hardware_observation.js";
+import {
   GR00T_WBC_PLAYBACK_SOURCES,
   cancelGr00tWbcPlayback,
   playGr00tWbcSource,
@@ -203,6 +208,20 @@ const ui = {
   selectedRLSessionId: null,
   rlSessionsSignature: "",
   physicsRuntime: null,
+  hardwareObservation: {
+    active: false,
+    autoActivate: new URLSearchParams(window.location.search).get("live") === "1",
+    pending: false,
+    latest: null,
+    lastAppliedSignature: "",
+    error: "",
+  },
+  hardwareControl: {
+    challenge: "",
+    leaseToken: "",
+    expiresInMs: 0,
+    frontendArmed: false,
+  },
 };
 
 function selectedJoint() {
@@ -222,6 +241,136 @@ function appendTerminal(text, kind = "") {
   output.appendChild(line);
   while (output.childElementCount > 180) output.removeChild(output.firstChild);
   output.scrollTop = output.scrollHeight;
+}
+
+function renderHardwareObservationState() {
+  const status = ui.hardwareObservation.latest;
+  const output = $("hardware-observation-state");
+  const button = $("hardware-observation-toggle");
+  const freshSides = ["left", "right"].filter((side) => status?.sides?.[side]?.fresh === true).length;
+  let label = status?.enabled ? String(status.state || "waiting").toUpperCase() : "DISABLED";
+  if (ui.hardwareObservation.active) {
+    label = freshSides === 2 ? "LIVE · 2/2" : freshSides === 1 ? "DEGRADED · 1/2" : "STALE · 0/2";
+  }
+  output.textContent = `READ ONLY · ${label}`;
+  output.classList.toggle("warn", ui.hardwareObservation.active && freshSides < 2);
+  button.classList.toggle("active", ui.hardwareObservation.active);
+  button.setAttribute("aria-pressed", String(ui.hardwareObservation.active));
+  button.textContent = ui.hardwareObservation.active ? "LEAVE LIVE STATE" : "USE LIVE STATE";
+}
+
+async function pollHardwareObservation() {
+  if (ui.hardwareObservation.pending) return;
+  ui.hardwareObservation.pending = true;
+  try {
+    const response = await fetch("/api/hardware/observation", { cache: "no-store" });
+    if (!response.ok) throw new Error(`observation status ${response.status}`);
+    const payload = await response.json();
+    const validated = validateHardwareObservation(payload);
+    ui.hardwareObservation.latest = payload;
+    ui.hardwareObservation.error = "";
+    if (ui.hardwareObservation.active && validated.availableSides.length > 0) {
+      const result = applyHardwareObservation(sim, payload);
+      const signature = `${result.sequences.left}:${result.sequences.right}`;
+      if (signature !== ui.hardwareObservation.lastAppliedSignature) {
+        ui.hardwareObservation.lastAppliedSignature = signature;
+      }
+    } else if (ui.hardwareObservation.active) {
+      clearHardwareObservationHistory(sim);
+    } else if (ui.hardwareObservation.autoActivate && validated.availableSides.length > 0) {
+      ui.hardwareObservation.autoActivate = false;
+      setHardwareObservationActive(true);
+    }
+  } catch (error) {
+    ui.hardwareObservation.error = error.message;
+  } finally {
+    ui.hardwareObservation.pending = false;
+    renderHardwareObservationState();
+  }
+}
+
+function setHardwareObservationActive(active) {
+  if (active) {
+    const validated = validateHardwareObservation(ui.hardwareObservation.latest);
+    if (validated.availableSides.length === 0) throw new Error("no fresh ESP32 leg stream is available");
+    beginPlaybackSelection();
+    policyPlayer.pause();
+    ui.policyMode = false;
+    ui.watchTraining = false;
+    sim.playMode = false;
+    sim.scenario = "hardware-observation";
+    ui.hardwareObservation.active = true;
+    applyHardwareObservation(sim, ui.hardwareObservation.latest);
+    appendTerminal(`[hardware] live ${validated.availableSides.join(" + ")} state applied to USD · passive RX · tx bytes 0`, "ok");
+  } else {
+    ui.hardwareObservation.active = false;
+    ui.hardwareObservation.lastAppliedSignature = "";
+    clearHardwareObservationHistory(sim);
+    appendTerminal("[hardware] live state source released · simulation remains paused", "warn");
+  }
+  renderHardwareObservationState();
+}
+
+function safetyAcknowledgements() {
+  return Object.fromEntries(
+    [...document.querySelectorAll("[data-safety-ack]")].map((input) => [
+      input.dataset.safetyAck,
+      input.checked,
+    ]),
+  );
+}
+
+function allSafetyAcknowledged() {
+  return [...document.querySelectorAll("[data-safety-ack]")].every((input) => input.checked);
+}
+
+function renderHardwareControlState() {
+  const armed = ui.hardwareControl.frontendArmed && Boolean(ui.hardwareControl.leaseToken);
+  const button = $("hardware-control-lock");
+  button.classList.toggle("armed", armed);
+  button.textContent = armed
+    ? `FRONTEND ARMED · ${Math.ceil(ui.hardwareControl.expiresInMs / 1000)}s`
+    : "CONTROL LOCKED";
+  const target = selectedJoint();
+  $("hardware-send-target").disabled = !(
+    armed
+    && ui.hardwareObservation.active
+    && ui.axisCategory === "leg"
+    && target.observationValid
+  );
+}
+
+async function pollHardwareControlState() {
+  try {
+    const response = await fetch("/api/hardware/control/status", { cache: "no-store" });
+    if (!response.ok) return;
+    const status = await response.json();
+    ui.hardwareControl.expiresInMs = Number(status.expiresInMs) || 0;
+    if (!status.frontendArmed) {
+      ui.hardwareControl.frontendArmed = false;
+      ui.hardwareControl.leaseToken = "";
+    }
+    renderHardwareControlState();
+  } catch (_error) {
+    ui.hardwareControl.frontendArmed = false;
+    ui.hardwareControl.leaseToken = "";
+    renderHardwareControlState();
+  }
+}
+
+async function revokeHardwareControl() {
+  try {
+    await requestJson("/api/hardware/control/revoke", {
+      method: "POST",
+      body: JSON.stringify({ reason: "frontend_revoke" }),
+    });
+  } finally {
+    ui.hardwareControl.challenge = "";
+    ui.hardwareControl.leaseToken = "";
+    ui.hardwareControl.frontendArmed = false;
+    ui.hardwareControl.expiresInMs = 0;
+    renderHardwareControlState();
+  }
 }
 
 const board = new Board3D($("board-canvas"), {
@@ -594,6 +743,7 @@ async function configurePlaybackSource(
   } = {},
 ) {
   if (!isCurrentPlaybackSelection(generation)) return false;
+  if (ui.hardwareObservation.active) setHardwareObservationActive(false);
   if (ui.playbackFamily !== "classic") {
     throw new Error("classic playback configuration requested while GR00T is selected");
   }
@@ -803,6 +953,7 @@ function setupSimControls() {
     }
   });
   $("sim-reset").addEventListener("click", () => {
+    if (ui.hardwareObservation.active) setHardwareObservationActive(false);
     beginPlaybackSelection();
     policyPlayer.pause();
     ui.policyMode = false;
@@ -835,6 +986,7 @@ function setupSimControls() {
     await configurePlaybackSource($("scenario").value);
   });
   $("playback-family").addEventListener("click", async () => {
+    if (ui.hardwareObservation.active) setHardwareObservationActive(false);
     const generation = beginPlaybackSelection();
     policyPlayer.pause();
     sim.setPlay(false);
@@ -854,6 +1006,7 @@ function setupSimControls() {
     await configurePlaybackSource($("scenario").value, { generation });
   });
   $("scenario").addEventListener("change", async (event) => {
+    if (ui.hardwareObservation.active) setHardwareObservationActive(false);
     if (ui.playbackFamily === "gr00t") {
       ui.playbackSelections.gr00t = event.target.value;
       beginPlaybackSelection();
@@ -899,6 +1052,128 @@ function setupSimControls() {
   });
   $("fault-sensor").addEventListener("click", () => sim.injectFault("sensor", ui.selectedJointId));
   $("fault-thermal").addEventListener("click", () => sim.injectFault("thermal", ui.selectedJointId));
+}
+
+function setupHardwareControls() {
+  $("hardware-observation-toggle").addEventListener("click", () => {
+    try {
+      setHardwareObservationActive(!ui.hardwareObservation.active);
+    } catch (error) {
+      appendTerminal(`[hardware] observation source unavailable · ${error.message}`, "err");
+    }
+  });
+
+  $("hardware-control-lock").addEventListener("click", async () => {
+    if (ui.hardwareControl.frontendArmed) {
+      await revokeHardwareControl();
+      appendTerminal("[hardware] frontend control lease revoked", "warn");
+      return;
+    }
+    try {
+      const state = await requestJson("/api/hardware/control/advance", {
+        method: "POST",
+        body: JSON.stringify({ stage: 1 }),
+      });
+      ui.hardwareControl.challenge = state.challenge;
+      document.querySelectorAll("[data-safety-ack]").forEach((input) => { input.checked = false; });
+      $("hardware-arm-stage2").disabled = true;
+      $("hardware-arm-stage2").hidden = false;
+      $("hardware-arm-stage3").hidden = true;
+      $("hardware-arm-stage-2").className = "active";
+      $("hardware-arm-stage-3").className = "";
+      $("hardware-arm-summary").textContent = "Stage 1 of 3 is complete. Review and acknowledge every item before continuing.";
+      $("hardware-arm-result").className = "hardware-arm-result";
+      $("hardware-arm-result").textContent = "Physical transport remains locked independently of this frontend sequence.";
+      $("hardware-arm-dialog").showModal();
+    } catch (error) {
+      appendTerminal(`[hardware] arm review rejected · ${error.message}`, "err");
+    }
+  });
+
+  document.querySelectorAll("[data-safety-ack]").forEach((input) => {
+    input.addEventListener("change", () => {
+      $("hardware-arm-stage2").disabled = !allSafetyAcknowledged();
+    });
+  });
+
+  $("hardware-arm-stage2").addEventListener("click", async () => {
+    try {
+      const state = await requestJson("/api/hardware/control/advance", {
+        method: "POST",
+        body: JSON.stringify({
+          stage: 2,
+          challenge: ui.hardwareControl.challenge,
+          acknowledgements: safetyAcknowledgements(),
+        }),
+      });
+      ui.hardwareControl.challenge = state.challenge;
+      $("hardware-arm-stage-2").className = "complete";
+      $("hardware-arm-stage-3").className = "active";
+      $("hardware-safety-acknowledgements").disabled = true;
+      $("hardware-arm-stage2").hidden = true;
+      $("hardware-arm-stage3").hidden = false;
+      $("hardware-arm-summary").textContent = "Stage 2 of 3 is complete. The final click opens a short frontend lease; the backend transport remains independently locked.";
+    } catch (error) {
+      $("hardware-arm-result").textContent = error.message;
+      appendTerminal(`[hardware] safety acknowledgement rejected · ${error.message}`, "err");
+    }
+  });
+
+  $("hardware-arm-stage3").addEventListener("click", async () => {
+    try {
+      const state = await requestJson("/api/hardware/control/advance", {
+        method: "POST",
+        body: JSON.stringify({
+          stage: 3,
+          challenge: ui.hardwareControl.challenge,
+          confirm: true,
+        }),
+      });
+      ui.hardwareControl.challenge = "";
+      ui.hardwareControl.leaseToken = state.leaseToken;
+      ui.hardwareControl.frontendArmed = true;
+      ui.hardwareControl.expiresInMs = Number(state.expiresInMs) || 0;
+      $("hardware-arm-stage-3").className = "complete";
+      $("hardware-arm-stage3").hidden = true;
+      $("hardware-arm-summary").textContent = "All three stages are complete. The frontend channel is armed for a bounded interval.";
+      $("hardware-arm-result").className = "hardware-arm-result ok";
+      $("hardware-arm-result").textContent = "Frontend lease active. Physical transport is still locked until the independent hardware backend is installed and admitted.";
+      renderHardwareControlState();
+      appendTerminal("[hardware] frontend control lease armed · physical transport still locked", "warn");
+    } catch (error) {
+      $("hardware-arm-result").textContent = error.message;
+      appendTerminal(`[hardware] final acknowledgement rejected · ${error.message}`, "err");
+    }
+  });
+
+  $("hardware-arm-dialog").addEventListener("close", () => {
+    $("hardware-safety-acknowledgements").disabled = false;
+    if (!ui.hardwareControl.frontendArmed) revokeHardwareControl();
+  });
+
+  $("hardware-send-target").addEventListener("click", async () => {
+    const target = selectedJoint();
+    try {
+      await requestJson("/api/hardware/command", {
+        method: "POST",
+        body: JSON.stringify({
+          schema: "dropbear-hardware-command-v1",
+          leaseToken: ui.hardwareControl.leaseToken,
+          requestId: crypto.randomUUID(),
+          jointName: `${target.side}_${target.key}`,
+          mode: "joint_position",
+          valueSi: (target.desiredPosition - 180) * Math.PI / 180,
+        }),
+      });
+    } catch (error) {
+      appendTerminal(`[hardware] command held · ${error.message}`, "warn");
+    }
+  });
+
+  pollHardwareObservation();
+  pollHardwareControlState();
+  window.setInterval(pollHardwareObservation, 100);
+  window.setInterval(pollHardwareControlState, 1000);
 }
 
 function setupCadControls() {
@@ -1746,14 +2021,19 @@ function renderLive() {
   const target = selectedJoint();
   const selectedArm = armMotorStates.find((entry) => entry.id === ui.selectedArmMotorId);
   const runningButton = $("sim-toggle");
-  const effectivePlaying = ui.policyMode ? policyPlayer.playing : sim.playMode;
+  const observingHardware = ui.hardwareObservation.active;
+  const effectivePlaying = !observingHardware && (ui.policyMode ? policyPlayer.playing : sim.playMode);
+  const hardwareFreshSides = ["left", "right"].filter(
+    (side) => ui.hardwareObservation.latest?.sides?.[side]?.fresh === true,
+  ).length;
   runningButton.classList.toggle("stop", effectivePlaying);
   runningButton.setAttribute("aria-pressed", String(effectivePlaying));
+  runningButton.disabled = observingHardware;
   runningButton.innerHTML = effectivePlaying ? '<span class="run-icon">■</span> STOP' : '<span class="run-icon">▶</span> PLAY';
-  $("system-state").className = `system-state ${effectivePlaying ? "running" : "paused"}`;
-  $("system-state").innerHTML = `<span></span>${effectivePlaying ? "CONTROL ACTIVE" : "GUARDED PAUSE"}`;
+  $("system-state").className = `system-state ${observingHardware ? "observing" : effectivePlaying ? "running" : "paused"}`;
+  $("system-state").innerHTML = `<span></span>${observingHardware ? (hardwareFreshSides ? `READ ONLY · LIVE ${hardwareFreshSides}/2` : "READ ONLY · STALE") : effectivePlaying ? "CONTROL ACTIVE" : "GUARDED PAUSE"}`;
   $("sim-time").textContent = `${sim.time.toFixed(2)} s`;
-  $("control-state").textContent = effectivePlaying ? sim.scenario.toUpperCase() : "STOP";
+  $("control-state").textContent = observingHardware ? "OBSERVE" : effectivePlaying ? sim.scenario.toUpperCase() : "STOP";
   $("can-load").textContent = `${sim.canUtilization.toFixed(1)}%`;
   $("sel-angle").textContent = ui.axisCategory === "arm"
     ? `${(selectedArm?.angleDeg || 0).toFixed(1)}°`
@@ -1766,7 +2046,13 @@ function renderLive() {
     : `${target.torque.toFixed(2)} N·m`;
   $("sel-sensor").textContent = ui.axisCategory === "arm"
     ? "AUX · CAN UNMAPPED"
-    : target.sensorPin == null ? "NO ANALOG" : `GPIO${target.sensorPin} · ${target.adc}`;
+    : target.sensorPin == null
+      ? "NO ANALOG"
+      : observingHardware
+        ? target.observationValid
+          ? `LIVE GPIO${target.sensorPin} · ${Number(target.observationAgeMs || 0).toFixed(0)} ms`
+          : `GPIO${target.sensorPin} · UNAVAILABLE`
+        : `GPIO${target.sensorPin} · ${target.adc}`;
   $("fault-sensor").textContent = ui.axisCategory === "arm"
     ? "NO SENSOR MAP"
     : target.sensorStuck ? "RELEASE SENSOR" : "FREEZE SENSOR";
@@ -1778,10 +2064,12 @@ function renderLive() {
 
   for (const card of document.querySelectorAll(".joint-card[data-joint-id]")) {
     const joint = sim.getJoint(Number(card.dataset.jointId));
-    card.querySelector('[data-field="angle"]').textContent = `${joint.angle.toFixed(1)}°`;
+    card.querySelector('[data-field="angle"]').textContent = observingHardware && !joint.observationValid
+      ? "UNOBSERVED"
+      : `${joint.angle.toFixed(1)}°`;
     card.querySelector('[data-field="torque"]').textContent = `${joint.torque.toFixed(2)} N·m`;
     const dot = card.querySelector(".joint-dot");
-    dot.className = `joint-dot ${joint.temperature > 80 || sim.faults.canDrop ? "warn" : sim.playMode ? "live" : ""}`;
+    dot.className = `joint-dot ${joint.temperature > 80 || sim.faults.canDrop || (observingHardware && joint.observationOutOfEnvelope) ? "warn" : observingHardware && joint.observationValid ? "observed" : sim.playMode ? "live" : ""}`;
   }
 
   const poseNow = performance.now();
@@ -1840,12 +2128,19 @@ function renderLive() {
   $("fault-can").textContent = sim.faults.canDrop ? "RESTORE CAN" : "DROP CAN";
   $("fault-serial").textContent = sim.faults.serialDrop ? "RESTORE SERIAL" : "DROP SERIAL";
   $("fault-imu").textContent = sim.faults.imuDrift ? "CLEAR IMU DRIFT" : "DRIFT IMU";
+  $("torque-target").disabled = observingHardware;
+  $("impedance-toggle").disabled = observingHardware;
+  renderHardwareObservationState();
+  renderHardwareControlState();
 }
 
 function frame(now) {
   const dt = Math.min(0.05, (now - ui.lastFrame) / 1000);
   ui.lastFrame = now;
-  if (ui.policyMode) policyPlayer.update(dt);
+  if (ui.hardwareObservation.active) {
+    // The passive reader owns actual joint state while selected. Never advance
+    // the synthetic plant underneath a stale or fresh hardware sample.
+  } else if (ui.policyMode) policyPlayer.update(dt);
   else sim.step(dt);
   if (now - ui.scopeSampleAt > 38) {
     const target = selectedJoint();
@@ -1886,6 +2181,7 @@ setupNavigation();
 makeJointCards();
 setupMotorCategories();
 setupSimControls();
+setupHardwareControls();
 setupCadControls();
 setupBoardControls();
 setupFirmware();

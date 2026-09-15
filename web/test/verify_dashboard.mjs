@@ -46,6 +46,14 @@ check("separate dropbear_firmware repository is absent", !index.body.includes("d
 check("deprecated decorative brand mark removed", !index.body.includes('class="brand-mark"'));
 check("Hyperspawn identity applied", index.body.includes("HYPERSPAWN<em>_</em>"));
 check("configurable USD resolution control present", index.body.includes('id="usd-resolution"'));
+check(
+  "passive observation and three-stage control UI are present",
+  index.body.includes('id="hardware-observation-toggle"')
+    && index.body.includes('id="hardware-control-lock"')
+    && index.body.includes('id="hardware-arm-stage2"')
+    && index.body.includes('id="hardware-arm-stage3"')
+    && (index.body.match(/data-safety-ack=/g) || []).length === 5,
+);
 check("paired foot and X8 telemetry present", index.body.includes('id="left-foot-height"') && index.body.includes('id="right-calf-pair"'));
 check(
   "geometry contact telemetry present",
@@ -140,6 +148,13 @@ check("dashboard instantiates controller viewer", app.body.includes("new Board3D
 check("dashboard instantiates full USD robot viewer", app.body.includes("new Robot3D"));
 check("dashboard exposes inspectable twin", app.body.includes("window.dropbearTwin"));
 check("dashboard exposes inspectable arm motor state", app.body.includes("armMotorBindings: DROPBEAR_ARM_MOTOR_BINDINGS"));
+check(
+  "dashboard applies only validated passive hardware observations",
+  app.body.includes('requestJson("/api/hardware/control/advance"')
+    && app.body.includes('requestJson("/api/hardware/command"')
+    && app.body.includes("validateHardwareObservation")
+    && app.body.includes("applyHardwareObservation"),
+);
 check("USD resolution persists and updates renderer", app.body.includes("dropbear-usd-resolution") && app.body.includes("setResolutionScale"));
 check("geometry contact feeds the load-cell simulator", app.body.includes("sim.setFootContactState(robot.groundContact)"));
 check(
@@ -186,6 +201,26 @@ check(
     && gr00tStatus?.schema === "dropbear-gr00t-runtime-v1"
     && gr00tStatus?.safety?.hardwareCommandsEnabled === false
     && Boolean(gr00tStatus?.training),
+);
+
+const hardwareObservationResponse = await request(`${base}/api/hardware/observation`);
+const hardwareObservation = JSON.parse(hardwareObservationResponse.body);
+check(
+  "hardware observation API is explicitly byte-silent",
+  hardwareObservationResponse.status === 200
+    && hardwareObservation.schema === "dropbear-passive-observation-v1"
+    && hardwareObservation.mode === "read_only"
+    && hardwareObservation.writeCapable === false
+    && hardwareObservation.txBytes === 0,
+);
+const hardwareControlResponse = await request(`${base}/api/hardware/control/status`);
+const hardwareControl = JSON.parse(hardwareControlResponse.body);
+check(
+  "hardware control API stays physically locked",
+  hardwareControlResponse.status === 200
+    && hardwareControl.schema === "dropbear-frontend-control-gate-v1"
+    && hardwareControl.hardwareOutputEnabled === false
+    && hardwareControl.physicalTransport === "not_installed",
 );
 
 const rlStatus = await request(`${base}/api/rl/status`);

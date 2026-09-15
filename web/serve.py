@@ -29,6 +29,11 @@ from gr00t_service import (
     Gr00tRuntimeInspector,
     Gr00tTrainingManager,
 )
+from hardware_service import (
+    ControlGateError,
+    HardwareControlGate,
+    HardwareObservationManager,
+)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(HERE)
@@ -40,6 +45,8 @@ GR00T_TRAINING = Gr00tTrainingManager(
 )
 GR00T_PROMPT_PLANNER = DropbearPromptPlanner()
 GR00T_RETARGET = Gr00tRetargetService(Path(PROJECT_ROOT))
+HARDWARE_OBSERVATION = HardwareObservationManager.from_environment()
+HARDWARE_CONTROL_GATE = HardwareControlGate()
 CONTROL_TOKEN = secrets.token_urlsafe(32)
 # A full GR00T PolicyServer horizon is 40 x 64 float values. Keep a bounded
 # loopback-only ceiling with enough room for unrounded JSON float encodings,
@@ -238,7 +245,7 @@ class Handler(SimpleHTTPRequestHandler):
 
     def _authorize_control(self):
         if not self._is_loopback():
-            return "training and prompt control are loopback-only"
+            return "control requests are loopback-only"
         request_host = self._local_request_host()
         if request_host is None:
             return "control requires a loopback Host header"
@@ -278,6 +285,12 @@ class Handler(SimpleHTTPRequestHandler):
         if request_path == "/api/gr00t/sessions":
             self._send_json(200, GR00T_TRAINING.list_sessions())
             return
+        if request_path == "/api/hardware/observation":
+            self._send_json(200, HARDWARE_OBSERVATION.snapshot())
+            return
+        if request_path == "/api/hardware/control/status":
+            self._send_json(200, HARDWARE_CONTROL_GATE.snapshot())
+            return
         super().do_GET()
 
     def do_POST(self):
@@ -295,6 +308,9 @@ class Handler(SimpleHTTPRequestHandler):
                 "/api/gr00t/retarget",
                 "/api/gr00t/train",
                 "/api/gr00t/stop",
+                "/api/hardware/control/advance",
+                "/api/hardware/control/revoke",
+                "/api/hardware/command",
             }
             if request_path not in supported:
                 self._send_json(404, {"error": "not found"})
@@ -315,11 +331,17 @@ class Handler(SimpleHTTPRequestHandler):
             elif request_path == "/api/gr00t/train":
                 state = GR00T_TRAINING.start(payload)
                 self._send_json(202, state)
+            elif request_path == "/api/hardware/control/advance":
+                self._send_json(200, HARDWARE_CONTROL_GATE.advance(payload))
+            elif request_path == "/api/hardware/control/revoke":
+                self._send_json(200, HARDWARE_CONTROL_GATE.revoke())
+            elif request_path == "/api/hardware/command":
+                self._send_json(423, HARDWARE_CONTROL_GATE.inspect_command(payload))
             else:
                 self._send_json(200, GR00T_TRAINING.stop())
         except UnsupportedMediaType as error:
             self._send_json(415, {"error": str(error)})
-        except (ValueError, RuntimeError) as error:
+        except (ControlGateError, ValueError, RuntimeError) as error:
             self._send_json(409 if isinstance(error, RuntimeError) else 400, {
                 "error": str(error),
             })
@@ -330,6 +352,8 @@ class Handler(SimpleHTTPRequestHandler):
 
 def _shutdown_managers():
     for label, callback in (
+        ("hardware observation", HARDWARE_OBSERVATION.stop),
+        ("hardware control gate", HARDWARE_CONTROL_GATE.revoke),
         ("GR00T training", GR00T_TRAINING.shutdown),
         ("RL training", RL_MANAGER.stop),
     ):
@@ -367,6 +391,13 @@ def main():
     display_host = "localhost" if _is_loopback_bind_host(host) else host
     print(f"Dropbear digital twin: http://{display_host}:{port}", flush=True)
     print("Serving local Three.js modules and tracked STEP-derived CAD.", flush=True)
+    HARDWARE_OBSERVATION.start()
+    observation = HARDWARE_OBSERVATION.snapshot()
+    print(
+        "Hardware observation: "
+        f"{observation['state']} (read-only, tx_bytes={observation['txBytes']}).",
+        flush=True,
+    )
     print("Press Ctrl+C to stop.")
     try:
         httpd.serve_forever()

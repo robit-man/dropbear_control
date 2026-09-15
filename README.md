@@ -267,6 +267,14 @@ tools/setup_gr00t_runtime.sh
 
 Open <http://localhost:8000>.
 
+For explicitly enabled receive-only state from the two deployed leg ESP32s,
+set the two stable USB paths and open `/?live=1`. The service owns read-only
+file descriptors, emits `txBytes: 0`, accepts partial fresh sides without
+inventing the missing state, and leaves both hip-yaw axes unobserved. See
+[`docs/USB_OBSERVATION_AND_CONTROL_MIGRATION.md`](docs/USB_OBSERVATION_AND_CONTROL_MIGRATION.md)
+for the current AGX command, measured result, actuator map, and staged control
+plan.
+
 On a non-CUDA workstation, use `python3 web/serve.py 8000`; the dashboard and
 existing RL lab still run, while CUDA deployment gates remain visibly closed.
 The server binds `127.0.0.1` by default. Browser mutations transparently fetch
@@ -623,6 +631,8 @@ plant fidelity, or safe powered operation.
 | Path | Purpose |
 |---|---|
 | `web/` | Seven-view browser engineering dashboard, USD twin, PPO service, and GR00T compatibility lab |
+| `web/hardware_service.py` | Opt-in passive dual-ESP32 observation and expiring three-stage frontend control gate |
+| `web/js/hardware_observation.js` | Strict measured-state validation and partial-side USD application |
 | `web/assets/robot/` | Optimized Dropbear GLB, articulation manifest, and attribution |
 | `web/assets/cad/` | STEP-derived actuator browser caches |
 | `integrations/gr00t_wbc/` | Pinned 22-action/784-observation upstream overlay, order/closure adapters, and 50 Hz reference contract |
@@ -661,6 +671,9 @@ Start with:
   — observed low-level source audit;
 - [`docs/CONTROL_STACK_TARGET.md`](docs/CONTROL_STACK_TARGET.md) — staged
   target architecture;
+- [`docs/USB_OBSERVATION_AND_CONTROL_MIGRATION.md`](docs/USB_OBSERVATION_AND_CONTROL_MIGRATION.md)
+  — attached-USB observation, live dashboard, frontend lock, foot-force intake,
+  and phased motor-control migration;
 - [`docs/MYACTUATOR_ROS2_CONTROL_HANDOFF.md`](docs/MYACTUATOR_ROS2_CONTROL_HANDOFF.md)
   — fail-closed ROS hardware handoff; and
 - [`docs/MYACTUATOR_LIBRARY_ASSESSMENT.md`](docs/MYACTUATOR_LIBRARY_ASSESSMENT.md)

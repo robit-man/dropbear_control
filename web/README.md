@@ -128,6 +128,21 @@ modules, the exact generated CAD candidates, and the optimized browser caches
 without a frontend build step. The `USD RES` slider changes the actual renderer
 pixel density from 50–200% and persists the local selection.
 
+To opt into passive hardware observation, provide both side-specific USB paths:
+
+```bash
+DROPBEAR_OBSERVATION_ENABLE=1 \
+DROPBEAR_OBSERVATION_LEFT=/dev/serial/by-path/<left-controller> \
+DROPBEAR_OBSERVATION_RIGHT=/dev/serial/by-path/<right-controller> \
+python3 web/serve.py 8000
+```
+
+Open <http://localhost:8000/?live=1> to select fresh measured state
+automatically, or click **USE LIVE STATE**. Fresh sides drive their five
+external-sensor axes; stale or absent sides and both hip-yaw axes display as
+unobserved. The hardware endpoint is byte-silent and the frontend command
+channel remains physically locked even after its three-stage acknowledgement.
+
 The server binds to `127.0.0.1` by default. Control requests use strict JSON,
 same-origin checks, and a per-process token fetched automatically by the
 dashboard. An explicitly enabled remote bind can serve the static/status
@@ -160,6 +175,8 @@ Set `DASHBOARD_BASE`, `BASE_URL`, or `VISUAL_OUT` to override their defaults.
 | `js/board_3d.js` | Interactive dimensional ESP32 controller and signal routes |
 | `js/cad_viewer.js` | STEP-derived GLB rendering and articulation |
 | `js/app.js` | Dashboard interaction and live telemetry wiring |
+| `hardware_service.py` | Receive-only ESP32 readers and fail-closed control admission |
+| `js/hardware_observation.js` | Measured-state schema validation and USD application |
 | `rl_service.py` | Loopback-only persistent PPO-session process manager |
 | `physics_service.py` | Verified source-USD and backend-admission status |
 | `assets/robot/dropbear-physics-manifest.json` | Source-extracted masses, inertias, joints, collision groups, and drives |

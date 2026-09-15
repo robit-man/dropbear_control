@@ -63,6 +63,16 @@ NVIDIA_RELEASE_INITIAL_TOKEN = (
 _AUTO_SHADOW_DECODER = object()
 
 
+def _path_is_within(path: Path, root: Path) -> bool:
+    """Python 3.8-compatible resolved-path containment check."""
+
+    try:
+        path.relative_to(root)
+    except ValueError:
+        return False
+    return True
+
+
 def _reject_json_constant(value: str) -> None:
     raise ValueError(f"non-finite JSON constant is not allowed: {value}")
 
@@ -1177,7 +1187,7 @@ class Gr00tRuntimeInspector:
             def checked_artifact(raw_path: Any, expected_hash: Any) -> Path:
                 path = (self.project_root / str(raw_path)).resolve()
                 if (
-                    not path.is_relative_to(artifact_root)
+                    not _path_is_within(path, artifact_root)
                     or not path.is_file()
                     or self._sha256(path) != str(expected_hash)
                 ):
@@ -1570,7 +1580,7 @@ class Gr00tTrainingManager:
                     self.project_root / str(raw_path)
                 ).resolve()
                 if (
-                    not candidate.is_relative_to(artifact_root)
+                    not _path_is_within(candidate, artifact_root)
                     or not candidate.is_file()
                     or self.inspector._sha256(candidate) != str(raw_hash)
                 ):
@@ -1834,7 +1844,7 @@ class Gr00tTrainingManager:
                 not reference_path.is_file()
                 or reference_path.suffix != ".json"
                 or not any(
-                    reference_path.is_relative_to(root)
+                    _path_is_within(reference_path, root)
                     for root in allowed_roots
                 )
             ):

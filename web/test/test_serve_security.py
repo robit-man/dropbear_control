@@ -87,6 +87,9 @@ def _load_server_module():
     }
     previous = {name: sys.modules.get(name) for name in stubs}
     sys.modules.update(stubs)
+    inserted_web_root = str(WEB_ROOT) not in sys.path
+    if inserted_web_root:
+        sys.path.insert(0, str(WEB_ROOT))
     try:
         spec = importlib.util.spec_from_file_location(
             "dropbear_test_server",
@@ -96,6 +99,8 @@ def _load_server_module():
         spec.loader.exec_module(module)
         return module
     finally:
+        if inserted_web_root:
+            sys.path.remove(str(WEB_ROOT))
         for name, original in previous.items():
             if original is None:
                 sys.modules.pop(name, None)
@@ -249,6 +254,116 @@ class DashboardControlBoundaryTests(unittest.TestCase):
             SERVER.RL_MANAGER.non_finite_snapshot = False
         self.assertEqual(status, 500)
         self.assertEqual(payload["error"], "response is not finite JSON")
+
+    def test_hardware_observation_endpoint_is_explicitly_receive_only(self):
+        status, payload = self.request("GET", "/api/hardware/observation")
+        self.assertEqual(status, 200)
+        self.assertEqual(payload["mode"], "read_only")
+        self.assertFalse(payload["writeCapable"])
+        self.assertEqual(payload["txBytes"], 0)
+        self.assertFalse(payload["complete"])
+
+    def test_three_stage_http_gate_cannot_reach_physical_transport(self):
+        SERVER.HARDWARE_CONTROL_GATE.revoke()
+        try:
+            status, first = self.request(
+                "POST",
+                "/api/hardware/control/advance",
+                body=json.dumps({"stage": 1}),
+                headers=self.control_headers(),
+            )
+            self.assertEqual(status, 200)
+            self.assertEqual(first["stage"], 1)
+
+            _status, gate_status = self.request(
+                "GET", "/api/hardware/control/status"
+            )
+            acknowledgements = {
+                key: True
+                for key in gate_status["requiredAcknowledgements"]
+            }
+            status, second = self.request(
+                "POST",
+                "/api/hardware/control/advance",
+                body=json.dumps({
+                    "stage": 2,
+                    "challenge": first["challenge"],
+                    "acknowledgements": acknowledgements,
+                }),
+                headers=self.control_headers(),
+            )
+            self.assertEqual(status, 200)
+            self.assertEqual(second["stage"], 2)
+
+            status, third = self.request(
+                "POST",
+                "/api/hardware/control/advance",
+                body=json.dumps({
+                    "stage": 3,
+                    "challenge": second["challenge"],
+                    "confirm": True,
+                }),
+                headers=self.control_headers(),
+            )
+            self.assertEqual(status, 200)
+            self.assertTrue(third["frontendArmed"])
+            self.assertFalse(third["hardwareOutputEnabled"])
+
+            status, disposition = self.request(
+                "POST",
+                "/api/hardware/command",
+                body=json.dumps({
+                    "schema": "dropbear-hardware-command-v1",
+                    "leaseToken": third["leaseToken"],
+                    "jointName": "left_knee",
+                    "mode": "joint_position",
+                    "valueSi": 0.1,
+                }),
+                headers=self.control_headers(),
+            )
+            self.assertEqual(status, 423)
+            self.assertFalse(disposition["accepted"])
+            self.assertEqual(
+                disposition["disposition"],
+                "PHYSICAL_TRANSPORT_LOCKED",
+            )
+        finally:
+            SERVER.HARDWARE_CONTROL_GATE.revoke()
+
+    def test_missing_hardware_acknowledgement_resets_http_gate(self):
+        SERVER.HARDWARE_CONTROL_GATE.revoke()
+        try:
+            _status, first = self.request(
+                "POST",
+                "/api/hardware/control/advance",
+                body=json.dumps({"stage": 1}),
+                headers=self.control_headers(),
+            )
+            _status, gate_status = self.request(
+                "GET", "/api/hardware/control/status"
+            )
+            acknowledgements = {
+                key: True
+                for key in gate_status["requiredAcknowledgements"]
+            }
+            acknowledgements["area_clear"] = False
+            status, payload = self.request(
+                "POST",
+                "/api/hardware/control/advance",
+                body=json.dumps({
+                    "stage": 2,
+                    "challenge": first["challenge"],
+                    "acknowledgements": acknowledgements,
+                }),
+                headers=self.control_headers(),
+            )
+            self.assertEqual(status, 400)
+            self.assertIn("every safety consideration", payload["error"])
+            status, gate = self.request("GET", "/api/hardware/control/status")
+            self.assertEqual(status, 200)
+            self.assertEqual(gate["stage"], 0)
+        finally:
+            SERVER.HARDWARE_CONTROL_GATE.revoke()
 
     def test_full_precision_40_by_64_token_horizon_fits_bounded_json(self):
         frame = [

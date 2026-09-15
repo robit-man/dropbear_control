@@ -44,6 +44,7 @@
         </select>
       </label>
       <button id="sim-reset" class="icon-button" title="Reset simulation" aria-label="Reset simulation">↺</button>
+      <button id="hardware-control-lock" class="control-lock-button" type="button">CONTROL LOCKED</button>
       <button id="sim-toggle" class="run-button" aria-pressed="false"><span class="run-icon">▶</span> PLAY</button>
       <div id="system-state" class="system-state paused"><span></span>GUARDED PAUSE</div>
     </div>
@@ -129,6 +130,7 @@
               <input id="vertical-constraint" type="checkbox" checked>
               <span></span>Z GUIDE
             </label>
+            <button id="hardware-observation-toggle" class="button observation-button" type="button" aria-pressed="false">USE LIVE STATE</button>
             <button id="sim-training-toggle" class="button subtle" aria-expanded="false">TRAIN RL</button>
           </div>
         </div>
@@ -241,6 +243,7 @@
                 <div><span>CONTROL</span><b id="control-state">STOP</b></div>
                 <div><span>CAN LOAD</span><b id="can-load">0.0%</b></div>
                 <div><span>ROOT Z</span><b id="root-z-offset">+0 mm</b></div>
+                <div><span>HARDWARE</span><b id="hardware-observation-state">READ ONLY · OFF</b></div>
               </div>
               <div id="training-live-overlay" class="training-live-overlay" hidden>
                 <span>RL TRAINING · LIVE POLICY</span>
@@ -299,6 +302,7 @@
               </label>
               <div class="toggle-row">
                 <label class="switch"><input id="impedance-toggle" type="checkbox"><span></span>IMPEDANCE</label>
+                <button id="hardware-send-target" class="button hardware-send" type="button" disabled>SEND SELECTED TARGET</button>
                 <button id="fault-sensor" class="button subtle">FREEZE SENSOR</button>
                 <button id="fault-thermal" class="button subtle">THERMAL FAULT</button>
               </div>
@@ -865,6 +869,34 @@
     </main>
   </div>
 
-  <script type="module" src="/js/app.js?v=20260724-unified-playback2"></script>
+  <dialog id="hardware-arm-dialog" class="hardware-arm-dialog">
+    <form method="dialog" class="hardware-arm-card">
+      <div class="hardware-arm-head">
+        <div><span>PHYSICAL CONTROL BOUNDARY</span><h2>Three-stage acknowledgement</h2></div>
+        <button id="hardware-arm-close" class="icon-button" value="close" aria-label="Close">×</button>
+      </div>
+      <p id="hardware-arm-summary">Stage 1 of 3 is complete. Review and acknowledge every item before continuing.</p>
+      <ol class="hardware-arm-stages">
+        <li id="hardware-arm-stage-1" class="complete"><b>1</b><span>Begin local safety review</span></li>
+        <li id="hardware-arm-stage-2"><b>2</b><span>Acknowledge physical safeguards</span></li>
+        <li id="hardware-arm-stage-3"><b>3</b><span>Confirm the expiring frontend lease</span></li>
+      </ol>
+      <fieldset id="hardware-safety-acknowledgements">
+        <legend>Safety considerations</legend>
+        <label><input type="checkbox" data-safety-ack="robot_supported"> The robot is securely supported for the intended test.</label>
+        <label><input type="checkbox" data-safety-ack="area_clear"> The robot workspace and pinch zones are clear.</label>
+        <label><input type="checkbox" data-safety-ack="estop_ready"> Independent emergency power removal is present and reachable.</label>
+        <label><input type="checkbox" data-safety-ack="read_only_validated"> Read-only state passthrough has been validated first.</label>
+        <label><input type="checkbox" data-safety-ack="limits_reviewed"> Joint signs, zeroes, limits, and command bounds have been reviewed.</label>
+      </fieldset>
+      <div class="hardware-arm-actions">
+        <button id="hardware-arm-stage2" class="button accent" type="button" disabled>ACKNOWLEDGE · STAGE 2</button>
+        <button id="hardware-arm-stage3" class="button danger" type="button" hidden>CONFIRM CHANNEL · STAGE 3</button>
+      </div>
+      <div id="hardware-arm-result" class="hardware-arm-result">Physical transport remains locked independently of this frontend sequence.</div>
+    </form>
+  </dialog>
+
+  <script type="module" src="/js/app.js?v=20260914-live-observation"></script>
 </body>
 </html>

@@ -178,6 +178,10 @@ function makeJoint(definition) {
     temperature: 28,
     sensorStuck: false,
     sensorSnapshot: 180,
+    observationValid: false,
+    observationAgeMs: null,
+    observationSource: "unavailable",
+    observationOutOfEnvelope: false,
     canFrames: 0,
   };
 }

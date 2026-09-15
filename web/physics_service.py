@@ -15,6 +15,14 @@ EXPECTED_USD_SHA256 = (
 )
 
 
+def _path_is_within(path: Path, root: Path) -> bool:
+    try:
+        path.relative_to(root)
+    except ValueError:
+        return False
+    return True
+
+
 class PhysicsRuntimeRegistry:
     def __init__(self, project_root: Path):
         self.project_root = project_root.resolve()
@@ -62,7 +70,7 @@ class PhysicsRuntimeRegistry:
             "schema": "dropbear-physics-runtime-status-v1",
             "sourceUsd": {
                 "path": str(self.usd_path.relative_to(self.project_root))
-                if self.usd_path.is_relative_to(self.project_root)
+                if _path_is_within(self.usd_path, self.project_root)
                 else str(self.usd_path),
                 "available": self.usd_path.is_file(),
                 "verified": source_verified,

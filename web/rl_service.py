@@ -17,6 +17,14 @@ import uuid
 from typing import Any
 
 
+def _path_is_within(path: Path, root: Path) -> bool:
+    try:
+        path.relative_to(root)
+    except ValueError:
+        return False
+    return True
+
+
 def _reject_json_constant(value: str) -> None:
     raise ValueError(f"non-finite JSON constant is not allowed: {value}")
 
@@ -140,7 +148,7 @@ class RLTrainingManager:
             candidate = (self.project_root / raw_checkpoint).resolve()
             experiment_root = self.experiment_root.resolve()
             if (
-                not candidate.is_relative_to(experiment_root)
+                not _path_is_within(candidate, experiment_root)
                 or candidate.suffix != ".pt"
                 or not candidate.is_file()
             ):
