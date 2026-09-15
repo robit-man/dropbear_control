@@ -202,6 +202,10 @@ function makeJoint(definition) {
     observationAgeMs: null,
     observationSource: "unavailable",
     observationOutOfEnvelope: false,
+    observationRawDeg: null,
+    observationZeroedDeg: null,
+    observationMechanismDeg: null,
+    observationCalibration: null,
     canFrames: 0,
   };
 }

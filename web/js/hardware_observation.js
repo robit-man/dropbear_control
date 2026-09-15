@@ -58,7 +58,7 @@ export function validateHardwareObservation(payload) {
   return result;
 }
 
-export function applyHardwareObservation(sim, payload, nowMs = performance.now()) {
+export function applyHardwareObservation(sim, payload, nowMs = performance.now(), softwareZero = null) {
   const validated = validateHardwareObservation(payload);
   if (validated.availableSides.length === 0) {
     throw new Error("at least one leg observation must be fresh before applying hardware state");
@@ -74,6 +74,7 @@ export function applyHardwareObservation(sim, payload, nowMs = performance.now()
     joint.observationAgeMs = null;
     joint.observationSource = "unavailable";
     joint.observationRawDeg = null;
+    joint.observationZeroedDeg = null;
     joint.observationMechanismDeg = null;
     joint.observationCalibration = null;
   }
@@ -98,7 +99,7 @@ export function applyHardwareObservation(sim, payload, nowMs = performance.now()
       const target = sim.getJoint(firmwareJoint, side);
       if (!target) continue;
       const position = observation.positionDeg;
-      const projection = projectHardwareDegrees(side, firmwareJoint, position);
+      const projection = projectHardwareDegrees(side, firmwareJoint, position, softwareZero);
       if (!projection.calibrated) {
         unavailableJoints.push(canonicalName);
         continue;
@@ -108,17 +109,28 @@ export function applyHardwareObservation(sim, payload, nowMs = performance.now()
       target.velocity = prior && sample.sequence !== prior.sequence
         ? Math.max(-720, Math.min(720, shortestDegreeDelta(position, prior.position) / dtSeconds))
         : 0;
-      target.angle = projection.renderDegrees;
       target.rawAngle = position % 360;
       target.torque = 0;
       target.command = 0;
-      target.observationValid = true;
       target.observationAgeMs = sample.ageMs;
-      target.observationSource = "esp32_external_absolute";
       target.observationRawDeg = position;
+      target.observationZeroedDeg = projection.zeroedDegrees;
       target.observationMechanismDeg = projection.mechanismDegrees;
       target.observationCalibration = projection.calibration;
       target.observationOutOfEnvelope = !projection.withinUsdLimits;
+      if (String(projection.calibration.captureQuality || "").startsWith("unstable")) {
+        target.observationSource = "esp32_external_absolute_unstable";
+        unavailableJoints.push(canonicalName);
+        continue;
+      }
+      if (!projection.withinUsdLimits) {
+        target.observationSource = "esp32_external_absolute_out_of_envelope";
+        unavailableJoints.push(canonicalName);
+        continue;
+      }
+      target.angle = projection.renderDegrees;
+      target.observationValid = true;
+      target.observationSource = "esp32_external_absolute";
       previous.set(canonicalName, { position, sequence: sample.sequence, nowMs });
       appliedJoints += 1;
     }
@@ -146,6 +158,7 @@ export function clearHardwareObservationHistory(sim) {
     joint.observationSource = "unavailable";
     joint.observationOutOfEnvelope = false;
     joint.observationRawDeg = null;
+    joint.observationZeroedDeg = null;
     joint.observationMechanismDeg = null;
     joint.observationCalibration = null;
   }

@@ -50,6 +50,63 @@ JOINT_BINDINGS = {
     ),
 }
 
+MOTOR_BINDINGS = {
+    "left": (
+        ("left_outer_calf", "0x141"),
+        ("left_inner_calf", "0x142"),
+        ("left_hip_pitch", "0x146"),
+        ("left_knee", "0x145"),
+        ("left_hip_yaw", "0x149"),
+        ("left_hip_roll", "0x14A"),
+    ),
+    "right": (
+        ("right_outer_calf", "0x144"),
+        ("right_inner_calf", "0x143"),
+        ("right_hip_pitch", "0x147"),
+        ("right_knee", "0x148"),
+        ("right_hip_yaw", "0x14C"),
+        ("right_hip_roll", "0x14B"),
+    ),
+}
+
+
+def unavailable_motor_observations(side: str) -> dict[str, dict[str, Any]]:
+    """Describe every motor-native channel without substituting sensor data."""
+
+    return {
+        canonical_name: {
+            "canonicalName": canonical_name,
+            "canId": can_id,
+            "positionDeg": None,
+            "available": False,
+            "source": "motor_native_unavailable",
+            "status": "not_emitted_by_deployed_firmware",
+        }
+        for canonical_name, can_id in MOTOR_BINDINGS[side]
+    }
+
+
+def _motor_observations(
+    side: str,
+    values: list[float | None] | None = None,
+) -> dict[str, dict[str, Any]]:
+    """Build motor-native observations without filling gaps from AS5600 data."""
+
+    if values is None:
+        return unavailable_motor_observations(side)
+    observations = unavailable_motor_observations(side)
+    for (canonical_name, _), value in zip(MOTOR_BINDINGS[side], values):
+        if value is None:
+            continue
+        observations[canonical_name] = {
+            **observations[canonical_name],
+            "positionDeg": value,
+            "available": True,
+            "source": "rmd_v44_multi_turn_angle",
+            "status": "measured",
+        }
+    return observations
+
 KNOWN_JOINTS = frozenset(
     binding[0]
     for bindings in JOINT_BINDINGS.values()
@@ -73,18 +130,40 @@ class ControlGateError(ValueError):
     """A frontend arming request failed closed."""
 
 
-def parse_esp32_csv_line(side: str, line: str) -> dict[str, dict[str, Any]]:
-    """Decode one source-firmware CSV line without inventing missing axes."""
+def parse_esp32_telemetry_line(side: str, line: str) -> dict[str, Any]:
+    """Decode legacy AS5600 CSV or one versioned dual-angle record.
+
+    Legacy firmware emits five external angles. ``DB2`` adds the controller
+    millisecond counter and six motor-native multi-turn angles in the order
+    outer calf, inner calf, hip pitch, knee, hip yaw, hip roll. ``NA`` means
+    that a verified motor response was unavailable for that sample.
+    """
 
     if side not in JOINT_BINDINGS:
         raise ObservationParseError("side must be left or right")
     if not isinstance(line, str) or not line or len(line.encode("utf-8")) > MAX_LINE_BYTES:
         raise ObservationParseError("observation line is empty or too long")
-    fields = line.strip().split(",")
-    if len(fields) != 5:
-        raise ObservationParseError("observation line must contain exactly five values")
+    fields = [field.strip() for field in line.strip().split(",")]
+    extended = fields[0] == "DB2"
+    if extended:
+        if len(fields) != 13:
+            raise ObservationParseError("DB2 observation line must contain exactly thirteen fields")
+        try:
+            controller_millis = int(fields[1])
+        except ValueError as error:
+            raise ObservationParseError("DB2 controller time must be an unsigned integer") from error
+        if not 0 <= controller_millis <= 0xFFFFFFFF:
+            raise ObservationParseError("DB2 controller time must fit uint32")
+        external_fields = fields[2:7]
+        motor_fields = fields[7:13]
+    else:
+        if len(fields) != 5:
+            raise ObservationParseError("legacy observation line must contain exactly five values")
+        controller_millis = None
+        external_fields = fields
+        motor_fields = None
     try:
-        values = [float(field.strip()) for field in fields]
+        values = [float(field) for field in external_fields]
     except ValueError as error:
         raise ObservationParseError("observation values must be numeric") from error
     if not all(math.isfinite(value) for value in values):
@@ -92,7 +171,7 @@ def parse_esp32_csv_line(side: str, line: str) -> dict[str, dict[str, Any]]:
     if not all(0.0 <= value <= 360.0 for value in values):
         raise ObservationParseError("normalized observation values must be within 0..360 degrees")
 
-    return {
+    joints = {
         canonical_name: {
             "canonicalName": canonical_name,
             "firmwareJoint": firmware_joint,
@@ -106,6 +185,32 @@ def parse_esp32_csv_line(side: str, line: str) -> dict[str, dict[str, Any]]:
         for (canonical_name, firmware_joint, can_id, usd_joint, sensor_gpio), value
         in zip(JOINT_BINDINGS[side], values)
     }
+    motor_values: list[float | None] | None = None
+    if motor_fields is not None:
+        motor_values = []
+        for field in motor_fields:
+            if field == "NA":
+                motor_values.append(None)
+                continue
+            try:
+                value = float(field)
+            except ValueError as error:
+                raise ObservationParseError("DB2 motor values must be numeric or NA") from error
+            if not math.isfinite(value) or abs(value) > 1_000_000.0:
+                raise ObservationParseError("DB2 motor value exceeds the telemetry sanity bound")
+            motor_values.append(value)
+    return {
+        "format": "DB2" if extended else "legacy5",
+        "controllerMillis": controller_millis,
+        "joints": joints,
+        "motorJoints": _motor_observations(side, motor_values),
+    }
+
+
+def parse_esp32_csv_line(side: str, line: str) -> dict[str, dict[str, Any]]:
+    """Compatibility wrapper returning external sensor joints only."""
+
+    return parse_esp32_telemetry_line(side, line)["joints"]
 
 
 @dataclass
@@ -118,6 +223,9 @@ class _SideState:
     received_monotonic_ns: int = 0
     raw_line: str = ""
     joints: dict[str, dict[str, Any]] = field(default_factory=dict)
+    motor_joints: dict[str, dict[str, Any]] = field(default_factory=dict)
+    telemetry_format: str = ""
+    controller_millis: int | None = None
     decoded_lines: int = 0
     rejected_lines: int = 0
     overflow_events: int = 0
@@ -345,7 +453,7 @@ class HardwareObservationManager:
 
         received_ns = time.monotonic_ns() if received_monotonic_ns is None else int(received_monotonic_ns)
         try:
-            joints = parse_esp32_csv_line(side, line)
+            record = parse_esp32_telemetry_line(side, line)
         except ObservationParseError:
             with self._lock:
                 self._states[side].rejected_lines += 1
@@ -355,7 +463,10 @@ class HardwareObservationManager:
             state.sequence += 1
             state.received_monotonic_ns = received_ns
             state.raw_line = line.strip()
-            state.joints = joints
+            state.joints = record["joints"]
+            state.motor_joints = record["motorJoints"]
+            state.telemetry_format = record["format"]
+            state.controller_millis = record["controllerMillis"]
             state.decoded_lines += 1
             state.state = "observing"
             state.error = ""
@@ -388,7 +499,11 @@ class HardwareObservationManager:
                     "sequence": state.sequence,
                     "receivedMonotonicNs": state.received_monotonic_ns,
                     "rawLine": state.raw_line,
+                    "telemetryFormat": state.telemetry_format,
+                    "controllerMillis": state.controller_millis,
                     "joints": dict(state.joints) if fresh else {},
+                    "motorJoints": dict(state.motor_joints) if fresh and state.motor_joints
+                    else unavailable_motor_observations(side),
                     "decodedLines": state.decoded_lines,
                     "rejectedLines": state.rejected_lines,
                     "overflowEvents": state.overflow_events,

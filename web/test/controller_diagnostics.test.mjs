@@ -13,7 +13,7 @@ const right = classifyControllerSide("right", {
 });
 assert.equal(right.transport, "success");
 assert.equal(right.stream, "success");
-assert.equal(right.calibration, "success");
+assert.equal(right.calibration, "degraded");
 
 const silentLeft = classifyControllerSide("left", {
   state: "observing",
@@ -24,7 +24,7 @@ const silentLeft = classifyControllerSide("left", {
 });
 assert.equal(silentLeft.transport, "degraded");
 assert.equal(silentLeft.stream, "degraded");
-assert.equal(silentLeft.calibration, "unknown");
+assert.equal(silentLeft.calibration, "degraded");
 
 const failed = classifyControllerSide("left", {
   state: "error",

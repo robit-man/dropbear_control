@@ -83,11 +83,15 @@ export class Robot3D {
     onJoint = () => {},
     onArmMotor = () => {},
     onStatus = () => {},
+    maxFrameRate = 30,
+    softwareRendering = false,
   } = {}) {
     this.canvas = canvas;
     this.onJoint = onJoint;
     this.onArmMotor = onArmMotor;
     this.onStatus = onStatus;
+    this.softwareRendering = Boolean(softwareRendering);
+    this.frameIntervalMs = 1000 / Math.max(1, Math.min(60, Number(maxFrameRate) || 30));
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color("#080809");
     this.scene.fog = new THREE.Fog("#0a0a0b", 3.4, 8.5);
@@ -97,17 +101,17 @@ export class Robot3D {
 
     this.renderer = new THREE.WebGLRenderer({
       canvas,
-      antialias: true,
+      antialias: !this.softwareRendering,
       alpha: false,
       powerPreference: "high-performance",
       preserveDrawingBuffer: true,
     });
     this.resolutionScale = 1;
-    this.renderer.setPixelRatio(Math.min(devicePixelRatio, 1.7));
+    this.renderer.setPixelRatio(Math.min(devicePixelRatio, this.softwareRendering ? 1 : 1.7));
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 0.92;
-    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.enabled = !this.softwareRendering;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     this.controls = new OrbitControls(this.camera, canvas);
@@ -156,6 +160,7 @@ export class Robot3D {
     this.verticalConstraintEnabled = true;
     this.externalRootPose = null;
     this.externalContactLoadsKg = null;
+    this.observationRootPitchRadians = 0;
     this.neutralGroundOffsetZ = 0;
     this.freeRootState = {
       height: 0.80,
@@ -190,7 +195,7 @@ export class Robot3D {
     this.scene.add(new THREE.HemisphereLight("#ececec", "#111113", 1.65));
     const key = new THREE.DirectionalLight("#ffffff", 3.0);
     key.position.set(-2.5, -3.2, 5);
-    key.castShadow = true;
+    key.castShadow = !this.softwareRendering;
     key.shadow.mapSize.set(2048, 2048);
     key.shadow.camera.near = 0.1;
     key.shadow.camera.far = 12;
@@ -211,7 +216,7 @@ export class Robot3D {
       new THREE.MeshStandardMaterial({ color: "#0a0a0b", roughness: 0.96, metalness: 0.04 }),
     );
     floor.position.z = -0.012;
-    floor.receiveShadow = true;
+    floor.receiveShadow = !this.softwareRendering;
     this.scene.add(floor);
     const grid = new THREE.GridHelper(6.8, 48, "#3a3a42", "#17171a");
     grid.rotation.x = Math.PI / 2;
@@ -555,6 +560,16 @@ export class Robot3D {
   }
 
   _applyVerticalGroundConstraint(rawMatrices, poseDt) {
+    if (Math.abs(this.observationRootPitchRadians) > 1e-9) {
+      const pivotZ = 0.80;
+      const rootTransform = new THREE.Matrix4()
+        .makeTranslation(0, 0, pivotZ)
+        .multiply(new THREE.Matrix4().makeRotationY(this.observationRootPitchRadians))
+        .multiply(new THREE.Matrix4().makeTranslation(0, 0, -pivotZ));
+      rawMatrices = new Map(
+        [...rawMatrices].map(([path, matrix]) => [path, rootTransform.clone().multiply(matrix)]),
+      );
+    }
     if (!this.verticalConstraintEnabled) {
       const dt = Math.max(0, Math.min(0.08, Number(poseDt) || 0));
       const policyDriven = Boolean(this.externalRootPose);
@@ -1010,6 +1025,14 @@ export class Robot3D {
       : null;
   }
 
+  setObservationRootPitchDegrees(forwardDegrees = 0) {
+    const value = Number(forwardDegrees);
+    this.observationRootPitchRadians = Number.isFinite(value)
+      ? THREE.MathUtils.degToRad(-value)
+      : 0;
+    this.resetGroundConstraint();
+  }
+
   setActive(on) {
     this.active = Boolean(on);
     if (this.active) this.resize();
@@ -1034,7 +1057,10 @@ export class Robot3D {
     const height = Math.max(360, parent.clientHeight);
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
-    this.renderer.setPixelRatio(Math.min(devicePixelRatio * this.resolutionScale, 3));
+    this.renderer.setPixelRatio(Math.min(
+      devicePixelRatio * this.resolutionScale,
+      this.softwareRendering ? 1 : 3,
+    ));
     this.renderer.setSize(width, height, false);
   }
 
@@ -1048,7 +1074,7 @@ export class Robot3D {
     requestAnimationFrame(() => this._animate());
     if (!this.active) return;
     const now = performance.now();
-    if (now - this.lastDrawAt < 34) return;
+    if (now - this.lastDrawAt < this.frameIntervalMs) return;
     this.lastDrawAt = now;
     this.controls.update();
     this.renderer.render(this.scene, this.camera);

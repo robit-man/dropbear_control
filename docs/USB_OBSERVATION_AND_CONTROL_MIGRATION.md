@@ -42,7 +42,7 @@ On the current AGX Xavier USB topology, run:
 
 ```bash
 DROPBEAR_OBSERVATION_ENABLE=1 \
-DROPBEAR_OBSERVATION_LEFT=/dev/serial/by-path/platform-141a0000.pcie-pci-0005:01:00.0-usb-0:1.4:1.0-port0 \
+DROPBEAR_OBSERVATION_LEFT=/dev/serial/by-path/platform-141a0000.pcie-pci-0005:01:00.0-usb-0:1.1:1.0-port0 \
 DROPBEAR_OBSERVATION_RIGHT=/dev/serial/by-path/platform-141a0000.pcie-pci-0005:01:00.0-usb-0:1.2:1.0-port0 \
 DROPBEAR_OBSERVATION_MAX_AGE_MS=500 \
 python3 web/serve.py 8000
@@ -61,8 +61,11 @@ claiming that the simplified stick view is the USD renderer.
 
 The paths are USB-topology identities. All three installed CP2102 bridges
 currently report the same serial number, `0001`, so `/dev/serial/by-id` cannot
-distinguish them. Existing host tools identify `/dev/ttyUSB1` as the right leg,
-`/dev/ttyUSB2` as the left leg, and `/dev/ttyUSB0` as the neck controller.
+distinguish them. Passive payload classification identifies `/dev/ttyUSB0`
+(path `1.1`) and `/dev/ttyUSB1` (path `1.2`) as the left and right leg streams,
+respectively. `/dev/ttyUSB2` (path `1.4`) is reserved for the neck controller.
+The leg classification is based on the unsolicited five-angle CSV contract;
+no command was sent to any controller.
 
 ## Observation contract
 
@@ -85,6 +88,11 @@ outer_calf,inner_calf,hip_pitch,knee,hip_roll
 | Right | knee | `0x148` | `RL_knee_actuator_joint` | GPIO 25 |
 | Right | hip roll | `0x14B` | `PG_right_leg_pitch` | GPIO 33 |
 
+Each AS5600 is a single-turn `0..360°` sensor attached 1:1 to its actuator
+output shaft. In particular, the knee field drives the upstream
+`*_knee_actuator_joint` without a multiplier. The corrected closed-loop USD
+linkage produces the larger downstream knee bend as a kinematic consequence.
+
 Left hip yaw `0x149` and right hip yaw `0x14C` have no value in the deployed
 five-field stream. They remain unavailable in the UI.
 
@@ -100,18 +108,20 @@ reader alone cannot prove that the controller or powered robot is inert.
 
 ## First attached-hardware observation
 
-Observed on the AGX Xavier on 2026-09-14, without sending serial bytes:
+Observed on the AGX Xavier on 2026-09-15, without sending serial bytes:
 
 | Link | Result |
 |---|---|
-| Right leg, USB path `1.2` | Fresh five-field records; example `127,191,91,31,160`; no decoder/read errors after admission |
-| Left leg, USB path `1.4` | Device opened receive-only but emitted no records |
-| Neck, USB path `1.1` | Identified from the neck repository and left unopened by the leg service |
+| Right leg, USB path `1.2` | Fresh five-field degree records; no decoder/read errors after admission |
+| Left leg, USB path `1.1` | Fresh five-field degree records; example `166,92,20,193,147`; no decoder/read errors after admission |
+| Neck candidate, USB path `1.4` | Silent during passive observation, consistent with the neck's request/response `HEALTH` protocol; left unopened by the corrected leg service |
 
-The dashboard therefore admits the right-side measurements and labels the
-left side unavailable. This is useful evidence for transport and mapping, but
-it does not validate the left leg, joint zeroes, joint signs, linkage-derived
-angles, or motor-native feedback.
+The dashboard admits both leg streams. Physical default-stance captures map
+their measured degrees into the corrected USD coordinates. Joint signs remain
+provisional until controlled read-only motion correlation. Left inner calf and
+right knee are explicitly marked unstable because their stationary readings
+were multimodal; both remain raw-only in the model. These records do not
+validate motor-native feedback.
 
 The deployed values are normalized readings from five external analog absolute
 sensors. They are not native RMD motor position responses. Firmware maps a
@@ -119,6 +129,31 @@ sensors. They are not native RMD motor position responses. Firmware maps a
 offset, and emits integer-valued positions without a controller timestamp.
 Validate every sensor against a physical reference before treating it as a
 calibrated joint state.
+
+Every API side also exposes six `motorJoints` entries with CAN IDs. With the
+deployed five-field firmware, their positions are `null`, availability is
+false, and status is `not_emitted_by_deployed_firmware`. The service never
+copies an external sensor value into a motor field. A versioned `DB2` parser is
+ready for five external angles plus six independently measured motor-native
+angles; legacy five-field records remain supported.
+
+## Browser software zero and angle recording
+
+**ZERO MODEL FROM CURRENT POSE** accepts one fresh snapshot from both leg
+controllers and the entered torso-forward angle, currently `7°`. This action
+writes no serial or CAN bytes and does not invoke the ESP32 calibration
+command. The browser stores the external readings as local datums and renders
+subsequent motion from the shortest wrapped degree delta. The captured pose
+continues to use the corrected USD default-stance joint coordinates, while the
+displayed sensor delta is `0°` at capture. The datum and torso angle persist in
+browser local storage.
+
+The angle recorder exports one CSV row per side and joint for each admitted
+sample. It keeps external raw angle, external zeroed delta, upstream model
+joint angle, motor-native angle, and motor-native zeroed delta in separate
+columns with CAN ID and availability. Hip yaw therefore has an empty external
+column, and all motor columns remain empty with an explicit status on today's
+deployed firmware. Recording stops at 120,000 rows to bound browser memory.
 
 ## Frontend control lock
 

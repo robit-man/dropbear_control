@@ -139,7 +139,7 @@ export class SoftwareRobotViewer {
     context.fillStyle = measured ? "#22d3ee" : "#626a74";
     context.font = '600 10px "IBM Plex Mono", monospace';
     const value = measured
-      ? `${Number(joint.observationMechanismDeg).toFixed(1)}° q / ${Number(joint.observationRawDeg).toFixed(1)}° raw`
+      ? `${Number(joint.observationZeroedDeg).toFixed(1)}° zero / ${Number(joint.observationRawDeg).toFixed(1)}° raw`
       : "UNOBSERVED";
     context.fillText(`${label}  ${value}`, x, y);
   }
@@ -232,8 +232,12 @@ export class SoftwareRobotViewer {
     context.lineWidth = 3;
     const torsoWidth = Math.min(210, width * 0.24);
     const torsoHeight = Math.min(180, height * 0.23);
-    context.fillRect(width / 2 - torsoWidth / 2, height * 0.12, torsoWidth, torsoHeight);
-    context.strokeRect(width / 2 - torsoWidth / 2, height * 0.12, torsoWidth, torsoHeight);
+    context.save();
+    context.translate(width / 2, height * 0.12 + torsoHeight);
+    context.rotate((Number(this.observationRootPitchDegrees) || 0) * Math.PI / 180);
+    context.fillRect(-torsoWidth / 2, -torsoHeight, torsoWidth, torsoHeight);
+    context.strokeRect(-torsoWidth / 2, -torsoHeight, torsoWidth, torsoHeight);
+    context.restore();
     this._drawLeg(context, width, height, "left");
     this._drawLeg(context, width, height, "right");
 
@@ -256,6 +260,7 @@ export class SoftwareRobotViewer {
   }
 
   setActive(active) { this.active = Boolean(active); if (this.active) this._draw(); }
+  setObservationRootPitchDegrees(forwardDegrees = 0) { this.observationRootPitchDegrees = Number(forwardDegrees) || 0; if (this.active) this._draw(); }
   setArmSelection(id = null) { this.selectedArmMotorId = id; }
   setVerticalConstraintEnabled(enabled) { this.verticalConstraintEnabled = Boolean(enabled); }
   setExternalRootPose() {}

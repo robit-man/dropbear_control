@@ -18,6 +18,8 @@ export function classifyControllerSide(side, sample) {
   const rejectedLines = Number(sample?.rejectedLines) || 0;
   const readErrors = Number(sample?.readErrors) || 0;
   const fresh = sample?.fresh === true;
+  const unstableCalibration = calibration && Object.values(calibration)
+    .some((joint) => String(joint?.captureQuality || "").startsWith("unstable"));
   const readerState = String(sample?.state || "unavailable");
   let transport = "unknown";
   if (readerState === "error" || readErrors > 0) transport = "fail";
@@ -32,7 +34,7 @@ export function classifyControllerSide(side, sample) {
     parser: rejectedLines > Math.max(5, decodedLines * 0.001)
       ? "degraded"
       : decodedLines > 0 ? "success" : "unknown",
-    calibration: calibration ? "success" : "unknown",
+    calibration: calibration ? unstableCalibration ? "degraded" : "success" : "unknown",
     fresh,
     readerState,
     configuredPath: String(sample?.configuredPath || "not configured"),
@@ -123,16 +125,27 @@ function renderSide(side, sample) {
   sensors.className = "controller-sensor-grid";
   for (const [key, gpio, label] of SENSOR_KEYS) {
     const observation = status.joints?.[`${side}_${key}`];
-    const value = finite(observation?.positionDeg) ? `${observation.positionDeg.toFixed(1)}° raw` : "no fresh value";
-    sensors.append(node(`${gpio} · ${label}`, value, observation && status.fresh ? "success" : "unknown", "sensor"));
+    const calibration = HARDWARE_DEFAULT_STANCE_CALIBRATION.sides[side]?.[key];
+    const unstable = String(calibration?.captureQuality || "").startsWith("unstable");
+    const value = finite(observation?.positionDeg)
+      ? `${observation.positionDeg.toFixed(1)}° raw${unstable ? " · known bimodal channel; model held" : ""}`
+      : "no fresh value";
+    sensors.append(node(
+      `${gpio} · ${label}`,
+      value,
+      unstable && observation && status.fresh ? "degraded" : observation && status.fresh ? "success" : "unknown",
+      "sensor",
+    ));
   }
   column.append(sensors);
   column.append(arrow("datum + limits"));
   column.append(node(
     "DEFAULT-STANCE MAP",
     status.calibration === "success"
-      ? "Right-side median datum maps measured degrees into corrected USD joint coordinates; direction awaits passive motion validation."
-      : "No side-specific datum accepted. Raw readings cannot move the rendered articulation.",
+      ? `${side[0].toUpperCase()}${side.slice(1)} median datum maps measured degrees 1:1 onto actuator-shaft joints; linkage closure computes downstream motion.`
+      : status.calibration === "degraded"
+        ? "Side datum is present, but a known bimodal sensor remains raw-only and cannot move the rendered linkage."
+        : "No side-specific datum accepted. Raw readings cannot move the rendered articulation.",
     status.calibration,
   ));
   column.append(arrow("read-only state"));
@@ -157,10 +170,29 @@ export function renderControllerDiagnostics(container, payload) {
   );
   const common = document.createElement("section");
   common.className = "controller-common-flow";
+  const motorNativeCount = ["left", "right"].reduce((count, side) => count
+    + Object.values(payload?.sides?.[side]?.motorJoints || {}).filter(
+      (motor) => motor?.available === true
+        && typeof motor.positionDeg === "number"
+        && Number.isFinite(motor.positionDeg),
+    ).length, 0);
   common.append(
-    node("MCP2515 / CAN RX", "Firmware CSV does not report CAN controller health or actuator replies.", "unknown"),
+    node(
+      "MCP2515 / CAN RX",
+      motorNativeCount
+        ? `${motorNativeCount}/12 verified motor-angle channels present in the admitted ESP telemetry.`
+        : "Deployed firmware CSV does not report CAN controller health or actuator replies.",
+      motorNativeCount ? "success" : "unknown",
+    ),
+    node(
+      "MOTOR-NATIVE ANGLES",
+      motorNativeCount
+        ? `${motorNativeCount}/12 independently measured motor positions available; recorder retains them beside external angles.`
+        : "All twelve CAN-ID channels are represented in recordings, but remain unavailable until ESP firmware decodes and emits verified motor replies.",
+      motorNativeCount === 12 ? "success" : motorNativeCount ? "degraded" : "unknown",
+    ),
     node("IMU TASK", "IMU state is not present in the deployed five-value serial frame.", "unknown"),
-    node("SPIFFS / CHIRALITY", "Querying configuration would transmit bytes, so status remains unknown during passive observation.", "unknown"),
+    node("USB ROLE / CHIRALITY", "Paths 1.1 and 1.2 emit five-angle leg frames. Silent path 1.4 is reserved for the request/response neck controller; on-device chirality remains unqueried.", "success"),
     node("FOOT FORCE DISTRIBUTION", "dropbear-foot integration reserved; no sensor transport is wired yet.", "future"),
     node("SERIAL / CAN CONTROL TX", "No write-capable descriptor exists. Frontend acknowledgement cannot unlock physical output.", "locked"),
   );

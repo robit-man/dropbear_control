@@ -122,6 +122,16 @@
               <span></span>Z GUIDE
             </label>
             <button id="hardware-observation-toggle" class="button observation-button" type="button" aria-pressed="false">USE LIVE STATE</button>
+            <label class="torso-zero-control">
+              <span>TORSO FORWARD</span>
+              <input id="hardware-zero-torso" type="number" min="-45" max="45" step="0.5" value="7">
+              <b>°</b>
+            </label>
+            <button id="hardware-zero-current" class="button zero-button" type="button" disabled>ZERO MODEL FROM CURRENT POSE</button>
+            <span id="hardware-zero-state" class="observation-tool-state">ZERO · NOT CAPTURED</span>
+            <button id="hardware-record-toggle" class="button recording-button" type="button" disabled>START ANGLE RECORDING</button>
+            <button id="hardware-record-download" class="button subtle" type="button" disabled>DOWNLOAD CSV</button>
+            <span id="hardware-record-state" class="observation-tool-state">REC · 0 ROWS · MOTOR NATIVE UNAVAILABLE</span>
             <button id="sim-training-toggle" class="button subtle" aria-expanded="false" hidden>TRAIN RL</button>
           </div>
         </div>
@@ -886,6 +896,6 @@
     </form>
   </dialog>
 
-  <script type="module" src="/js/app.js?v=20260914-control-console"></script>
+  <script type="module" src="/js/app.js?v=20260915-software-zero"></script>
 </body>
 </html>

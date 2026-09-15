@@ -17,6 +17,7 @@ from hardware_service import (  # noqa: E402
     ObservationParseError,
     SAFETY_ACKNOWLEDGEMENTS,
     parse_esp32_csv_line,
+    parse_esp32_telemetry_line,
 )
 
 
@@ -54,6 +55,42 @@ class PassiveObservationTests(unittest.TestCase):
             with self.subTest(line=line), self.assertRaises(ObservationParseError):
                 parse_esp32_csv_line("left", line)
 
+    def test_db2_keeps_motor_and_external_angles_separate(self):
+        record = parse_esp32_telemetry_line(
+            "left",
+            "DB2,123456,194,72,10,213,146,10.25,NA,-3.5,44,1.25,88.125",
+        )
+        self.assertEqual(record["format"], "DB2")
+        self.assertEqual(record["controllerMillis"], 123456)
+        self.assertEqual(record["joints"]["left_outer_calf"]["positionDeg"], 194)
+        self.assertEqual(record["motorJoints"]["left_outer_calf"]["positionDeg"], 10.25)
+        self.assertFalse(record["motorJoints"]["left_inner_calf"]["available"])
+        self.assertEqual(record["motorJoints"]["left_hip_pitch"]["positionDeg"], -3.5)
+        self.assertEqual(record["motorJoints"]["left_hip_yaw"]["canId"], "0x149")
+
+        for line in (
+            "DB2,123,1,2,3,4,5,1,2,3,4,5",
+            "DB2,-1,1,2,3,4,5,1,2,3,4,5,6",
+            "DB2,123,1,2,3,4,5,1,2,BAD,4,5,6",
+            "DB2,123,1,2,3,4,5,1,2,nan,4,5,6",
+        ):
+            with self.subTest(line=line), self.assertRaises(ObservationParseError):
+                parse_esp32_telemetry_line("left", line)
+
+    def test_manager_exposes_db2_motor_values_only_when_emitted(self):
+        manager = HardwareObservationManager(enabled=False, maximum_sample_age_ms=250)
+        manager.ingest_line(
+            "right",
+            "DB2,42,125,188,89,28,169,1,2,3,4,5,6",
+            1_000_000_000,
+        )
+        snapshot = manager.snapshot(1_100_000_000)
+        side = snapshot["sides"]["right"]
+        self.assertEqual(side["telemetryFormat"], "DB2")
+        self.assertEqual(side["controllerMillis"], 42)
+        self.assertEqual(side["motorJoints"]["right_hip_yaw"]["positionDeg"], 5)
+        self.assertTrue(side["motorJoints"]["right_hip_yaw"]["available"])
+
     def test_snapshot_requires_both_fresh_sides_and_never_claims_tx(self):
         manager = HardwareObservationManager(enabled=False, maximum_sample_age_ms=250)
         manager.ingest_line("left", "180,181,182,183,184", 1_000_000_000)
@@ -62,6 +99,12 @@ class PassiveObservationTests(unittest.TestCase):
         self.assertEqual(partial["txBytes"], 0)
         self.assertFalse(partial["writeCapable"])
         self.assertEqual(partial["unobservedJoints"], ["left_hip_yaw", "right_hip_yaw"])
+        self.assertFalse(partial["sides"]["left"]["motorJoints"]["left_knee"]["available"])
+        self.assertIsNone(partial["sides"]["left"]["motorJoints"]["left_knee"]["positionDeg"])
+        self.assertEqual(
+            partial["sides"]["left"]["motorJoints"]["left_hip_yaw"]["canId"],
+            "0x149",
+        )
 
         manager.ingest_line("right", "185,186,187,188,189", 1_050_000_000)
         complete = manager.snapshot(1_150_000_000)

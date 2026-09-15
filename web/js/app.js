@@ -26,6 +26,14 @@ import {
   validateHardwareObservation,
 } from "./hardware_observation.js";
 import {
+  captureSoftwareZero,
+  validateSoftwareZero,
+} from "./hardware_calibration.js";
+import {
+  angleRecordingCsv,
+  observationRecordingRows,
+} from "./hardware_recording.js";
+import {
   GR00T_WBC_PLAYBACK_SOURCES,
   cancelGr00tWbcPlayback,
   playGr00tWbcSource,
@@ -35,6 +43,17 @@ import {
 
 const $ = (id) => document.getElementById(id);
 const RAD_TO_DEG = 180 / Math.PI;
+const SOFTWARE_ZERO_STORAGE_KEY = "dropbear.control.softwareZero.v2";
+const MAX_ANGLE_RECORDING_ROWS = 120_000;
+
+function loadSoftwareZero() {
+  try {
+    return validateSoftwareZero(JSON.parse(localStorage.getItem(SOFTWARE_ZERO_STORAGE_KEY) || "null"));
+  } catch (_error) {
+    return null;
+  }
+}
+
 const sim = new DropbearSim();
 const PRESET_SOURCES = Object.freeze([
   { value: "neutral", label: "Neutral hold" },
@@ -221,6 +240,10 @@ const ui = {
     latest: null,
     lastAppliedSignature: "",
     error: "",
+    softwareZero: loadSoftwareZero(),
+    recording: false,
+    recordingRows: [],
+    lastRecordedSignature: "",
   },
   hardwareControl: {
     challenge: "",
@@ -263,6 +286,64 @@ function renderHardwareObservationState() {
   button.classList.toggle("active", ui.hardwareObservation.active);
   button.setAttribute("aria-pressed", String(ui.hardwareObservation.active));
   button.textContent = ui.hardwareObservation.active ? "LEAVE LIVE STATE" : "USE LIVE STATE";
+  const zero = ui.hardwareObservation.softwareZero;
+  const zeroButton = $("hardware-zero-current");
+  zeroButton.disabled = !ui.hardwareObservation.active || freshSides !== 2;
+  $("hardware-zero-state").textContent = zero
+    ? `ZERO · ${new Date(zero.capturedAt).toLocaleTimeString()} · TORSO ${zero.torsoForwardDeg.toFixed(1)}° FORWARD`
+    : "ZERO · NOT CAPTURED";
+  const recording = ui.hardwareObservation.recording;
+  const recordButton = $("hardware-record-toggle");
+  recordButton.disabled = !ui.hardwareObservation.active || freshSides === 0;
+  recordButton.classList.toggle("active", recording);
+  recordButton.textContent = recording ? "STOP ANGLE RECORDING" : "START ANGLE RECORDING";
+  const rows = ui.hardwareObservation.recordingRows;
+  const motorRows = rows.filter((row) => row.motor_native_available).length;
+  $("hardware-record-download").disabled = rows.length === 0;
+  $("hardware-record-state").textContent = `REC · ${rows.length.toLocaleString()} ROWS · MOTOR NATIVE ${motorRows ? `${motorRows.toLocaleString()} MEASURED` : "UNAVAILABLE"}`;
+}
+
+function captureCurrentSoftwareZero() {
+  const torsoForwardDeg = Number($("hardware-zero-torso").value);
+  const zero = captureSoftwareZero(ui.hardwareObservation.latest, torsoForwardDeg);
+  ui.hardwareObservation.softwareZero = zero;
+  localStorage.setItem(SOFTWARE_ZERO_STORAGE_KEY, JSON.stringify(zero));
+  clearHardwareObservationHistory(sim);
+  robot.setObservationRootPitchDegrees(zero.torsoForwardDeg);
+  applyHardwareObservation(sim, ui.hardwareObservation.latest, performance.now(), zero);
+  appendTerminal(
+    `[hardware] software zero captured from both fresh leg streams · torso ${zero.torsoForwardDeg.toFixed(1)}° forward · ESP values unchanged`,
+    "ok",
+  );
+  renderHardwareObservationState();
+}
+
+function recordCurrentHardwareObservation(payload) {
+  if (!ui.hardwareObservation.recording) return;
+  const signature = ["left", "right"]
+    .map((side) => payload?.sides?.[side]?.fresh ? payload.sides[side].sequence : 0)
+    .join(":");
+  if (signature === ui.hardwareObservation.lastRecordedSignature) return;
+  ui.hardwareObservation.lastRecordedSignature = signature;
+  const rows = observationRecordingRows(payload, ui.hardwareObservation.softwareZero);
+  ui.hardwareObservation.recordingRows.push(...rows);
+  if (ui.hardwareObservation.recordingRows.length >= MAX_ANGLE_RECORDING_ROWS) {
+    ui.hardwareObservation.recordingRows.length = MAX_ANGLE_RECORDING_ROWS;
+    ui.hardwareObservation.recording = false;
+    appendTerminal("[hardware] angle recording stopped at the 120,000-row browser limit", "warn");
+  }
+}
+
+function downloadAngleRecording() {
+  const rows = ui.hardwareObservation.recordingRows;
+  if (!rows.length) return;
+  const blob = new Blob([angleRecordingCsv(rows)], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `dropbear-angle-recording-${new Date().toISOString().replaceAll(":", "-")}.csv`;
+  link.click();
+  window.setTimeout(() => URL.revokeObjectURL(url), 0);
 }
 
 async function pollHardwareObservation() {
@@ -276,8 +357,14 @@ async function pollHardwareObservation() {
     ui.hardwareObservation.latest = payload;
     renderControllerDiagnostics($("controller-diagnostics"), payload);
     ui.hardwareObservation.error = "";
+    recordCurrentHardwareObservation(payload);
     if (ui.hardwareObservation.active && validated.availableSides.length > 0) {
-      const result = applyHardwareObservation(sim, payload);
+      const result = applyHardwareObservation(
+        sim,
+        payload,
+        performance.now(),
+        ui.hardwareObservation.softwareZero,
+      );
       const signature = `${result.sequences.left}:${result.sequences.right}`;
       if (signature !== ui.hardwareObservation.lastAppliedSignature) {
         ui.hardwareObservation.lastAppliedSignature = signature;
@@ -307,7 +394,13 @@ function setHardwareObservationActive(active) {
     sim.playMode = false;
     sim.scenario = "hardware-observation";
     ui.hardwareObservation.active = true;
-    applyHardwareObservation(sim, ui.hardwareObservation.latest);
+    robot.setObservationRootPitchDegrees(ui.hardwareObservation.softwareZero?.torsoForwardDeg || 0);
+    applyHardwareObservation(
+      sim,
+      ui.hardwareObservation.latest,
+      performance.now(),
+      ui.hardwareObservation.softwareZero,
+    );
     if (!selectedJoint().observationValid) {
       const firstObserved = sim.joints.find((joint) => joint.observationValid);
       if (firstObserved) selectJoint(firstObserved.id);
@@ -316,6 +409,8 @@ function setHardwareObservationActive(active) {
   } else {
     ui.hardwareObservation.active = false;
     ui.hardwareObservation.lastAppliedSignature = "";
+    ui.hardwareObservation.recording = false;
+    robot.setObservationRootPitchDegrees(0);
     clearHardwareObservationHistory(sim);
     appendTerminal("[hardware] live state source released · simulation remains paused", "warn");
   }
@@ -435,6 +530,8 @@ const cad = createViewer(
 );
 
 const robotOptions = {
+  maxFrameRate: requestedRenderer === "swiftshader" ? 10 : 30,
+  softwareRendering: requestedRenderer === "swiftshader",
   onJoint: (canId) => {
     ui.motorCategory = "legs";
     document.querySelectorAll("[data-motor-category]").forEach((entry) => {
@@ -1095,6 +1192,9 @@ function setupSimControls() {
 }
 
 function setupHardwareControls() {
+  if (ui.hardwareObservation.softwareZero) {
+    $("hardware-zero-torso").value = ui.hardwareObservation.softwareZero.torsoForwardDeg;
+  }
   $("hardware-observation-toggle").addEventListener("click", () => {
     try {
       setHardwareObservationActive(!ui.hardwareObservation.active);
@@ -1102,6 +1202,36 @@ function setupHardwareControls() {
       appendTerminal(`[hardware] observation source unavailable · ${error.message}`, "err");
     }
   });
+
+  $("hardware-zero-current").addEventListener("click", () => {
+    try {
+      captureCurrentSoftwareZero();
+    } catch (error) {
+      appendTerminal(`[hardware] software zero rejected · ${error.message}`, "err");
+    }
+  });
+
+  $("hardware-record-toggle").addEventListener("click", () => {
+    if (ui.hardwareObservation.recording) {
+      ui.hardwareObservation.recording = false;
+      appendTerminal(
+        `[hardware] angle recording stopped · ${ui.hardwareObservation.recordingRows.length.toLocaleString()} rows ready for CSV`,
+        "ok",
+      );
+    } else {
+      ui.hardwareObservation.recordingRows = [];
+      ui.hardwareObservation.lastRecordedSignature = "";
+      ui.hardwareObservation.recording = true;
+      recordCurrentHardwareObservation(ui.hardwareObservation.latest);
+      appendTerminal(
+        "[hardware] angle recording started · external sensor, zeroed, model, and motor-native channels retained separately",
+        "ok",
+      );
+    }
+    renderHardwareObservationState();
+  });
+
+  $("hardware-record-download").addEventListener("click", downloadAngleRecording);
 
   $("hardware-control-lock").addEventListener("click", async () => {
     if (ui.hardwareControl.frontendArmed) {
@@ -2078,7 +2208,7 @@ function renderLive() {
   $("sel-angle").textContent = ui.axisCategory === "arm"
     ? `${(selectedArm?.angleDeg || 0).toFixed(1)}°`
     : target.observationValid
-      ? `${target.observationMechanismDeg.toFixed(1)}° q · ${target.observationRawDeg.toFixed(1)}° raw`
+      ? `${target.observationZeroedDeg.toFixed(1)}° zero · ${target.observationMechanismDeg.toFixed(1)}° model · ${target.observationRawDeg.toFixed(1)}° raw`
       : `${(target.angle - 180).toFixed(1)}°`;
   $("sel-velocity").textContent = ui.axisCategory === "arm"
     ? `${(selectedArm?.velocityDegS || 0).toFixed(1)}°/s`
@@ -2109,7 +2239,7 @@ function renderLive() {
     card.querySelector('[data-field="angle"]').textContent = observingHardware && !joint.observationValid
       ? "UNOBSERVED"
       : joint.observationValid
-        ? `${joint.observationMechanismDeg.toFixed(1)}° q · ${joint.observationRawDeg.toFixed(1)}° raw`
+        ? `${joint.observationZeroedDeg.toFixed(1)}° zero · ${joint.observationRawDeg.toFixed(1)}° raw`
         : `${(joint.angle - 180).toFixed(1)}°`;
     card.querySelector('[data-field="torque"]').textContent = `${joint.torque.toFixed(2)} N·m`;
     const dot = card.querySelector(".joint-dot");

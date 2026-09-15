@@ -272,7 +272,7 @@ body.training-active .app-shell { height: calc(100vh - 104px); }
   font: 600 8px "IBM Plex Mono";
   letter-spacing: .16em;
 }
-.scenario-bar { display: flex; align-items: flex-end; gap: 8px; flex: 0 0 auto; }
+.scenario-bar { display: flex; align-items: flex-end; gap: 8px; flex: 0 0 auto; flex-wrap: wrap; }
 .scenario-bar label { display: grid; gap: 5px; }
 .scenario-bar label span { color: var(--quiet); font: 600 8px "IBM Plex Mono"; letter-spacing: .12em; }
 .playback-mode-control { display: grid; gap: 5px; }
@@ -321,6 +321,14 @@ body.training-active .app-shell { height: calc(100vh - 104px); }
   white-space: nowrap;
 }
 .observation-button.active { color: var(--green); border-color: rgba(52,211,153,.45); background: rgba(52,211,153,.07); }
+.torso-zero-control { position: relative; grid-template-columns: 62px 12px; }
+.torso-zero-control span { grid-column: 1 / -1; }
+.torso-zero-control input { width: 62px; height: 35px; border: 1px solid var(--line); background: #0a0a0b; color: var(--text); padding: 0 8px; font: 600 10px "IBM Plex Mono"; }
+.torso-zero-control b { align-self: center; color: var(--quiet); font: 600 9px "IBM Plex Mono"; }
+.zero-button { color: var(--cyan); border-color: rgba(34,211,238,.35); }
+.zero-button:disabled, .recording-button:disabled { opacity: .3; cursor: not-allowed; }
+.recording-button.active { color: var(--red); border-color: rgba(251,113,133,.5); background: rgba(251,113,133,.07); }
+.observation-tool-state { align-self: center; max-width: 220px; color: var(--quiet); font: 600 7px/1.4 "IBM Plex Mono"; letter-spacing: .06em; }
 
 .sim-training-panel {
   display: grid;

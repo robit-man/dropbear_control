@@ -60,6 +60,14 @@ check(
     && index.body.includes('id="hardware-arm-stage3"')
     && (index.body.match(/data-safety-ack=/g) || []).length === 5,
 );
+check(
+  "browser-only zero and dual-angle recording controls are present",
+  index.body.includes('id="hardware-zero-torso"')
+    && index.body.includes('id="hardware-zero-current"')
+    && index.body.includes('id="hardware-record-toggle"')
+    && index.body.includes('id="hardware-record-download"')
+    && index.body.includes("MOTOR NATIVE UNAVAILABLE"),
+);
 check("paired foot and X8 telemetry present", index.body.includes('id="left-foot-height"') && index.body.includes('id="right-calf-pair"'));
 check(
   "geometry contact telemetry present",
