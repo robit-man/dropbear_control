@@ -465,6 +465,7 @@
               <b>1 · Select exact device and source</b>
               <label><span>STABLE USB DEVICE</span><select id="esp-flash-device"></select></label>
               <label><span>TRUSTED .INO SOURCE</span><select id="esp-firmware-source"></select></label>
+              <small id="esp-partition-state">Checking SPIFFS-preserving partition layout…</small>
               <div class="esp-compile-action">
                 <button id="esp-compile" class="button" type="button">COMPILE / VERIFY</button>
                 <span id="esp-compile-status" class="esp-compile-status idle" role="status" aria-live="polite">
@@ -483,7 +484,7 @@
               <label><input id="esp-ack-estop" type="checkbox"> E-stop and physical disconnect are ready.</label>
               <label><span id="esp-confirm-label">TYPE FLASH &lt;ROLE&gt;</span><input id="esp-flash-confirm" autocomplete="off" spellcheck="false"></label>
               <button id="esp-upload" class="button danger" type="button" disabled>UPLOAD SELECTED BUILD</button>
-              <small>Uploading resets the selected controller. Live observation pauses during the upload and resumes afterward.</small>
+              <small>Uploading resets the selected controller. Before writing, the server reads the target partition table and requires SPIFFS at 0x290000 + 0x160000. Live observation resumes afterward.</small>
             </div>
           </article>
         </div>
@@ -962,6 +963,6 @@
     </form>
   </dialog>
 
-  <script type="module" src="/js/app.js?v=20260916-compile-status"></script>
+  <script type="module" src="/js/app.js?v=20260916-spiffs-preserve"></script>
 </body>
 </html>

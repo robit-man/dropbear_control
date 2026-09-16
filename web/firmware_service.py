@@ -7,7 +7,9 @@ import os
 import select
 import shutil
 import stat
+import struct
 import subprocess
+import sys
 import tempfile
 import termios
 import threading
@@ -18,8 +20,8 @@ from pathlib import Path
 from typing import Any
 
 
-FIRMWARE_SCHEMA = "dropbear-esp32-devices-v1"
-BOARD_FQBN = "esp32:esp32:esp32:PartitionScheme=huge_app"
+FIRMWARE_SCHEMA = "dropbear-esp32-devices-v2"
+BOARD_FQBN = "esp32:esp32:esp32:PartitionScheme=huge_app,EraseFlash=none"
 REQUIRED_ESP32_CORE_VERSION = "2.0.13"
 RAW_TAIL_LINES = 160
 READ_ONLY_SERIAL_COMMANDS = frozenset({"status", "chirality", "mac", "saved", "help"})
@@ -27,6 +29,14 @@ REQUIRED_LIBRARY_VERSIONS = {
     "FastAccelStepper": "0.30.15",
     "MCP_CAN_lib": "1.5.1",
 }
+PARTITION_FILENAME = "partitions.csv"
+PARTITION_LAYOUT = "dropbear-preserve-default-spiffs-v1"
+APP_OFFSET = 0x10000
+APP_SIZE = 0x280000
+SPIFFS_OFFSET = 0x290000
+SPIFFS_SIZE = 0x160000
+PARTITION_TABLE_OFFSET = 0x8000
+PARTITION_TABLE_SIZE = 0x1000
 
 
 def _configure_115200(fd: int) -> None:
@@ -137,6 +147,11 @@ class DeviceFirmwareManager:
             "DROPBEAR_ESP32_CORE_ROOT",
             Path.home() / ".arduino15" / "packages" / "esp32" / "hardware" / "esp32",
         )).resolve()
+        default_esptool = next(iter(sorted(
+            (Path.home() / ".arduino15" / "packages" / "esp32" / "tools" / "esptool_py").glob("*/esptool.py"),
+            reverse=True,
+        )), Path("/nonexistent/esptool.py"))
+        self.esptool = Path(os.environ.get("DROPBEAR_ESPTOOL", default_esptool)).resolve()
         self.build_root = Path(tempfile.gettempdir()) / "dropbear-firmware-builds"
         self._lock = threading.RLock()
         self._aux_readers: dict[str, _RawSerialReader] = {}
@@ -260,6 +275,96 @@ class DeviceFirmwareManager:
             )
         return issues
 
+    def _partition_path(self) -> Path:
+        return self.source_root / PARTITION_FILENAME
+
+    @staticmethod
+    def _partition_rows(path: Path) -> dict[str, tuple[int, int]]:
+        if not path.is_file():
+            raise FirmwareToolError(
+                f"required {PARTITION_FILENAME} is missing from the trusted firmware directory"
+            )
+        rows: dict[str, tuple[int, int]] = {}
+        for raw_line in path.read_text(errors="strict").splitlines():
+            line = raw_line.partition("#")[0].strip()
+            if not line:
+                continue
+            fields = [field.strip() for field in line.split(",")]
+            if len(fields) < 5:
+                raise FirmwareToolError(f"invalid partition row: {raw_line}")
+            try:
+                rows[fields[0]] = (int(fields[3], 0), int(fields[4], 0))
+            except ValueError as error:
+                raise FirmwareToolError(f"invalid partition address in row: {raw_line}") from error
+        return rows
+
+    def _validated_partition(self) -> tuple[Path, str]:
+        path = self._partition_path()
+        rows = self._partition_rows(path)
+        if rows.get("app0") != (APP_OFFSET, APP_SIZE):
+            raise FirmwareToolError(
+                "Dropbear application partition must be 0x10000 + 0x280000"
+            )
+        if rows.get("spiffs") != (SPIFFS_OFFSET, SPIFFS_SIZE):
+            raise FirmwareToolError(
+                "Dropbear SPIFFS partition must remain at 0x290000 + 0x160000"
+            )
+        return path, hashlib.sha256(path.read_bytes()).hexdigest()
+
+    @staticmethod
+    def _spiffs_from_partition_binary(data: bytes) -> tuple[int, int] | None:
+        """Return the SPIFFS offset/size from an ESP-IDF binary partition table."""
+        for cursor in range(0, len(data) - 31, 32):
+            entry = data[cursor:cursor + 32]
+            magic = struct.unpack_from("<H", entry)[0]
+            if magic == 0xFFFF:
+                break
+            if magic != 0x50AA:
+                continue
+            _, partition_type, subtype, offset, size, raw_label, _ = struct.unpack(
+                "<HBBII16sI", entry
+            )
+            label = raw_label.partition(b"\0")[0].decode("ascii", errors="replace")
+            if partition_type == 0x01 and (subtype == 0x82 or label == "spiffs"):
+                return offset, size
+        return None
+
+    def _verify_device_spiffs_layout(self, device: dict[str, Any]) -> dict[str, Any]:
+        """Read only the target partition table and block an unsafe layout migration."""
+        if not self.esptool.is_file():
+            raise FirmwareToolError(
+                "esptool is unavailable; refusing upload because SPIFFS preservation cannot be verified"
+            )
+        with tempfile.TemporaryDirectory(prefix="dropbear-partition-check-") as temporary:
+            dump_path = Path(temporary) / "partition-table.bin"
+            command = [
+                sys.executable, str(self.esptool), "--chip", "esp32",
+                "--port", device["stablePath"], "--baud", "115200",
+                "read_flash", hex(PARTITION_TABLE_OFFSET), hex(PARTITION_TABLE_SIZE),
+                str(dump_path),
+            ]
+            result = subprocess.run(command, capture_output=True, text=True, timeout=120)
+            if result.returncode != 0 or not dump_path.is_file():
+                output = (result.stdout + "\n" + result.stderr).strip()[-4000:]
+                raise FirmwareToolError(
+                    "could not read the ESP32 partition table; upload held to protect SPIFFS: " + output
+                )
+            discovered = self._spiffs_from_partition_binary(dump_path.read_bytes())
+        if discovered is None:
+            raise FirmwareToolError("target partition table has no SPIFFS entry; upload held")
+        if discovered != (SPIFFS_OFFSET, SPIFFS_SIZE):
+            raise FirmwareToolError(
+                "target SPIFFS is "
+                f"{hex(discovered[0])} + {hex(discovered[1])}; expected "
+                f"{hex(SPIFFS_OFFSET)} + {hex(SPIFFS_SIZE)}. Upload held so saved settings are not stranded"
+            )
+        return {
+            "layout": PARTITION_LAYOUT,
+            "spiffsOffset": hex(discovered[0]),
+            "spiffsSize": hex(discovered[1]),
+            "verifiedReadOnly": True,
+        }
+
     def snapshot(self) -> dict[str, Any]:
         self._refresh_aux_readers()
         observation = self.observation_manager.snapshot()
@@ -291,6 +396,13 @@ class DeviceFirmwareManager:
         core_versions = self._esp32_core_versions()
         executable_available = self.arduino.is_file() and os.access(self.arduino, os.X_OK)
         dependency_issues = self._toolchain_issues(library_versions, core_versions)
+        try:
+            _, partition_sha256 = self._validated_partition()
+            partition_issue = ""
+        except FirmwareToolError as error:
+            partition_sha256 = ""
+            partition_issue = str(error)
+            dependency_issues.append(partition_issue)
         return {
             "schema": FIRMWARE_SCHEMA,
             "baudrate": 115200,
@@ -307,6 +419,13 @@ class DeviceFirmwareManager:
                 "requiredLibraries": dict(REQUIRED_LIBRARY_VERSIONS),
                 "libraryVersions": library_versions,
                 "issues": dependency_issues,
+                "partitionLayout": PARTITION_LAYOUT,
+                "partitionSha256": partition_sha256,
+                "appOffset": hex(APP_OFFSET),
+                "appSize": hex(APP_SIZE),
+                "spiffsOffset": hex(SPIFFS_OFFSET),
+                "spiffsSize": hex(SPIFFS_SIZE),
+                "spiffsPreservedInPlace": not partition_issue,
             },
             "builds": list(self._builds.values())[-8:],
             "txBytes": self.tx_bytes,
@@ -336,6 +455,7 @@ class DeviceFirmwareManager:
         mismatches = self._toolchain_issues(versions, self._esp32_core_versions())
         if mismatches:
             raise FirmwareToolError("firmware toolchain dependency mismatch: " + "; ".join(mismatches))
+        partition_path, partition_sha256 = self._validated_partition()
         build_id = uuid.uuid4().hex
         job_root = self.build_root / build_id
         sketch_dir = job_root / source_path.stem
@@ -344,6 +464,8 @@ class DeviceFirmwareManager:
         build_dir.mkdir(parents=True)
         sketch_path = sketch_dir / f"{source_path.stem}.ino"
         shutil.copy2(source_path, sketch_path)
+        build_partition_path = sketch_dir / PARTITION_FILENAME
+        shutil.copy2(partition_path, build_partition_path)
         self.sketchbook.mkdir(parents=True, exist_ok=True)
         command = [
             str(self.arduino), "--verify", "--board", BOARD_FQBN,
@@ -354,6 +476,17 @@ class DeviceFirmwareManager:
         started = time.time()
         result = subprocess.run(command, capture_output=True, text=True, timeout=600)
         output = (result.stdout + "\n" + result.stderr).strip()[-24000:]
+        application_binary = build_dir / f"{source_path.stem}.ino.bin"
+        binary_bytes = application_binary.stat().st_size if application_binary.is_file() else 0
+        if result.returncode == 0 and not binary_bytes:
+            result = subprocess.CompletedProcess(command, 1, result.stdout, result.stderr + "\napplication binary was not produced")
+            output = (result.stdout + "\n" + result.stderr).strip()[-24000:]
+        if result.returncode == 0 and binary_bytes > APP_SIZE:
+            result = subprocess.CompletedProcess(
+                command, 1, result.stdout,
+                result.stderr + f"\napplication binary exceeds custom {hex(APP_SIZE)} partition",
+            )
+            output = (result.stdout + "\n" + result.stderr).strip()[-24000:]
         record = {
             "id": build_id,
             "sourceId": source["id"],
@@ -361,6 +494,12 @@ class DeviceFirmwareManager:
             "family": source["family"],
             "sha256": source["sha256"],
             "board": BOARD_FQBN,
+            "partitionLayout": PARTITION_LAYOUT,
+            "partitionSha256": partition_sha256,
+            "spiffsOffset": hex(SPIFFS_OFFSET),
+            "spiffsSize": hex(SPIFFS_SIZE),
+            "spiffsPreservedInPlace": True,
+            "binaryBytes": binary_bytes,
             "state": "passed" if result.returncode == 0 else "failed",
             "returnCode": result.returncode,
             "durationSeconds": round(time.time() - started, 2),
@@ -420,6 +559,7 @@ class DeviceFirmwareManager:
             build["sketchPath"],
         ]
         try:
+            partition_check = self._verify_device_spiffs_layout(device)
             result = subprocess.run(command, capture_output=True, text=True, timeout=300)
         finally:
             self.observation_manager.start()
@@ -432,5 +572,6 @@ class DeviceFirmwareManager:
             "device": device,
             "buildId": build_id,
             "sha256": build["sha256"],
+            "partition": partition_check,
             "output": output,
         }

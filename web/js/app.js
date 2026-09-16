@@ -1705,6 +1705,10 @@ function renderEspDevices() {
     : payload.toolchain?.available
       ? `DEPENDENCY BLOCKED · ${(payload.toolchain.issues || []).join(" · ")}`
       : "ARDUINO MISSING";
+  const partition = payload.toolchain || {};
+  $("esp-partition-state").textContent = partition.spiffsPreservedInPlace
+    ? `SPIFFS PRESERVE · ${partition.partitionLayout} · ${partition.spiffsOffset} + ${partition.spiffsSize}`
+    : `SPIFFS LAYOUT BLOCKED · ${(partition.issues || []).join(" · ")}`;
   renderEspCompileStatus();
   renderEspUploadInterlock();
 }
@@ -1758,7 +1762,7 @@ function setupEspDevices() {
     ui.hardwareDevices.busy = true;
     ui.hardwareDevices.compileState = "compiling";
     $("esp-compile").disabled = true;
-    $("esp-build-output").textContent = `Compiling ${source.filename}\nSHA-256 ${source.sha256}\nBoard ${ui.hardwareDevices.latest?.toolchain?.board || "unknown"}\n…`;
+    $("esp-build-output").textContent = `Compiling ${source.filename}\nSHA-256 ${source.sha256}\nBoard ${ui.hardwareDevices.latest?.toolchain?.board || "unknown"}\nSPIFFS preserve ${ui.hardwareDevices.latest?.toolchain?.spiffsOffset || "unknown"} + ${ui.hardwareDevices.latest?.toolchain?.spiffsSize || "unknown"}\n…`;
     renderEspCompileStatus();
     renderEspUploadInterlock();
     try {
@@ -1772,6 +1776,7 @@ function setupEspDevices() {
         `${build.state.toUpperCase()} · ${build.filename}`,
         `SHA-256 ${build.sha256}`,
         `BOARD ${build.board} · ${build.durationSeconds}s`,
+        `PARTITIONS ${build.partitionLayout} · SPIFFS ${build.spiffsOffset} + ${build.spiffsSize} · ${build.binaryBytes} app bytes`,
         "",
         build.output,
       ].join("\n");

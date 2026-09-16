@@ -266,6 +266,13 @@ tools/setup_gr00t_runtime.sh
 
 Open <http://localhost:8000>.
 
+The **Connected ESP32 devices** view compiles the trusted `.ino` files from
+`Hyperspawn/Dropbear`. Every build includes the repository's custom
+`partitions.csv`: a 2.5 MiB application partition with the existing Arduino
+default SPIFFS settings region retained at `0x290000` + `0x160000`. Uploads
+force `EraseFlash=none` and perform a read-only partition-table preflight on
+the selected ESP32. A missing or mismatched SPIFFS layout blocks the upload.
+
 For explicitly enabled receive-only state from the two deployed leg ESP32s,
 set the two stable USB paths and open `/?live=1`. The service owns read-only
 file descriptors, emits `txBytes: 0`, accepts partial fresh sides without

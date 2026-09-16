@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import stat
+import struct
 import subprocess
 import sys
 import tempfile
@@ -37,9 +38,18 @@ class FirmwareServiceTests(unittest.TestCase):
         self.core_root = root / "esp32-core"
         self.project.mkdir()
         self.source.mkdir()
+        (self.source / "partitions.csv").write_text(
+            "nvs,data,nvs,0x9000,0x5000,\n"
+            "otadata,data,ota,0xe000,0x2000,\n"
+            "app0,app,factory,0x10000,0x280000,\n"
+            "spiffs,data,spiffs,0x290000,0x160000,\n"
+            "coredump,data,coredump,0x3F0000,0x10000,\n"
+        )
         self.arduino = root / "arduino"
         self.arduino.write_text("#!/bin/sh\nexit 0\n")
         self.arduino.chmod(self.arduino.stat().st_mode | stat.S_IXUSR)
+        self.esptool = root / "esptool.py"
+        self.esptool.write_text("# test fixture\n")
         for name, version in (("FastAccelStepper", "0.30.15"), ("MCP_CAN_lib", "1.5.1")):
             library = self.sketchbook / "libraries" / name
             library.mkdir(parents=True)
@@ -52,6 +62,7 @@ class FirmwareServiceTests(unittest.TestCase):
             "DROPBEAR_ARDUINO": str(self.arduino),
             "DROPBEAR_ARDUINO_SKETCHBOOK": str(self.sketchbook),
             "DROPBEAR_ESP32_CORE_ROOT": str(self.core_root),
+            "DROPBEAR_ESPTOOL": str(self.esptool),
         })
         self.environment.start()
         self.manager = DeviceFirmwareManager(self.project, _Observation())
@@ -71,21 +82,54 @@ class FirmwareServiceTests(unittest.TestCase):
         self.assertTrue(snapshot["toolchain"]["ready"])
         self.assertEqual(snapshot["toolchain"]["libraryVersions"]["FastAccelStepper"], "0.30.15")
         self.assertEqual(snapshot["toolchain"]["esp32CoreVersions"], ["2.0.13"])
+        self.assertTrue(snapshot["toolchain"]["spiffsPreservedInPlace"])
+        self.assertEqual(snapshot["toolchain"]["spiffsOffset"], "0x290000")
 
     def test_compile_uses_argument_list_and_session_bound_build(self):
         sketch = self.source / "esp32_devkitc_v4_hybrid.ino"
         sketch.write_text("void setup() {}\nvoid loop() {}\n")
         source_id = self.manager.snapshot()["sources"][0]["id"]
-        completed = subprocess.CompletedProcess([], 0, "Sketch uses 100 bytes", "")
-        with mock.patch("firmware_service.subprocess.run", return_value=completed) as run:
+        def successful_compile(command, **_kwargs):
+            build_path = Path(next(
+                item.partition("=")[2] for item in command if item.startswith("build.path=")
+            ))
+            build_path.mkdir(parents=True, exist_ok=True)
+            (build_path / "esp32_devkitc_v4_hybrid.ino.bin").write_bytes(b"firmware")
+            return subprocess.CompletedProcess(command, 0, "Sketch uses 100 bytes", "")
+
+        with mock.patch("firmware_service.subprocess.run", side_effect=successful_compile) as run:
             result = self.manager.compile(source_id)
         self.assertEqual(result["state"], "passed")
         command = run.call_args.args[0]
         self.assertIsInstance(command, list)
         self.assertIn("--verify", command)
-        self.assertIn("esp32:esp32:esp32:PartitionScheme=huge_app", command)
+        self.assertIn("esp32:esp32:esp32:PartitionScheme=huge_app,EraseFlash=none", command)
         self.assertEqual(result["sourceId"], source_id)
         self.assertEqual(len(result["sha256"]), 64)
+        self.assertEqual(result["binaryBytes"], 8)
+        self.assertEqual(result["spiffsOffset"], "0x290000")
+        copied_partition = Path(result["sketchPath"]).parent / "partitions.csv"
+        self.assertEqual(copied_partition.read_bytes(), (self.source / "partitions.csv").read_bytes())
+
+    def test_binary_partition_parser_finds_spiffs(self):
+        entry = struct.pack(
+            "<HBBII16sI", 0x50AA, 0x01, 0x82, 0x290000, 0x160000,
+            b"spiffs\0".ljust(16, b"\0"), 0,
+        )
+        table = entry + (b"\xff" * (0x1000 - len(entry)))
+        self.assertEqual(
+            self.manager._spiffs_from_partition_binary(table),
+            (0x290000, 0x160000),
+        )
+
+    def test_compile_rejects_partition_that_moves_spiffs(self):
+        sketch = self.source / "firmware_full_libs_neck.ino"
+        sketch.write_text("void setup() {}\nvoid loop() {}\n")
+        partition = self.source / "partitions.csv"
+        partition.write_text(partition.read_text().replace("0x290000,0x160000", "0x310000,0xE0000"))
+        source_id = self.manager.snapshot()["sources"][0]["id"]
+        with self.assertRaisesRegex(FirmwareToolError, "must remain at 0x290000"):
+            self.manager.compile(source_id)
 
     def test_unknown_source_is_rejected_before_tool_execution(self):
         with self.assertRaises(FirmwareToolError):
