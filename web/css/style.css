@@ -20,6 +20,7 @@
   --violet: #a78bfa;
   --left: #facc15;
   --right: #ececec;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
   font-family: Archivo, system-ui, sans-serif;
   background: var(--bg);
   color: var(--text);
