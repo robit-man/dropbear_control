@@ -36,10 +36,10 @@ MAX_BUFFER_BYTES = 4096
 DEFAULT_MAX_SAMPLE_AGE_MS = 250.0
 RAW_SERIAL_TAIL_LINES = 160
 # Some legacy builds flood USB at roughly 600 lines/s despite documenting a
-# 50 Hz stream. The browser polls at 10 Hz, so admitting at most 100 complete
-# records/s preserves motion detail while keeping serial parsing off the render
-# budget. The current Behemoth 50 Hz DB2 stream passes through unchanged.
-MIN_ADMITTED_SAMPLE_INTERVAL_NS = 10_000_000
+# 50 Hz stream. The browser polls at 10 Hz, so admitting at most 50 complete
+# records/s preserves the controller's intended motion bandwidth while keeping
+# legacy serial floods off the render budget.
+MIN_ADMITTED_SAMPLE_INTERVAL_NS = 20_000_000
 
 JOINT_BINDINGS = {
     "left": (
