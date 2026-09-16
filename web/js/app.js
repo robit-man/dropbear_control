@@ -43,7 +43,9 @@ import {
 
 const $ = (id) => document.getElementById(id);
 const RAD_TO_DEG = 180 / Math.PI;
-const SOFTWARE_ZERO_STORAGE_KEY = "dropbear.control.softwareZero.v2";
+// v3 invalidates offsets captured before the physical USB 1.1/1.2 leg-role
+// correction. Applying those offsets after swapping sides would corrupt pose.
+const SOFTWARE_ZERO_STORAGE_KEY = "dropbear.control.softwareZero.v3";
 const MAX_ANGLE_RECORDING_ROWS = 120_000;
 
 function loadSoftwareZero() {
@@ -251,6 +253,14 @@ const ui = {
     expiresInMs: 0,
     frontendArmed: false,
   },
+  hardwareDevices: {
+    latest: null,
+    selectedDeviceId: "",
+    selectedSourceId: "",
+    build: null,
+    busy: false,
+    lastRawText: "",
+  },
 };
 
 function selectedJoint() {
@@ -442,7 +452,7 @@ function renderHardwareControlState() {
     armed
     && ui.hardwareObservation.active
     && ui.axisCategory === "leg"
-    && target.observationValid
+    && target.observationModelApplied
   );
 }
 
@@ -520,17 +530,58 @@ const cadOptions = {
   },
 };
 
-const cad = createViewer(
-  () => new CadViewer($("cad-canvas"), cadOptions),
-  () => new SoftwarePanelViewer($("cad-canvas"), {
+const createSoftwareCad = () => new SoftwarePanelViewer($("cad-canvas"), {
     title: "ACTUATOR CAD",
     onStatus: cadOptions.onStatus,
-  }),
-  "CAD",
-);
+  });
+class LazyCadViewer {
+  constructor() {
+    this.viewer = null;
+    this.modelKey = "x8-pro";
+    this.angle = 0;
+    this.wireframe = true;
+    this.exploded = false;
+    this.housingVisible = true;
+    this.outputVisible = true;
+  }
+
+  ensure() {
+    if (this.viewer) return this.viewer;
+    this.viewer = createViewer(
+      () => new CadViewer($("cad-canvas"), cadOptions),
+      createSoftwareCad,
+      "CAD",
+    );
+    this.viewer.setModel(this.modelKey);
+    this.viewer.setJointAngle(this.angle);
+    this.viewer.setWireframe(this.wireframe);
+    this.viewer.setExploded(this.exploded);
+    this.viewer.setHousingVisible(this.housingVisible);
+    this.viewer.setOutputVisible(this.outputVisible);
+    return this.viewer;
+  }
+
+  setActive(on) {
+    if (on) this.ensure().setActive(true);
+    else this.viewer?.setActive(false);
+  }
+
+  setModel(key) { this.modelKey = key; this.viewer?.setModel(key); }
+  setJointAngle(value) { this.angle = value; this.viewer?.setJointAngle(value); }
+  setWireframe(on) { this.wireframe = Boolean(on); this.viewer?.setWireframe(on); }
+  setExploded(on) { this.exploded = Boolean(on); this.viewer?.setExploded(on); }
+  setHousingVisible(on) { this.housingVisible = Boolean(on); this.viewer?.setHousingVisible(on); }
+  setOutputVisible(on) { this.outputVisible = Boolean(on); this.viewer?.setOutputVisible(on); }
+  resize() { this.viewer?.resize(); }
+  fit() { this.viewer?.fit(); }
+}
+
+// Keep the live USD as the only WebGL workload until the operator opens the
+// CAD tab. The actuator remains interactive 3D, including under SwiftShader.
+const cad = new LazyCadViewer();
 
 const robotOptions = {
-  maxFrameRate: requestedRenderer === "swiftshader" ? 10 : 30,
+  maxFrameRate: requestedRenderer === "swiftshader" ? 15 : 30,
   softwareRendering: requestedRenderer === "swiftshader",
   onJoint: (canId) => {
     ui.motorCategory = "legs";
@@ -641,6 +692,10 @@ function setupNavigation() {
   document.querySelectorAll("[data-view-target]").forEach((button) => {
     button.addEventListener("click", () => switchView(button.dataset.viewTarget));
   });
+  const requestedView = new URLSearchParams(window.location.search).get("view");
+  if (["sim", "cad", "controller", "devices", "firmware"].includes(requestedView)) {
+    switchView(requestedView);
+  }
 }
 
 function makeJointCards() {
@@ -1510,6 +1565,238 @@ async function requestJson(url, options = {}) {
   throw new Error("control authorization failed");
 }
 
+function selectedEspDevice() {
+  return ui.hardwareDevices.latest?.devices?.find(
+    (device) => device.id === ui.hardwareDevices.selectedDeviceId,
+  ) || null;
+}
+
+function selectedFirmwareSource() {
+  return ui.hardwareDevices.latest?.sources?.find(
+    (source) => source.id === ui.hardwareDevices.selectedSourceId,
+  ) || null;
+}
+
+function replaceSelectOptions(select, records, selected, label) {
+  const signature = records.map((record) => `${record.id}:${label(record)}`).join("|");
+  if (select.dataset.signature !== signature) {
+    select.replaceChildren(...records.map((record) => {
+      const option = document.createElement("option");
+      option.value = record.id;
+      option.textContent = label(record);
+      return option;
+    }));
+    select.dataset.signature = signature;
+  }
+  if (records.some((record) => record.id === selected)) select.value = selected;
+}
+
+function clearEspBuild(reason = "No firmware has been compiled in this server session.") {
+  ui.hardwareDevices.build = null;
+  $("esp-build-output").textContent = reason;
+  renderEspUploadInterlock();
+}
+
+function renderEspUploadInterlock() {
+  const device = selectedEspDevice();
+  const build = ui.hardwareDevices.build;
+  const expected = device ? `FLASH ${String(device.role).toUpperCase()}` : "FLASH <ROLE>";
+  $("esp-confirm-label").textContent = `TYPE ${expected}`;
+  const acknowledged = ["esp-ack-supported", "esp-ack-power", "esp-ack-estop"]
+    .every((id) => $(id).checked);
+  $("esp-upload").disabled = !(
+    build?.state === "passed"
+    && acknowledged
+    && $("esp-flash-confirm").value === expected
+    && !ui.hardwareDevices.busy
+  );
+}
+
+function renderEspDevices() {
+  const payload = ui.hardwareDevices.latest;
+  if (!payload) return;
+  const devices = payload.devices || [];
+  const sources = payload.sources || [];
+  if (!devices.some((device) => device.id === ui.hardwareDevices.selectedDeviceId)) {
+    ui.hardwareDevices.selectedDeviceId = devices[0]?.id || "";
+  }
+  if (!sources.some((source) => source.id === ui.hardwareDevices.selectedSourceId)) {
+    ui.hardwareDevices.selectedSourceId = (
+      sources.find((source) => source.family === "universal-behemoth") || sources[0]
+    )?.id || "";
+  }
+
+  const status = $("esp-device-status");
+  status.className = `load-status ${devices.length ? "ok" : "error"}`;
+  status.innerHTML = "<span></span>";
+  status.append(document.createTextNode(`${devices.length} USB DEVICE${devices.length === 1 ? "" : "S"}`));
+
+  const cards = $("esp-device-cards");
+  cards.replaceChildren(...devices.map((device) => {
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = `esp-device-card${device.id === ui.hardwareDevices.selectedDeviceId ? " active" : ""}`;
+    const firmware = device.firmware || {};
+    const version = firmware.version || "not reported";
+    card.innerHTML = `<header><span class="panel-kicker"></span><span class="device-live"></span></header><h2></h2><small></small><code></code>`;
+    card.querySelector(".panel-kicker").textContent = device.tty;
+    card.querySelector(".device-live").textContent = String(device.serialState || "unknown").toUpperCase();
+    card.querySelector("h2").textContent = device.role.replaceAll("_", " ");
+    card.querySelector("small").textContent = `${firmware.family || "unknown"} · ${version}`;
+    card.querySelector("code").textContent = device.stablePath;
+    card.addEventListener("click", () => {
+      if (ui.hardwareDevices.selectedDeviceId !== device.id) {
+        ui.hardwareDevices.selectedDeviceId = device.id;
+        ui.hardwareDevices.lastRawText = "";
+        clearEspBuild("Device changed. Compile again after reviewing the exact target.");
+      }
+      renderEspDevices();
+    });
+    return card;
+  }));
+
+  const deviceLabel = (device) => `${device.role.replaceAll("_", " ")} · ${device.tty} · ${device.pathLabel}`;
+  replaceSelectOptions($("esp-device-select"), devices, ui.hardwareDevices.selectedDeviceId, deviceLabel);
+  replaceSelectOptions($("esp-flash-device"), devices, ui.hardwareDevices.selectedDeviceId, deviceLabel);
+  replaceSelectOptions(
+    $("esp-firmware-source"),
+    sources,
+    ui.hardwareDevices.selectedSourceId,
+    (source) => `${source.family} · ${source.filename} · ${source.sha256.slice(0, 12)}`,
+  );
+
+  const device = selectedEspDevice();
+  $("esp-serial-title").textContent = device
+    ? `${device.role.replaceAll("_", " ")} · ${device.tty}`
+    : "No serial device";
+  const rawText = device?.rawTail?.length
+    ? device.rawTail.map((line) => `${line.direction === "tx" ? ">" : "<"} ${line.text}`).join("\n")
+    : "No complete serial lines received from this device yet.";
+  const rawOutput = $("esp-raw-output");
+  if (rawText !== ui.hardwareDevices.lastRawText) {
+    const follow = rawOutput.scrollHeight - rawOutput.scrollTop - rawOutput.clientHeight < 50;
+    rawOutput.textContent = rawText;
+    ui.hardwareDevices.lastRawText = rawText;
+    if (follow) rawOutput.scrollTop = rawOutput.scrollHeight;
+  }
+  $("esp-toolchain-state").textContent = payload.toolchain?.ready
+    ? `READY · ${payload.toolchain.board} · FastAccelStepper ${payload.toolchain.libraryVersions?.FastAccelStepper}`
+    : payload.toolchain?.available
+      ? `DEPENDENCY BLOCKED · ${(payload.toolchain.issues || []).join(" · ")}`
+      : "ARDUINO MISSING";
+  renderEspUploadInterlock();
+}
+
+async function pollEspDevices() {
+  try {
+    ui.hardwareDevices.latest = await requestJson("/api/hardware/devices");
+    renderEspDevices();
+  } catch (error) {
+    const status = $("esp-device-status");
+    status.className = "load-status error";
+    status.textContent = `DEVICE API · ${error.message}`;
+  }
+}
+
+function setupEspDevices() {
+  const chooseDevice = (value) => {
+    if (ui.hardwareDevices.selectedDeviceId !== value) {
+      ui.hardwareDevices.selectedDeviceId = value;
+      ui.hardwareDevices.lastRawText = "";
+      clearEspBuild("Device changed. Compile again after reviewing the exact target.");
+    }
+    renderEspDevices();
+  };
+  $("esp-device-select").addEventListener("change", (event) => chooseDevice(event.target.value));
+  $("esp-flash-device").addEventListener("change", (event) => chooseDevice(event.target.value));
+  $("esp-firmware-source").addEventListener("change", (event) => {
+    ui.hardwareDevices.selectedSourceId = event.target.value;
+    clearEspBuild("Source changed. Compile the newly selected firmware before upload.");
+    renderEspDevices();
+  });
+  $("esp-query-form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const device = selectedEspDevice();
+    if (!device) return;
+    const command = $("esp-query-command").value;
+    try {
+      const result = await requestJson("/api/hardware/serial/query", {
+        method: "POST",
+        body: JSON.stringify({ deviceId: device.id, command }),
+      });
+      appendTerminal(`[serial] ${device.role} ${result.command} · ${result.bytes} bytes`, "ok");
+      window.setTimeout(pollEspDevices, 150);
+    } catch (error) {
+      appendTerminal(`[serial] diagnostic query held · ${error.message}`, "err");
+    }
+  });
+  $("esp-compile").addEventListener("click", async () => {
+    const source = selectedFirmwareSource();
+    if (!source || ui.hardwareDevices.busy) return;
+    ui.hardwareDevices.busy = true;
+    $("esp-compile").disabled = true;
+    $("esp-build-output").textContent = `Compiling ${source.filename}\nSHA-256 ${source.sha256}\nBoard ${ui.hardwareDevices.latest?.toolchain?.board || "unknown"}\n…`;
+    renderEspUploadInterlock();
+    try {
+      const build = await requestJson("/api/hardware/firmware/compile", {
+        method: "POST",
+        body: JSON.stringify({ sourceId: source.id }),
+      });
+      ui.hardwareDevices.build = build;
+      $("esp-build-output").textContent = [
+        `${build.state.toUpperCase()} · ${build.filename}`,
+        `SHA-256 ${build.sha256}`,
+        `BOARD ${build.board} · ${build.durationSeconds}s`,
+        "",
+        build.output,
+      ].join("\n");
+      appendTerminal(`[firmware] compile ${build.state} · ${build.filename} · ${build.sha256.slice(0, 12)}`, build.state === "passed" ? "ok" : "err");
+    } catch (error) {
+      clearEspBuild(`Compile failed\n${error.message}`);
+      appendTerminal(`[firmware] compile failed · ${error.message}`, "err");
+    } finally {
+      ui.hardwareDevices.busy = false;
+      $("esp-compile").disabled = false;
+      renderEspUploadInterlock();
+    }
+  });
+  ["esp-ack-supported", "esp-ack-power", "esp-ack-estop", "esp-flash-confirm"]
+    .forEach((id) => $(id).addEventListener("input", renderEspUploadInterlock));
+  $("esp-upload").addEventListener("click", async () => {
+    const device = selectedEspDevice();
+    const build = ui.hardwareDevices.build;
+    if (!device || !build || ui.hardwareDevices.busy) return;
+    ui.hardwareDevices.busy = true;
+    renderEspUploadInterlock();
+    $("esp-build-output").textContent += `\n\nUploading to ${device.stablePath}…`;
+    try {
+      const result = await requestJson("/api/hardware/firmware/upload", {
+        method: "POST",
+        body: JSON.stringify({
+          buildId: build.id,
+          deviceId: device.id,
+          sourceSha256: build.sha256,
+          robotSupported: $("esp-ack-supported").checked,
+          actuatorPowerSafe: $("esp-ack-power").checked,
+          estopReady: $("esp-ack-estop").checked,
+          confirmation: $("esp-flash-confirm").value,
+        }),
+      });
+      $("esp-build-output").textContent += `\nUPLOAD PASSED\n${result.output}`;
+      appendTerminal(`[firmware] upload passed · ${device.role} · ${build.sha256.slice(0, 12)}`, "ok");
+    } catch (error) {
+      $("esp-build-output").textContent += `\nUPLOAD FAILED\n${error.message}`;
+      appendTerminal(`[firmware] upload failed · ${device.role} · ${error.message}`, "err");
+    } finally {
+      ui.hardwareDevices.busy = false;
+      renderEspUploadInterlock();
+      pollEspDevices();
+    }
+  });
+  pollEspDevices();
+  window.setInterval(pollEspDevices, 500);
+}
+
 async function pollPhysicsRuntime() {
   try {
     const status = await requestJson("/api/physics/status");
@@ -2208,7 +2495,7 @@ function renderLive() {
   $("sel-angle").textContent = ui.axisCategory === "arm"
     ? `${(selectedArm?.angleDeg || 0).toFixed(1)}°`
     : target.observationValid
-      ? `${target.observationZeroedDeg.toFixed(1)}° zero · ${target.observationMechanismDeg.toFixed(1)}° model · ${target.observationRawDeg.toFixed(1)}° raw`
+      ? `${target.observationRawDeg.toFixed(1)}° ${target.observationPositionSource === "motor_native" ? "motor" : "AS5600"} · ${target.observationModelApplied ? `${target.observationZeroedDeg.toFixed(1)}° zero · ${target.observationMechanismDeg.toFixed(1)}° model` : "MODEL HELD"}`
       : `${(target.angle - 180).toFixed(1)}°`;
   $("sel-velocity").textContent = ui.axisCategory === "arm"
     ? `${(selectedArm?.velocityDegS || 0).toFixed(1)}°/s`
@@ -2219,10 +2506,12 @@ function renderLive() {
   $("sel-sensor").textContent = ui.axisCategory === "arm"
     ? "AUX · CAN UNMAPPED"
     : target.sensorPin == null
-      ? "NO ANALOG"
+      ? observingHardware && target.observationValid
+        ? `LIVE CAN · MOTOR NATIVE · ${Number(target.observationAgeMs || 0).toFixed(0)} ms`
+        : "NO ANALOG"
       : observingHardware
         ? target.observationValid
-          ? `LIVE GPIO${target.sensorPin} · ${Number(target.observationAgeMs || 0).toFixed(0)} ms`
+          ? `LIVE GPIO${target.sensorPin} · ${target.observationModelApplied ? "MODEL APPLIED" : "RAW ONLY"} · ${Number(target.observationAgeMs || 0).toFixed(0)} ms`
           : `GPIO${target.sensorPin} · UNAVAILABLE`
         : `GPIO${target.sensorPin} · ${target.adc}`;
   $("fault-sensor").textContent = ui.axisCategory === "arm"
@@ -2239,11 +2528,13 @@ function renderLive() {
     card.querySelector('[data-field="angle"]').textContent = observingHardware && !joint.observationValid
       ? "UNOBSERVED"
       : joint.observationValid
-        ? `${joint.observationZeroedDeg.toFixed(1)}° zero · ${joint.observationRawDeg.toFixed(1)}° raw`
+        ? joint.observationModelApplied
+          ? `${joint.observationZeroedDeg.toFixed(1)}° zero · ${joint.observationRawDeg.toFixed(1)}° ${joint.observationPositionSource === "motor_native" ? "motor" : "AS5600"}`
+          : `${joint.observationRawDeg.toFixed(1)}° ${joint.observationPositionSource === "motor_native" ? "motor" : "AS5600"} · HELD`
         : `${(joint.angle - 180).toFixed(1)}°`;
     card.querySelector('[data-field="torque"]').textContent = `${joint.torque.toFixed(2)} N·m`;
     const dot = card.querySelector(".joint-dot");
-    dot.className = `joint-dot ${joint.temperature > 80 || sim.faults.canDrop || (observingHardware && joint.observationOutOfEnvelope) ? "warn" : observingHardware && joint.observationValid ? "observed" : sim.playMode ? "live" : ""}`;
+    dot.className = `joint-dot ${joint.temperature > 80 || sim.faults.canDrop || (observingHardware && joint.observationValid && !joint.observationModelApplied) ? "warn" : observingHardware && joint.observationValid ? "observed" : sim.playMode ? "live" : ""}`;
   }
 
   const poseNow = performance.now();
@@ -2356,6 +2647,7 @@ makeJointCards();
 setupMotorCategories();
 setupSimControls();
 setupHardwareControls();
+setupEspDevices();
 setupCadControls();
 setupBoardControls();
 setupFirmware();

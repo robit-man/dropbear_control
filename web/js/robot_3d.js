@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import {
   DROPBEAR_ARM_MOTOR_BINDINGS,
   DROPBEAR_USD_BINDINGS,
@@ -11,6 +12,9 @@ import { VerticalGroundConstraint } from "./vertical_ground_constraint.js";
 import { ForceGroundContact } from "./force_ground_contact.js";
 
 const ROBOT_ROOT = "/assets/robot";
+const ROBOT_ASSET = new URLSearchParams(window.location.search).get("asset") === "full"
+  ? "dropbear-usd-browser.glb"
+  : "dropbear-usd-browser-lite.glb";
 const AXES = Object.freeze({
   X: new THREE.Vector3(1, 0, 0),
   Y: new THREE.Vector3(0, 1, 0),
@@ -104,7 +108,7 @@ export class Robot3D {
       antialias: !this.softwareRendering,
       alpha: false,
       powerPreference: "high-performance",
-      preserveDrawingBuffer: true,
+      preserveDrawingBuffer: false,
     });
     this.resolutionScale = 1;
     this.renderer.setPixelRatio(Math.min(devicePixelRatio, this.softwareRendering ? 1 : 1.7));
@@ -235,7 +239,7 @@ export class Robot3D {
     try {
       const [manifestResponse, gltf] = await Promise.all([
         fetch(`${ROBOT_ROOT}/dropbear-articulation.json`),
-        new GLTFLoader().loadAsync(`${ROBOT_ROOT}/dropbear-usd-browser.glb`),
+        new GLTFLoader().loadAsync(`${ROBOT_ROOT}/${ROBOT_ASSET}`),
       ]);
       if (!manifestResponse.ok) throw new Error(`articulation manifest HTTP ${manifestResponse.status}`);
       this.manifest = await manifestResponse.json();
@@ -253,8 +257,10 @@ export class Robot3D {
       // set and keeps the control console responsive.
       this.renderer.render(this.scene, this.camera);
       this.ready = true;
-      const stats = this.manifest.statistics;
-      this.onStatus(`USD loaded · ${stats.renderedBodies} bodies · ${stats.browserTriangles.toLocaleString()} triangles`, "ok");
+      const triangleCount = this.raycastMeshes.reduce((total, mesh) => total
+        + Math.floor((mesh.geometry.index?.count || mesh.geometry.attributes.position?.count || 0) / 3), 0);
+      const assetLabel = ROBOT_ASSET.includes("lite") ? "light USD" : "full USD";
+      this.onStatus(`USD loaded · ${this.bodyGroups.size} bodies · ${triangleCount.toLocaleString()} triangles · ${assetLabel}`, "ok");
     } catch (error) {
       console.error(error);
       this.onStatus(`USD load failed: ${error.message}`, "error");
@@ -335,6 +341,43 @@ export class Robot3D {
       this.bodyGroups.get(body.path).add(mesh);
       this.bodyMeshes.get(body.path).push(mesh);
       this.raycastMeshes.push(mesh);
+    }
+
+    // SwiftShader spends more time dispatching hundreds of CAD draw calls than
+    // rasterizing triangles. The light asset keeps the exact rigid-body names
+    // and transforms; this pass combines each body's visuals into one mesh.
+    if (this.softwareRendering) {
+      this.raycastMeshes.length = 0;
+      for (const [bodyPath, bodyMeshes] of this.bodyMeshes) {
+        if (bodyMeshes.length < 2) {
+          this.raycastMeshes.push(...bodyMeshes);
+          continue;
+        }
+        const geometries = bodyMeshes.map((mesh) => {
+          const geometry = mesh.geometry.clone();
+          geometry.applyMatrix4(mesh.matrix);
+          return geometry;
+        });
+        const combined = mergeGeometries(geometries, false);
+        if (!combined) {
+          this.raycastMeshes.push(...bodyMeshes);
+          continue;
+        }
+        const group = this.bodyGroups.get(bodyPath);
+        const material = new THREE.MeshLambertMaterial({ color: "#89949b" });
+        const merged = new THREE.Mesh(combined, material);
+        merged.name = `LITE:${bodyPath}`;
+        merged.matrixAutoUpdate = false;
+        merged.matrix.identity();
+        merged.castShadow = false;
+        merged.receiveShadow = false;
+        merged.userData.bodyPath = bodyPath;
+        normalizeMaterials(merged);
+        bodyMeshes.forEach((mesh) => group.remove(mesh));
+        group.add(merged);
+        this.bodyMeshes.set(bodyPath, [merged]);
+        this.raycastMeshes.push(merged);
+      }
     }
 
     for (const binding of this.manifest.canBindings) {

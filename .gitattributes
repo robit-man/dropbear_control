@@ -9,4 +9,5 @@
 # This runtime cache is intentionally kept below the normal Git object limit
 # so the live control console remains deployable when repository LFS is full.
 web/assets/robot/dropbear-usd-browser.glb -filter -diff -merge -text
+web/assets/robot/dropbear-usd-browser-lite.glb -filter -diff -merge -text
 *.png filter=lfs diff=lfs merge=lfs -text

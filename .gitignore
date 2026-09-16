@@ -8,6 +8,7 @@
 # Python
 **/__pycache__/
 **/.pytest_cache/
+.cache/
 *.pyc
 .venv/
 .gr00t-venv/

@@ -91,6 +91,15 @@ class PassiveObservationTests(unittest.TestCase):
         self.assertEqual(side["motorJoints"]["right_hip_yaw"]["positionDeg"], 5)
         self.assertTrue(side["motorJoints"]["right_hip_yaw"]["available"])
 
+    def test_raw_tail_and_legacy_identity_are_passively_detected(self):
+        manager = HardwareObservationManager(enabled=False, maximum_sample_age_ms=250)
+        manager.ingest_line("left", "180,181,182,183,184", 1_000_000_000)
+        side = manager.snapshot(1_100_000_000)["sides"]["left"]
+        self.assertEqual(side["rawTail"][-1]["text"], "180,181,182,183,184")
+        self.assertEqual(side["rawTail"][-1]["direction"], "rx")
+        self.assertEqual(side["firmware"]["family"], "legacy-five-angle")
+        self.assertEqual(side["firmware"]["version"], "exact-build-unknown")
+
     def test_snapshot_requires_both_fresh_sides_and_never_claims_tx(self):
         manager = HardwareObservationManager(enabled=False, maximum_sample_age_ms=250)
         manager.ingest_line("left", "180,181,182,183,184", 1_000_000_000)

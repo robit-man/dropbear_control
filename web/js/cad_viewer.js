@@ -36,17 +36,18 @@ export class CadViewer {
     this.canvas = canvas;
     this.onStatus = onStatus;
     this.onModel = onModel;
+    this.softwareRendering = new URLSearchParams(window.location.search).get("renderer") === "swiftshader";
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color("#0a0a0b");
     this.scene.fog = new THREE.Fog("#0a0a0b", 0.25, 0.7);
     this.camera = new THREE.PerspectiveCamera(30, 1, 0.0005, 5);
     this.camera.position.set(0.15, 0.11, 0.15);
-    this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
-    this.renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    this.renderer = new THREE.WebGLRenderer({ canvas, antialias: !this.softwareRendering, alpha: false });
+    this.renderer.setPixelRatio(Math.min(devicePixelRatio, this.softwareRendering ? 1 : 2));
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 0.78;
-    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.enabled = !this.softwareRendering;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.controls = new OrbitControls(this.camera, canvas);
     this.controls.enableDamping = true;
@@ -82,8 +83,8 @@ export class CadViewer {
     this.scene.add(new THREE.HemisphereLight("#ececec", "#111113", 1.35));
     const key = new THREE.DirectionalLight("#ffffff", 2.1);
     key.position.set(0.12, 0.18, 0.15);
-    key.castShadow = true;
-    key.shadow.mapSize.set(2048, 2048);
+    key.castShadow = !this.softwareRendering;
+    key.shadow.mapSize.set(this.softwareRendering ? 512 : 2048, this.softwareRendering ? 512 : 2048);
     this.scene.add(key);
     const rim = new THREE.PointLight("#facc15", 1.35, 0.45);
     rim.position.set(-0.13, 0.08, -0.11);
@@ -98,7 +99,7 @@ export class CadViewer {
     );
     floor.rotation.x = -Math.PI / 2;
     floor.position.y = -0.075;
-    floor.receiveShadow = true;
+    floor.receiveShadow = !this.softwareRendering;
     this.scene.add(floor);
     const grid = new THREE.GridHelper(0.4, 40, "#3a3a42", "#17171a");
     grid.position.y = -0.074;
@@ -176,8 +177,8 @@ export class CadViewer {
     });
     for (const node of meshes) {
       node.material = cloneMaterial(node.material, fallbackColor);
-      node.castShadow = true;
-      node.receiveShadow = true;
+      node.castShadow = !this.softwareRendering;
+      node.receiveShadow = !this.softwareRendering;
       node.userData.role = role;
       const overlay = new THREE.Mesh(
         node.geometry,
@@ -270,7 +271,7 @@ export class CadViewer {
     this.animationFrame = requestAnimationFrame(() => this._animate());
     if (!this.active) return;
     const now = performance.now();
-    if (now - this.lastDrawAt < 66) return;
+    if (now - this.lastDrawAt < (this.softwareRendering ? 100 : 66)) return;
     this.lastDrawAt = now;
     this.controls.update();
     this.renderer.render(this.scene, this.camera);

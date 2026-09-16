@@ -85,6 +85,9 @@
         <button class="rail-item" data-view-target="controller">
           <span class="rail-icon">▦</span><span>Controller Health</span>
         </button>
+        <button class="rail-item" data-view-target="devices">
+          <span class="rail-icon">≋</span><span>ESP32 Devices</span>
+        </button>
         <button class="rail-item" data-view-target="firmware">
           <span class="rail-icon">›_</span><span>Firmware</span>
         </button>
@@ -420,6 +423,60 @@
               <div id="pin-map" class="pin-map"></div>
             </article>
           </aside>
+        </div>
+      </section>
+
+      <section class="view" data-view="devices">
+        <div class="view-heading">
+          <div>
+            <div class="eyebrow">USB SERIAL / FIRMWARE OPERATIONS</div>
+            <h1>Connected ESP32 devices</h1>
+            <p>Raw per-device RX, passive firmware identification, trusted-source compilation, and an explicit flash interlock. The running leg streams remain compatible with their installed legacy five-angle firmware.</p>
+          </div>
+          <div id="esp-device-status" class="load-status loading"><span></span>SCANNING USB</div>
+        </div>
+        <div id="esp-device-cards" class="esp-device-cards"></div>
+        <div class="esp-device-workspace">
+          <article class="panel esp-serial-panel">
+            <div class="panel-head">
+              <div><span class="panel-kicker">RAW SERIAL · 115200 8N1</span><h2 id="esp-serial-title">Select a device</h2></div>
+              <select id="esp-device-select" aria-label="ESP32 serial device"></select>
+            </div>
+            <pre id="esp-raw-output" class="esp-raw-output">Waiting for device inventory…</pre>
+            <form id="esp-query-form" class="esp-query-row">
+              <select id="esp-query-command" aria-label="Read-only serial diagnostic">
+                <option value="status">status</option>
+                <option value="chirality">chirality</option>
+                <option value="mac">mac</option>
+                <option value="saved">saved offsets</option>
+                <option value="help">help</option>
+              </select>
+              <button class="button subtle" type="submit">SEND READ-ONLY QUERY</button>
+              <small>Only the listed non-motion diagnostics are admitted by the server.</small>
+            </form>
+          </article>
+          <article class="panel esp-flash-panel">
+            <div class="panel-head"><div><span class="panel-kicker">ARDUINO ESP32</span><h2>Compile and upload</h2></div><span id="esp-toolchain-state" class="count-chip">CHECKING</span></div>
+            <div class="esp-flash-stage">
+              <b>1 · Select exact device and source</b>
+              <label><span>STABLE USB DEVICE</span><select id="esp-flash-device"></select></label>
+              <label><span>TRUSTED .INO SOURCE</span><select id="esp-firmware-source"></select></label>
+              <button id="esp-compile" class="button" type="button">COMPILE / VERIFY</button>
+            </div>
+            <div class="esp-flash-stage">
+              <b>2 · Review successful build</b>
+              <pre id="esp-build-output" class="esp-build-output">No firmware has been compiled in this server session.</pre>
+            </div>
+            <div class="esp-flash-stage esp-upload-interlock">
+              <b>3 · Physical flash interlock</b>
+              <label><input id="esp-ack-supported" type="checkbox"> Robot is mechanically supported.</label>
+              <label><input id="esp-ack-power" type="checkbox"> Actuator power/reset behavior is safe.</label>
+              <label><input id="esp-ack-estop" type="checkbox"> E-stop and physical disconnect are ready.</label>
+              <label><span id="esp-confirm-label">TYPE FLASH &lt;ROLE&gt;</span><input id="esp-flash-confirm" autocomplete="off" spellcheck="false"></label>
+              <button id="esp-upload" class="button danger" type="button" disabled>UPLOAD SELECTED BUILD</button>
+              <small>Uploading resets the selected controller. Live observation pauses during the upload and resumes afterward.</small>
+            </div>
+          </article>
         </div>
       </section>
 

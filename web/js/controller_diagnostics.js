@@ -46,6 +46,8 @@ export function classifyControllerSide(side, sample) {
     ageMs: finite(sample?.ageMs) ? sample.ageMs : null,
     sequence: Number(sample?.sequence) || 0,
     joints: sample?.joints || {},
+    motorJoints: sample?.motorJoints || {},
+    telemetryFormat: String(sample?.telemetryFormat || "legacy5"),
   });
 }
 
@@ -114,10 +116,11 @@ function renderSide(side, sample) {
         : "Reader state must recover before firmware progress can be inferred.",
     status.decodedLines > 0 ? "success" : status.transport,
   ));
-  column.append(arrow("5 × degrees"));
+  const db2 = status.telemetryFormat === "DB2";
+  column.append(arrow(db2 ? "5 external + 6 motor degrees" : "5 external degrees"));
   column.append(node(
     "STRICT PARSER",
-    `${status.rejectedLines.toLocaleString()} rejected · ${status.overflowEvents.toLocaleString()} overflows · exact five-value frames`,
+    `${status.rejectedLines.toLocaleString()} rejected · ${status.overflowEvents.toLocaleString()} overflows · ${db2 ? "DB2 dual-angle frames" : "legacy five-value frames"}`,
     status.parser,
   ));
 
@@ -149,12 +152,17 @@ function renderSide(side, sample) {
     status.calibration,
   ));
   column.append(arrow("read-only state"));
+  const nativeCount = Object.values(status.motorJoints).filter(
+    (motor) => motor?.available === true && finite(motor.positionDeg),
+  ).length;
   column.append(node(
     "CORRECTED USD TWIN",
-    status.calibration === "success" && status.fresh
-      ? "Five calibrated axes drive browser kinematics. Hip yaw remains unobserved."
-      : "Rendered state is held until fresh calibrated input is available.",
-    status.calibration === "success" && status.fresh ? "success" : "degraded",
+    status.fresh
+      ? nativeCount
+        ? `All five AS5600 fields and ${nativeCount}/6 motor angles are observed. After software zero, verified motor angles drive the model and AS5600 remains an independent check.`
+        : "All five AS5600 fields are observed. Admitted calibrated fields drive browser kinematics; hip yaw alone is absent from the legacy packet."
+      : "Rendered state is held until a fresh five-field packet is available.",
+    status.fresh ? status.calibration : "degraded",
   ));
   return column;
 }
@@ -192,7 +200,7 @@ export function renderControllerDiagnostics(container, payload) {
       motorNativeCount === 12 ? "success" : motorNativeCount ? "degraded" : "unknown",
     ),
     node("IMU TASK", "IMU state is not present in the deployed five-value serial frame.", "unknown"),
-    node("USB ROLE / CHIRALITY", "Paths 1.1 and 1.2 emit five-angle leg frames. Silent path 1.4 is reserved for the request/response neck controller; on-device chirality remains unqueried.", "success"),
+    node("USB ROLE / CHIRALITY", "Physical motion check: path 1.2 is left and path 1.1 is right. Both legacy builds ignored a chirality query while streaming. Silent path 1.4 remains the neck candidate.", "success"),
     node("FOOT FORCE DISTRIBUTION", "dropbear-foot integration reserved; no sensor transport is wired yet.", "future"),
     node("SERIAL / CAN CONTROL TX", "No write-capable descriptor exists. Frontend acknowledgement cannot unlock physical output.", "locked"),
   );

@@ -18,3 +18,9 @@ physical joints, loop-closure records, SDK action joints, and low-level
 CAN-to-USD bindings.
 
 The browser cache does not replace the source USD or Isaac/PhysX simulation.
+
+`dropbear-usd-browser-lite.glb` is a second rendering cache derived from the
+same GLB. It applies a 0.12 meshoptimizer simplification ratio while retaining
+the named rigid-body nodes consumed by the articulation manifest. The browser
+uses it by default and combines visuals per rigid body on software renderers;
+`?asset=full` remains available for visual review of the larger cache.

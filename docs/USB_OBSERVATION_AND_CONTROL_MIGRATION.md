@@ -40,10 +40,14 @@ cd ..
 
 On the current AGX Xavier USB topology, run:
 
+The side assignment below follows a physical single-leg movement check made
+on 2026-09-15. The deployed legacy builds do not emit a firmware identity and
+did not answer the passive `chirality` diagnostic while streaming.
+
 ```bash
 DROPBEAR_OBSERVATION_ENABLE=1 \
-DROPBEAR_OBSERVATION_LEFT=/dev/serial/by-path/platform-141a0000.pcie-pci-0005:01:00.0-usb-0:1.1:1.0-port0 \
-DROPBEAR_OBSERVATION_RIGHT=/dev/serial/by-path/platform-141a0000.pcie-pci-0005:01:00.0-usb-0:1.2:1.0-port0 \
+DROPBEAR_OBSERVATION_LEFT=/dev/serial/by-path/platform-141a0000.pcie-pci-0005:01:00.0-usb-0:1.2:1.0-port0 \
+DROPBEAR_OBSERVATION_RIGHT=/dev/serial/by-path/platform-141a0000.pcie-pci-0005:01:00.0-usb-0:1.1:1.0-port0 \
 DROPBEAR_OBSERVATION_MAX_AGE_MS=500 \
 python3 web/serve.py 8000
 ```
@@ -154,6 +158,21 @@ joint angle, motor-native angle, and motor-native zeroed delta in separate
 columns with CAN ID and availability. Hip yaw therefore has an empty external
 column, and all motor columns remain empty with an explicit status on today's
 deployed firmware. Recording stops at 120,000 rows to bound browser memory.
+
+## ESP32 console and firmware toolchain
+
+The ESP32 Devices view inventories stable `/dev/serial/by-path` identities,
+shows the bounded raw receive tail, and permits only the diagnostic serial
+queries `status`, `chirality`, `mac`, `saved`, and `help`. Compile and upload
+are separate stages. Upload requires the exact build and source checksum from
+the current server session, a selected stable device, three physical-safety
+acknowledgements, and the typed phrase `FLASH <ROLE>`.
+
+The local Arduino 1.8.19 toolchain targets `esp32:esp32:esp32`. Its ignored
+sketchbook pins MCP_CAN_lib 1.5.1 and FastAccelStepper 0.30.15; newer
+FastAccelStepper releases require ESP-IDF 5.3 and do not compile with the
+installed ESP32 Arduino core 3.0.3 / IDF 5.1. The device API reports the
+detected versions and blocks compile when either pin is missing or mismatched.
 
 ## Frontend control lock
 

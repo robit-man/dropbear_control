@@ -36,11 +36,18 @@ function check(name, condition) {
 const index = await request(`${base}/`);
 check("index served", index.status === 200);
 check(
-  "four control and state views exposed",
-  (index.body.match(/data-view-target=/g) || []).length === 4
+  "five control and state views exposed",
+  (index.body.match(/data-view-target=/g) || []).length === 5
     && !index.body.includes('data-view-target="rl"')
     && !index.body.includes('data-view-target="gr00t"')
     && !index.body.includes('data-view-target="evidence"'),
+);
+check(
+  "ESP32 device console and guarded firmware workflow are exposed",
+  index.body.includes('data-view-target="devices"')
+    && index.body.includes('id="esp-raw-output"')
+    && index.body.includes('id="esp-compile"')
+    && index.body.includes('id="esp-upload"'),
 );
 check("full Dropbear USD simulation present", index.body.includes("Dropbear closed-loop articulation"));
 check("USD robot viewport replaces schematic", index.body.includes('id="robot-canvas"') && !index.body.includes('id="robot-svg"'));

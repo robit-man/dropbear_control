@@ -16,12 +16,14 @@ from __future__ import annotations
 import hmac
 import math
 import os
+import re
 import secrets
 import select
 import stat
 import termios
 import threading
 import time
+from collections import deque
 from dataclasses import dataclass, field
 from typing import Any, Callable, Mapping
 
@@ -32,6 +34,12 @@ CONTROL_COMMAND_SCHEMA = "dropbear-hardware-command-v1"
 MAX_LINE_BYTES = 256
 MAX_BUFFER_BYTES = 4096
 DEFAULT_MAX_SAMPLE_AGE_MS = 250.0
+RAW_SERIAL_TAIL_LINES = 160
+# Some legacy builds flood USB at roughly 600 lines/s despite documenting a
+# 50 Hz stream. The browser polls at 10 Hz, so admitting at most 100 complete
+# records/s preserves motion detail while keeping serial parsing off the render
+# budget. The current Behemoth 50 Hz DB2 stream passes through unchanged.
+MIN_ADMITTED_SAMPLE_INTERVAL_NS = 10_000_000
 
 JOINT_BINDINGS = {
     "left": (
@@ -231,10 +239,34 @@ class _SideState:
     overflow_events: int = 0
     read_errors: int = 0
     error: str = ""
+    raw_lines: deque[dict[str, Any]] = field(
+        default_factory=lambda: deque(maxlen=RAW_SERIAL_TAIL_LINES)
+    )
+    firmware_family: str = "unknown"
+    firmware_version: str = ""
+
+
+def _passive_firmware_identity(line: str, telemetry_format: str = "") -> tuple[str, str]:
+    """Infer only what the received bytes prove; never invent a build version."""
+
+    if telemetry_format == "legacy5":
+        return "legacy-five-angle", "exact-build-unknown"
+    if telemetry_format == "DB2":
+        return "dropbear-observation-db2", "protocol-db2"
+    match = re.search(
+        r"(?:firmware|fw|version)[|:= ]+([A-Za-z0-9._+-]{1,64})",
+        line,
+        flags=re.IGNORECASE,
+    )
+    if match:
+        return "self-reported", match.group(1)
+    if "DROPBEAR UNIVERSAL" in line.upper() or "BEHEMOTH" in line.upper():
+        return "dropbear-universal-behemoth", "self-identified-no-version"
+    return "unknown", ""
 
 
 class _PassiveTTYReader:
-    """One-shot O_RDONLY tty reader with no transmit method or descriptor."""
+    """Reconnectable O_RDONLY tty reader with no transmit method or descriptor."""
 
     def __init__(
         self,
@@ -290,54 +322,69 @@ class _PassiveTTYReader:
             self._thread.join(timeout=1.0)
 
     def _run(self) -> None:
-        try:
-            resolved = os.path.realpath(self.path)
-            mode = os.stat(resolved).st_mode
-            if not stat.S_ISCHR(mode):
-                raise OSError(f"configured path is not a character device: {resolved}")
-            fd = os.open(
-                self.path,
-                os.O_RDONLY | os.O_NOCTTY | os.O_NONBLOCK | os.O_CLOEXEC,
-            )
-            self._fd = fd
-            self._configure_115200_8n1(fd)
-            self.on_state(self.side, "observing", "", resolved)
-        except (OSError, termios.error) as error:
-            self.on_state(self.side, "error", str(error), None)
-            return
+        while not self._stop.is_set():
+            try:
+                resolved = os.path.realpath(self.path)
+                mode = os.stat(resolved).st_mode
+                if not stat.S_ISCHR(mode):
+                    raise OSError(f"configured path is not a character device: {resolved}")
+                fd = os.open(
+                    self.path,
+                    os.O_RDONLY | os.O_NOCTTY | os.O_NONBLOCK | os.O_CLOEXEC,
+                )
+                self._fd = fd
+                self._configure_115200_8n1(fd)
+                self.on_state(self.side, "observing", "", resolved)
+            except (OSError, termios.error) as error:
+                self.on_state(self.side, "reconnecting", str(error), None)
+                self._stop.wait(0.5)
+                continue
 
-        buffer = bytearray()
-        try:
-            while not self._stop.is_set():
-                try:
+            buffer = bytearray()
+            disconnected = False
+            last_dispatched_ns = 0
+            try:
+                while not self._stop.is_set():
                     readable, _, _ = select.select([fd], [], [], 0.1)
                     if not readable:
                         continue
                     chunk = os.read(fd, 1024)
-                except (OSError, ValueError) as error:
-                    if not self._stop.is_set():
-                        self.on_state(self.side, "error", str(error), None)
-                    return
-                if not chunk:
-                    continue
-                buffer.extend(chunk)
-                if len(buffer) > MAX_BUFFER_BYTES:
-                    buffer.clear()
-                    self.on_state(self.side, "overflow", "serial receive buffer exceeded limit", None)
-                    continue
-                while b"\n" in buffer:
-                    raw, _, remainder = buffer.partition(b"\n")
-                    buffer = bytearray(remainder)
-                    line = raw.rstrip(b"\r").decode("ascii", errors="replace")
-                    self.on_line(self.side, line, time.monotonic_ns())
-        finally:
-            current = self._fd
-            self._fd = None
-            if current is not None:
-                try:
-                    os.close(current)
-                except OSError:
-                    pass
+                    if not chunk:
+                        raise OSError("serial device returned EOF")
+                    buffer.extend(chunk)
+                    if len(buffer) > MAX_BUFFER_BYTES:
+                        buffer.clear()
+                        self.on_state(self.side, "overflow", "serial receive buffer exceeded limit", None)
+                        continue
+                    if b"\n" in buffer:
+                        records = buffer.split(b"\n")
+                        buffer = bytearray(records[-1])
+                        received_ns = time.monotonic_ns()
+                        if received_ns - last_dispatched_ns >= MIN_ADMITTED_SAMPLE_INTERVAL_NS:
+                            # Only the newest complete record matters for live
+                            # state; coalescing a USB read avoids parsing an
+                            # obsolete burst from legacy high-rate firmware.
+                            line = records[-2].rstrip(b"\r").decode("ascii", errors="replace")
+                            self.on_line(self.side, line, received_ns)
+                            last_dispatched_ns = received_ns
+                            # Let the kernel accumulate any legacy flood into
+                            # the next read so obsolete lines can be coalesced
+                            # without a busy Python receive loop.
+                            self._stop.wait(MIN_ADMITTED_SAMPLE_INTERVAL_NS / 1_000_000_000.0)
+            except (OSError, ValueError) as error:
+                disconnected = True
+                if not self._stop.is_set():
+                    self.on_state(self.side, "reconnecting", str(error), None)
+            finally:
+                current = self._fd
+                self._fd = None
+                if current is not None:
+                    try:
+                        os.close(current)
+                    except OSError:
+                        pass
+            if disconnected:
+                self._stop.wait(0.5)
 
 
 class HardwareObservationManager:
@@ -452,6 +499,18 @@ class HardwareObservationManager:
         """Ingest a line; public to support replay and isolated tests."""
 
         received_ns = time.monotonic_ns() if received_monotonic_ns is None else int(received_monotonic_ns)
+        cleaned_line = line.strip()
+        with self._lock:
+            state = self._states[side]
+            state.raw_lines.append({
+                "receivedMonotonicNs": received_ns,
+                "text": cleaned_line,
+                "direction": "rx",
+            })
+            family, version = _passive_firmware_identity(cleaned_line)
+            if family != "unknown":
+                state.firmware_family = family
+                state.firmware_version = version
         try:
             record = parse_esp32_telemetry_line(side, line)
         except ObservationParseError:
@@ -467,6 +526,9 @@ class HardwareObservationManager:
             state.motor_joints = record["motorJoints"]
             state.telemetry_format = record["format"]
             state.controller_millis = record["controllerMillis"]
+            family, version = _passive_firmware_identity(line, record["format"])
+            state.firmware_family = family
+            state.firmware_version = version
             state.decoded_lines += 1
             state.state = "observing"
             state.error = ""
@@ -499,7 +561,13 @@ class HardwareObservationManager:
                     "sequence": state.sequence,
                     "receivedMonotonicNs": state.received_monotonic_ns,
                     "rawLine": state.raw_line,
+                    "rawTail": list(state.raw_lines),
                     "telemetryFormat": state.telemetry_format,
+                    "firmware": {
+                        "family": state.firmware_family,
+                        "version": state.firmware_version,
+                        "detection": "passive-serial",
+                    },
                     "controllerMillis": state.controller_millis,
                     "joints": dict(state.joints) if fresh else {},
                     "motorJoints": dict(state.motor_joints) if fresh and state.motor_joints

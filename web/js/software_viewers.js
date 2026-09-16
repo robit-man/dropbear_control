@@ -136,10 +136,14 @@ export class SoftwareRobotViewer {
   _drawJoint(context, x, y, joint, label, align = "left") {
     const measured = joint?.observationValid === true;
     context.textAlign = align;
-    context.fillStyle = measured ? "#22d3ee" : "#626a74";
+    context.fillStyle = measured
+      ? joint.observationModelApplied ? "#22d3ee" : "#facc15"
+      : "#626a74";
     context.font = '600 10px "IBM Plex Mono", monospace';
     const value = measured
-      ? `${Number(joint.observationZeroedDeg).toFixed(1)}° zero / ${Number(joint.observationRawDeg).toFixed(1)}° raw`
+      ? joint.observationModelApplied
+        ? `${Number(joint.observationZeroedDeg).toFixed(1)}° zero / ${Number(joint.observationRawDeg).toFixed(1)}° ${joint.observationPositionSource === "motor_native" ? "motor" : "AS5600"}`
+        : `${Number(joint.observationRawDeg).toFixed(1)}° ${joint.observationPositionSource === "motor_native" ? "motor" : "AS5600"} / MODEL HELD`
       : "UNOBSERVED";
     context.fillText(`${label}  ${value}`, x, y);
   }

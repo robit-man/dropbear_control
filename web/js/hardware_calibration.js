@@ -89,29 +89,36 @@ export const HARDWARE_DEFAULT_STANCE_CALIBRATION = Object.freeze({
     estimator: "median",
     sides: Object.freeze({
       left: Object.freeze({
-        usbPath: "1.1",
-        sampleCount: 190,
-        durationSeconds: 5,
-        capturedAt: "2026-09-15T00:24:00-07:00",
-      }),
-      right: Object.freeze({
         usbPath: "1.2",
         sampleCount: 86,
         durationSeconds: 5,
         capturedAt: "2026-09-14T17:56:00-07:00",
       }),
+      right: Object.freeze({
+        usbPath: "1.1",
+        sampleCount: 190,
+        durationSeconds: 5,
+        capturedAt: "2026-09-15T00:24:00-07:00",
+      }),
     }),
   }),
   sides: Object.freeze({
-    left: LEFT_DEFAULT_STANCE,
-    right: RIGHT_DEFAULT_STANCE,
+    left: RIGHT_DEFAULT_STANCE,
+    right: LEFT_DEFAULT_STANCE,
   }),
   directionEvidence: "provisional_positive_until_read_only_motion_validation",
 });
 
-export const SOFTWARE_ZERO_SCHEMA = "dropbear-browser-software-zero-v2";
+export const SOFTWARE_ZERO_SCHEMA = "dropbear-browser-software-zero-v3";
 const SENSOR_JOINTS = Object.freeze(["outer_calf", "inner_calf", "hip_pitch", "knee", "hip_roll"]);
 const MOTOR_JOINTS = Object.freeze([...SENSOR_JOINTS, "hip_yaw"]);
+const HIP_YAW_CALIBRATION = Object.freeze({
+  referenceDeg: 0,
+  lowerDeg: -30,
+  upperDeg: 30,
+  observedRangeDeg: Object.freeze([]),
+  captureQuality: "motor_zero_required",
+});
 
 function shortestDegreeDelta(next, previous) {
   return ((next - previous + 540) % 360) - 180;
@@ -186,17 +193,31 @@ export function validateSoftwareZero(record) {
   }
 }
 
-export function projectHardwareDegrees(side, firmwareJoint, rawDegrees, softwareZero = null) {
-  const baseCalibration = HARDWARE_DEFAULT_STANCE_CALIBRATION.sides[side]?.[firmwareJoint];
-  const capturedRawDatum = Number(softwareZero?.sides?.[side]?.joints?.[firmwareJoint]?.externalPositionDeg);
+export function projectHardwareDegrees(
+  side,
+  firmwareJoint,
+  rawDegrees,
+  softwareZero = null,
+  positionSource = "external_absolute",
+) {
+  const baseCalibration = HARDWARE_DEFAULT_STANCE_CALIBRATION.sides[side]?.[firmwareJoint]
+    || (firmwareJoint === "hip_yaw" ? HIP_YAW_CALIBRATION : null);
+  const isMotorNative = positionSource === "motor_native";
+  const capturedRawDatum = Number(isMotorNative
+    ? softwareZero?.sides?.[side]?.motorJoints?.[firmwareJoint]?.motorPositionDeg
+    : softwareZero?.sides?.[side]?.joints?.[firmwareJoint]?.externalPositionDeg);
   const calibration = baseCalibration && Number.isFinite(capturedRawDatum)
     ? Object.freeze({
       ...baseCalibration,
       rawDatumDeg: capturedRawDatum,
       datumSource: "operator_captured_browser_zero",
       capturedAt: softwareZero.capturedAt,
+      captureQuality: "operator_captured_current_pose",
+      positionSource,
     })
-    : baseCalibration;
+    : isMotorNative || firmwareJoint === "hip_yaw"
+      ? null
+      : baseCalibration;
   if (!calibration || !Number.isFinite(rawDegrees)) {
     return Object.freeze({
       calibrated: false,

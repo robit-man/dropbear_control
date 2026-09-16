@@ -34,6 +34,7 @@ from hardware_service import (
     HardwareControlGate,
     HardwareObservationManager,
 )
+from firmware_service import DeviceFirmwareManager
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(HERE)
@@ -47,6 +48,7 @@ GR00T_PROMPT_PLANNER = DropbearPromptPlanner()
 GR00T_RETARGET = Gr00tRetargetService(Path(PROJECT_ROOT))
 HARDWARE_OBSERVATION = HardwareObservationManager.from_environment()
 HARDWARE_CONTROL_GATE = HardwareControlGate()
+FIRMWARE_MANAGER = DeviceFirmwareManager(Path(PROJECT_ROOT), HARDWARE_OBSERVATION)
 CONTROL_TOKEN = secrets.token_urlsafe(32)
 # A full GR00T PolicyServer horizon is 40 x 64 float values. Keep a bounded
 # loopback-only ceiling with enough room for unrounded JSON float encodings,
@@ -291,6 +293,9 @@ class Handler(SimpleHTTPRequestHandler):
         if request_path == "/api/hardware/control/status":
             self._send_json(200, HARDWARE_CONTROL_GATE.snapshot())
             return
+        if request_path == "/api/hardware/devices":
+            self._send_json(200, FIRMWARE_MANAGER.snapshot())
+            return
         super().do_GET()
 
     def do_POST(self):
@@ -311,6 +316,9 @@ class Handler(SimpleHTTPRequestHandler):
                 "/api/hardware/control/advance",
                 "/api/hardware/control/revoke",
                 "/api/hardware/command",
+                "/api/hardware/serial/query",
+                "/api/hardware/firmware/compile",
+                "/api/hardware/firmware/upload",
             }
             if request_path not in supported:
                 self._send_json(404, {"error": "not found"})
@@ -337,6 +345,17 @@ class Handler(SimpleHTTPRequestHandler):
                 self._send_json(200, HARDWARE_CONTROL_GATE.revoke())
             elif request_path == "/api/hardware/command":
                 self._send_json(423, HARDWARE_CONTROL_GATE.inspect_command(payload))
+            elif request_path == "/api/hardware/serial/query":
+                self._send_json(200, FIRMWARE_MANAGER.query(
+                    str(payload.get("deviceId", "")),
+                    str(payload.get("command", "")),
+                ))
+            elif request_path == "/api/hardware/firmware/compile":
+                self._send_json(200, FIRMWARE_MANAGER.compile(
+                    str(payload.get("sourceId", "")),
+                ))
+            elif request_path == "/api/hardware/firmware/upload":
+                self._send_json(200, FIRMWARE_MANAGER.upload(payload))
             else:
                 self._send_json(200, GR00T_TRAINING.stop())
         except UnsupportedMediaType as error:
@@ -353,6 +372,7 @@ class Handler(SimpleHTTPRequestHandler):
 def _shutdown_managers():
     for label, callback in (
         ("hardware observation", HARDWARE_OBSERVATION.stop),
+        ("firmware and serial devices", FIRMWARE_MANAGER.stop),
         ("hardware control gate", HARDWARE_CONTROL_GATE.revoke),
         ("GR00T training", GR00T_TRAINING.shutdown),
         ("RL training", RL_MANAGER.stop),
@@ -392,6 +412,7 @@ def main():
     print(f"Dropbear digital twin: http://{display_host}:{port}", flush=True)
     print("Serving local Three.js modules and tracked STEP-derived CAD.", flush=True)
     HARDWARE_OBSERVATION.start()
+    FIRMWARE_MANAGER.start()
     observation = HARDWARE_OBSERVATION.snapshot()
     print(
         "Hardware observation: "
