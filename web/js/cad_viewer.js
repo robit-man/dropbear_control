@@ -268,7 +268,9 @@ export class CadViewer {
   }
 
   _animate() {
-    this.animationFrame = requestAnimationFrame(() => this._animate());
+    this.animationFrame = this.softwareRendering
+      ? window.setTimeout(() => this._animate(), 66)
+      : requestAnimationFrame(() => this._animate());
     if (!this.active) return;
     const now = performance.now();
     if (now - this.lastDrawAt < (this.softwareRendering ? 100 : 66)) return;

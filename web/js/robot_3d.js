@@ -98,7 +98,7 @@ export class Robot3D {
     this.frameIntervalMs = 1000 / Math.max(1, Math.min(60, Number(maxFrameRate) || 30));
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color("#080809");
-    this.scene.fog = new THREE.Fog("#0a0a0b", 3.4, 8.5);
+    this.scene.fog = this.softwareRendering ? null : new THREE.Fog("#0a0a0b", 3.4, 8.5);
     this.camera = new THREE.PerspectiveCamera(31, 1, 0.005, 30);
     this.camera.up.set(0, 0, 1);
     this.camera.position.set(2.6, -3.7, 2.4);
@@ -113,8 +113,10 @@ export class Robot3D {
     this.resolutionScale = 1;
     this.renderer.setPixelRatio(Math.min(devicePixelRatio, this.softwareRendering ? 1 : 1.7));
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
-    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 0.92;
+    this.renderer.toneMapping = this.softwareRendering
+      ? THREE.NoToneMapping
+      : THREE.ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = this.softwareRendering ? 1 : 0.92;
     this.renderer.shadowMap.enabled = !this.softwareRendering;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
@@ -197,27 +199,31 @@ export class Robot3D {
 
   _buildStage() {
     this.scene.add(new THREE.HemisphereLight("#ececec", "#111113", 1.65));
-    const key = new THREE.DirectionalLight("#ffffff", 3.0);
-    key.position.set(-2.5, -3.2, 5);
-    key.castShadow = !this.softwareRendering;
-    key.shadow.mapSize.set(2048, 2048);
-    key.shadow.camera.near = 0.1;
-    key.shadow.camera.far = 12;
-    key.shadow.camera.left = -2.2;
-    key.shadow.camera.right = 2.2;
-    key.shadow.camera.top = 2.2;
-    key.shadow.camera.bottom = -2.2;
-    this.scene.add(key);
-    const cyan = new THREE.PointLight("#ececec", 6, 4.5);
-    cyan.position.set(-1.25, -0.8, 1.35);
-    this.scene.add(cyan);
-    const amber = new THREE.PointLight("#facc15", 7, 4.5);
-    amber.position.set(1.35, 0.6, 1.15);
-    this.scene.add(amber);
+    if (!this.softwareRendering) {
+      const key = new THREE.DirectionalLight("#ffffff", 3.0);
+      key.position.set(-2.5, -3.2, 5);
+      key.castShadow = true;
+      key.shadow.mapSize.set(2048, 2048);
+      key.shadow.camera.near = 0.1;
+      key.shadow.camera.far = 12;
+      key.shadow.camera.left = -2.2;
+      key.shadow.camera.right = 2.2;
+      key.shadow.camera.top = 2.2;
+      key.shadow.camera.bottom = -2.2;
+      this.scene.add(key);
+      const cyan = new THREE.PointLight("#ececec", 6, 4.5);
+      cyan.position.set(-1.25, -0.8, 1.35);
+      this.scene.add(cyan);
+      const amber = new THREE.PointLight("#facc15", 7, 4.5);
+      amber.position.set(1.35, 0.6, 1.15);
+      this.scene.add(amber);
+    }
 
     const floor = new THREE.Mesh(
       new THREE.CircleGeometry(3.4, 96),
-      new THREE.MeshStandardMaterial({ color: "#0a0a0b", roughness: 0.96, metalness: 0.04 }),
+      this.softwareRendering
+        ? new THREE.MeshLambertMaterial({ color: "#0a0a0b" })
+        : new THREE.MeshStandardMaterial({ color: "#0a0a0b", roughness: 0.96, metalness: 0.04 }),
     );
     floor.position.z = -0.012;
     floor.receiveShadow = !this.softwareRendering;
@@ -350,6 +356,15 @@ export class Robot3D {
       this.raycastMeshes.length = 0;
       for (const [bodyPath, bodyMeshes] of this.bodyMeshes) {
         if (bodyMeshes.length < 2) {
+          for (const mesh of bodyMeshes) {
+            const color = Array.isArray(mesh.material)
+              ? mesh.material[0]?.color
+              : mesh.material?.color;
+            mesh.material = new THREE.MeshLambertMaterial({
+              color: color?.clone?.() || new THREE.Color("#89949b"),
+            });
+            normalizeMaterials(mesh);
+          }
           this.raycastMeshes.push(...bodyMeshes);
           continue;
         }
@@ -527,13 +542,19 @@ export class Robot3D {
           isX10 ? 0.092 : 0.070,
           24,
         ),
-        new THREE.MeshStandardMaterial({
-          color: isX10 ? "#a78bfa" : binding.side === "left" ? "#facc15" : "#d8dde2",
-          emissive: isX10 ? "#39235e" : binding.side === "left" ? "#443700" : "#28292c",
-          emissiveIntensity: 0.45,
-          metalness: 0.82,
-          roughness: 0.22,
-        }),
+        this.softwareRendering
+          ? new THREE.MeshLambertMaterial({
+            color: isX10 ? "#a78bfa" : binding.side === "left" ? "#facc15" : "#d8dde2",
+            emissive: isX10 ? "#39235e" : binding.side === "left" ? "#443700" : "#28292c",
+            emissiveIntensity: 0.45,
+          })
+          : new THREE.MeshStandardMaterial({
+            color: isX10 ? "#a78bfa" : binding.side === "left" ? "#facc15" : "#d8dde2",
+            emissive: isX10 ? "#39235e" : binding.side === "left" ? "#443700" : "#28292c",
+            emissiveIntensity: 0.45,
+            metalness: 0.82,
+            roughness: 0.22,
+          }),
       );
       shaft.userData.armMotorId = binding.id;
       shaft.castShadow = true;
@@ -910,6 +931,10 @@ export class Robot3D {
 
   _solveLegClosures(commandedAngles) {
     let worst = 0;
+    // The solver is warm-started from the previous passive-link pose. A full
+    // solve establishes the first frame; two correction steps keep live
+    // hardware motion closed without starving SwiftShader's render loop.
+    const iterations = this.softwareRendering && this.poseVersion > 0 ? 2 : 10;
     const calfWeight = (joint) => (
       joint.name.endsWith("Revolute115") || joint.name.endsWith("Revolute117")
         ? 5
@@ -922,7 +947,7 @@ export class Robot3D {
           this.legClosures.get(side) || [],
           this.legPassiveJoints.get(side) || [],
           commandedAngles,
-          { iterations: 10, weighted: calfWeight },
+          { iterations, weighted: calfWeight },
         ),
       );
     }
@@ -1114,7 +1139,11 @@ export class Robot3D {
   }
 
   _animate() {
-    requestAnimationFrame(() => this._animate());
+    if (this.softwareRendering) {
+      window.setTimeout(() => this._animate(), this.frameIntervalMs);
+    } else {
+      requestAnimationFrame(() => this._animate());
+    }
     if (!this.active) return;
     const now = performance.now();
     if (now - this.lastDrawAt < this.frameIntervalMs) return;

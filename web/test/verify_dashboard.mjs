@@ -76,6 +76,14 @@ check(
     && index.body.includes("MOTOR NATIVE UNAVAILABLE"),
 );
 check("paired foot and X8 telemetry present", index.body.includes('id="left-foot-height"') && index.body.includes('id="right-calf-pair"'));
+const belowStageIndex = index.body.indexOf('class="robot-below-stage"');
+check(
+  "USD status, source verification, and leg telemetry are below the 3D canvas",
+  belowStageIndex > index.body.indexOf('id="robot-canvas"')
+    && index.body.indexOf('id="robot-load-status"') > belowStageIndex
+    && index.body.indexOf('id="physics-runtime-status"') > belowStageIndex
+    && index.body.indexOf('class="leg-telemetry"') > belowStageIndex,
+);
 check(
   "geometry contact telemetry present",
   index.body.includes('id="left-foot-contact"')

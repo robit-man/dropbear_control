@@ -209,36 +209,9 @@
             </div>
             <div class="robot-stage">
               <canvas id="robot-canvas" aria-label="Interactive full Dropbear USD robot simulation"></canvas>
-              <div id="robot-load-status" class="load-status robot-load-status loading"><span></span>Loading Dropbear USD…</div>
-              <div class="leg-telemetry" aria-label="Live foot and four-bar telemetry">
-                <div class="leg-telemetry-card left">
-                  <span>LEFT LEG</span><b id="left-gait-phase">HOLD</b>
-                  <dl>
-                    <div><dt>FOOT</dt><dd id="left-foot-height">+0 mm</dd></div>
-                    <div><dt>CONTACT</dt><dd id="left-foot-contact">OPEN</dd></div>
-                    <div><dt>HEEL / TOE</dt><dd id="left-foot-load">0.0 / 0.0 kg</dd></div>
-                    <div><dt>ANKLE</dt><dd id="left-ankle-angle">+0.0°</dd></div>
-                    <div><dt>X8 O / I</dt><dd id="left-calf-pair">+0.0° / +0.0°</dd></div>
-                  </dl>
-                </div>
-                <div class="leg-telemetry-card right">
-                  <span>RIGHT LEG</span><b id="right-gait-phase">HOLD</b>
-                  <dl>
-                    <div><dt>FOOT</dt><dd id="right-foot-height">+0 mm</dd></div>
-                    <div><dt>CONTACT</dt><dd id="right-foot-contact">OPEN</dd></div>
-                    <div><dt>HEEL / TOE</dt><dd id="right-foot-load">0.0 / 0.0 kg</dd></div>
-                    <div><dt>ANKLE</dt><dd id="right-ankle-angle">+0.0°</dd></div>
-                    <div><dt>X8 O / I</dt><dd id="right-calf-pair">+0.0° / +0.0°</dd></div>
-                  </dl>
-                </div>
-              </div>
               <div class="robot-asset-chip">
                 <span>DROPBEAR.USD</span>
                 <b>a397be8 · Z-UP · METRES</b>
-              </div>
-              <div id="physics-runtime-status" class="physics-runtime-chip">
-                <span>FORCE CONTACT</span>
-                <b>VERIFYING SOURCE USD…</b>
               </div>
               <button id="robot-fit" class="button subtle robot-fit">FIT USD</button>
               <div id="closure-status" class="robot-closure-note"><i></i><span id="closure-status-text">Z GUIDE · LEG + ARM CLOSED LOOPS · SOLVING…</span></div>
@@ -260,6 +233,37 @@
                   <div><dt>SPEED</dt><dd id="training-live-speed">—</dd></div>
                   <div><dt>FALLS</dt><dd id="training-live-falls">—</dd></div>
                 </dl>
+              </div>
+            </div>
+            <div class="robot-below-stage">
+              <div class="robot-status-row">
+                <div id="robot-load-status" class="load-status robot-load-status loading"><span></span>Loading Dropbear USD…</div>
+                <div id="physics-runtime-status" class="physics-runtime-chip">
+                  <span>FORCE CONTACT</span>
+                  <b>VERIFYING SOURCE USD…</b>
+                </div>
+              </div>
+              <div class="leg-telemetry" aria-label="Live foot and four-bar telemetry">
+                <div class="leg-telemetry-card left">
+                  <span>LEFT LEG</span><b id="left-gait-phase">HOLD</b>
+                  <dl>
+                    <div><dt>FOOT</dt><dd id="left-foot-height">+0 mm</dd></div>
+                    <div><dt>CONTACT</dt><dd id="left-foot-contact">OPEN</dd></div>
+                    <div><dt>HEEL / TOE</dt><dd id="left-foot-load">0.0 / 0.0 kg</dd></div>
+                    <div><dt>ANKLE</dt><dd id="left-ankle-angle">+0.0°</dd></div>
+                    <div><dt>X8 O / I</dt><dd id="left-calf-pair">+0.0° / +0.0°</dd></div>
+                  </dl>
+                </div>
+                <div class="leg-telemetry-card right">
+                  <span>RIGHT LEG</span><b id="right-gait-phase">HOLD</b>
+                  <dl>
+                    <div><dt>FOOT</dt><dd id="right-foot-height">+0 mm</dd></div>
+                    <div><dt>CONTACT</dt><dd id="right-foot-contact">OPEN</dd></div>
+                    <div><dt>HEEL / TOE</dt><dd id="right-foot-load">0.0 / 0.0 kg</dd></div>
+                    <div><dt>ANKLE</dt><dd id="right-ankle-angle">+0.0°</dd></div>
+                    <div><dt>X8 O / I</dt><dd id="right-calf-pair">+0.0° / +0.0°</dd></div>
+                  </dl>
+                </div>
               </div>
             </div>
           </article>

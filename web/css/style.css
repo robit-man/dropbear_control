@@ -484,18 +484,23 @@ body.training-active .app-shell { height: calc(100vh - 104px); }
 }
 #robot-canvas { display: block; width: 100%; height: 100%; cursor: grab; }
 #robot-canvas:active { cursor: grabbing; }
-.robot-load-status { position: absolute; top: 13px; left: 13px; background: rgba(7,11,16,.86); backdrop-filter: blur(10px); z-index: 3; pointer-events: none; }
+.robot-below-stage {
+  display: grid;
+  gap: 7px;
+  padding: 8px 10px 10px;
+  border-top: 1px solid var(--line);
+  background: #090d12;
+}
+.robot-status-row { display: flex; align-items: stretch; justify-content: space-between; gap: 7px; }
+.robot-load-status { flex: 1 1 auto; background: #070b10; pointer-events: none; }
 .leg-telemetry {
-  position: absolute;
-  top: 55px;
-  left: 13px;
-  z-index: 3;
-  display: flex;
-  gap: 5px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
   pointer-events: none;
 }
 .leg-telemetry-card {
-  width: 174px;
+  width: auto;
   padding: 7px 8px 8px;
   border: 1px solid var(--line);
   border-top: 2px solid var(--quiet);
@@ -536,15 +541,11 @@ body.training-active .app-shell { height: calc(100vh - 104px); }
 .robot-asset-chip span { color: #dce7ef; font: 700 11px "IBM Plex Mono"; letter-spacing: .09em; }
 .robot-asset-chip b { color: var(--cyan); font: 600 7px "IBM Plex Mono"; letter-spacing: .1em; }
 .physics-runtime-chip {
-  position: absolute;
-  top: 50px;
-  right: 14px;
-  z-index: 3;
   display: grid;
   gap: 3px;
   padding: 7px 9px;
   border: 1px solid var(--line);
-  background: rgba(8,8,9,.76);
+  background: #080809;
   text-align: right;
   pointer-events: none;
 }
@@ -1475,7 +1476,9 @@ input[type="range"] { width: 100%; accent-color: var(--cyan); }
   .joint-list { grid-template-columns: 1fr; }
   .robot-stage, #robot-canvas { min-height: 470px; height: 470px; }
   .usd-statline { display: none; }
-  .leg-telemetry { left: 10px; right: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+  .robot-status-row { display: grid; grid-template-columns: 1fr; }
+  .physics-runtime-chip { text-align: left; }
+  .leg-telemetry { grid-template-columns: 1fr 1fr; gap: 4px; }
   .leg-telemetry-card { width: auto; padding-inline: 6px; }
   .robot-closure-note { right: 80px; max-width: calc(100% - 105px); }
   .stage-readout div { min-width: 80px; }

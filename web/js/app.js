@@ -492,6 +492,7 @@ async function revokeHardwareControl() {
 const requestedRenderer = new URLSearchParams(window.location.search).get("renderer");
 const webglAvailable = requestedRenderer !== "2d" && supportsWebGL2();
 const softwareRenderer = requestedRenderer === "swiftshader";
+const softwareFrameIntervalMs = 66;
 
 function createViewer(createWebGL, createSoftware, label) {
   if (!webglAvailable) return createSoftware();
@@ -582,7 +583,7 @@ class LazyCadViewer {
 const cad = new LazyCadViewer();
 
 const robotOptions = {
-  maxFrameRate: softwareRenderer ? 10 : 30,
+  maxFrameRate: softwareRenderer ? 15 : 30,
   softwareRendering: softwareRenderer,
   onJoint: (canId) => {
     ui.motorCategory = "legs";
@@ -687,6 +688,7 @@ function switchView(name) {
   if (name === "sim") setTimeout(() => robot.resize(), 20);
   if (name === "cad") setTimeout(() => { cad.resize(); cad.fit(); }, 20);
   if (name === "controller") setTimeout(() => board.resize(), 20);
+  if (name === "devices" || name === "firmware") renderEspDevices();
 }
 
 function setupNavigation() {
@@ -1008,8 +1010,8 @@ async function configurePlaybackSource(
 }
 
 function setupSimControls() {
-  const resolutionStorageKey = "dropbear-usd-resolution-v2";
-  const savedResolution = Number(localStorage.getItem(resolutionStorageKey) || (softwareRenderer ? 75 : 100));
+  const resolutionStorageKey = "dropbear-usd-resolution-v3";
+  const savedResolution = Number(localStorage.getItem(resolutionStorageKey) || (softwareRenderer ? 50 : 100));
   const resolutionPercent = Math.max(50, Math.min(200, savedResolution));
   $("usd-resolution").value = String(resolutionPercent);
   $("usd-resolution-output").textContent = `${resolutionPercent}%`;
@@ -1692,7 +1694,7 @@ function renderEspDevices() {
 async function pollEspDevices() {
   try {
     ui.hardwareDevices.latest = await requestJson("/api/hardware/devices");
-    renderEspDevices();
+    if (ui.view === "devices" || ui.view === "firmware") renderEspDevices();
   } catch (error) {
     const status = $("esp-device-status");
     status.className = "load-status error";
@@ -2440,7 +2442,18 @@ function setupRLLab() {
 
 function drawScope() {
   const canvas = $("scope-canvas");
-  const rect = canvas.getBoundingClientRect();
+  if (!canvas.dropbearScopeSize) {
+    const rect = canvas.getBoundingClientRect();
+    canvas.dropbearScopeSize = { width: rect.width, height: rect.height };
+    canvas.dropbearScopeObserver = new ResizeObserver(([entry]) => {
+      canvas.dropbearScopeSize = {
+        width: entry.contentRect.width,
+        height: entry.contentRect.height,
+      };
+    });
+    canvas.dropbearScopeObserver.observe(canvas);
+  }
+  const rect = canvas.dropbearScopeSize;
   const ratio = Math.min(devicePixelRatio, 2);
   const width = Math.max(300, Math.round(rect.width * ratio));
   const height = Math.max(150, Math.round(rect.height * ratio));
@@ -2615,11 +2628,16 @@ function frame(now) {
     while (ui.scopeHistory.length > 260) ui.scopeHistory.shift();
     ui.scopeSampleAt = now;
   }
-  if (now - ui.lastRender > (softwareRenderer ? 100 : 65)) {
+  if (now - ui.lastRender > (softwareRenderer ? softwareFrameIntervalMs : 65)) {
     renderLive();
     ui.lastRender = now;
   }
-  requestAnimationFrame(frame);
+  scheduleFrame();
+}
+
+function scheduleFrame() {
+  if (softwareRenderer) window.setTimeout(() => frame(performance.now()), softwareFrameIntervalMs);
+  else requestAnimationFrame(frame);
 }
 
 window.addEventListener("dropbear:gr00t-runtime", (event) => {
@@ -2817,7 +2835,7 @@ window.addEventListener("dropbear:retargeted-pose", (event) => {
 pollPhysicsRuntime();
 selectJoint(0x141);
 renderLive();
-requestAnimationFrame(frame);
+scheduleFrame();
 
 window.dropbearTwin = {
   sim,
