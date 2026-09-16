@@ -827,6 +827,18 @@ input[type="range"] { width: 100%; accent-color: var(--cyan); }
 .esp-flash-stage label { display: grid; gap: 5px; color: #8494a1; font: 600 8px "IBM Plex Mono"; }
 .esp-flash-stage label:has(input[type="checkbox"]) { grid-template-columns: auto 1fr; align-items: center; }
 .esp-flash-stage select, .esp-flash-stage input:not([type="checkbox"]) { width: 100%; }
+.esp-compile-action { display: flex; align-items: center; gap: 9px; }
+.esp-compile-action .button { flex: 0 0 auto; }
+.esp-compile-status { display: inline-flex; align-items: center; gap: 6px; min-height: 24px; color: var(--quiet); font: 700 8px "IBM Plex Mono"; letter-spacing: .08em; }
+.esp-compile-status i { width: 9px; height: 9px; border: 2px solid #34414d; border-radius: 50%; box-sizing: border-box; }
+.esp-compile-status.compiling { color: var(--cyan); }
+.esp-compile-status.compiling i { border-color: rgba(34,211,238,.25); border-top-color: var(--cyan); animation: esp-compile-spin .7s linear infinite; }
+.esp-compile-status.passed { color: var(--green); }
+.esp-compile-status.passed i { border: 0; border-radius: 50%; background: var(--green); box-shadow: 0 0 7px rgba(74,222,128,.45); }
+.esp-compile-status.failed { color: var(--red); }
+.esp-compile-status.failed i { border-color: var(--red); }
+@keyframes esp-compile-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .esp-compile-status.compiling i { animation-duration: 1.6s; } }
 .esp-build-output { min-height: 110px; max-height: 190px; overflow: auto; margin: 0; padding: 10px; background: #06090d; border: 1px solid var(--line); color: #99a9b6; font: 500 8px/1.5 "IBM Plex Mono"; white-space: pre-wrap; }
 .esp-upload-interlock { background: rgba(239,68,68,.025); }
 .terminal-panel { min-height: 500px; display: flex; flex-direction: column; background: var(--bg); }

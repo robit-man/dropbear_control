@@ -259,6 +259,7 @@ const ui = {
     selectedSourceId: "",
     build: null,
     busy: false,
+    compileState: "idle",
     lastRawText: "",
   },
 };
@@ -1597,8 +1598,24 @@ function replaceSelectOptions(select, records, selected, label) {
 
 function clearEspBuild(reason = "No firmware has been compiled in this server session.") {
   ui.hardwareDevices.build = null;
+  ui.hardwareDevices.compileState = "idle";
   $("esp-build-output").textContent = reason;
+  renderEspCompileStatus();
   renderEspUploadInterlock();
+}
+
+function renderEspCompileStatus() {
+  const status = $("esp-compile-status");
+  if (!status) return;
+  const state = ui.hardwareDevices.compileState;
+  const labels = {
+    idle: "READY",
+    compiling: "COMPILING",
+    passed: "COMPILE PASSED",
+    failed: "COMPILE FAILED",
+  };
+  status.className = `esp-compile-status ${state}`;
+  status.querySelector("b").textContent = labels[state] || labels.idle;
 }
 
 function renderEspUploadInterlock() {
@@ -1688,6 +1705,7 @@ function renderEspDevices() {
     : payload.toolchain?.available
       ? `DEPENDENCY BLOCKED · ${(payload.toolchain.issues || []).join(" · ")}`
       : "ARDUINO MISSING";
+  renderEspCompileStatus();
   renderEspUploadInterlock();
 }
 
@@ -1738,8 +1756,10 @@ function setupEspDevices() {
     const source = selectedFirmwareSource();
     if (!source || ui.hardwareDevices.busy) return;
     ui.hardwareDevices.busy = true;
+    ui.hardwareDevices.compileState = "compiling";
     $("esp-compile").disabled = true;
     $("esp-build-output").textContent = `Compiling ${source.filename}\nSHA-256 ${source.sha256}\nBoard ${ui.hardwareDevices.latest?.toolchain?.board || "unknown"}\n…`;
+    renderEspCompileStatus();
     renderEspUploadInterlock();
     try {
       const build = await requestJson("/api/hardware/firmware/compile", {
@@ -1747,6 +1767,7 @@ function setupEspDevices() {
         body: JSON.stringify({ sourceId: source.id }),
       });
       ui.hardwareDevices.build = build;
+      ui.hardwareDevices.compileState = build.state === "passed" ? "passed" : "failed";
       $("esp-build-output").textContent = [
         `${build.state.toUpperCase()} · ${build.filename}`,
         `SHA-256 ${build.sha256}`,
@@ -1757,10 +1778,12 @@ function setupEspDevices() {
       appendTerminal(`[firmware] compile ${build.state} · ${build.filename} · ${build.sha256.slice(0, 12)}`, build.state === "passed" ? "ok" : "err");
     } catch (error) {
       clearEspBuild(`Compile failed\n${error.message}`);
+      ui.hardwareDevices.compileState = "failed";
       appendTerminal(`[firmware] compile failed · ${error.message}`, "err");
     } finally {
       ui.hardwareDevices.busy = false;
       $("esp-compile").disabled = false;
+      renderEspCompileStatus();
       renderEspUploadInterlock();
     }
   });

@@ -47,6 +47,7 @@ check(
   index.body.includes('data-view-target="devices"')
     && index.body.includes('id="esp-raw-output"')
     && index.body.includes('id="esp-compile"')
+    && index.body.includes('id="esp-compile-status"')
     && index.body.includes('id="esp-upload"'),
 );
 check("full Dropbear USD simulation present", index.body.includes("Dropbear closed-loop articulation"));
@@ -109,6 +110,12 @@ check(
     && !index.body.includes('data-view-target="gr00t"'),
 );
 const dashboardStyle = await request(`${base}/css/style.css`);
+check(
+  "firmware compile progress has a visible animated state",
+  dashboardStyle.body.includes("@keyframes esp-compile-spin")
+    && dashboardStyle.body.includes(".esp-compile-status.compiling")
+    && index.body.includes("aria-live=\"polite\""),
+);
 const playbackStyle = dashboardStyle.body
   .match(/(?:^|\n)\.playback-mode-button \{([^}]*)\}/)?.[1] || "";
 check(
@@ -163,6 +170,12 @@ check(
 );
 
 const app = await request(`${base}/js/app.js`);
+check(
+  "firmware compile progress reports ready, running, pass, and failure states",
+  app.body.includes('compiling: "COMPILING"')
+    && app.body.includes('passed: "COMPILE PASSED"')
+    && app.body.includes('failed: "COMPILE FAILED"'),
+);
 check("dashboard instantiates CAD viewer", app.body.includes("new CadViewer"));
 check(
   "dashboard renders controller diagnostics without a second WebGL context",

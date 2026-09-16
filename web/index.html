@@ -465,7 +465,12 @@
               <b>1 · Select exact device and source</b>
               <label><span>STABLE USB DEVICE</span><select id="esp-flash-device"></select></label>
               <label><span>TRUSTED .INO SOURCE</span><select id="esp-firmware-source"></select></label>
-              <button id="esp-compile" class="button" type="button">COMPILE / VERIFY</button>
+              <div class="esp-compile-action">
+                <button id="esp-compile" class="button" type="button">COMPILE / VERIFY</button>
+                <span id="esp-compile-status" class="esp-compile-status idle" role="status" aria-live="polite">
+                  <i aria-hidden="true"></i><b>READY</b>
+                </span>
+              </div>
             </div>
             <div class="esp-flash-stage">
               <b>2 · Review successful build</b>
@@ -957,6 +962,6 @@
     </form>
   </dialog>
 
-  <script type="module" src="/js/app.js?v=20260915-software-zero"></script>
+  <script type="module" src="/js/app.js?v=20260916-compile-status"></script>
 </body>
 </html>
