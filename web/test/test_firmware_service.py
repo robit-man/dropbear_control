@@ -34,6 +34,7 @@ class FirmwareServiceTests(unittest.TestCase):
         self.project = root / "control"
         self.source = root / "firmware"
         self.sketchbook = root / "sketchbook"
+        self.core_root = root / "esp32-core"
         self.project.mkdir()
         self.source.mkdir()
         self.arduino = root / "arduino"
@@ -43,10 +44,14 @@ class FirmwareServiceTests(unittest.TestCase):
             library = self.sketchbook / "libraries" / name
             library.mkdir(parents=True)
             (library / "library.properties").write_text(f"name={name}\nversion={version}\n")
+        core = self.core_root / "2.0.13"
+        core.mkdir(parents=True)
+        (core / "platform.txt").write_text("name=ESP32 Arduino\nversion=2.0.13\n")
         self.environment = mock.patch.dict(os.environ, {
             "DROPBEAR_FIRMWARE_ROOT": str(self.source),
             "DROPBEAR_ARDUINO": str(self.arduino),
             "DROPBEAR_ARDUINO_SKETCHBOOK": str(self.sketchbook),
+            "DROPBEAR_ESP32_CORE_ROOT": str(self.core_root),
         })
         self.environment.start()
         self.manager = DeviceFirmwareManager(self.project, _Observation())
@@ -65,6 +70,7 @@ class FirmwareServiceTests(unittest.TestCase):
         self.assertTrue(snapshot["toolchain"]["available"])
         self.assertTrue(snapshot["toolchain"]["ready"])
         self.assertEqual(snapshot["toolchain"]["libraryVersions"]["FastAccelStepper"], "0.30.15")
+        self.assertEqual(snapshot["toolchain"]["esp32CoreVersions"], ["2.0.13"])
 
     def test_compile_uses_argument_list_and_session_bound_build(self):
         sketch = self.source / "esp32_devkitc_v4_hybrid.ino"
@@ -77,7 +83,7 @@ class FirmwareServiceTests(unittest.TestCase):
         command = run.call_args.args[0]
         self.assertIsInstance(command, list)
         self.assertIn("--verify", command)
-        self.assertIn("esp32:esp32:esp32", command)
+        self.assertIn("esp32:esp32:esp32:PartitionScheme=huge_app", command)
         self.assertEqual(result["sourceId"], source_id)
         self.assertEqual(len(result["sha256"]), 64)
 
@@ -91,7 +97,16 @@ class FirmwareServiceTests(unittest.TestCase):
         source_id = self.manager.snapshot()["sources"][0]["id"]
         properties = self.sketchbook / "libraries" / "FastAccelStepper" / "library.properties"
         properties.write_text("name=FastAccelStepper\nversion=1.3.0\n")
-        with self.assertRaisesRegex(FirmwareToolError, "FastAccelStepper 0.30.15 required"):
+        with self.assertRaisesRegex(FirmwareToolError, "FastAccelStepper requires 0.30.15"):
+            self.manager.compile(source_id)
+
+    def test_compile_rejects_incompatible_esp32_core(self):
+        sketch = self.source / "firmware_full_libs_neck.ino"
+        sketch.write_text("void setup() {}\nvoid loop() {}\n")
+        source_id = self.manager.snapshot()["sources"][0]["id"]
+        (self.core_root / "3.0.3").mkdir()
+        (self.core_root / "3.0.3" / "platform.txt").write_text("version=3.0.3\n")
+        with self.assertRaisesRegex(FirmwareToolError, "ESP32 Arduino core requires 2.0.13 exclusively"):
             self.manager.compile(source_id)
 
 

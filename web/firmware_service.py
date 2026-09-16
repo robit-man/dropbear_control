@@ -19,7 +19,8 @@ from typing import Any
 
 
 FIRMWARE_SCHEMA = "dropbear-esp32-devices-v1"
-BOARD_FQBN = "esp32:esp32:esp32"
+BOARD_FQBN = "esp32:esp32:esp32:PartitionScheme=huge_app"
+REQUIRED_ESP32_CORE_VERSION = "2.0.13"
 RAW_TAIL_LINES = 160
 READ_ONLY_SERIAL_COMMANDS = frozenset({"status", "chirality", "mac", "saved", "help"})
 REQUIRED_LIBRARY_VERSIONS = {
@@ -132,6 +133,10 @@ class DeviceFirmwareManager:
             "DROPBEAR_ARDUINO_SKETCHBOOK",
             self.project_root / ".cache" / "arduino-sketchbook",
         )).resolve()
+        self.esp32_core_root = Path(os.environ.get(
+            "DROPBEAR_ESP32_CORE_ROOT",
+            Path.home() / ".arduino15" / "packages" / "esp32" / "hardware" / "esp32",
+        )).resolve()
         self.build_root = Path(tempfile.gettempdir()) / "dropbear-firmware-builds"
         self._lock = threading.RLock()
         self._aux_readers: dict[str, _RawSerialReader] = {}
@@ -232,6 +237,29 @@ class DeviceFirmwareManager:
             versions[name] = version
         return versions
 
+    def _esp32_core_versions(self) -> list[str]:
+        if not self.esp32_core_root.is_dir():
+            return []
+        return sorted(
+            path.name
+            for path in self.esp32_core_root.iterdir()
+            if path.is_dir() and (path / "platform.txt").is_file()
+        )
+
+    @staticmethod
+    def _toolchain_issues(versions: dict[str, str], core_versions: list[str]) -> list[str]:
+        issues = [
+            f"{name} requires {required}; found {versions.get(name, 'missing')}"
+            for name, required in REQUIRED_LIBRARY_VERSIONS.items()
+            if versions.get(name) != required
+        ]
+        if core_versions != [REQUIRED_ESP32_CORE_VERSION]:
+            found = ", ".join(core_versions) if core_versions else "missing"
+            issues.append(
+                f"ESP32 Arduino core requires {REQUIRED_ESP32_CORE_VERSION} exclusively; found {found}"
+            )
+        return issues
+
     def snapshot(self) -> dict[str, Any]:
         self._refresh_aux_readers()
         observation = self.observation_manager.snapshot()
@@ -260,12 +288,9 @@ class DeviceFirmwareManager:
                     "error": reader.error if reader else "",
                 })
         library_versions = self._library_versions()
+        core_versions = self._esp32_core_versions()
         executable_available = self.arduino.is_file() and os.access(self.arduino, os.X_OK)
-        dependency_issues = [
-            f"{name} requires {required}; found {library_versions.get(name, 'missing')}"
-            for name, required in REQUIRED_LIBRARY_VERSIONS.items()
-            if library_versions.get(name) != required
-        ]
+        dependency_issues = self._toolchain_issues(library_versions, core_versions)
         return {
             "schema": FIRMWARE_SCHEMA,
             "baudrate": 115200,
@@ -277,6 +302,8 @@ class DeviceFirmwareManager:
                 "ready": executable_available and not dependency_issues,
                 "board": BOARD_FQBN,
                 "sketchbook": str(self.sketchbook),
+                "requiredEsp32Core": REQUIRED_ESP32_CORE_VERSION,
+                "esp32CoreVersions": core_versions,
                 "requiredLibraries": dict(REQUIRED_LIBRARY_VERSIONS),
                 "libraryVersions": library_versions,
                 "issues": dependency_issues,
@@ -306,11 +333,7 @@ class DeviceFirmwareManager:
         if not self.arduino.is_file():
             raise FirmwareToolError("Arduino 1.8.19 executable was not found")
         versions = self._library_versions()
-        mismatches = [
-            f"{name} {required} required (found {versions.get(name, 'missing')})"
-            for name, required in REQUIRED_LIBRARY_VERSIONS.items()
-            if versions.get(name) != required
-        ]
+        mismatches = self._toolchain_issues(versions, self._esp32_core_versions())
         if mismatches:
             raise FirmwareToolError("firmware toolchain dependency mismatch: " + "; ".join(mismatches))
         build_id = uuid.uuid4().hex

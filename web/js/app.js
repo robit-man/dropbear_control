@@ -491,6 +491,7 @@ async function revokeHardwareControl() {
 
 const requestedRenderer = new URLSearchParams(window.location.search).get("renderer");
 const webglAvailable = requestedRenderer !== "2d" && supportsWebGL2();
+const softwareRenderer = requestedRenderer === "swiftshader";
 
 function createViewer(createWebGL, createSoftware, label) {
   if (!webglAvailable) return createSoftware();
@@ -581,8 +582,8 @@ class LazyCadViewer {
 const cad = new LazyCadViewer();
 
 const robotOptions = {
-  maxFrameRate: requestedRenderer === "swiftshader" ? 15 : 30,
-  softwareRendering: requestedRenderer === "swiftshader",
+  maxFrameRate: softwareRenderer ? 10 : 30,
+  softwareRendering: softwareRenderer,
   onJoint: (canId) => {
     ui.motorCategory = "legs";
     document.querySelectorAll("[data-motor-category]").forEach((entry) => {
@@ -1007,7 +1008,8 @@ async function configurePlaybackSource(
 }
 
 function setupSimControls() {
-  const savedResolution = Number(localStorage.getItem("dropbear-usd-resolution") || 100);
+  const resolutionStorageKey = "dropbear-usd-resolution-v2";
+  const savedResolution = Number(localStorage.getItem(resolutionStorageKey) || (softwareRenderer ? 75 : 100));
   const resolutionPercent = Math.max(50, Math.min(200, savedResolution));
   $("usd-resolution").value = String(resolutionPercent);
   $("usd-resolution-output").textContent = `${resolutionPercent}%`;
@@ -1016,7 +1018,7 @@ function setupSimControls() {
     const percent = Number(event.target.value);
     robot.setResolutionScale(percent / 100);
     $("usd-resolution-output").textContent = `${percent}%`;
-    localStorage.setItem("dropbear-usd-resolution", String(percent));
+    localStorage.setItem(resolutionStorageKey, String(percent));
   });
   setPlaybackMode("preset", "neutral");
   $("sim-toggle").addEventListener("click", async () => {
@@ -1680,7 +1682,7 @@ function renderEspDevices() {
     if (follow) rawOutput.scrollTop = rawOutput.scrollHeight;
   }
   $("esp-toolchain-state").textContent = payload.toolchain?.ready
-    ? `READY · ${payload.toolchain.board} · FastAccelStepper ${payload.toolchain.libraryVersions?.FastAccelStepper}`
+    ? `READY · ${payload.toolchain.board} · ESP32 ${payload.toolchain.requiredEsp32Core} · FastAccelStepper ${payload.toolchain.libraryVersions?.FastAccelStepper}`
     : payload.toolchain?.available
       ? `DEPENDENCY BLOCKED · ${(payload.toolchain.issues || []).join(" · ")}`
       : "ARDUINO MISSING";
@@ -2613,7 +2615,7 @@ function frame(now) {
     while (ui.scopeHistory.length > 260) ui.scopeHistory.shift();
     ui.scopeSampleAt = now;
   }
-  if (now - ui.lastRender > 65) {
+  if (now - ui.lastRender > (softwareRenderer ? 100 : 65)) {
     renderLive();
     ui.lastRender = now;
   }

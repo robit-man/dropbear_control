@@ -168,11 +168,17 @@ are separate stages. Upload requires the exact build and source checksum from
 the current server session, a selected stable device, three physical-safety
 acknowledgements, and the typed phrase `FLASH <ROLE>`.
 
-The local Arduino 1.8.19 toolchain targets `esp32:esp32:esp32`. Its ignored
-sketchbook pins MCP_CAN_lib 1.5.1 and FastAccelStepper 0.30.15; newer
-FastAccelStepper releases require ESP-IDF 5.3 and do not compile with the
-installed ESP32 Arduino core 3.0.3 / IDF 5.1. The device API reports the
-detected versions and blocks compile when either pin is missing or mismatched.
+The local Arduino 1.8.19 toolchain targets the generic 4 MB ESP32 with the
+`huge_app` partition (`esp32:esp32:esp32:PartitionScheme=huge_app`). Behemoth
+uses about 1.75 MB and does not fit the default 1.31 MB application slot; this
+layout trades OTA slots for a 3 MB application slot. The toolchain pins the
+ESP32 Arduino core to 2.0.13 and the ignored sketchbook libraries to
+MCP_CAN_lib 1.5.1 and FastAccelStepper 0.30.15. This is the last known pairing
+verified against the exact Behemoth sketch on this AGX. Newer
+FastAccelStepper releases require ESP-IDF 5.3, while FastAccelStepper 0.30.15
+uses register APIs removed from ESP32 Arduino 3.x. The device API reports the
+installed core and library versions and blocks compilation unless the exact
+verified set is active.
 
 ## Frontend control lock
 
