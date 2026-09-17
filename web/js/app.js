@@ -1571,7 +1571,7 @@ function setupFirmware() {
 
   appendTerminal(`Dropbear low-level twin · source ${DROPBEAR_SOURCE.commit.slice(0, 8)}`, "ok");
   appendTerminal("Serial 115200 · MCP2515 CAN 1000 kbps · MCP clock 8 MHz");
-  appendTerminal("Guarded pause active. Source firmware would set playMode=true during setup.", "warn");
+  appendTerminal("Guarded pause active. Live observation leaves ESP32 playMode disabled.", "info");
 }
 
 let controlTokenPromise = null;
