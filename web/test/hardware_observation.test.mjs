@@ -31,9 +31,10 @@ function side(sideName, sequence, values) {
 
 function snapshot(leftSequence = 1, rightSequence = 1) {
   return {
-    schema: "dropbear-passive-observation-v1",
-    mode: "read_only",
+    schema: "dropbear-hardware-observation-v2",
+    mode: "read_only_with_diagnostic_queries",
     writeCapable: false,
+    motionWriteCapable: false,
     txBytes: 0,
     complete: true,
     sides: {
@@ -129,7 +130,31 @@ assert.equal(sim.getJoint("outer_calf", "left").velocity, 20);
 
 const notSilent = snapshot();
 notSilent.txBytes = 1;
-assert.throws(() => validateHardwareObservation(notSilent), /not byte-silent/);
+assert.equal(validateHardwareObservation(notSilent).complete, true);
+notSilent.motionWriteCapable = true;
+assert.throws(() => validateHardwareObservation(notSilent), /physical motion output/);
+
+const alignedPayload = attachMotorTelemetry(
+  snapshot(5, 5),
+  [10, 20, 30, 40, 50, 60],
+  [70, 80, 90, 100, 110, 120],
+);
+for (const sideName of ["left", "right"]) {
+  for (const [name, motor] of Object.entries(alignedPayload.sides[sideName].motorJoints)) {
+    const jointName = name.slice(sideName.length + 1);
+    motor.controlPositionDeg = jointName === "hip_yaw"
+      ? 0 : alignedPayload.sides[sideName].joints[name]?.positionDeg;
+    motor.controlAvailable = true;
+    motor.alignmentFault = false;
+  }
+}
+const alignedSim = new DropbearSim();
+const alignedResult = applyHardwareObservation(alignedSim, alignedPayload, 1_060, null);
+assert.equal(alignedResult.appliedJoints, 12);
+assert.equal(alignedResult.observedJoints, 12);
+assert.equal(alignedSim.getJoint("outer_calf", "left").observationPositionSource, "motor_control_aligned");
+assert.equal(alignedSim.getJoint("hip_yaw", "right").observationPositionSource, "motor_control_aligned");
+assert.equal(alignedSim.getJoint("hip_yaw", "right").observationMechanismDeg, 0);
 
 const missingSide = snapshot();
 missingSide.sides.right.fresh = false;

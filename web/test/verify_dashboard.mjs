@@ -250,12 +250,12 @@ check(
 const hardwareObservationResponse = await request(`${base}/api/hardware/observation`);
 const hardwareObservation = JSON.parse(hardwareObservationResponse.body);
 check(
-  "hardware observation API is explicitly byte-silent",
+  "hardware observation API keeps motion output locked",
   hardwareObservationResponse.status === 200
-    && hardwareObservation.schema === "dropbear-passive-observation-v1"
-    && hardwareObservation.mode === "read_only"
+    && hardwareObservation.schema === "dropbear-hardware-observation-v2"
+    && hardwareObservation.mode === "read_only_with_diagnostic_queries"
     && hardwareObservation.writeCapable === false
-    && hardwareObservation.txBytes === 0,
+    && hardwareObservation.motionWriteCapable === false,
 );
 const hardwareControlResponse = await request(`${base}/api/hardware/control/status`);
 const hardwareControl = JSON.parse(hardwareControlResponse.body);

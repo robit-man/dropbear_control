@@ -206,6 +206,7 @@ function makeJoint(definition) {
     observationRawDeg: null,
     observationExternalDeg: null,
     observationMotorDeg: null,
+    observationMotorControlDeg: null,
     observationPositionSource: "unavailable",
     observationZeroedDeg: null,
     observationMechanismDeg: null,

@@ -1,6 +1,6 @@
 import { projectHardwareDegrees } from "./hardware_calibration.js";
 
-const SCHEMA = "dropbear-passive-observation-v1";
+const SCHEMA = "dropbear-hardware-observation-v2";
 const SIDES = Object.freeze(["left", "right"]);
 const SAMPLE_ORDER = Object.freeze([
   "outer_calf",
@@ -25,8 +25,10 @@ export function validateHardwareObservation(payload) {
   if (!payload || payload.schema !== SCHEMA) {
     throw new Error("unsupported hardware observation schema");
   }
-  if (payload.mode !== "read_only" || payload.writeCapable !== false || payload.txBytes !== 0) {
-    throw new Error("hardware observation endpoint is not byte-silent");
+  if (payload.mode !== "read_only_with_diagnostic_queries"
+      || payload.writeCapable !== false
+      || payload.motionWriteCapable !== false) {
+    throw new Error("hardware observation endpoint permits physical motion output");
   }
   if (!payload.sides || typeof payload.sides !== "object") {
     throw new Error("hardware observation sides are missing");
@@ -55,6 +57,9 @@ export function validateHardwareObservation(payload) {
       if (!observation) continue;
       if (observation.available === true && !finite(observation.positionDeg)) {
         throw new Error(`${name} motor-native observation is invalid`);
+      }
+      if (observation.controlAvailable === true && !finite(observation.controlPositionDeg)) {
+        throw new Error(`${name} aligned motor observation is invalid`);
       }
       motorJoints[name] = observation;
     }
@@ -89,6 +94,7 @@ export function applyHardwareObservation(sim, payload, nowMs = performance.now()
     joint.observationRawDeg = null;
     joint.observationExternalDeg = null;
     joint.observationMotorDeg = null;
+    joint.observationMotorControlDeg = null;
     joint.observationPositionSource = "unavailable";
     joint.observationZeroedDeg = null;
     joint.observationMechanismDeg = null;
@@ -121,10 +127,18 @@ export function applyHardwareObservation(sim, payload, nowMs = performance.now()
       const motorPosition = motorObservation?.available === true && finite(motorObservation.positionDeg)
         ? motorObservation.positionDeg
         : null;
+      const motorControlPosition = motorObservation?.controlAvailable === true
+        && motorObservation?.alignmentFault !== true
+        && finite(motorObservation.controlPositionDeg)
+        ? motorObservation.controlPositionDeg
+        : null;
       const motorDatum = Number(softwareZero?.sides?.[side]?.motorJoints?.[firmwareJoint]?.motorPositionDeg);
-      const useMotorNative = motorPosition !== null && Number.isFinite(motorDatum);
-      const position = useMotorNative ? motorPosition : externalPosition;
-      const positionSource = useMotorNative ? "motor_native" : "external_absolute";
+      const useMotorControl = motorControlPosition !== null;
+      const useMotorNative = !useMotorControl && motorPosition !== null && Number.isFinite(motorDatum);
+      const position = useMotorControl ? motorControlPosition : useMotorNative ? motorPosition : externalPosition;
+      const positionSource = useMotorControl
+        ? "motor_control_aligned"
+        : useMotorNative ? "motor_native" : "external_absolute";
       const projection = projectHardwareDegrees(side, firmwareJoint, position, softwareZero, positionSource);
       if (!projection.calibrated) {
         unavailableJoints.push(canonicalName);
@@ -142,6 +156,7 @@ export function applyHardwareObservation(sim, payload, nowMs = performance.now()
       target.observationRawDeg = position;
       target.observationExternalDeg = externalPosition;
       target.observationMotorDeg = motorPosition;
+      target.observationMotorControlDeg = motorControlPosition;
       target.observationPositionSource = positionSource;
       target.observationZeroedDeg = projection.zeroedDegrees;
       target.observationMechanismDeg = projection.mechanismDegrees;
@@ -174,16 +189,23 @@ export function applyHardwareObservation(sim, payload, nowMs = performance.now()
 
     const yawName = `${side}_hip_yaw`;
     const yawMotor = sample.motorJoints?.[yawName];
-    const yawPosition = yawMotor?.available === true && finite(yawMotor.positionDeg)
+    const yawMotorPosition = yawMotor?.available === true && finite(yawMotor.positionDeg)
       ? yawMotor.positionDeg
       : null;
+    const yawControlPosition = yawMotor?.controlAvailable === true
+      && yawMotor?.alignmentFault !== true
+      && finite(yawMotor.controlPositionDeg)
+      ? yawMotor.controlPositionDeg
+      : null;
     const yawDatum = Number(softwareZero?.sides?.[side]?.motorJoints?.hip_yaw?.motorPositionDeg);
-    if (yawPosition === null || !Number.isFinite(yawDatum)) {
+    const yawPosition = yawControlPosition ?? yawMotorPosition;
+    const yawPositionSource = yawControlPosition !== null ? "motor_control_aligned" : "motor_native";
+    if (yawPosition === null || (yawControlPosition === null && !Number.isFinite(yawDatum))) {
       unavailableJoints.push(yawName);
       continue;
     }
     const yawTarget = sim.getJoint("hip_yaw", side);
-    const projection = projectHardwareDegrees(side, "hip_yaw", yawPosition, softwareZero, "motor_native");
+    const projection = projectHardwareDegrees(side, "hip_yaw", yawPosition, softwareZero, yawPositionSource);
     if (!yawTarget || !projection.calibrated) {
       unavailableJoints.push(yawName);
       continue;
@@ -199,8 +221,9 @@ export function applyHardwareObservation(sim, payload, nowMs = performance.now()
     yawTarget.observationAgeMs = sample.ageMs;
     yawTarget.observationRawDeg = yawPosition;
     yawTarget.observationExternalDeg = null;
-    yawTarget.observationMotorDeg = yawPosition;
-    yawTarget.observationPositionSource = "motor_native";
+    yawTarget.observationMotorDeg = yawMotorPosition;
+    yawTarget.observationMotorControlDeg = yawControlPosition;
+    yawTarget.observationPositionSource = yawPositionSource;
     yawTarget.observationZeroedDeg = projection.zeroedDegrees;
     yawTarget.observationMechanismDeg = projection.mechanismDegrees;
     yawTarget.observationCalibration = projection.calibration;
@@ -209,16 +232,16 @@ export function applyHardwareObservation(sim, payload, nowMs = performance.now()
     observedJoints += 1;
     if (!projection.withinUsdLimits) {
       yawTarget.observationModelApplied = false;
-      yawTarget.observationSource = "esp32_motor_native_out_of_envelope";
+      yawTarget.observationSource = `esp32_${yawPositionSource}_out_of_envelope`;
       heldJoints.push(yawName);
       continue;
     }
     yawTarget.angle = projection.renderDegrees;
     yawTarget.observationModelApplied = true;
-    yawTarget.observationSource = "esp32_motor_native";
+    yawTarget.observationSource = `esp32_${yawPositionSource}`;
     previous.set(yawName, {
       position: yawPosition,
-      positionSource: "motor_native",
+      positionSource: yawPositionSource,
       sequence: sample.sequence,
       nowMs,
     });
@@ -252,6 +275,7 @@ export function clearHardwareObservationHistory(sim) {
     joint.observationRawDeg = null;
     joint.observationExternalDeg = null;
     joint.observationMotorDeg = null;
+    joint.observationMotorControlDeg = null;
     joint.observationPositionSource = "unavailable";
     joint.observationZeroedDeg = null;
     joint.observationMechanismDeg = null;

@@ -43,9 +43,9 @@ import {
 
 const $ = (id) => document.getElementById(id);
 const RAD_TO_DEG = 180 / Math.PI;
-// v3 invalidates offsets captured before the physical USB 1.1/1.2 leg-role
-// correction. Applying those offsets after swapping sides would corrupt pose.
-const SOFTWARE_ZERO_STORAGE_KEY = "dropbear.control.softwareZero.v3";
+// v4 records the firmware-aligned CAN channel separately from raw RMD and
+// external AS5600 angles.
+const SOFTWARE_ZERO_STORAGE_KEY = "dropbear.control.softwareZero.v4";
 const MAX_ANGLE_RECORDING_ROWS = 120_000;
 
 function loadSoftwareZero() {
@@ -239,6 +239,8 @@ const ui = {
     active: false,
     autoActivate: new URLSearchParams(window.location.search).get("live") === "1",
     pending: false,
+    requesting: false,
+    streamRequested: false,
     latest: null,
     lastAppliedSignature: "",
     error: "",
@@ -273,6 +275,12 @@ function signed(value, digits = 1) {
   return `${number >= 0 ? "+" : ""}${number.toFixed(digits)}`;
 }
 
+function observationPositionLabel(source) {
+  if (source === "motor_control_aligned") return "CAN ALIGNED";
+  if (source === "motor_native") return "CAN RAW";
+  return "AS5600";
+}
+
 function appendTerminal(text, kind = "") {
   const output = $("terminal-output");
   const line = document.createElement("div");
@@ -289,6 +297,7 @@ function renderHardwareObservationState() {
   const button = $("hardware-observation-toggle");
   const freshSides = ["left", "right"].filter((side) => status?.sides?.[side]?.fresh === true).length;
   let label = status?.enabled ? String(status.state || "waiting").toUpperCase() : "DISABLED";
+  if (ui.hardwareObservation.requesting) label = "REQUESTING FROM ESP32S";
   if (ui.hardwareObservation.active) {
     label = freshSides === 2 ? "LIVE · 2/2" : freshSides === 1 ? "DEGRADED · 1/2" : "STALE · 0/2";
   }
@@ -296,7 +305,10 @@ function renderHardwareObservationState() {
   output.classList.toggle("warn", ui.hardwareObservation.active && freshSides < 2);
   button.classList.toggle("active", ui.hardwareObservation.active);
   button.setAttribute("aria-pressed", String(ui.hardwareObservation.active));
-  button.textContent = ui.hardwareObservation.active ? "LEAVE LIVE STATE" : "USE LIVE STATE";
+  button.disabled = ui.hardwareObservation.requesting;
+  button.textContent = ui.hardwareObservation.requesting
+    ? "REQUESTING LIVE STATE…"
+    : ui.hardwareObservation.active ? "LEAVE LIVE STATE" : "USE LIVE STATE";
   const zero = ui.hardwareObservation.softwareZero;
   const zeroButton = $("hardware-zero-current");
   zeroButton.disabled = !ui.hardwareObservation.active || freshSides !== 2;
@@ -382,9 +394,11 @@ async function pollHardwareObservation() {
       }
     } else if (ui.hardwareObservation.active) {
       clearHardwareObservationHistory(sim);
-    } else if (ui.hardwareObservation.autoActivate && validated.availableSides.length > 0) {
+    } else if (ui.hardwareObservation.autoActivate && !ui.hardwareObservation.requesting) {
       ui.hardwareObservation.autoActivate = false;
-      setHardwareObservationActive(true);
+      toggleHardwareObservation(true).catch((error) => {
+        appendTerminal(`[hardware] automatic live-state request failed · ${error.message}`, "err");
+      });
     }
   } catch (error) {
     ui.hardwareObservation.error = error.message;
@@ -416,7 +430,11 @@ function setHardwareObservationActive(active) {
       const firstObserved = sim.joints.find((joint) => joint.observationValid);
       if (firstObserved) selectJoint(firstObserved.id);
     }
-    appendTerminal(`[hardware] live ${validated.availableSides.join(" + ")} state applied to USD · passive RX · tx bytes 0`, "ok");
+    appendTerminal(
+      `[hardware] live ${validated.availableSides.join(" + ")} state applied to USD · `
+      + `CAN feedback preferred · diagnostic tx ${Number(ui.hardwareObservation.latest?.txBytes) || 0} bytes`,
+      "ok",
+    );
   } else {
     ui.hardwareObservation.active = false;
     ui.hardwareObservation.lastAppliedSignature = "";
@@ -426,6 +444,49 @@ function setHardwareObservationActive(active) {
     appendTerminal("[hardware] live state source released · simulation remains paused", "warn");
   }
   renderHardwareObservationState();
+}
+
+async function toggleHardwareObservation(forceActive = !ui.hardwareObservation.active) {
+  if (!forceActive) {
+    setHardwareObservationActive(false);
+    try {
+      await requestJson("/api/hardware/observation/stream", {
+        method: "POST",
+        body: JSON.stringify({ enabled: false }),
+      });
+      ui.hardwareObservation.streamRequested = false;
+    } catch (error) {
+      appendTerminal(`[hardware] observe-off request failed · ${error.message}`, "warn");
+    }
+    return;
+  }
+
+  ui.hardwareObservation.requesting = true;
+  renderHardwareObservationState();
+  try {
+    const request = await requestJson("/api/hardware/observation/stream", {
+      method: "POST",
+      body: JSON.stringify({ enabled: true }),
+    });
+    ui.hardwareObservation.streamRequested = true;
+    const deadline = performance.now() + 4_000;
+    let validated = { availableSides: [] };
+    while (performance.now() < deadline) {
+      await pollHardwareObservation();
+      validated = validateHardwareObservation(ui.hardwareObservation.latest);
+      if (validated.availableSides.length === 2) break;
+      await new Promise((resolve) => window.setTimeout(resolve, 100));
+    }
+    if (validated.availableSides.length === 0) {
+      const failures = Object.values(request.sides || {})
+        .flatMap((side) => side.errors || []);
+      throw new Error(failures[0] || "no fresh DB2/DB3 frames arrived; flash an observation-protocol firmware and retry");
+    }
+    setHardwareObservationActive(true);
+  } finally {
+    ui.hardwareObservation.requesting = false;
+    renderHardwareObservationState();
+  }
 }
 
 function safetyAcknowledgements() {
@@ -1255,9 +1316,9 @@ function setupHardwareControls() {
   if (ui.hardwareObservation.softwareZero) {
     $("hardware-zero-torso").value = ui.hardwareObservation.softwareZero.torsoForwardDeg;
   }
-  $("hardware-observation-toggle").addEventListener("click", () => {
+  $("hardware-observation-toggle").addEventListener("click", async () => {
     try {
-      setHardwareObservationActive(!ui.hardwareObservation.active);
+      await toggleHardwareObservation();
     } catch (error) {
       appendTerminal(`[hardware] observation source unavailable · ${error.message}`, "err");
     }
@@ -1663,7 +1724,8 @@ function renderEspDevices() {
     card.querySelector(".panel-kicker").textContent = device.tty;
     card.querySelector(".device-live").textContent = String(device.serialState || "unknown").toUpperCase();
     card.querySelector("h2").textContent = device.role.replaceAll("_", " ");
-    card.querySelector("small").textContent = `${firmware.family || "unknown"} · ${version}`;
+    const health = device.health?.overall ? ` · HEALTH ${String(device.health.overall).toUpperCase()}` : "";
+    card.querySelector("small").textContent = `${firmware.family || "unknown"} · ${version} · ${firmware.commandProtocol || "?"}/${firmware.telemetryProtocol || device.telemetryFormat || "?"}${health}`;
     card.querySelector("code").textContent = device.stablePath;
     card.addEventListener("click", () => {
       if (ui.hardwareDevices.selectedDeviceId !== device.id) {
@@ -1691,7 +1753,7 @@ function renderEspDevices() {
     ? `${device.role.replaceAll("_", " ")} · ${device.tty}`
     : "No serial device";
   const rawText = device?.rawTail?.length
-    ? device.rawTail.map((line) => `${line.direction === "tx" ? ">" : "<"} ${line.text}`).join("\n")
+    ? device.rawTail.map((line) => `${String(line.direction).startsWith("tx") ? ">" : "<"} ${line.text}`).join("\n")
     : "No complete serial lines received from this device yet.";
   const rawOutput = $("esp-raw-output");
   if (rawText !== ui.hardwareDevices.lastRawText) {
@@ -2538,7 +2600,7 @@ function renderLive() {
   $("sel-angle").textContent = ui.axisCategory === "arm"
     ? `${(selectedArm?.angleDeg || 0).toFixed(1)}°`
     : target.observationValid
-      ? `${target.observationRawDeg.toFixed(1)}° ${target.observationPositionSource === "motor_native" ? "motor" : "AS5600"} · ${target.observationModelApplied ? `${target.observationZeroedDeg.toFixed(1)}° zero · ${target.observationMechanismDeg.toFixed(1)}° model` : "MODEL HELD"}`
+      ? `${target.observationRawDeg.toFixed(1)}° ${observationPositionLabel(target.observationPositionSource)} · ${target.observationModelApplied ? `${target.observationZeroedDeg.toFixed(1)}° zero · ${target.observationMechanismDeg.toFixed(1)}° model` : "MODEL HELD"}`
       : `${(target.angle - 180).toFixed(1)}°`;
   $("sel-velocity").textContent = ui.axisCategory === "arm"
     ? `${(selectedArm?.velocityDegS || 0).toFixed(1)}°/s`
@@ -2550,7 +2612,7 @@ function renderLive() {
     ? "AUX · CAN UNMAPPED"
     : target.sensorPin == null
       ? observingHardware && target.observationValid
-        ? `LIVE CAN · MOTOR NATIVE · ${Number(target.observationAgeMs || 0).toFixed(0)} ms`
+        ? `LIVE ${observationPositionLabel(target.observationPositionSource)} · ${Number(target.observationAgeMs || 0).toFixed(0)} ms`
         : "NO ANALOG"
       : observingHardware
         ? target.observationValid
@@ -2572,8 +2634,8 @@ function renderLive() {
       ? "UNOBSERVED"
       : joint.observationValid
         ? joint.observationModelApplied
-          ? `${joint.observationZeroedDeg.toFixed(1)}° zero · ${joint.observationRawDeg.toFixed(1)}° ${joint.observationPositionSource === "motor_native" ? "motor" : "AS5600"}`
-          : `${joint.observationRawDeg.toFixed(1)}° ${joint.observationPositionSource === "motor_native" ? "motor" : "AS5600"} · HELD`
+          ? `${joint.observationZeroedDeg.toFixed(1)}° zero · ${joint.observationRawDeg.toFixed(1)}° ${observationPositionLabel(joint.observationPositionSource)}`
+          : `${joint.observationRawDeg.toFixed(1)}° ${observationPositionLabel(joint.observationPositionSource)} · HELD`
         : `${(joint.angle - 180).toFixed(1)}°`;
     card.querySelector('[data-field="torque"]').textContent = `${joint.torque.toFixed(2)} N·m`;
     const dot = card.querySelector(".joint-dot");

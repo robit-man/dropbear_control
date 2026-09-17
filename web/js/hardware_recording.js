@@ -1,6 +1,6 @@
 import { projectHardwareDegrees } from "./hardware_calibration.js";
 
-export const ANGLE_RECORDING_SCHEMA = "dropbear-browser-angle-recording-v1";
+export const ANGLE_RECORDING_SCHEMA = "dropbear-browser-angle-recording-v2";
 
 const JOINTS = Object.freeze([
   "outer_calf",
@@ -29,6 +29,10 @@ export const ANGLE_RECORDING_COLUMNS = Object.freeze([
   "motor_native_zeroed_deg",
   "motor_native_available",
   "motor_native_status",
+  "motor_control_deg",
+  "motor_control_model_deg",
+  "motor_control_available",
+  "motor_alignment_fault",
 ]);
 
 export function observationRecordingRows(
@@ -37,8 +41,10 @@ export function observationRecordingRows(
   hostMonotonicMs = performance.now(),
   hostTimeIso = new Date().toISOString(),
 ) {
-  if (payload?.mode !== "read_only" || payload?.writeCapable !== false || payload?.txBytes !== 0) {
-    throw new Error("angle recording requires a byte-silent observation snapshot");
+  if (payload?.mode !== "read_only_with_diagnostic_queries"
+      || payload?.writeCapable !== false
+      || payload?.motionWriteCapable !== false) {
+    throw new Error("angle recording requires a motion-locked observation snapshot");
   }
   const rows = [];
   for (const side of ["left", "right"]) {
@@ -61,6 +67,12 @@ export function observationRecordingRows(
         && Number.isFinite(motorDatum)
         ? ((motorPosition - motorDatum + 540) % 360) - 180
         : null;
+      const motorControlPosition = typeof motor?.controlPositionDeg === "number"
+        && Number.isFinite(motor.controlPositionDeg)
+        ? motor.controlPositionDeg : null;
+      const motorControlProjection = motorControlPosition !== null
+        ? projectHardwareDegrees(side, joint, motorControlPosition, softwareZero, "motor_control_aligned")
+        : null;
       rows.push(Object.freeze({
         schema: ANGLE_RECORDING_SCHEMA,
         host_time_iso: hostTimeIso,
@@ -81,6 +93,11 @@ export function observationRecordingRows(
         motor_native_status: motorPosition !== null
           ? "measured"
           : String(motor?.status || "not_emitted_by_deployed_firmware"),
+        motor_control_deg: motorControlPosition,
+        motor_control_model_deg: motorControlProjection?.calibrated
+          ? motorControlProjection.mechanismDegrees : null,
+        motor_control_available: motor?.controlAvailable === true && motorControlPosition !== null,
+        motor_alignment_fault: motor?.alignmentFault === true,
       }));
     }
   }

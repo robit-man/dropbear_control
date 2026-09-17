@@ -449,11 +449,15 @@
             <pre id="esp-raw-output" class="esp-raw-output">Waiting for device inventory…</pre>
             <form id="esp-query-form" class="esp-query-row">
               <select id="esp-query-command" aria-label="Read-only serial diagnostic">
+                <option value="version">version + capabilities</option>
+                <option value="health">health + CAN faults</option>
                 <option value="status">status</option>
                 <option value="chirality">chirality</option>
                 <option value="mac">mac</option>
                 <option value="saved">saved offsets</option>
                 <option value="help">help</option>
+                <option value="observe on">observe on</option>
+                <option value="observe off">observe off</option>
               </select>
               <button class="button subtle" type="submit">SEND READ-ONLY QUERY</button>
               <small>Only the listed non-motion diagnostics are admitted by the server.</small>
@@ -465,7 +469,7 @@
               <b>1 · Select exact device and source</b>
               <label><span>STABLE USB DEVICE</span><select id="esp-flash-device"></select></label>
               <label><span>TRUSTED .INO SOURCE</span><select id="esp-firmware-source"></select></label>
-              <small>Behemoth provides DB2 plus the guarded LEFTLEG/RIGHTLEG captive portal. Observation Safe is USB read-only; Hybrid and V1 retain legacy portals.</small>
+              <small>Behemoth provides DB3 aligned CAN telemetry with mandatory DB1 limb headers and the guarded captive portal. Observation Safe remains DB2; Hybrid and V1 provide DB3 through legacy command framing.</small>
               <small id="esp-partition-state">Checking SPIFFS-preserving partition layout…</small>
               <div class="esp-compile-action">
                 <button id="esp-compile" class="button" type="button">COMPILE / VERIFY</button>
@@ -964,6 +968,6 @@
     </form>
   </dialog>
 
-  <script type="module" src="/js/app.js?v=20260916-portal-ready"></script>
+  <script type="module" src="/js/app.js?v=20260917-live-can-state"></script>
 </body>
 </html>

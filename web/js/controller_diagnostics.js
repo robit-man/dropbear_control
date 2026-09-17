@@ -48,6 +48,10 @@ export function classifyControllerSide(side, sample) {
     joints: sample?.joints || {},
     motorJoints: sample?.motorJoints || {},
     telemetryFormat: String(sample?.telemetryFormat || "legacy5"),
+    firmware: sample?.firmware || {},
+    health: sample?.health || {},
+    observationStreaming: sample?.observationStreaming === true,
+    diagnosticTxBytes: Number(sample?.diagnosticTxBytes) || 0,
   });
 }
 
@@ -88,7 +92,7 @@ function renderSide(side, sample) {
   const heading = document.createElement("header");
   const title = document.createElement("div");
   const state = document.createElement("span");
-  title.innerHTML = `<b>${side.toUpperCase()} ESP32</b><small>115200 8N1 · PASSIVE RX</small>`;
+  title.innerHTML = `<b>${side.toUpperCase()} ESP32</b><small>115200 8N1 · RX + DIAGNOSTIC QUERY</small>`;
   state.className = `controller-side-state ${status.transport}`;
   state.textContent = status.fresh ? "LIVE" : status.transport === "fail" ? "ERROR" : "SILENT";
   heading.append(title, state);
@@ -99,7 +103,14 @@ function renderSide(side, sample) {
     `${status.resolvedPath} · reader ${status.readerState} · read errors ${status.readErrors}`,
     status.transport,
   ));
-  column.append(arrow("O_RDONLY"));
+  column.append(arrow("continuous O_RDONLY"));
+  const capabilities = Array.isArray(status.firmware.capabilities)
+    ? status.firmware.capabilities : [];
+  column.append(node(
+    "FIRMWARE CONTRACT",
+    `${status.firmware.version || "version not reported"} · command ${status.firmware.commandProtocol || "unknown"} · telemetry ${status.firmware.telemetryProtocol || status.telemetryFormat} · ${capabilities.length} capabilities`,
+    capabilities.includes("observe-stream-v1") ? "success" : "degraded",
+  ));
   column.append(node(
     "CSV FRAME READER",
     status.ageMs == null
@@ -108,20 +119,33 @@ function renderSide(side, sample) {
     status.stream,
   ));
   column.append(node(
-    "FIRMWARE STARTUP GATE",
+    "OBSERVATION STREAM",
     status.decodedLines > 0
-      ? "Sensor task reached its playMode && !isCenter publish loop."
+      ? `${status.observationStreaming ? "observe on acknowledged" : "telemetry present"} · independent of actuator play · diagnostic tx ${status.diagnosticTxBytes} bytes`
       : status.readerState === "observing"
-        ? "USB UART is open without errors but the ESP emits no bytes. Source-level candidates are the leg-side prompt, saved center mode, or the blocking CAN-init failure loop."
+        ? "USB UART is open but no valid telemetry has arrived. Request observe on or verify the loaded firmware supports observe-stream-v1."
         : "Reader state must recover before firmware progress can be inferred.",
     status.decodedLines > 0 ? "success" : status.transport,
   ));
   const db2 = status.telemetryFormat === "DB2";
-  column.append(arrow(db2 ? "5 external + 6 motor degrees" : "5 external degrees"));
+  const db3 = status.telemetryFormat === "DB3";
+  column.append(arrow(db3 ? "5 external + 6 raw CAN + 6 aligned CAN" : db2 ? "5 external + 6 raw CAN" : "5 external degrees"));
   column.append(node(
     "STRICT PARSER",
-    `${status.rejectedLines.toLocaleString()} rejected · ${status.overflowEvents.toLocaleString()} overflows · ${db2 ? "DB2 dual-angle frames" : "legacy five-value frames"}`,
+    `${status.rejectedLines.toLocaleString()} rejected · ${status.overflowEvents.toLocaleString()} overflows · ${db3 ? "DB3 aligned-CAN frames" : db2 ? "DB2 dual-angle frames" : "legacy five-value frames"}`,
     status.parser,
+  ));
+  const health = status.health;
+  const healthKnown = health.schema === "DBH1";
+  const healthState = !healthKnown ? "unknown"
+    : health.overall === "ok" ? "success"
+      : health.overall === "fault" ? "fail" : "degraded";
+  column.append(node(
+    "ESP / CAN HEALTH",
+    healthKnown
+      ? `${String(health.overall).toUpperCase()} · runtime ${health.runtimeReady ? "ready" : "blocked"} · CAN ${health.canReady ? "ready" : "down"} · sensors ${Number(health.sensorFreshMask).toString(2).padStart(5, "0")} · motors ${Number(health.motorFreshMask).toString(2).padStart(6, "0")} · aligned ${Number(health.motorControlMask).toString(2).padStart(6, "0")} · faults ${Number(health.alignmentFaultMask).toString(2).padStart(6, "0")}`
+      : "No DBH1 response has arrived. Use Live State or send health from Devices.",
+    healthState,
   ));
 
   const sensors = document.createElement("div");
@@ -155,11 +179,16 @@ function renderSide(side, sample) {
   const nativeCount = Object.values(status.motorJoints).filter(
     (motor) => motor?.available === true && finite(motor.positionDeg),
   ).length;
+  const alignedCount = Object.values(status.motorJoints).filter(
+    (motor) => motor?.controlAvailable === true
+      && motor?.alignmentFault !== true
+      && finite(motor.controlPositionDeg),
+  ).length;
   column.append(node(
     "CORRECTED USD TWIN",
     status.fresh
       ? nativeCount
-        ? `All five AS5600 fields and ${nativeCount}/6 motor angles are observed. After software zero, verified motor angles drive the model and AS5600 remains an independent check.`
+        ? `All five AS5600 fields, ${nativeCount}/6 raw CAN angles, and ${alignedCount}/6 aligned CAN angles are observed. Aligned CAN drives the model; AS5600 remains the restart reference and cross-check.`
         : "All five AS5600 fields are observed. Admitted calibrated fields drive browser kinematics; hip yaw alone is absent from the legacy packet."
       : "Rendered state is held until a fresh five-field packet is available.",
     status.fresh ? status.calibration : "degraded",
@@ -184,12 +213,19 @@ export function renderControllerDiagnostics(container, payload) {
         && typeof motor.positionDeg === "number"
         && Number.isFinite(motor.positionDeg),
     ).length, 0);
+  const motorAlignedCount = ["left", "right"].reduce((count, side) => count
+    + Object.values(payload?.sides?.[side]?.motorJoints || {}).filter(
+      (motor) => motor?.controlAvailable === true
+        && motor?.alignmentFault !== true
+        && typeof motor.controlPositionDeg === "number"
+        && Number.isFinite(motor.controlPositionDeg),
+    ).length, 0);
   common.append(
     node(
       "MCP2515 / CAN RX",
       motorNativeCount
-        ? `${motorNativeCount}/12 verified motor-angle channels present in the admitted ESP telemetry.`
-        : "Deployed firmware CSV does not report CAN controller health or actuator replies.",
+        ? `${motorNativeCount}/12 verified RMD 0x92 channels · ${motorAlignedCount}/12 aligned control channels.`
+        : "No verified RMD 0x92 actuator replies are present in the admitted telemetry.",
       motorNativeCount ? "success" : "unknown",
     ),
     node(
@@ -202,7 +238,7 @@ export function renderControllerDiagnostics(container, payload) {
     node("IMU TASK", "IMU state is not present in the deployed five-value serial frame.", "unknown"),
     node("USB ROLE / CHIRALITY", "Physical motion check: path 1.2 is left and path 1.1 is right. Both legacy builds ignored a chirality query while streaming. Silent path 1.4 remains the neck candidate.", "success"),
     node("FOOT FORCE DISTRIBUTION", "dropbear-foot integration reserved; no sensor transport is wired yet.", "future"),
-    node("SERIAL / CAN CONTROL TX", "No write-capable descriptor exists. Frontend acknowledgement cannot unlock physical output.", "locked"),
+    node("SERIAL / CAN CONTROL TX", "Only version, health, and observation requests can transmit here. Motion transport remains absent; the three-stage frontend gate cannot change that.", "locked"),
   );
   container.append(flows, common);
 }

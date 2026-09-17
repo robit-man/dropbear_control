@@ -109,7 +109,7 @@ export const HARDWARE_DEFAULT_STANCE_CALIBRATION = Object.freeze({
   directionEvidence: "provisional_positive_until_read_only_motion_validation",
 });
 
-export const SOFTWARE_ZERO_SCHEMA = "dropbear-browser-software-zero-v3";
+export const SOFTWARE_ZERO_SCHEMA = "dropbear-browser-software-zero-v4";
 const SENSOR_JOINTS = Object.freeze(["outer_calf", "inner_calf", "hip_pitch", "knee", "hip_roll"]);
 const MOTOR_JOINTS = Object.freeze([...SENSOR_JOINTS, "hip_yaw"]);
 const HIP_YAW_CALIBRATION = Object.freeze({
@@ -125,8 +125,10 @@ function shortestDegreeDelta(next, previous) {
 }
 
 export function captureSoftwareZero(payload, torsoForwardDeg = 7, capturedAt = new Date().toISOString()) {
-  if (payload?.mode !== "read_only" || payload?.writeCapable !== false || payload?.txBytes !== 0) {
-    throw new Error("software zero requires a byte-silent observation snapshot");
+  if (payload?.mode !== "read_only_with_diagnostic_queries"
+      || payload?.writeCapable !== false
+      || payload?.motionWriteCapable !== false) {
+    throw new Error("software zero requires a motion-locked observation snapshot");
   }
   const sides = {};
   for (const side of ["left", "right"]) {
@@ -142,9 +144,13 @@ export function captureSoftwareZero(payload, torsoForwardDeg = 7, capturedAt = n
       joints[firmwareJoint] = Object.freeze({ externalPositionDeg });
     }
     const motorJoints = Object.fromEntries(MOTOR_JOINTS.map((joint) => {
-      const position = sample.motorJoints?.[`${side}_${joint}`]?.positionDeg;
+      const motor = sample.motorJoints?.[`${side}_${joint}`];
+      const position = motor?.positionDeg;
+      const controlPosition = motor?.controlPositionDeg;
       return [joint, Object.freeze({
         motorPositionDeg: typeof position === "number" && Number.isFinite(position) ? position : null,
+        motorControlPositionDeg: typeof controlPosition === "number" && Number.isFinite(controlPosition)
+          ? controlPosition : null,
       })];
     }));
     sides[side] = Object.freeze({
@@ -172,9 +178,9 @@ export function validateSoftwareZero(record) {
   if (!record || record.schema !== SOFTWARE_ZERO_SCHEMA || record.units !== "degrees") return null;
   try {
     return captureSoftwareZero({
-      mode: "read_only",
+      mode: "read_only_with_diagnostic_queries",
       writeCapable: false,
-      txBytes: 0,
+      motionWriteCapable: false,
       sides: Object.fromEntries(["left", "right"].map((side) => [side, {
         fresh: true,
         sequence: record.sides?.[side]?.sequence,
@@ -185,6 +191,7 @@ export function validateSoftwareZero(record) {
         }])),
         motorJoints: Object.fromEntries(MOTOR_JOINTS.map((joint) => [`${side}_${joint}`, {
           positionDeg: record.sides?.[side]?.motorJoints?.[joint]?.motorPositionDeg,
+          controlPositionDeg: record.sides?.[side]?.motorJoints?.[joint]?.motorControlPositionDeg,
         }])),
       }])),
     }, record.torsoForwardDeg, record.capturedAt);
@@ -203,16 +210,25 @@ export function projectHardwareDegrees(
   const baseCalibration = HARDWARE_DEFAULT_STANCE_CALIBRATION.sides[side]?.[firmwareJoint]
     || (firmwareJoint === "hip_yaw" ? HIP_YAW_CALIBRATION : null);
   const isMotorNative = positionSource === "motor_native";
+  const isMotorControl = positionSource === "motor_control_aligned";
   const capturedRawDatum = Number(isMotorNative
     ? softwareZero?.sides?.[side]?.motorJoints?.[firmwareJoint]?.motorPositionDeg
-    : softwareZero?.sides?.[side]?.joints?.[firmwareJoint]?.externalPositionDeg);
-  const calibration = baseCalibration && Number.isFinite(capturedRawDatum)
+    : isMotorControl
+      ? softwareZero?.sides?.[side]?.motorJoints?.[firmwareJoint]?.motorControlPositionDeg
+      : softwareZero?.sides?.[side]?.joints?.[firmwareJoint]?.externalPositionDeg);
+  const alignedDefaultDatum = firmwareJoint === "hip_yaw" ? 0 : baseCalibration?.rawDatumDeg;
+  const rawDatum = Number.isFinite(capturedRawDatum)
+    ? capturedRawDatum
+    : isMotorControl ? alignedDefaultDatum : null;
+  const calibration = baseCalibration && Number.isFinite(rawDatum)
     ? Object.freeze({
       ...baseCalibration,
-      rawDatumDeg: capturedRawDatum,
-      datumSource: "operator_captured_browser_zero",
-      capturedAt: softwareZero.capturedAt,
-      captureQuality: "operator_captured_current_pose",
+      rawDatumDeg: rawDatum,
+      datumSource: Number.isFinite(capturedRawDatum)
+        ? "operator_captured_browser_zero" : "firmware_as5600_boot_alignment",
+      capturedAt: Number.isFinite(capturedRawDatum) ? softwareZero.capturedAt : null,
+      captureQuality: Number.isFinite(capturedRawDatum)
+        ? "operator_captured_current_pose" : "firmware_aligned_motor_feedback",
       positionSource,
     })
     : isMotorNative || firmwareJoint === "hip_yaw"

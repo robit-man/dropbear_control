@@ -1,7 +1,7 @@
 # USB observation and actuator-control migration
 
-Status: passive observation is implemented; physical command transport is
-locked and not installed.
+Status: live observation and bounded diagnostic queries are implemented;
+physical command transport is locked and not installed.
 
 This document joins four source trees into one migration path:
 
@@ -17,16 +17,19 @@ This document joins four source trees into one migration path:
 The current milestone moves measurements in one direction only:
 
 ```text
-external absolute sensors
-  -> deployed leg ESP32 CSV
+external absolute sensors + RMD motor encoders
+  -> non-motion CAN 0x92 queries
+  -> deployed leg ESP32 DB3
   -> O_RDONLY USB readers
   -> strict side-specific decoder
   -> freshness and provenance
   -> browser Dropbear USD state
 ```
 
-There is no serial write call, command encoder, CAN adapter, or physical
-hardware backend on this path.
+An isolated side channel can transmit only `version`, `health`, passive status,
+and `observe on|off`. Behemoth requests receive the exact saved-role DB1
+header. The allowlist cannot encode motion, and no physical command backend is
+installed.
 
 ## Run the live observation dashboard
 
@@ -52,9 +55,9 @@ DROPBEAR_OBSERVATION_MAX_AGE_MS=500 \
 python3 web/serve.py 8000
 ```
 
-Open <http://localhost:8000/?live=1>. The query parameter explicitly selects
-the receive-only hardware state as soon as at least one fresh leg stream is
-available. Without it, click **USE LIVE STATE**. A missing or stale side stays
+Open <http://localhost:8000/?live=1>. The query parameter requests observation
+from both controllers, waits for fresh telemetry, and selects the measured
+hardware state. Without it, click **USE LIVE STATE**. A missing or stale side stays
 visibly unobserved; it is never filled with simulated data while live state is
 selected.
 
@@ -73,7 +76,7 @@ no command was sent to any controller.
 
 ## Observation contract
 
-Each leg line must contain exactly five finite decimal values in `0..360`:
+Legacy lines contain exactly five finite decimal values in `0..360`:
 
 ```text
 outer_calf,inner_calf,hip_pitch,knee,hip_roll
@@ -97,13 +100,18 @@ output shaft. In particular, the knee field drives the upstream
 `*_knee_actuator_joint` without a multiplier. The corrected closed-loop USD
 linkage produces the larger downstream knee bend as a kinematic consequence.
 
-Left hip yaw `0x149` and right hip yaw `0x14C` have no value in the deployed
-five-field stream. They remain unavailable in the UI.
+`DB2` adds controller milliseconds and six raw RMD multi-turn angles. `DB3`
+adds six restart-aligned RMD control angles plus six-bit raw-fresh,
+control-ready, and alignment-fault masks. Five aligned fields use AS5600 at
+restart and then run continuously from CAN. Hip yaw has no AS5600 and uses the
+first verified RMD response as its boot-relative zero.
 
-The API publishes `mode: read_only`, `writeCapable: false`, and `txBytes: 0`.
+The API publishes `mode: read_only_with_diagnostic_queries`,
+`writeCapable: false`, and `motionWriteCapable: false`.
 The reader opens each character device with `O_RDONLY | O_NOCTTY | O_NONBLOCK`,
-has no write method, performs no reconnect loop, and drops malformed, stale,
-oversized, or partial records.
+reconnects after USB changes, and drops malformed, stale, oversized, or partial
+records. Diagnostic writes use a new short-lived descriptor, are byte-counted,
+and accept no motion tokens.
 
 Opening a USB UART can still change modem-control lines inside a driver and can
 reset some ESP32 boards. The opt-in environment flag exists for that reason.
@@ -137,9 +145,10 @@ calibrated joint state.
 Every API side also exposes six `motorJoints` entries with CAN IDs. With the
 deployed five-field firmware, their positions are `null`, availability is
 false, and status is `not_emitted_by_deployed_firmware`. The service never
-copies an external sensor value into a motor field. A versioned `DB2` parser is
-ready for five external angles plus six independently measured motor-native
-angles; legacy five-field records remain supported.
+copies an external sensor value into a motor field. A versioned `DB2` parser
+accepts five external angles plus six independently measured motor-native
+angles. `DB3` additionally drives the USD from six firmware-aligned CAN
+positions; legacy five-field records remain supported.
 
 ## Browser software zero and angle recording
 
@@ -154,7 +163,8 @@ browser local storage.
 
 The angle recorder exports one CSV row per side and joint for each admitted
 sample. It keeps external raw angle, external zeroed delta, upstream model
-joint angle, motor-native angle, and motor-native zeroed delta in separate
+joint angle, raw motor angle, raw motor zeroed delta, aligned motor angle,
+aligned model angle, and alignment fault in separate
 columns with CAN ID and availability. Hip yaw therefore has an empty external
 column, and all motor columns remain empty with an explicit status on today's
 deployed firmware. Recording stops at 120,000 rows to bound browser memory.
@@ -162,8 +172,9 @@ deployed firmware. Recording stops at 120,000 rows to bound browser memory.
 ## ESP32 console and firmware toolchain
 
 The ESP32 Devices view inventories stable `/dev/serial/by-path` identities,
-shows the bounded raw receive tail, and permits only the diagnostic serial
-queries `status`, `chirality`, `mac`, `saved`, and `help`. Compile and upload
+shows the bounded raw receive tail, and permits only version, capability,
+health, observation, and passive status diagnostics. The host learns DB1 versus
+legacy framing from `DBV1` and supplies exact limb headers. Compile and upload
 are separate stages. Upload requires the exact build and source checksum from
 the current server session, a selected stable device, three physical-safety
 acknowledgements, and the typed phrase `FLASH <ROLE>`.

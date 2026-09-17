@@ -44,4 +44,11 @@ const motorYaw = projectHardwareDegrees("left", "hip_yaw", 45, motorZero, "motor
 assert.equal(motorYaw.calibrated, true);
 assert.equal(motorYaw.mechanismDegrees, 3);
 
+const alignedKnee = projectHardwareDegrees("right", "knee", 218, null, "motor_control_aligned");
+assert.equal(alignedKnee.calibrated, true);
+assert.ok(Math.abs(alignedKnee.mechanismDegrees - (17.188734 + 5)) < 1e-6);
+const alignedYaw = projectHardwareDegrees("left", "hip_yaw", 4, null, "motor_control_aligned");
+assert.equal(alignedYaw.calibrated, true);
+assert.equal(alignedYaw.mechanismDegrees, 4);
+
 console.log("HARDWARE CALIBRATION TESTS PASSED");

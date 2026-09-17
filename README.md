@@ -284,10 +284,14 @@ python3 tools/patch_esp32_core_2_0_13.py
 The dashboard verifies this patch before admitting a compile, so firmware
 builds cannot pass with the warning hidden or with the broken branch retained.
 
-For explicitly enabled receive-only state from the two deployed leg ESP32s,
-set the two stable USB paths and open `/?live=1`. The service owns read-only
-file descriptors, emits `txBytes: 0`, accepts partial fresh sides without
-inventing the missing state, and leaves both hip-yaw axes unobserved. See
+For explicitly enabled live state from the two deployed leg ESP32s, set the
+two stable USB paths and open `/?live=1`. Continuous receive descriptors stay
+read-only. The Live State button sends only audited `version`, `health`, and
+`observe on|off` diagnostics through ephemeral writers; it automatically adds
+Behemoth's required `<DB1:LEFTLEG>` or `<DB1:RIGHTLEG>` header. Motion output
+remains unavailable. DB3 uses AS5600-aligned RMD `0x92` CAN angles for all six
+motors per leg, including boot-relative hip yaw, while retaining external
+angles as independent restart references and cross-checks. See
 [`docs/USB_OBSERVATION_AND_CONTROL_MIGRATION.md`](docs/USB_OBSERVATION_AND_CONTROL_MIGRATION.md)
 for the current AGX command, measured result, actuator map, and staged control
 plan.
@@ -300,8 +304,8 @@ remote viewing can be enabled explicitly with
 `DROPBEAR_DASHBOARD_HOST=<address> DROPBEAR_ALLOW_REMOTE=1`, but training,
 prompt, and stop operations remain client-loopback-only.
 
-The dashboard starts in guarded pause even though the observed source firmware
-sets `playMode=true` during setup. Choose either **Presets** or **RL Policies**
+The dashboard and current firmware start in guarded pause; requesting live
+state does not change firmware `playMode`. Choose either **Presets** or **RL Policies**
 in the Robot Sim source switch, select one source, and use the single top-bar
 **Play/Stop** control. Selecting a source arms it without starting motion.
 The Robot Sim training drawer can launch PPO and replay each completed update

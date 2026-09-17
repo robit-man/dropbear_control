@@ -142,8 +142,8 @@ export class SoftwareRobotViewer {
     context.font = '600 10px "IBM Plex Mono", monospace';
     const value = measured
       ? joint.observationModelApplied
-        ? `${Number(joint.observationZeroedDeg).toFixed(1)}° zero / ${Number(joint.observationRawDeg).toFixed(1)}° ${joint.observationPositionSource === "motor_native" ? "motor" : "AS5600"}`
-        : `${Number(joint.observationRawDeg).toFixed(1)}° ${joint.observationPositionSource === "motor_native" ? "motor" : "AS5600"} / MODEL HELD`
+        ? `${Number(joint.observationZeroedDeg).toFixed(1)}° zero / ${Number(joint.observationRawDeg).toFixed(1)}° ${joint.observationPositionSource === "motor_control_aligned" ? "CAN aligned" : joint.observationPositionSource === "motor_native" ? "CAN raw" : "AS5600"}`
+        : `${Number(joint.observationRawDeg).toFixed(1)}° ${joint.observationPositionSource === "motor_control_aligned" ? "CAN aligned" : joint.observationPositionSource === "motor_native" ? "CAN raw" : "AS5600"} / MODEL HELD`
       : "UNOBSERVED";
     context.fillText(`${label}  ${value}`, x, y);
   }

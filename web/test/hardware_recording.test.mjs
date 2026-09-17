@@ -10,8 +10,9 @@ import {
 const sensorNames = ["outer_calf", "inner_calf", "hip_pitch", "knee", "hip_roll"];
 const values = { left: [194, 72, 10, 213, 146], right: [125, 188, 89, 28, 169] };
 const payload = {
-  mode: "read_only",
+  mode: "read_only_with_diagnostic_queries",
   writeCapable: false,
+  motionWriteCapable: false,
   txBytes: 0,
   sides: Object.fromEntries(["left", "right"].map((side, sideIndex) => [side, {
     fresh: true,
@@ -28,6 +29,9 @@ const payload = {
     ].map((joint) => [`${side}_${joint}`, {
       positionDeg: null,
       available: false,
+      controlPositionDeg: null,
+      controlAvailable: false,
+      alignmentFault: false,
       status: "not_emitted_by_deployed_firmware",
     }])),
   }])),
@@ -51,6 +55,12 @@ const motorKnee = motorRows.find((row) => row.side === "left" && row.joint === "
 assert.equal(motorKnee.motor_native_deg, 104);
 assert.equal(motorKnee.motor_native_zeroed_deg, 4);
 assert.equal(motorKnee.motor_native_available, true);
+payload.sides.left.motorJoints.left_knee.controlPositionDeg = 217;
+payload.sides.left.motorJoints.left_knee.controlAvailable = true;
+const alignedRows = observationRecordingRows(payload, motorZero, 1236, "2026-09-15T08:00:04Z");
+const alignedKnee = alignedRows.find((row) => row.side === "left" && row.joint === "knee");
+assert.equal(alignedKnee.motor_control_deg, 217);
+assert.equal(alignedKnee.motor_control_available, true);
 
 const csv = angleRecordingCsv(rows);
 assert.equal(csv.split("\n")[0], ANGLE_RECORDING_COLUMNS.join(","));
