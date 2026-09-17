@@ -57,6 +57,15 @@ class FirmwareServiceTests(unittest.TestCase):
         core = self.core_root / "2.0.13"
         core.mkdir(parents=True)
         (core / "platform.txt").write_text("name=ESP32 Arduino\nversion=2.0.13\n")
+        uart = core / "cores" / "esp32" / "esp32-hal-uart.c"
+        uart.parent.mkdir(parents=True)
+        uart.write_text(
+            "bool uartSetPins(uint8_t uart_num) {\n"
+            "  if (uart_num >= SOC_UART_NUM) { return false; }\n"
+            "  return true;\n"
+            "}\n"
+            "bool uartSetHwFlowCtrlMode(void) { return true; }\n"
+        )
         self.environment = mock.patch.dict(os.environ, {
             "DROPBEAR_FIRMWARE_ROOT": str(self.source),
             "DROPBEAR_ARDUINO": str(self.arduino),
@@ -77,11 +86,13 @@ class FirmwareServiceTests(unittest.TestCase):
         sketch.write_text("void setup() {}\nvoid loop() {}\n")
         snapshot = self.manager.snapshot()
         self.assertEqual(snapshot["sources"][0]["family"], "universal-behemoth")
+        self.assertEqual(snapshot["sources"][0]["interface"], "db2 + guarded captive portal")
         self.assertEqual(snapshot["sources"][0]["filename"], sketch.name)
         self.assertTrue(snapshot["toolchain"]["available"])
         self.assertTrue(snapshot["toolchain"]["ready"])
         self.assertEqual(snapshot["toolchain"]["libraryVersions"]["FastAccelStepper"], "0.30.15")
         self.assertEqual(snapshot["toolchain"]["esp32CoreVersions"], ["2.0.13"])
+        self.assertTrue(snapshot["toolchain"]["esp32CorePatchReady"])
         self.assertTrue(snapshot["toolchain"]["spiffsPreservedInPlace"])
         self.assertEqual(snapshot["toolchain"]["spiffsOffset"], "0x290000")
 
@@ -151,6 +162,21 @@ class FirmwareServiceTests(unittest.TestCase):
         (self.core_root / "3.0.3").mkdir()
         (self.core_root / "3.0.3" / "platform.txt").write_text("version=3.0.3\n")
         with self.assertRaisesRegex(FirmwareToolError, "ESP32 Arduino core requires 2.0.13 exclusively"):
+            self.manager.compile(source_id)
+
+    def test_compile_rejects_unpatched_esp32_uart_core(self):
+        sketch = self.source / "firmware_full_libs_neck.ino"
+        sketch.write_text("void setup() {}\nvoid loop() {}\n")
+        source_id = self.manager.snapshot()["sources"][0]["id"]
+        uart = self.core_root / "2.0.13" / "cores" / "esp32" / "esp32-hal-uart.c"
+        uart.write_text(
+            "bool uartSetPins(uint8_t uart_num) {\n"
+            "  if (uart_num >= SOC_UART_NUM) { return; }\n"
+            "  return true;\n"
+            "}\n"
+            "bool uartSetHwFlowCtrlMode(void) { return true; }\n"
+        )
+        with self.assertRaisesRegex(FirmwareToolError, "uartSetPins-invalid-index-return-false-v1"):
             self.manager.compile(source_id)
 
 

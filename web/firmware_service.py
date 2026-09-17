@@ -23,6 +23,7 @@ from typing import Any
 FIRMWARE_SCHEMA = "dropbear-esp32-devices-v2"
 BOARD_FQBN = "esp32:esp32:esp32:PartitionScheme=huge_app,EraseFlash=none"
 REQUIRED_ESP32_CORE_VERSION = "2.0.13"
+REQUIRED_ESP32_CORE_PATCH = "uartSetPins-invalid-index-return-false-v1"
 RAW_TAIL_LINES = 160
 READ_ONLY_SERIAL_COMMANDS = frozenset({"status", "chirality", "mac", "saved", "help"})
 REQUIRED_LIBRARY_VERSIONS = {
@@ -227,10 +228,18 @@ class DeviceFirmwareManager:
                 if name == "esp32_devkit_v1_observation_safe.ino"
                 else "legacy-or-development"
             )
+            interface = (
+                "db2 + guarded captive portal"
+                if name == "firmware_full_libs_neck.ino"
+                else "db2 observation only"
+                if name == "esp32_devkit_v1_observation_safe.ino"
+                else "db2 + legacy captive portal"
+            )
             sources.append({
                 "id": hashlib.sha256(data).hexdigest()[:16],
                 "filename": name,
                 "family": family,
+                "interface": interface,
                 "bytes": len(data),
                 "sha256": hashlib.sha256(data).hexdigest(),
                 "path": str(path.relative_to(self.source_root)),
@@ -274,6 +283,25 @@ class DeviceFirmwareManager:
                 f"ESP32 Arduino core requires {REQUIRED_ESP32_CORE_VERSION} exclusively; found {found}"
             )
         return issues
+
+    def _esp32_core_patch_issue(self) -> str:
+        uart_source = (
+            self.esp32_core_root / REQUIRED_ESP32_CORE_VERSION /
+            "cores" / "esp32" / "esp32-hal-uart.c"
+        )
+        if not uart_source.is_file():
+            return f"ESP32 core patch source is missing: {uart_source}"
+        source = uart_source.read_text(errors="replace")
+        start = source.find("bool uartSetPins(")
+        end = source.find("bool uartSetHwFlowCtrlMode(", start)
+        body = source[start:end] if start >= 0 and end > start else ""
+        if "return false;" not in body or "return;" in body:
+            return (
+                f"ESP32 core {REQUIRED_ESP32_CORE_VERSION} requires patch "
+                f"{REQUIRED_ESP32_CORE_PATCH}; run "
+                "python3 tools/patch_esp32_core_2_0_13.py"
+            )
+        return ""
 
     def _partition_path(self) -> Path:
         return self.source_root / PARTITION_FILENAME
@@ -396,6 +424,9 @@ class DeviceFirmwareManager:
         core_versions = self._esp32_core_versions()
         executable_available = self.arduino.is_file() and os.access(self.arduino, os.X_OK)
         dependency_issues = self._toolchain_issues(library_versions, core_versions)
+        core_patch_issue = self._esp32_core_patch_issue()
+        if core_patch_issue:
+            dependency_issues.append(core_patch_issue)
         try:
             _, partition_sha256 = self._validated_partition()
             partition_issue = ""
@@ -415,6 +446,8 @@ class DeviceFirmwareManager:
                 "board": BOARD_FQBN,
                 "sketchbook": str(self.sketchbook),
                 "requiredEsp32Core": REQUIRED_ESP32_CORE_VERSION,
+                "requiredEsp32CorePatch": REQUIRED_ESP32_CORE_PATCH,
+                "esp32CorePatchReady": not core_patch_issue,
                 "esp32CoreVersions": core_versions,
                 "requiredLibraries": dict(REQUIRED_LIBRARY_VERSIONS),
                 "libraryVersions": library_versions,
@@ -453,6 +486,9 @@ class DeviceFirmwareManager:
             raise FirmwareToolError("Arduino 1.8.19 executable was not found")
         versions = self._library_versions()
         mismatches = self._toolchain_issues(versions, self._esp32_core_versions())
+        core_patch_issue = self._esp32_core_patch_issue()
+        if core_patch_issue:
+            mismatches.append(core_patch_issue)
         if mismatches:
             raise FirmwareToolError("firmware toolchain dependency mismatch: " + "; ".join(mismatches))
         partition_path, partition_sha256 = self._validated_partition()

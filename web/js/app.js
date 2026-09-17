@@ -1683,7 +1683,7 @@ function renderEspDevices() {
     $("esp-firmware-source"),
     sources,
     ui.hardwareDevices.selectedSourceId,
-    (source) => `${source.family} · ${source.filename} · ${source.sha256.slice(0, 12)}`,
+    (source) => `${source.family} · ${source.interface || "serial"} · ${source.filename} · ${source.sha256.slice(0, 12)}`,
   );
 
   const device = selectedEspDevice();
@@ -1701,7 +1701,7 @@ function renderEspDevices() {
     if (follow) rawOutput.scrollTop = rawOutput.scrollHeight;
   }
   $("esp-toolchain-state").textContent = payload.toolchain?.ready
-    ? `READY · ${payload.toolchain.board} · ESP32 ${payload.toolchain.requiredEsp32Core} · FastAccelStepper ${payload.toolchain.libraryVersions?.FastAccelStepper}`
+    ? `READY · ${payload.toolchain.board} · ESP32 ${payload.toolchain.requiredEsp32Core} + UART FIX · FastAccelStepper ${payload.toolchain.libraryVersions?.FastAccelStepper}`
     : payload.toolchain?.available
       ? `DEPENDENCY BLOCKED · ${(payload.toolchain.issues || []).join(" · ")}`
       : "ARDUINO MISSING";

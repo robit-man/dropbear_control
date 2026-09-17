@@ -273,6 +273,17 @@ default SPIFFS settings region retained at `0x290000` + `0x160000`. Uploads
 force `EraseFlash=none` and perform a read-only partition-table preflight on
 the selected ESP32. A missing or mismatched SPIFFS layout blocks the upload.
 
+The pinned ESP32 Arduino 2.0.13 core contains a known `uartSetPins` branch that
+returns no value from a Boolean function. Apply the reviewed one-line fix once
+after installing that core:
+
+```bash
+python3 tools/patch_esp32_core_2_0_13.py
+```
+
+The dashboard verifies this patch before admitting a compile, so firmware
+builds cannot pass with the warning hidden or with the broken branch retained.
+
 For explicitly enabled receive-only state from the two deployed leg ESP32s,
 set the two stable USB paths and open `/?live=1`. The service owns read-only
 file descriptors, emits `txBytes: 0`, accepts partial fresh sides without
