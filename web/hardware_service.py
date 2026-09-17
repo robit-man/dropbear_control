@@ -383,6 +383,19 @@ def _passive_firmware_identity(line: str, telemetry_format: str = "") -> tuple[s
     return "unknown", ""
 
 
+def _looks_like_telemetry_bytes(raw: bytes) -> bool:
+    cleaned = raw.rstrip(b"\r").strip()
+    if cleaned.startswith((b"DB2,", b"DB3,")):
+        return True
+    fields = cleaned.split(b",")
+    if len(fields) != 5:
+        return False
+    try:
+        return all(math.isfinite(float(field)) for field in fields)
+    except ValueError:
+        return False
+
+
 class _PassiveTTYReader:
     """Reconnectable O_RDONLY tty reader with no transmit method or descriptor."""
 
@@ -481,9 +494,7 @@ class _PassiveTTYReader:
                         complete_records = records[:-1]
                         diagnostic_records = [
                             raw for raw in complete_records
-                            if raw.rstrip(b"\r").startswith(
-                                (b"DBV1,", b"DBH1,", b"DBO1,", b"FIRMWARE:")
-                            )
+                            if not _looks_like_telemetry_bytes(raw)
                         ]
                         # Preserve identity/health acknowledgements even when a
                         # fast DB3 stream shares the same kernel read.
@@ -651,9 +662,18 @@ class HardwareObservationManager:
             return "DB1"
         if "behemoth" in state.firmware_version.lower():
             return "DB1"
-        return "LEGACY"
+        # Prefer the current mandatory addressed protocol when no boot/version
+        # evidence has arrived. request_observation_stream performs a bounded
+        # bare-version fallback for legacy images.
+        return "DB1"
 
-    def send_diagnostic(self, side: str, command: str) -> dict[str, Any]:
+    def send_diagnostic(
+        self,
+        side: str,
+        command: str,
+        *,
+        protocol_override: str | None = None,
+    ) -> dict[str, Any]:
         """Send one allowlisted non-motion request through an ephemeral fd."""
 
         if side not in self._states:
@@ -665,7 +685,9 @@ class HardwareObservationManager:
             state = self._states[side]
             if not self.enabled or not state.configured_path:
                 raise ValueError(f"{side} observation serial path is not enabled")
-            protocol = self._command_protocol_for_state(state)
+            protocol = protocol_override or self._command_protocol_for_state(state)
+            if protocol not in {"DB1", "LEGACY"}:
+                raise ValueError("diagnostic protocol override must be DB1 or LEGACY")
             wire_command = (
                 f"<DB1:{self._address_for_side(side)}> {payload}"
                 if protocol == "DB1" else payload
@@ -709,7 +731,30 @@ class HardwareObservationManager:
         for side in self._states:
             sent = []
             errors = []
-            commands = ("version", "health", "observe on") if enabled else ("observe off",)
+            version_requested = False
+            with self._lock:
+                known_protocol = self._states[side].command_protocol
+            if enabled and not known_protocol:
+                try:
+                    sent.append(self.send_diagnostic(
+                        side, "version", protocol_override="DB1",
+                    ))
+                    version_requested = True
+                    time.sleep(0.12)
+                    with self._lock:
+                        known_protocol = self._states[side].command_protocol
+                    if not known_protocol:
+                        sent.append(self.send_diagnostic(
+                            side, "version", protocol_override="LEGACY",
+                        ))
+                        time.sleep(0.12)
+                except ValueError as error:
+                    errors.append(str(error))
+            commands = (
+                (("health", "observe on") if version_requested
+                 else ("version", "health", "observe on"))
+                if enabled else ("observe off",)
+            )
             for command in commands:
                 try:
                     sent.append(self.send_diagnostic(side, command))
@@ -745,6 +790,14 @@ class HardwareObservationManager:
             if family != "unknown" and not state.command_protocol:
                 state.firmware_family = family
                 state.firmware_version = version
+            expected_missing_header = (
+                f"ERR|MISSING_TARGET_HEADER|expected=<DB1:{self._address_for_side(side)}>"
+            )
+            if cleaned_line.startswith(expected_missing_header):
+                state.command_protocol = "DB1"
+                if "db1-required" not in state.capabilities:
+                    state.capabilities = (*state.capabilities, "db1-required")
+                return True
             if cleaned_line.startswith("DBV1,"):
                 try:
                     version_record = parse_firmware_version_line(side, cleaned_line)
@@ -771,6 +824,10 @@ class HardwareObservationManager:
                     return False
                 state.observation_streaming = fields[2] == "on"
                 return True
+            if "," not in cleaned_line:
+                # Human-readable boot/status/log output belongs in the bounded
+                # raw console but is not a rejected telemetry record.
+                return True
         try:
             record = parse_esp32_telemetry_line(side, line)
         except ObservationParseError:
@@ -788,6 +845,8 @@ class HardwareObservationManager:
             state.controller_millis = record["controllerMillis"]
             family, version = _passive_firmware_identity(line, record["format"])
             if not state.command_protocol:
+                if record["format"] in {"legacy5", "DB2"}:
+                    state.command_protocol = "LEGACY"
                 state.firmware_family = family
                 state.firmware_version = version
             state.decoded_lines += 1

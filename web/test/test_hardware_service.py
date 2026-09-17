@@ -210,6 +210,30 @@ class PassiveObservationTests(unittest.TestCase):
         self.assertTrue(all(b"play" not in wire for wire in writes))
         self.assertIn(b"<DB1:RIGHTLEG> observe on\n", writes)
 
+    def test_missing_header_reply_identifies_db1_for_retry(self):
+        writes = []
+
+        def writer(path, encoded):
+            writes.append(encoded)
+            return len(encoded)
+
+        manager = HardwareObservationManager(
+            "/dev/fake-left", "/dev/fake-right", enabled=True,
+            diagnostic_writer=writer,
+        )
+        accepted = manager.ingest_line(
+            "right",
+            "ERR|MISSING_TARGET_HEADER|expected=<DB1:RIGHTLEG>|example=<DB1:RIGHTLEG> status",
+        )
+        self.assertTrue(accepted)
+        result = manager.send_diagnostic("right", "health")
+        self.assertEqual(result["commandProtocol"], "DB1")
+        self.assertEqual(writes[-1], b"<DB1:RIGHTLEG> health\n")
+        self.assertIn(
+            "db1-required",
+            manager.snapshot()["sides"]["right"]["firmware"]["capabilities"],
+        )
+
 
 class FrontendControlGateTests(unittest.TestCase):
     def setUp(self):
