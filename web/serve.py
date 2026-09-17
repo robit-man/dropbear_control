@@ -316,6 +316,7 @@ class Handler(SimpleHTTPRequestHandler):
                 "/api/hardware/control/advance",
                 "/api/hardware/control/revoke",
                 "/api/hardware/command",
+                "/api/hardware/observation/stream",
                 "/api/hardware/serial/query",
                 "/api/hardware/firmware/compile",
                 "/api/hardware/firmware/upload",
@@ -345,6 +346,12 @@ class Handler(SimpleHTTPRequestHandler):
                 self._send_json(200, HARDWARE_CONTROL_GATE.revoke())
             elif request_path == "/api/hardware/command":
                 self._send_json(423, HARDWARE_CONTROL_GATE.inspect_command(payload))
+            elif request_path == "/api/hardware/observation/stream":
+                if not isinstance(payload.get("enabled"), bool):
+                    raise ValueError("observation stream enabled must be boolean")
+                self._send_json(200, HARDWARE_OBSERVATION.request_observation_stream(
+                    payload["enabled"],
+                ))
             elif request_path == "/api/hardware/serial/query":
                 self._send_json(200, FIRMWARE_MANAGER.query(
                     str(payload.get("deviceId", "")),

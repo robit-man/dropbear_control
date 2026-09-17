@@ -1,10 +1,8 @@
-"""Passive ESP32 observation and fail-closed frontend control admission.
+"""ESP32 observation, bounded diagnostic queries, and control admission.
 
-The observation path opens each configured tty with ``O_RDONLY`` and never
-owns a write-capable file descriptor.  It consumes the five-value CSV stream
-already emitted by the deployed Dropbear firmware.  Opening a USB UART can
-still affect modem-control lines in a driver, so hardware observation remains
-explicitly opt-in through ``DROPBEAR_OBSERVATION_ENABLE=1``.
+The continuous observation path owns only ``O_RDONLY`` descriptors. Short-lived
+``O_WRONLY`` descriptors may send an audited allowlist of version, health, and
+stream-selection requests. No motion command is admitted through this class.
 
 The control gate only proves that the browser completed a short, expiring
 three-stage acknowledgement.  It does not provide a physical transport and
@@ -28,7 +26,7 @@ from dataclasses import dataclass, field
 from typing import Any, Callable, Mapping
 
 
-OBSERVATION_SCHEMA = "dropbear-passive-observation-v1"
+OBSERVATION_SCHEMA = "dropbear-hardware-observation-v2"
 CONTROL_GATE_SCHEMA = "dropbear-frontend-control-gate-v1"
 CONTROL_COMMAND_SCHEMA = "dropbear-hardware-command-v1"
 MAX_LINE_BYTES = 256
@@ -40,6 +38,10 @@ RAW_SERIAL_TAIL_LINES = 160
 # records/s preserves the controller's intended motion bandwidth while keeping
 # legacy serial floods off the render budget.
 MIN_ADMITTED_SAMPLE_INTERVAL_NS = 20_000_000
+DIAGNOSTIC_COMMANDS = frozenset({
+    "version", "/version", "capabilities", "health", "status", "chirality",
+    "mac", "saved", "help", "observe on", "observe off",
+})
 
 JOINT_BINDINGS = {
     "left": (
@@ -89,6 +91,11 @@ def unavailable_motor_observations(side: str) -> dict[str, dict[str, Any]]:
             "available": False,
             "source": "motor_native_unavailable",
             "status": "not_emitted_by_deployed_firmware",
+            "fresh": False,
+            "controlPositionDeg": None,
+            "controlAvailable": False,
+            "controlSource": "unavailable",
+            "alignmentFault": False,
         }
         for canonical_name, can_id in MOTOR_BINDINGS[side]
     }
@@ -97,21 +104,30 @@ def unavailable_motor_observations(side: str) -> dict[str, dict[str, Any]]:
 def _motor_observations(
     side: str,
     values: list[float | None] | None = None,
+    control_values: list[float | None] | None = None,
+    *,
+    fresh_mask: int = 0,
+    control_mask: int = 0,
+    alignment_fault_mask: int = 0,
 ) -> dict[str, dict[str, Any]]:
     """Build motor-native observations without filling gaps from AS5600 data."""
 
     if values is None:
         return unavailable_motor_observations(side)
     observations = unavailable_motor_observations(side)
-    for (canonical_name, _), value in zip(MOTOR_BINDINGS[side], values):
-        if value is None:
-            continue
+    for slot, ((canonical_name, _), value) in enumerate(zip(MOTOR_BINDINGS[side], values)):
+        control_value = control_values[slot] if control_values is not None else None
         observations[canonical_name] = {
             **observations[canonical_name],
             "positionDeg": value,
-            "available": True,
-            "source": "rmd_v44_multi_turn_angle",
-            "status": "measured",
+            "available": value is not None,
+            "source": "rmd_v44_multi_turn_angle" if value is not None else "motor_native_unavailable",
+            "status": "measured" if value is not None else "not_fresh",
+            "fresh": bool(fresh_mask & (1 << slot)) if control_values is not None else value is not None,
+            "controlPositionDeg": control_value,
+            "controlAvailable": bool(control_mask & (1 << slot)) and control_value is not None,
+            "controlSource": "rmd_v44_as5600_boot_aligned" if control_value is not None else "unavailable",
+            "alignmentFault": bool(alignment_fault_mask & (1 << slot)),
         }
     return observations
 
@@ -138,8 +154,24 @@ class ControlGateError(ValueError):
     """A frontend arming request failed closed."""
 
 
+def _parse_optional_motor_values(fields: list[str], schema: str) -> list[float | None]:
+    values: list[float | None] = []
+    for field in fields:
+        if field == "NA":
+            values.append(None)
+            continue
+        try:
+            value = float(field)
+        except ValueError as error:
+            raise ObservationParseError(f"{schema} motor values must be numeric or NA") from error
+        if not math.isfinite(value) or abs(value) > 1_000_000.0:
+            raise ObservationParseError(f"{schema} motor value exceeds the telemetry sanity bound")
+        values.append(value)
+    return values
+
+
 def parse_esp32_telemetry_line(side: str, line: str) -> dict[str, Any]:
-    """Decode legacy AS5600 CSV or one versioned dual-angle record.
+    """Decode legacy AS5600 CSV, DB2 raw CAN, or DB3 aligned CAN telemetry.
 
     Legacy firmware emits five external angles. ``DB2`` adds the controller
     millisecond counter and six motor-native multi-turn angles in the order
@@ -152,18 +184,34 @@ def parse_esp32_telemetry_line(side: str, line: str) -> dict[str, Any]:
     if not isinstance(line, str) or not line or len(line.encode("utf-8")) > MAX_LINE_BYTES:
         raise ObservationParseError("observation line is empty or too long")
     fields = [field.strip() for field in line.strip().split(",")]
-    extended = fields[0] == "DB2"
+    schema = fields[0]
+    extended = schema in {"DB2", "DB3"}
+    control_fields: list[str] | None = None
+    fresh_mask = control_mask = alignment_fault_mask = 0
     if extended:
-        if len(fields) != 13:
-            raise ObservationParseError("DB2 observation line must contain exactly thirteen fields")
+        expected_fields = 22 if schema == "DB3" else 13
+        if len(fields) != expected_fields:
+            raise ObservationParseError(
+                f"{schema} observation line must contain exactly {expected_fields} fields"
+            )
         try:
             controller_millis = int(fields[1])
         except ValueError as error:
-            raise ObservationParseError("DB2 controller time must be an unsigned integer") from error
+            raise ObservationParseError(f"{schema} controller time must be an unsigned integer") from error
         if not 0 <= controller_millis <= 0xFFFFFFFF:
-            raise ObservationParseError("DB2 controller time must fit uint32")
+            raise ObservationParseError(f"{schema} controller time must fit uint32")
         external_fields = fields[2:7]
         motor_fields = fields[7:13]
+        if schema == "DB3":
+            control_fields = fields[13:19]
+            try:
+                fresh_mask, control_mask, alignment_fault_mask = map(int, fields[19:22])
+            except ValueError as error:
+                raise ObservationParseError("DB3 masks must be unsigned integers") from error
+            if any(mask < 0 or mask > 0x3F for mask in (
+                fresh_mask, control_mask, alignment_fault_mask,
+            )):
+                raise ObservationParseError("DB3 masks must fit six motor bits")
     else:
         if len(fields) != 5:
             raise ObservationParseError("legacy observation line must contain exactly five values")
@@ -194,24 +242,86 @@ def parse_esp32_telemetry_line(side: str, line: str) -> dict[str, Any]:
         in zip(JOINT_BINDINGS[side], values)
     }
     motor_values: list[float | None] | None = None
+    control_values: list[float | None] | None = None
     if motor_fields is not None:
-        motor_values = []
-        for field in motor_fields:
-            if field == "NA":
-                motor_values.append(None)
-                continue
-            try:
-                value = float(field)
-            except ValueError as error:
-                raise ObservationParseError("DB2 motor values must be numeric or NA") from error
-            if not math.isfinite(value) or abs(value) > 1_000_000.0:
-                raise ObservationParseError("DB2 motor value exceeds the telemetry sanity bound")
-            motor_values.append(value)
+        motor_values = _parse_optional_motor_values(motor_fields, schema)
+    if control_fields is not None:
+        control_values = _parse_optional_motor_values(control_fields, schema)
     return {
-        "format": "DB2" if extended else "legacy5",
+        "format": schema if extended else "legacy5",
         "controllerMillis": controller_millis,
         "joints": joints,
-        "motorJoints": _motor_observations(side, motor_values),
+        "motorJoints": _motor_observations(
+            side,
+            motor_values,
+            control_values,
+            fresh_mask=fresh_mask,
+            control_mask=control_mask,
+            alignment_fault_mask=alignment_fault_mask,
+        ),
+        "masks": {
+            "motorFresh": fresh_mask,
+            "motorControl": control_mask,
+            "alignmentFault": alignment_fault_mask,
+        },
+    }
+
+
+def parse_firmware_version_line(side: str, line: str) -> dict[str, Any]:
+    fields = [field.strip() for field in line.strip().split(",", 5)]
+    if len(fields) != 6 or fields[0] != "DBV1":
+        raise ObservationParseError("firmware version line must use DBV1")
+    expected_role = f"{side.upper()}LEG"
+    if fields[1] != expected_role:
+        raise ObservationParseError(f"DBV1 role must be {expected_role}")
+    if fields[3] not in {"DB1", "LEGACY"}:
+        raise ObservationParseError("unsupported command protocol")
+    if fields[4] not in {"legacy5", "DB2", "DB3"}:
+        raise ObservationParseError("unsupported telemetry protocol")
+    capabilities = tuple(item for item in fields[5].split(";") if item)
+    if not fields[2] or not capabilities:
+        raise ObservationParseError("DBV1 firmware and capabilities are required")
+    return {
+        "schema": "DBV1",
+        "role": fields[1],
+        "firmware": fields[2],
+        "commandProtocol": fields[3],
+        "telemetryProtocol": fields[4],
+        "capabilities": capabilities,
+    }
+
+
+def parse_firmware_health_line(side: str, line: str) -> dict[str, Any]:
+    fields = [field.strip() for field in line.strip().split(",")]
+    if len(fields) != 15 or fields[0] != "DBH1":
+        raise ObservationParseError("firmware health line must contain fifteen DBH1 fields")
+    expected_role = f"{side.upper()}LEG"
+    if fields[1] != expected_role:
+        raise ObservationParseError(f"DBH1 role must be {expected_role}")
+    if fields[3] not in {"ok", "warn", "degraded", "fault"}:
+        raise ObservationParseError("DBH1 overall state is invalid")
+    try:
+        numeric = [int(value) for value in fields[2:3] + fields[4:]]
+    except ValueError as error:
+        raise ObservationParseError("DBH1 numeric fields must be integers") from error
+    if any(value < 0 for value in numeric):
+        raise ObservationParseError("DBH1 numeric fields must be unsigned")
+    return {
+        "schema": "DBH1",
+        "role": fields[1],
+        "controllerMillis": numeric[0],
+        "overall": fields[3],
+        "runtimeReady": bool(numeric[1]),
+        "canReady": bool(numeric[2]),
+        "sensorFreshMask": numeric[3],
+        "motorFreshMask": numeric[4],
+        "motorControlMask": numeric[5],
+        "alignmentFaultMask": numeric[6],
+        "motorQueries": numeric[7],
+        "motorResponses": numeric[8],
+        "motorQueryFailures": numeric[9],
+        "malformedMotorResponses": numeric[10],
+        "canConsecutiveFailures": numeric[11],
     }
 
 
@@ -244,6 +354,14 @@ class _SideState:
     )
     firmware_family: str = "unknown"
     firmware_version: str = ""
+    command_protocol: str = ""
+    advertised_telemetry_protocol: str = ""
+    capabilities: tuple[str, ...] = ()
+    health: dict[str, Any] = field(default_factory=dict)
+    observation_streaming: bool = False
+    diagnostic_tx_bytes: int = 0
+    last_diagnostic_command: str = ""
+    last_diagnostic_error: str = ""
 
 
 def _passive_firmware_identity(line: str, telemetry_format: str = "") -> tuple[str, str]:
@@ -251,8 +369,8 @@ def _passive_firmware_identity(line: str, telemetry_format: str = "") -> tuple[s
 
     if telemetry_format == "legacy5":
         return "legacy-five-angle", "exact-build-unknown"
-    if telemetry_format == "DB2":
-        return "dropbear-observation-db2", "protocol-db2"
+    if telemetry_format in {"DB2", "DB3"}:
+        return f"dropbear-observation-{telemetry_format.lower()}", f"protocol-{telemetry_format.lower()}"
     match = re.search(
         r"(?:firmware|fw|version)[|:= ]+([A-Za-z0-9._+-]{1,64})",
         line,
@@ -360,12 +478,26 @@ class _PassiveTTYReader:
                         records = buffer.split(b"\n")
                         buffer = bytearray(records[-1])
                         received_ns = time.monotonic_ns()
+                        complete_records = records[:-1]
+                        diagnostic_records = [
+                            raw for raw in complete_records
+                            if raw.rstrip(b"\r").startswith(
+                                (b"DBV1,", b"DBH1,", b"DBO1,", b"FIRMWARE:")
+                            )
+                        ]
+                        # Preserve identity/health acknowledgements even when a
+                        # fast DB3 stream shares the same kernel read.
+                        for raw in diagnostic_records[-8:]:
+                            line = raw.rstrip(b"\r").decode("ascii", errors="replace")
+                            self.on_line(self.side, line, received_ns)
                         if received_ns - last_dispatched_ns >= MIN_ADMITTED_SAMPLE_INTERVAL_NS:
                             # Only the newest complete record matters for live
                             # state; coalescing a USB read avoids parsing an
                             # obsolete burst from legacy high-rate firmware.
-                            line = records[-2].rstrip(b"\r").decode("ascii", errors="replace")
-                            self.on_line(self.side, line, received_ns)
+                            newest = complete_records[-1]
+                            if newest not in diagnostic_records:
+                                line = newest.rstrip(b"\r").decode("ascii", errors="replace")
+                                self.on_line(self.side, line, received_ns)
                             last_dispatched_ns = received_ns
                             # Let the kernel accumulate any legacy flood into
                             # the next read so obsolete lines can be coalesced
@@ -398,6 +530,7 @@ class HardwareObservationManager:
         enabled: bool = False,
         maximum_sample_age_ms: float = DEFAULT_MAX_SAMPLE_AGE_MS,
         reader_factory: Callable[..., _PassiveTTYReader] = _PassiveTTYReader,
+        diagnostic_writer: Callable[[str, bytes], int] | None = None,
     ) -> None:
         self.enabled = bool(enabled)
         self.maximum_sample_age_ms = float(maximum_sample_age_ms)
@@ -409,6 +542,8 @@ class HardwareObservationManager:
         }
         self._readers: dict[str, _PassiveTTYReader] = {}
         self._reader_factory = reader_factory
+        self._diagnostic_writer = diagnostic_writer or self._write_diagnostic_bytes
+        self._diagnostic_tx_bytes = 0
 
     @classmethod
     def from_environment(cls) -> "HardwareObservationManager":
@@ -490,6 +625,105 @@ class HardwareObservationManager:
             if resolved_path:
                 state.resolved_path = resolved_path
 
+    @staticmethod
+    def _write_diagnostic_bytes(path: str, encoded: bytes) -> int:
+        fd = os.open(
+            path,
+            os.O_WRONLY | os.O_NOCTTY | os.O_NONBLOCK | os.O_CLOEXEC,
+        )
+        try:
+            _PassiveTTYReader._configure_115200_8n1(fd)
+            written = os.write(fd, encoded)
+            termios.tcdrain(fd)
+            return written
+        finally:
+            os.close(fd)
+
+    @staticmethod
+    def _address_for_side(side: str) -> str:
+        return "LEFTLEG" if side == "left" else "RIGHTLEG"
+
+    @staticmethod
+    def _command_protocol_for_state(state: _SideState) -> str:
+        if state.command_protocol:
+            return state.command_protocol
+        if "db1-required" in state.capabilities:
+            return "DB1"
+        if "behemoth" in state.firmware_version.lower():
+            return "DB1"
+        return "LEGACY"
+
+    def send_diagnostic(self, side: str, command: str) -> dict[str, Any]:
+        """Send one allowlisted non-motion request through an ephemeral fd."""
+
+        if side not in self._states:
+            raise ValueError("diagnostic side must be left or right")
+        payload = str(command).strip().lower()
+        if payload not in DIAGNOSTIC_COMMANDS:
+            raise ValueError("serial diagnostics permit version/capabilities/health/observe and passive status queries only")
+        with self._lock:
+            state = self._states[side]
+            if not self.enabled or not state.configured_path:
+                raise ValueError(f"{side} observation serial path is not enabled")
+            protocol = self._command_protocol_for_state(state)
+            wire_command = (
+                f"<DB1:{self._address_for_side(side)}> {payload}"
+                if protocol == "DB1" else payload
+            )
+            path = state.configured_path
+        encoded = (wire_command + "\n").encode("ascii", errors="strict")
+        try:
+            written = self._diagnostic_writer(path, encoded)
+            if written != len(encoded):
+                raise OSError(f"short serial diagnostic write: {written}/{len(encoded)} bytes")
+        except (OSError, termios.error) as error:
+            with self._lock:
+                self._states[side].last_diagnostic_error = str(error)
+            raise ValueError(f"{side} diagnostic request failed: {error}") from error
+        now_ns = time.monotonic_ns()
+        with self._lock:
+            state = self._states[side]
+            state.diagnostic_tx_bytes += written
+            state.last_diagnostic_command = payload
+            state.last_diagnostic_error = ""
+            state.raw_lines.append({
+                "receivedMonotonicNs": now_ns,
+                "text": wire_command,
+                "direction": "tx-diagnostic",
+            })
+            self._diagnostic_tx_bytes += written
+        return {
+            "sent": True,
+            "side": side,
+            "bytes": written,
+            "command": payload,
+            "wireCommand": wire_command,
+            "commandProtocol": protocol,
+            "motionCapable": False,
+        }
+
+    def request_observation_stream(self, enabled: bool) -> dict[str, Any]:
+        """Request version, health, and passive telemetry from both leg ESPs."""
+
+        results: dict[str, Any] = {}
+        for side in self._states:
+            sent = []
+            errors = []
+            commands = ("version", "health", "observe on") if enabled else ("observe off",)
+            for command in commands:
+                try:
+                    sent.append(self.send_diagnostic(side, command))
+                except ValueError as error:
+                    errors.append(str(error))
+            results[side] = {"sent": sent, "errors": errors, "ok": not errors}
+        return {
+            "schema": OBSERVATION_SCHEMA,
+            "requested": "on" if enabled else "off",
+            "motionOutputEnabled": False,
+            "sides": results,
+            "ok": all(result["ok"] for result in results.values()),
+        }
+
     def ingest_line(
         self,
         side: str,
@@ -508,9 +742,35 @@ class HardwareObservationManager:
                 "direction": "rx",
             })
             family, version = _passive_firmware_identity(cleaned_line)
-            if family != "unknown":
+            if family != "unknown" and not state.command_protocol:
                 state.firmware_family = family
                 state.firmware_version = version
+            if cleaned_line.startswith("DBV1,"):
+                try:
+                    version_record = parse_firmware_version_line(side, cleaned_line)
+                except ObservationParseError:
+                    state.rejected_lines += 1
+                    return False
+                state.firmware_family = "dropbear-versioned"
+                state.firmware_version = version_record["firmware"]
+                state.command_protocol = version_record["commandProtocol"]
+                state.advertised_telemetry_protocol = version_record["telemetryProtocol"]
+                state.capabilities = version_record["capabilities"]
+                return True
+            if cleaned_line.startswith("DBH1,"):
+                try:
+                    state.health = parse_firmware_health_line(side, cleaned_line)
+                except ObservationParseError:
+                    state.rejected_lines += 1
+                    return False
+                return True
+            if cleaned_line.startswith("DBO1,"):
+                fields = [field.strip() for field in cleaned_line.split(",")]
+                if len(fields) not in {3, 4} or fields[1] != self._address_for_side(side):
+                    state.rejected_lines += 1
+                    return False
+                state.observation_streaming = fields[2] == "on"
+                return True
         try:
             record = parse_esp32_telemetry_line(side, line)
         except ObservationParseError:
@@ -527,8 +787,9 @@ class HardwareObservationManager:
             state.telemetry_format = record["format"]
             state.controller_millis = record["controllerMillis"]
             family, version = _passive_firmware_identity(line, record["format"])
-            state.firmware_family = family
-            state.firmware_version = version
+            if not state.command_protocol:
+                state.firmware_family = family
+                state.firmware_version = version
             state.decoded_lines += 1
             state.state = "observing"
             state.error = ""
@@ -539,6 +800,7 @@ class HardwareObservationManager:
         with self._lock:
             sides: dict[str, Any] = {}
             fresh_count = 0
+            unobserved_joints: list[str] = []
             for side, state in self._states.items():
                 age_ms = (
                     max(0.0, (current_ns - state.received_monotonic_ns) / 1_000_000.0)
@@ -552,6 +814,14 @@ class HardwareObservationManager:
                     and state.state == "observing"
                 )
                 fresh_count += int(fresh)
+                current_motor_joints = (
+                    dict(state.motor_joints)
+                    if fresh and state.motor_joints else unavailable_motor_observations(side)
+                )
+                unobserved_joints.extend(
+                    name for name, motor in current_motor_joints.items()
+                    if not motor.get("available")
+                )
                 sides[side] = {
                     "state": state.state,
                     "configuredPath": state.configured_path or "",
@@ -566,12 +836,19 @@ class HardwareObservationManager:
                     "firmware": {
                         "family": state.firmware_family,
                         "version": state.firmware_version,
-                        "detection": "passive-serial",
+                        "detection": "version-record" if state.command_protocol else "passive-serial",
+                        "commandProtocol": state.command_protocol,
+                        "telemetryProtocol": state.advertised_telemetry_protocol,
+                        "capabilities": list(state.capabilities),
                     },
+                    "health": dict(state.health),
+                    "observationStreaming": state.observation_streaming,
+                    "diagnosticTxBytes": state.diagnostic_tx_bytes,
+                    "lastDiagnosticCommand": state.last_diagnostic_command,
+                    "lastDiagnosticError": state.last_diagnostic_error,
                     "controllerMillis": state.controller_millis,
                     "joints": dict(state.joints) if fresh else {},
-                    "motorJoints": dict(state.motor_joints) if fresh and state.motor_joints
-                    else unavailable_motor_observations(side),
+                    "motorJoints": current_motor_joints,
                     "decodedLines": state.decoded_lines,
                     "rejectedLines": state.rejected_lines,
                     "overflowEvents": state.overflow_events,
@@ -592,15 +869,18 @@ class HardwareObservationManager:
                 overall = "waiting"
             return {
                 "schema": OBSERVATION_SCHEMA,
-                "mode": "read_only",
+                "mode": "read_only_with_diagnostic_queries",
                 "state": overall,
                 "enabled": self.enabled,
                 "writeCapable": False,
-                "txBytes": 0,
+                "motionWriteCapable": False,
+                "diagnosticWriteCapable": self.enabled,
+                "diagnosticCommands": sorted(DIAGNOSTIC_COMMANDS),
+                "txBytes": self._diagnostic_tx_bytes,
                 "baudrate": 115200,
                 "maximumSampleAgeMs": self.maximum_sample_age_ms,
                 "complete": fresh_count == 2,
-                "unobservedJoints": ["left_hip_yaw", "right_hip_yaw"],
+                "unobservedJoints": unobserved_joints,
                 "sides": sides,
             }
 
@@ -732,4 +1012,7 @@ __all__ = [
     "ObservationParseError",
     "SAFETY_ACKNOWLEDGEMENTS",
     "parse_esp32_csv_line",
+    "parse_esp32_telemetry_line",
+    "parse_firmware_health_line",
+    "parse_firmware_version_line",
 ]

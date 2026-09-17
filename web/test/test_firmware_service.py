@@ -86,7 +86,7 @@ class FirmwareServiceTests(unittest.TestCase):
         sketch.write_text("void setup() {}\nvoid loop() {}\n")
         snapshot = self.manager.snapshot()
         self.assertEqual(snapshot["sources"][0]["family"], "universal-behemoth")
-        self.assertEqual(snapshot["sources"][0]["interface"], "db2 + guarded captive portal")
+        self.assertEqual(snapshot["sources"][0]["interface"], "db3 + DB1 + guarded captive portal")
         self.assertEqual(snapshot["sources"][0]["filename"], sketch.name)
         self.assertTrue(snapshot["toolchain"]["available"])
         self.assertTrue(snapshot["toolchain"]["ready"])

@@ -258,8 +258,9 @@ class DashboardControlBoundaryTests(unittest.TestCase):
     def test_hardware_observation_endpoint_is_explicitly_receive_only(self):
         status, payload = self.request("GET", "/api/hardware/observation")
         self.assertEqual(status, 200)
-        self.assertEqual(payload["mode"], "read_only")
+        self.assertEqual(payload["mode"], "read_only_with_diagnostic_queries")
         self.assertFalse(payload["writeCapable"])
+        self.assertFalse(payload["motionWriteCapable"])
         self.assertEqual(payload["txBytes"], 0)
         self.assertFalse(payload["complete"])
 

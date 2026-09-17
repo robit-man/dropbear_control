@@ -18,6 +18,8 @@ from hardware_service import (  # noqa: E402
     SAFETY_ACKNOWLEDGEMENTS,
     parse_esp32_csv_line,
     parse_esp32_telemetry_line,
+    parse_firmware_health_line,
+    parse_firmware_version_line,
 )
 
 
@@ -77,6 +79,45 @@ class PassiveObservationTests(unittest.TestCase):
             with self.subTest(line=line), self.assertRaises(ObservationParseError):
                 parse_esp32_telemetry_line("left", line)
 
+    def test_db3_exposes_aligned_can_angles_and_fault_masks(self):
+        record = parse_esp32_telemetry_line(
+            "right",
+            "DB3,123456,194,72,10,213,146,10,20,30,40,50,60,"
+            "1,2,3,4,5,6,63,47,16",
+        )
+        self.assertEqual(record["format"], "DB3")
+        yaw = record["motorJoints"]["right_hip_yaw"]
+        self.assertEqual(yaw["positionDeg"], 50)
+        self.assertEqual(yaw["controlPositionDeg"], 5)
+        self.assertFalse(yaw["controlAvailable"])
+        self.assertTrue(yaw["alignmentFault"])
+        self.assertEqual(record["masks"]["motorFresh"], 63)
+
+        with self.assertRaises(ObservationParseError):
+            parse_esp32_telemetry_line(
+                "right",
+                "DB3,1,1,2,3,4,5,1,2,3,4,5,6,1,2,3,4,5,6,64,63,0",
+            )
+
+    def test_version_and_health_records_are_role_bound(self):
+        version = parse_firmware_version_line(
+            "left",
+            "DBV1,LEFTLEG,behemoth-observation-protocol-2026.09.17,DB1,DB3,"
+            "version-v1;health-v1;observe-stream-v1;db1-required",
+        )
+        self.assertEqual(version["commandProtocol"], "DB1")
+        self.assertIn("observe-stream-v1", version["capabilities"])
+        health = parse_firmware_health_line(
+            "left", "DBH1,LEFTLEG,100,warn,1,1,31,63,47,16,100,99,1,0,0",
+        )
+        self.assertEqual(health["sensorFreshMask"], 31)
+        self.assertEqual(health["alignmentFaultMask"], 16)
+        self.assertEqual(health["motorResponses"], 99)
+        with self.assertRaises(ObservationParseError):
+            parse_firmware_version_line(
+                "left", "DBV1,RIGHTLEG,version,DB1,DB3,version-v1",
+            )
+
     def test_manager_exposes_db2_motor_values_only_when_emitted(self):
         manager = HardwareObservationManager(enabled=False, maximum_sample_age_ms=250)
         manager.ingest_line(
@@ -107,7 +148,8 @@ class PassiveObservationTests(unittest.TestCase):
         self.assertFalse(partial["complete"])
         self.assertEqual(partial["txBytes"], 0)
         self.assertFalse(partial["writeCapable"])
-        self.assertEqual(partial["unobservedJoints"], ["left_hip_yaw", "right_hip_yaw"])
+        self.assertIn("left_hip_yaw", partial["unobservedJoints"])
+        self.assertIn("left_knee", partial["unobservedJoints"])
         self.assertFalse(partial["sides"]["left"]["motorJoints"]["left_knee"]["available"])
         self.assertIsNone(partial["sides"]["left"]["motorJoints"]["left_knee"]["positionDeg"])
         self.assertEqual(
@@ -124,6 +166,49 @@ class PassiveObservationTests(unittest.TestCase):
         stale = manager.snapshot(1_400_000_001)
         self.assertFalse(stale["complete"])
         self.assertEqual(stale["sides"]["left"]["joints"], {})
+
+    def test_diagnostic_queries_auto_address_behemoth_and_cannot_send_motion(self):
+        writes = []
+
+        def writer(path, encoded):
+            writes.append((path, encoded))
+            return len(encoded)
+
+        manager = HardwareObservationManager(
+            "/dev/fake-left", "/dev/fake-right", enabled=True,
+            diagnostic_writer=writer,
+        )
+        manager.ingest_line(
+            "left", "FIRMWARE:behemoth-portal-safe-motor-feedback-2026.09.16",
+        )
+        result = manager.send_diagnostic("left", "health")
+        self.assertEqual(result["commandProtocol"], "DB1")
+        self.assertEqual(writes[-1][1], b"<DB1:LEFTLEG> health\n")
+        with self.assertRaises(ValueError):
+            manager.send_diagnostic("left", "play")
+
+    def test_stream_request_sends_version_health_and_observe_without_motion(self):
+        writes = []
+
+        def writer(path, encoded):
+            writes.append(encoded)
+            return len(encoded)
+
+        manager = HardwareObservationManager(
+            "/dev/fake-left", "/dev/fake-right", enabled=True,
+            diagnostic_writer=writer,
+        )
+        manager.ingest_line(
+            "left", "DBV1,LEFTLEG,v1,DB1,DB3,version-v1;health-v1;observe-stream-v1",
+        )
+        manager.ingest_line(
+            "right", "DBV1,RIGHTLEG,v1,DB1,DB3,version-v1;health-v1;observe-stream-v1",
+        )
+        result = manager.request_observation_stream(True)
+        self.assertTrue(result["ok"])
+        self.assertEqual(len(writes), 6)
+        self.assertTrue(all(b"play" not in wire for wire in writes))
+        self.assertIn(b"<DB1:RIGHTLEG> observe on\n", writes)
 
 
 class FrontendControlGateTests(unittest.TestCase):

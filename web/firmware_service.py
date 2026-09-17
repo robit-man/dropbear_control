@@ -20,12 +20,15 @@ from pathlib import Path
 from typing import Any
 
 
-FIRMWARE_SCHEMA = "dropbear-esp32-devices-v2"
+FIRMWARE_SCHEMA = "dropbear-esp32-devices-v3"
 BOARD_FQBN = "esp32:esp32:esp32:PartitionScheme=huge_app,EraseFlash=none"
 REQUIRED_ESP32_CORE_VERSION = "2.0.13"
 REQUIRED_ESP32_CORE_PATCH = "uartSetPins-invalid-index-return-false-v1"
 RAW_TAIL_LINES = 160
-READ_ONLY_SERIAL_COMMANDS = frozenset({"status", "chirality", "mac", "saved", "help"})
+READ_ONLY_SERIAL_COMMANDS = frozenset({
+    "version", "/version", "capabilities", "health", "status", "chirality",
+    "mac", "saved", "help", "observe on", "observe off",
+})
 REQUIRED_LIBRARY_VERSIONS = {
     "FastAccelStepper": "0.30.15",
     "MCP_CAN_lib": "1.5.1",
@@ -229,11 +232,11 @@ class DeviceFirmwareManager:
                 else "legacy-or-development"
             )
             interface = (
-                "db2 + guarded captive portal"
+                "db3 + DB1 + guarded captive portal"
                 if name == "firmware_full_libs_neck.ino"
                 else "db2 observation only"
                 if name == "esp32_devkit_v1_observation_safe.ino"
-                else "db2 + legacy captive portal"
+                else "db3 + legacy captive portal"
             )
             sources.append({
                 "id": hashlib.sha256(data).hexdigest()[:16],
@@ -405,6 +408,8 @@ class DeviceFirmwareManager:
                     "serialState": side.get("state", "unknown"),
                     "rawTail": side.get("rawTail", []),
                     "firmware": side.get("firmware", {}),
+                    "health": side.get("health", {}),
+                    "observationStreaming": side.get("observationStreaming", False),
                     "telemetryFormat": side.get("telemetryFormat", ""),
                     "decodedLines": side.get("decodedLines", 0),
                     "rejectedLines": side.get("rejectedLines", 0),
@@ -552,9 +557,26 @@ class DeviceFirmwareManager:
         cleaned = str(command).strip()
         payload = cleaned
         if cleaned.startswith("<DB1:") and ">" in cleaned:
+            target = cleaned[5:cleaned.index(">")].strip().upper()
+            expected = {
+                "left": "LEFTLEG",
+                "right": "RIGHTLEG",
+            }.get(device["role"])
+            if expected and target != expected:
+                raise FirmwareToolError(
+                    f"diagnostic target {target} does not match device role {expected}"
+                )
             payload = cleaned.split(">", 1)[1].strip()
         if payload.lower() not in READ_ONLY_SERIAL_COMMANDS:
-            raise FirmwareToolError("serial diagnostics permit status/chirality/mac/saved/help only")
+            raise FirmwareToolError(
+                "serial diagnostics permit version/capabilities/health/observe and passive status queries only"
+            )
+        if device["role"] in {"left", "right"}:
+            result = self.observation_manager.send_diagnostic(
+                device["role"], payload.lower()
+            )
+            self.tx_bytes += result["bytes"]
+            return {**result, "device": device}
         fd = os.open(
             device["stablePath"],
             os.O_WRONLY | os.O_NOCTTY | os.O_NONBLOCK | os.O_CLOEXEC,
