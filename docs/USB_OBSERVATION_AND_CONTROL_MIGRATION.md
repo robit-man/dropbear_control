@@ -107,6 +107,12 @@ control-ready, and alignment-fault masks. Five aligned fields use AS5600 at
 restart and then run continuously from CAN. Hip yaw has no AS5600 and uses the
 first verified RMD response as its boot-relative zero.
 
+The installed calf drives use the older V1.7 `0x92` response: a signed 56-bit
+little-endian angle occupies bytes 1–7. The X10 drives use the newer signed
+32-bit response in bytes 4–7. Treating every response as the newer layout made
+valid X8 replies increment the malformed-response counter. Firmware version
+`2026.09.18` decodes the layout by the known actuator ID.
+
 The API publishes `mode: read_only_with_diagnostic_queries`,
 `writeCapable: false`, and `motionWriteCapable: false`.
 The reader opens each character device with `O_RDONLY | O_NOCTTY | O_NONBLOCK`,
@@ -130,17 +136,19 @@ hashes were verified afterward.
 
 | Link | Result |
 |---|---|
-| Left leg, USB path `1.2` | DB3 fresh; only CAN `0x14A` replies to RMD `0x92`; DBH1 AS5600 mask `10010` |
-| Right leg, USB path `1.1` | DB3 fresh; all CAN requests fail before a reply; DBH1 AS5600 mask `00010` |
+| Left leg, USB path `1.2` | DB3 fresh; CAN `0x146` and `0x14A` reply to RMD `0x92`; DBH1 AS5600 mask `10010` |
+| Right leg, USB path `1.1` | DB3 fresh; CAN `0x147`, `0x148`, `0x14B`, and `0x14C` reply; DBH1 AS5600 mask `00010` |
 | Neck candidate, USB path `1.4` | Silent during passive observation, consistent with the neck's request/response `HEALTH` protocol; left unopened by the corrected leg service |
 
-The left result proves that its MCP2515 transmit/receive path and one actuator
-peer are alive. IDs `0x141`, `0x142`, `0x145`, `0x146`, and `0x149` remain
-unreachable or use unexpected IDs/power/wiring. The right controller reports
-zero accepted motor queries and consecutive transmit failures, which points to
-actuator-bus power, transceiver wiring, termination, or a disconnected CAN
-segment. Both RMD V2 and V3 protocol references define `0x92`; the installed
-motor-firmware mix does not explain the missing replies.
+A 200-frame sample after the operator repaired the broken right-foot CAN line
+found left reply masks
+`0b100100` and right reply masks covering `0b111100`. Both ESP32/MCP2515 paths
+are therefore alive. All four legacy RMD-X8 Pro calf IDs (`0x141`–`0x144`)
+were rejected by the then-installed newer-format-only decoder. Left `0x145`
+and `0x149` were also absent, so the left leg still has an additional per-motor
+or partial-chain fault independent of the X8 decode issue.
+The right DBH1 counters retain the earlier transmit failures, but its current
+consecutive-failure counter returned to zero after replies resumed.
 
 The dashboard admits both leg streams. Physical default-stance captures map
 their measured degrees into the corrected USD coordinates. Joint signs remain
@@ -166,15 +174,21 @@ positions; legacy five-field records remain supported.
 
 ## Browser software zero and angle recording
 
-**ZERO MODEL FROM CURRENT POSE** accepts one fresh snapshot from both leg
-controllers only when each DBH1 sensor mask is `11111` and both hip-yaw CAN
-angles are available. The entered torso-forward angle defaults to `7°`. This action
+**ZERO MODEL FROM CURRENT POSE** accepts one fresh, motion-locked snapshot from
+both leg controllers. Degraded individual channels no longer block the entire
+capture: available CAN and AS5600 datums are recorded independently, while
+unavailable joints remain visibly held. The entered torso-forward angle
+defaults to `7°`. This action
 writes no serial or CAN bytes and does not invoke the ESP32 calibration
 command. The browser stores the external readings as local datums and renders
 subsequent motion from the shortest wrapped degree delta. The captured pose
 continues to use the corrected USD default-stance joint coordinates, while the
 displayed sensor delta is `0°` at capture. The datum and torso angle persist in
 browser local storage.
+
+**LIVE ANGLE SOURCE** selects `Auto · CAN then AS5600`, `Motor CAN only`, or
+`AS5600 only`. This affects only browser projection. It does not change ESP32
+calibration or actuator commands, and a missing/stale channel remains held.
 
 The angle recorder exports one CSV row per side and joint for each admitted
 sample. It keeps external raw angle, external zeroed delta, upstream model
@@ -199,6 +213,12 @@ legacy framing from `DBV1` and supplies exact limb headers. Compile and upload
 are separate stages. Upload requires the exact build and source checksum from
 the current server session, a selected stable device, three physical-safety
 acknowledgements, and the typed phrase `FLASH <ROLE>`.
+
+Upload does not run a second Arduino compile. After the target partition table
+proves the expected SPIFFS location, the service hashes the session's compiled
+binary again and writes only the factory application region at `0x10000`.
+This shortens the interval between releasing the serial reader and opening the
+bootloader while leaving the SPIFFS settings bytes untouched.
 
 The local Arduino 1.8.19 toolchain targets the generic 4 MB ESP32 with the
 `huge_app` partition (`esp32:esp32:esp32:PartitionScheme=huge_app`). Behemoth

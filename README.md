@@ -271,9 +271,10 @@ uses its reduced 64,216-triangle cache at full viewport resolution.
 The **Connected ESP32 devices** view compiles the trusted `.ino` files from
 `Hyperspawn/Dropbear`. Every build includes the repository's custom
 `partitions.csv`: a 2.5 MiB application partition with the existing Arduino
-default SPIFFS settings region retained at `0x290000` + `0x160000`. Uploads
-force `EraseFlash=none` and perform a read-only partition-table preflight on
-the selected ESP32. A missing or mismatched SPIFFS layout blocks the upload.
+default SPIFFS settings region retained at `0x290000` + `0x160000`. Builds use
+`EraseFlash=none`; upload performs a read-only partition-table preflight and
+then writes only the already-verified application at `0x10000`. A missing or
+mismatched SPIFFS layout blocks the upload.
 
 The pinned ESP32 Arduino 2.0.13 core contains a known `uartSetPins` branch that
 returns no value from a Boolean function. Apply the reviewed one-line fix once
@@ -292,8 +293,10 @@ read-only. The Live State button sends only audited `version`, `health`, and
 `observe on|off` diagnostics through ephemeral writers; it automatically adds
 Behemoth's required `<DB1:LEFTLEG>` or `<DB1:RIGHTLEG>` header. Motion output
 remains unavailable. DB3 uses AS5600-aligned RMD `0x92` CAN angles for all six
-motors per leg, including boot-relative hip yaw, while retaining external
-angles as independent restart references and cross-checks. See
+motors per leg, including the legacy V1.7 X8 reply layout and boot-relative hip
+yaw, while retaining external angles as independent restart references and
+cross-checks. The live viewer can explicitly select Auto, Motor CAN only, or
+AS5600 only for visual alignment. See
 [`docs/USB_OBSERVATION_AND_CONTROL_MIGRATION.md`](docs/USB_OBSERVATION_AND_CONTROL_MIGRATION.md)
 for the current AGX command, measured result, actuator map, and staged control
 plan.
