@@ -2783,7 +2783,7 @@ function frame(now) {
     while (ui.scopeHistory.length > 260) ui.scopeHistory.shift();
     ui.scopeSampleAt = now;
   }
-  if (now - ui.lastRender > (softwareRenderer ? softwareFrameIntervalMs : 65)) {
+  if (softwareRenderer || now - ui.lastRender > 65) {
     renderLive();
     ui.lastRender = now;
   }

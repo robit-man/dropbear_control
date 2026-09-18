@@ -1167,7 +1167,7 @@ export class Robot3D {
     }
     if (!this.active) return;
     const now = performance.now();
-    if (now - this.lastDrawAt < this.frameIntervalMs) return;
+    if (!this.softwareRendering && now - this.lastDrawAt < this.frameIntervalMs) return;
     this.lastDrawAt = now;
     this.controls.update();
     const renderStartedAt = performance.now();
