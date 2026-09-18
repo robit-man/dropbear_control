@@ -1,11 +1,12 @@
 import { HARDWARE_DEFAULT_STANCE_CALIBRATION } from "./hardware_calibration.js";
+import { DROPBEAR_USD_BINDINGS } from "./dropbear_usd.js";
 
 const SENSOR_KEYS = Object.freeze([
-  ["outer_calf", "GPIO14", "OUTER CALF"],
-  ["inner_calf", "GPIO27", "INNER CALF"],
-  ["hip_pitch", "GPIO26", "HIP PITCH"],
-  ["knee", "GPIO25", "KNEE"],
-  ["hip_roll", "GPIO33", "HIP ROLL"],
+  ["outer_calf", "GPIO14", "OUTER CALF", 0],
+  ["inner_calf", "GPIO27", "INNER CALF", 1],
+  ["hip_pitch", "GPIO26", "HIP PITCH", 2],
+  ["knee", "GPIO25", "KNEE", 3],
+  ["hip_roll", "GPIO33", "HIP ROLL", 4],
 ]);
 
 function finite(value) {
@@ -85,6 +86,28 @@ function arrow(label = "") {
   return element;
 }
 
+function motorFeedbackDiagnosis(status, nativeCount) {
+  const health = status.health;
+  if (health.schema !== "DBH1") {
+    return "No current DBH1 counters are available; request health from the ESP32.";
+  }
+  const queries = Number(health.motorQueries) || 0;
+  const responses = Number(health.motorResponses) || 0;
+  const failures = Number(health.motorQueryFailures) || 0;
+  const consecutive = Number(health.canConsecutiveFailures) || 0;
+  if (queries === 0 && failures > 0) {
+    return `0 successful angle requests · ${failures.toLocaleString()} TX failures · ${consecutive.toLocaleString()} consecutive. MCP2515 initialized, but no powered CAN peer is acknowledging frames; check actuator-bus power, transceiver wiring, and termination.`;
+  }
+  if (nativeCount < 6) {
+    const responding = Object.values(status.motorJoints)
+      .filter((motor) => motor?.available === true)
+      .map((motor) => motor.canId)
+      .join(", ") || "none in the current 500 ms window";
+    return `${queries.toLocaleString()} requests accepted by MCP2515 · ${responses.toLocaleString()} verified replies · responding IDs ${responding}. Missing IDs are held out of the USD motor-native path.`;
+  }
+  return `${queries.toLocaleString()} requests · ${responses.toLocaleString()} replies · all six motor IDs fresh.`;
+}
+
 function renderSide(side, sample) {
   const status = classifyControllerSide(side, sample);
   const column = document.createElement("section");
@@ -150,17 +173,19 @@ function renderSide(side, sample) {
 
   const sensors = document.createElement("div");
   sensors.className = "controller-sensor-grid";
-  for (const [key, gpio, label] of SENSOR_KEYS) {
+  const sensorMask = Number(health.sensorFreshMask) || 0;
+  for (const [key, gpio, label, bit] of SENSOR_KEYS) {
     const observation = status.joints?.[`${side}_${key}`];
     const calibration = HARDWARE_DEFAULT_STANCE_CALIBRATION.sides[side]?.[key];
     const unstable = String(calibration?.captureQuality || "").startsWith("unstable");
+    const sensorFresh = !healthKnown || (sensorMask & (1 << bit)) !== 0;
     const value = finite(observation?.positionDeg)
-      ? `${observation.positionDeg.toFixed(1)}° raw${unstable ? " · known bimodal channel; model held" : ""}`
+      ? `${observation.positionDeg.toFixed(1)}° ${healthKnown ? sensorFresh ? "live" : "cached; firmware marks PWM stale" : "health unverified"}${unstable ? " · known bimodal channel; model held" : ""}`
       : "no fresh value";
     sensors.append(node(
       `${gpio} · ${label}`,
       value,
-      unstable && observation && status.fresh ? "degraded" : observation && status.fresh ? "success" : "unknown",
+      !sensorFresh ? "fail" : !healthKnown || unstable ? "degraded" : "success",
       "sensor",
     ));
   }
@@ -184,12 +209,37 @@ function renderSide(side, sample) {
       && motor?.alignmentFault !== true
       && finite(motor.controlPositionDeg),
   ).length;
+  const freshSensorCount = healthKnown
+    ? SENSOR_KEYS.filter(([, , , bit]) => (sensorMask & (1 << bit)) !== 0).length
+    : null;
+  column.append(arrow("read-only RMD 0x92"));
+  const motors = document.createElement("div");
+  motors.className = "controller-sensor-grid";
+  for (const binding of DROPBEAR_USD_BINDINGS.filter((entry) => entry.side === side)) {
+    const motor = status.motorJoints?.[`${side}_${binding.firmwareJoint}`];
+    const raw = motor?.available === true && finite(motor.positionDeg);
+    const aligned = motor?.controlAvailable === true
+      && motor?.alignmentFault !== true
+      && finite(motor.controlPositionDeg);
+    motors.append(node(
+      `${binding.canLabel} · ${binding.firmwareJoint.replaceAll("_", " ").toUpperCase()}`,
+      `${binding.variant} · ${binding.motorFirmware} · ${raw ? `${motor.positionDeg.toFixed(2)}° raw` : "no verified reply"}${aligned ? ` · ${motor.controlPositionDeg.toFixed(2)}° aligned` : " · alignment held"}`,
+      aligned ? "success" : raw ? "degraded" : "fail",
+      "sensor",
+    ));
+  }
+  column.append(motors);
+  column.append(node(
+    "CAN FEEDBACK DIAGNOSIS",
+    motorFeedbackDiagnosis(status, nativeCount),
+    nativeCount === 6 ? "success" : nativeCount ? "degraded" : "fail",
+  ));
   column.append(node(
     "CORRECTED USD TWIN",
     status.fresh
       ? nativeCount
-        ? `All five AS5600 fields, ${nativeCount}/6 raw CAN angles, and ${alignedCount}/6 aligned CAN angles are observed. Aligned CAN drives the model; AS5600 remains the restart reference and cross-check.`
-        : "All five AS5600 fields are observed. Admitted calibrated fields drive browser kinematics; hip yaw alone is absent from the legacy packet."
+        ? `${freshSensorCount ?? "?"}/5 AS5600 PWM channels, ${nativeCount}/6 raw CAN angles, and ${alignedCount}/6 aligned CAN angles are fresh. Aligned CAN drives the model; AS5600 remains the restart reference and cross-check.`
+        : `${freshSensorCount ?? "?"}/5 AS5600 PWM channels are marked fresh by firmware. Only fresh, calibrated channels drive the model while motor-native feedback is absent; hip yaw requires CAN.`
       : "Rendered state is held until a fresh five-field packet is available.",
     status.fresh ? status.calibration : "degraded",
   ));

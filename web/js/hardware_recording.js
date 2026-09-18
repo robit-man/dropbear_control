@@ -1,13 +1,17 @@
 import { projectHardwareDegrees } from "./hardware_calibration.js";
 
-export const ANGLE_RECORDING_SCHEMA = "dropbear-browser-angle-recording-v2";
+export const ANGLE_RECORDING_SCHEMA = "dropbear-browser-angle-recording-v3";
 
-const JOINTS = Object.freeze([
+const SENSOR_JOINTS = Object.freeze([
   "outer_calf",
   "inner_calf",
   "hip_pitch",
   "knee",
   "hip_roll",
+]);
+
+const JOINTS = Object.freeze([
+  ...SENSOR_JOINTS,
   "hip_yaw",
 ]);
 
@@ -23,6 +27,8 @@ export const ANGLE_RECORDING_COLUMNS = Object.freeze([
   "joint",
   "can_id",
   "external_raw_deg",
+  "external_available",
+  "external_status",
   "external_zeroed_deg",
   "model_joint_deg",
   "motor_native_deg",
@@ -50,12 +56,18 @@ export function observationRecordingRows(
   for (const side of ["left", "right"]) {
     const sample = payload.sides?.[side];
     if (!sample?.fresh) continue;
+    const healthKnown = sample.health?.schema === "DBH1";
+    const sensorMask = Number(sample.health?.sensorFreshMask) || 0;
     for (const joint of JOINTS) {
       const name = `${side}_${joint}`;
       const external = sample.joints?.[name];
       const motor = sample.motorJoints?.[name];
       const raw = Number(external?.positionDeg);
-      const projection = Number.isFinite(raw)
+      const sensorIndex = SENSOR_JOINTS.indexOf(joint);
+      const externalAvailable = sensorIndex >= 0
+        && Number.isFinite(raw)
+        && (!healthKnown || (sensorMask & (1 << sensorIndex)) !== 0);
+      const projection = externalAvailable
         ? projectHardwareDegrees(side, joint, raw, softwareZero)
         : null;
       const motorPosition = typeof motor?.positionDeg === "number" && Number.isFinite(motor.positionDeg)
@@ -85,6 +97,10 @@ export function observationRecordingRows(
         joint,
         can_id: String(external?.canId || motor?.canId || ""),
         external_raw_deg: Number.isFinite(raw) ? raw : null,
+        external_available: externalAvailable,
+        external_status: sensorIndex < 0
+          ? "no_dedicated_as5600"
+          : externalAvailable ? "fresh" : healthKnown ? "firmware_marked_stale" : "missing",
         external_zeroed_deg: projection?.calibrated ? projection.zeroedDegrees : null,
         model_joint_deg: projection?.calibrated ? projection.mechanismDegrees : null,
         motor_native_deg: motorPosition,

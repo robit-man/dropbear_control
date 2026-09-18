@@ -19,7 +19,7 @@ import {
 
 const expectedIds = Array.from({ length: 12 }, (_, index) => 0x141 + index);
 
-assert.equal(DROPBEAR_SOURCE.commit, "13cf5ecaa39b8b89c794fe905dcea0490cfa7726");
+assert.equal(DROPBEAR_SOURCE.commit, "91ad7a1b86b581c4fcfe692336993cf4fe203268");
 assert.equal(JOINT_DEFINITIONS.length, 12);
 assert.deepEqual(JOINT_DEFINITIONS.map((joint) => joint.id), expectedIds);
 assert.deepEqual(
@@ -101,6 +101,14 @@ assert.deepEqual(
 assert.deepEqual(
   DROPBEAR_USD_BINDINGS.filter((binding) => binding.motor === "RMD-X8").map((binding) => binding.canLabel),
   ["0x141", "0x142", "0x143", "0x144"],
+);
+assert.deepEqual(
+  DROPBEAR_USD_BINDINGS.filter((binding) => binding.variant === "RMD-X10 base").map((binding) => binding.canLabel),
+  ["0x149", "0x14C"],
+);
+assert.equal(
+  DROPBEAR_USD_BINDINGS.filter((binding) => binding.variant === "RMD-X10 Pro").length,
+  6,
 );
 assert.equal(DROPBEAR_USD_BINDINGS.some((binding) => binding.closure), false);
 assert.equal(dropbearUsdBinding(0x14A)?.firmwareJoint, "hip_roll");

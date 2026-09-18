@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 
 import { DropbearSim } from "../js/dropbear.js";
-import { captureSoftwareZero } from "../js/hardware_calibration.js";
+import { captureSoftwareZero, softwareZeroReadiness } from "../js/hardware_calibration.js";
 import {
   applyHardwareObservation,
   validateHardwareObservation,
@@ -155,6 +155,40 @@ assert.equal(alignedResult.observedJoints, 12);
 assert.equal(alignedSim.getJoint("outer_calf", "left").observationPositionSource, "motor_control_aligned");
 assert.equal(alignedSim.getJoint("hip_yaw", "right").observationPositionSource, "motor_control_aligned");
 assert.equal(alignedSim.getJoint("hip_yaw", "right").observationMechanismDeg, 0);
+
+const maskedPayload = attachMotorTelemetry(
+  snapshot(6, 6),
+  [null, null, null, null, null, 146],
+  [null, null, null, null, null, null],
+);
+maskedPayload.sides.left.health = { schema: "DBH1", sensorFreshMask: 18 };
+maskedPayload.sides.right.health = { schema: "DBH1", sensorFreshMask: 2 };
+maskedPayload.sides.left.motorJoints.left_hip_roll.controlPositionDeg = 146;
+maskedPayload.sides.left.motorJoints.left_hip_roll.controlAvailable = true;
+maskedPayload.sides.left.motorJoints.left_hip_roll.alignmentFault = false;
+const maskedSim = new DropbearSim();
+const maskedResult = applyHardwareObservation(maskedSim, maskedPayload, 1_070, null);
+assert.equal(maskedResult.observedJoints, 3);
+assert.equal(maskedResult.appliedJoints, 2);
+assert.equal(maskedSim.getJoint("hip_roll", "left").observationPositionSource, "motor_control_aligned");
+assert.equal(maskedSim.getJoint("outer_calf", "left").observationValid, false);
+assert.equal(maskedSim.getJoint("outer_calf", "left").observationExternalDeg, 125);
+assert.equal(maskedSim.getJoint("outer_calf", "left").observationExternalFresh, false);
+assert.equal(softwareZeroReadiness(maskedPayload).ready, false);
+assert.throws(
+  () => captureSoftwareZero(maskedPayload, 7),
+  /AS5600 stale.*hip yaw CAN angle unavailable/,
+);
+
+const versionedZeroPayload = attachMotorTelemetry(
+  snapshot(7, 7),
+  [100, 110, 120, 130, 140, 150],
+  [200, 210, 220, 230, 240, 250],
+);
+versionedZeroPayload.sides.left.health = { schema: "DBH1", sensorFreshMask: 31 };
+versionedZeroPayload.sides.right.health = { schema: "DBH1", sensorFreshMask: 31 };
+assert.equal(softwareZeroReadiness(versionedZeroPayload).ready, true);
+assert.equal(captureSoftwareZero(versionedZeroPayload, 7).torsoForwardDeg, 7);
 
 const missingSide = snapshot();
 missingSide.sides.right.fresh = false;

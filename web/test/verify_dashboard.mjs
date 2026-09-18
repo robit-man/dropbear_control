@@ -55,7 +55,7 @@ check("USD robot viewport replaces schematic", index.body.includes('id="robot-ca
 check("STEP-derived CAD viewport present", index.body.includes('id="cad-canvas"'));
 check("live controller functional schematic present", index.body.includes('id="controller-diagnostics"'));
 check("firmware terminal present", index.body.includes('id="terminal-form"'));
-check("current Dropbear source revision shown", index.body.includes("13cf5ec"));
+check("current Dropbear source revision shown", index.body.includes("91ad7a1"));
 check("separate dropbear_firmware repository is absent", !index.body.includes("dropbear_firmware"));
 check("deprecated decorative brand mark removed", !index.body.includes('class="brand-mark"'));
 check("Hyperspawn identity applied", index.body.includes("HYPERSPAWN<em>_</em>"));

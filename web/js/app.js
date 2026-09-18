@@ -27,6 +27,7 @@ import {
 } from "./hardware_observation.js";
 import {
   captureSoftwareZero,
+  softwareZeroReadiness,
   validateSoftwareZero,
 } from "./hardware_calibration.js";
 import {
@@ -240,6 +241,8 @@ const ui = {
     autoActivate: new URLSearchParams(window.location.search).get("live") === "1",
     pending: false,
     requesting: false,
+    healthPending: false,
+    lastHealthRequestAt: 0,
     streamRequested: false,
     latest: null,
     lastAppliedSignature: "",
@@ -296,10 +299,16 @@ function renderHardwareObservationState() {
   const output = $("hardware-observation-state");
   const button = $("hardware-observation-toggle");
   const freshSides = ["left", "right"].filter((side) => status?.sides?.[side]?.fresh === true).length;
+  const canAngles = ["left", "right"].reduce((count, side) => (
+    count + Object.values(status?.sides?.[side]?.motorJoints || {})
+      .filter((motor) => motor?.available === true && Number.isFinite(motor?.positionDeg)).length
+  ), 0);
   let label = status?.enabled ? String(status.state || "waiting").toUpperCase() : "DISABLED";
   if (ui.hardwareObservation.requesting) label = "REQUESTING FROM ESP32S";
   if (ui.hardwareObservation.active) {
-    label = freshSides === 2 ? "LIVE · 2/2" : freshSides === 1 ? "DEGRADED · 1/2" : "STALE · 0/2";
+    label = freshSides === 2
+      ? `LIVE · 2/2 · CAN ${canAngles}/12`
+      : freshSides === 1 ? `DEGRADED · 1/2 · CAN ${canAngles}/12` : "STALE · 0/2";
   }
   output.textContent = `READ ONLY · ${label}`;
   output.classList.toggle("warn", ui.hardwareObservation.active && freshSides < 2);
@@ -310,11 +319,17 @@ function renderHardwareObservationState() {
     ? "REQUESTING LIVE STATE…"
     : ui.hardwareObservation.active ? "LEAVE LIVE STATE" : "USE LIVE STATE";
   const zero = ui.hardwareObservation.softwareZero;
+  const zeroReadiness = softwareZeroReadiness(status);
   const zeroButton = $("hardware-zero-current");
-  zeroButton.disabled = !ui.hardwareObservation.active || freshSides !== 2;
+  zeroButton.disabled = !ui.hardwareObservation.active || !zeroReadiness.ready;
+  zeroButton.title = zeroReadiness.ready
+    ? "Capture a browser-only zero without changing ESP32 calibration"
+    : zeroReadiness.reasons.join("; ");
   $("hardware-zero-state").textContent = zero
     ? `ZERO · ${new Date(zero.capturedAt).toLocaleTimeString()} · TORSO ${zero.torsoForwardDeg.toFixed(1)}° FORWARD`
-    : "ZERO · NOT CAPTURED";
+    : zeroReadiness.ready
+      ? "ZERO · READY TO CAPTURE"
+      : `ZERO BLOCKED · ${zeroReadiness.reasons[0] || "LIVE FEEDBACK INCOMPLETE"}`;
   const recording = ui.hardwareObservation.recording;
   const recordButton = $("hardware-record-toggle");
   recordButton.disabled = !ui.hardwareObservation.active || freshSides === 0;
@@ -324,6 +339,20 @@ function renderHardwareObservationState() {
   const motorRows = rows.filter((row) => row.motor_native_available).length;
   $("hardware-record-download").disabled = rows.length === 0;
   $("hardware-record-state").textContent = `REC · ${rows.length.toLocaleString()} ROWS · MOTOR NATIVE ${motorRows ? `${motorRows.toLocaleString()} MEASURED` : "UNAVAILABLE"}`;
+}
+
+async function refreshHardwareHealth() {
+  if (ui.hardwareObservation.healthPending) return;
+  ui.hardwareObservation.healthPending = true;
+  ui.hardwareObservation.lastHealthRequestAt = performance.now();
+  try {
+    await requestJson("/api/hardware/observation/health", {
+      method: "POST",
+      body: JSON.stringify({}),
+    });
+  } finally {
+    ui.hardwareObservation.healthPending = false;
+  }
 }
 
 function captureCurrentSoftwareZero() {
@@ -381,6 +410,12 @@ async function pollHardwareObservation() {
     renderControllerDiagnostics($("controller-diagnostics"), payload);
     ui.hardwareObservation.error = "";
     recordCurrentHardwareObservation(payload);
+    if ((ui.hardwareObservation.active || ui.hardwareObservation.autoActivate)
+        && performance.now() - ui.hardwareObservation.lastHealthRequestAt >= 2_000) {
+      refreshHardwareHealth().catch((error) => {
+        ui.hardwareObservation.error = `health refresh: ${error.message}`;
+      });
+    }
     if (ui.hardwareObservation.active && validated.availableSides.length > 0) {
       const result = applyHardwareObservation(
         sim,
@@ -795,6 +830,7 @@ function makeJointCards() {
     return;
   }
   for (const definition of JOINT_DEFINITIONS) {
+    const binding = dropbearUsdBinding(definition.id);
     const button = document.createElement("button");
     button.type = "button";
     button.className = "joint-card";
@@ -803,7 +839,7 @@ function makeJointCards() {
     button.innerHTML = `
       <div class="joint-card-top">
         <b>${definition.label}</b>
-        <code>${definition.canId}</code>
+        <code title="${binding?.variant || "RMD"} · ${binding?.motorFirmware || "firmware unknown"} · ${binding?.encoderProfile || "feedback unknown"}">${definition.canId} · ${binding?.variant || "RMD"}</code>
       </div>
       <div class="joint-card-state">
         <span>POSITION<em data-field="angle">180.0°</em></span>
@@ -824,8 +860,10 @@ function selectJoint(id) {
   ui.cadManual = false;
   const target = selectedJoint();
   $("selected-name").textContent = target.label;
-  $("selected-can").textContent = target.canId;
   const usdBinding = dropbearUsdBinding(target.id);
+  $("selected-can").textContent = usdBinding
+    ? `${target.canId} · ${usdBinding.variant} · ${usdBinding.motorFirmware}`
+    : target.canId;
   const cadModelKey = usdBinding?.motor === "RMD-X8" ? "x8-pro" : "x10-s2";
   cad.setModel(cadModelKey);
   $("cad-model").value = cadModelKey;
@@ -1072,9 +1110,9 @@ async function configurePlaybackSource(
 }
 
 function setupSimControls() {
-  const resolutionStorageKey = "dropbear-usd-resolution-v3";
-  const savedResolution = Number(localStorage.getItem(resolutionStorageKey) || (softwareRenderer ? 50 : 100));
-  const resolutionPercent = Math.max(50, Math.min(200, savedResolution));
+  const resolutionStorageKey = "dropbear-usd-resolution-v4";
+  const savedResolution = Number(localStorage.getItem(resolutionStorageKey) || (softwareRenderer ? 25 : 100));
+  const resolutionPercent = Math.max(25, Math.min(200, savedResolution));
   $("usd-resolution").value = String(resolutionPercent);
   $("usd-resolution-output").textContent = `${resolutionPercent}%`;
   robot.setResolutionScale(resolutionPercent / 100);

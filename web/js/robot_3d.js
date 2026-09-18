@@ -148,6 +148,8 @@ export class Robot3D {
     this.selectedCanId = 0x141;
     this.selectedArmMotorId = null;
     this.poseVersion = 0;
+    this.lastHardwarePoseSignature = "";
+    this.lastArmPoseSignature = "";
     this.lastDrawAt = 0;
     this.pendingJoints = [];
     this.passiveAngles = new Map();
@@ -222,7 +224,7 @@ export class Robot3D {
     const floor = new THREE.Mesh(
       new THREE.CircleGeometry(3.4, 96),
       this.softwareRendering
-        ? new THREE.MeshLambertMaterial({ color: "#0a0a0b" })
+        ? new THREE.MeshBasicMaterial({ color: "#0a0a0b" })
         : new THREE.MeshStandardMaterial({ color: "#0a0a0b", roughness: 0.96, metalness: 0.04 }),
     );
     floor.position.z = -0.012;
@@ -360,7 +362,7 @@ export class Robot3D {
             const color = Array.isArray(mesh.material)
               ? mesh.material[0]?.color
               : mesh.material?.color;
-            mesh.material = new THREE.MeshLambertMaterial({
+            mesh.material = new THREE.MeshBasicMaterial({
               color: color?.clone?.() || new THREE.Color("#89949b"),
             });
             normalizeMaterials(mesh);
@@ -379,7 +381,7 @@ export class Robot3D {
           continue;
         }
         const group = this.bodyGroups.get(bodyPath);
-        const material = new THREE.MeshLambertMaterial({ color: "#89949b" });
+        const material = new THREE.MeshBasicMaterial({ color: "#89949b" });
         const merged = new THREE.Mesh(combined, material);
         merged.name = `LITE:${bodyPath}`;
         merged.matrixAutoUpdate = false;
@@ -580,6 +582,15 @@ export class Robot3D {
     this.armMotorStates = armMotorStates || this.armMotorStates;
     this.selectedCanId = Number(selectedCanId);
     if (!this.manifest || !this.bodyGroups.size) return;
+    const observingHardware = this.pendingJoints.some((joint) => joint.observationValid === true);
+    const poseSignature = observingHardware ? [
+      this.selectedCanId,
+      this.selectedArmMotorId || "",
+      this.observationRootPitchRadians.toFixed(5),
+      ...this.pendingJoints.map((joint) => `${joint.id}:${(Math.round(joint.angle * 50) / 50).toFixed(2)}`),
+    ].join("|") : "";
+    if (observingHardware && poseSignature === this.lastHardwarePoseSignature) return;
+    this.lastHardwarePoseSignature = poseSignature;
     const radiansByUsdJoint = new Map();
     for (const state of this.pendingJoints) {
       const binding = this.bindingByCan.get(state.id);
@@ -590,7 +601,13 @@ export class Robot3D {
       if (binding) radiansByUsdJoint.set(binding.usdJoint, THREE.MathUtils.degToRad(state.angleDeg || 0));
     }
     this._solveLegClosures(radiansByUsdJoint);
-    this._solveArmClosures(radiansByUsdJoint);
+    const armPoseSignature = this.armMotorStates
+      .map((state) => `${state.id}:${(Math.round((Number(state.angleDeg) || 0) * 50) / 50).toFixed(2)}`)
+      .join("|");
+    if (this.poseVersion === 0 || armPoseSignature !== this.lastArmPoseSignature) {
+      this._solveArmClosures(radiansByUsdJoint);
+      this.lastArmPoseSignature = armPoseSignature;
+    }
     const rawMatrices = this._calculateMatrices(radiansByUsdJoint);
     this.currentMatrices = this._applyVerticalGroundConstraint(rawMatrices, poseDt);
     for (const [path, group] of this.bodyGroups) group.matrix.copy(this.currentMatrices.get(path));
@@ -1133,7 +1150,7 @@ export class Robot3D {
   }
 
   setResolutionScale(scale) {
-    this.resolutionScale = Math.max(0.5, Math.min(2, Number(scale) || 1));
+    this.resolutionScale = Math.max(0.25, Math.min(2, Number(scale) || 1));
     this.resize();
     this.renderer.render(this.scene, this.camera);
   }

@@ -210,6 +210,26 @@ class PassiveObservationTests(unittest.TestCase):
         self.assertTrue(all(b"play" not in wire for wire in writes))
         self.assertIn(b"<DB1:RIGHTLEG> observe on\n", writes)
 
+    def test_health_refresh_queries_both_addressed_legs_without_motion(self):
+        writes = []
+
+        def writer(path, encoded):
+            writes.append(encoded)
+            return len(encoded)
+
+        manager = HardwareObservationManager(
+            "/dev/fake-left", "/dev/fake-right", enabled=True,
+            diagnostic_writer=writer,
+        )
+        result = manager.request_health()
+        self.assertTrue(result["ok"])
+        self.assertEqual(result["requested"], "health")
+        self.assertEqual(writes, [
+            b"<DB1:LEFTLEG> health\n",
+            b"<DB1:RIGHTLEG> health\n",
+        ])
+        self.assertTrue(all(b"play" not in wire for wire in writes))
+
     def test_missing_header_reply_identifies_db1_for_retry(self):
         writes = []
 

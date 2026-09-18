@@ -10,6 +10,7 @@ const SAMPLE_ORDER = Object.freeze([
   "hip_roll",
 ]);
 const MOTOR_ORDER = Object.freeze([...SAMPLE_ORDER, "hip_yaw"]);
+const SENSOR_BITS = Object.freeze(Object.fromEntries(SAMPLE_ORDER.map((joint, index) => [joint, index])));
 
 const previousBySim = new WeakMap();
 
@@ -48,7 +49,13 @@ export function validateHardwareObservation(payload) {
       if (!observation || !finite(observation.positionDeg) || observation.positionDeg < 0 || observation.positionDeg > 360) {
         throw new Error(`${name} observation is invalid`);
       }
-      joints[name] = observation;
+      const firmwareJoint = name.slice(side.length + 1);
+      const healthKnown = sample.health?.schema === "DBH1";
+      const sensorMask = Number(sample.health?.sensorFreshMask) || 0;
+      joints[name] = {
+        ...observation,
+        sensorFresh: !healthKnown || (sensorMask & (1 << SENSOR_BITS[firmwareJoint])) !== 0,
+      };
     }
     const motorJoints = {};
     for (const joint of MOTOR_ORDER) {
@@ -67,6 +74,7 @@ export function validateHardwareObservation(payload) {
       sequence: sample.sequence,
       ageMs: finite(sample.ageMs) ? sample.ageMs : null,
       rawLine: String(sample.rawLine || ""),
+      health: sample.health?.schema === "DBH1" ? { ...sample.health } : null,
       joints,
       motorJoints,
     };
@@ -93,6 +101,7 @@ export function applyHardwareObservation(sim, payload, nowMs = performance.now()
     joint.observationSource = "unavailable";
     joint.observationRawDeg = null;
     joint.observationExternalDeg = null;
+    joint.observationExternalFresh = false;
     joint.observationMotorDeg = null;
     joint.observationMotorControlDeg = null;
     joint.observationPositionSource = "unavailable";
@@ -123,6 +132,7 @@ export function applyHardwareObservation(sim, payload, nowMs = performance.now()
       const target = sim.getJoint(firmwareJoint, side);
       if (!target) continue;
       const externalPosition = observation.positionDeg;
+      const externalFresh = observation.sensorFresh === true;
       const motorObservation = sample.motorJoints?.[canonicalName];
       const motorPosition = motorObservation?.available === true && finite(motorObservation.positionDeg)
         ? motorObservation.positionDeg
@@ -135,7 +145,15 @@ export function applyHardwareObservation(sim, payload, nowMs = performance.now()
       const motorDatum = Number(softwareZero?.sides?.[side]?.motorJoints?.[firmwareJoint]?.motorPositionDeg);
       const useMotorControl = motorControlPosition !== null;
       const useMotorNative = !useMotorControl && motorPosition !== null && Number.isFinite(motorDatum);
-      const position = useMotorControl ? motorControlPosition : useMotorNative ? motorPosition : externalPosition;
+      const position = useMotorControl
+        ? motorControlPosition
+        : useMotorNative ? motorPosition : externalFresh ? externalPosition : null;
+      target.observationExternalDeg = externalPosition;
+      target.observationExternalFresh = externalFresh;
+      if (position === null) {
+        unavailableJoints.push(canonicalName);
+        continue;
+      }
       const positionSource = useMotorControl
         ? "motor_control_aligned"
         : useMotorNative ? "motor_native" : "external_absolute";
@@ -155,6 +173,7 @@ export function applyHardwareObservation(sim, payload, nowMs = performance.now()
       target.observationAgeMs = sample.ageMs;
       target.observationRawDeg = position;
       target.observationExternalDeg = externalPosition;
+      target.observationExternalFresh = externalFresh;
       target.observationMotorDeg = motorPosition;
       target.observationMotorControlDeg = motorControlPosition;
       target.observationPositionSource = positionSource;
@@ -274,6 +293,7 @@ export function clearHardwareObservationHistory(sim) {
     joint.observationOutOfEnvelope = false;
     joint.observationRawDeg = null;
     joint.observationExternalDeg = null;
+    joint.observationExternalFresh = false;
     joint.observationMotorDeg = null;
     joint.observationMotorControlDeg = null;
     joint.observationPositionSource = "unavailable";

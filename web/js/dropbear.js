@@ -2,7 +2,7 @@
 //
 // This module is a clean-room browser model grounded in the firmware at:
 // https://github.com/Hyperspawn/Dropbear/tree/main/Control%20System/Low%20Level%20Control
-// Observed revision: 13cf5ecaa39b8b89c794fe905dcea0490cfa7726
+// Observed revision: 91ad7a1b86b581c4fcfe692336993cf4fe203268
 //
 // It reproduces task cadence, command semantics, pin use, CAN traffic, sensor
 // normalization, joint routing, and simplified actuator dynamics. It does not
@@ -11,8 +11,8 @@
 export const DROPBEAR_SOURCE = Object.freeze({
   repository: "https://github.com/Hyperspawn/Dropbear",
   path: "Control System/Low Level Control",
-  commit: "13cf5ecaa39b8b89c794fe905dcea0490cfa7726",
-  firmware: "esp32_devkit_v1.ino",
+  commit: "91ad7a1b86b581c4fcfe692336993cf4fe203268",
+  firmware: "firmware_full_libs_neck.ino",
   evidenceClass: "source-grounded synthetic digital twin",
 });
 
@@ -49,7 +49,8 @@ const joint = (id, side, key, label, sensorPin, torqueIndex) => Object.freeze({
   impedanceCapable: key !== "hip_yaw",
 });
 
-// CAN IDs and torque-array indices exactly follow esp32_devkit_v1.ino.
+// CAN IDs and torque-array indices exactly follow the deployed Behemoth
+// firmware_full_libs_neck.ino profile.
 export const JOINT_DEFINITIONS = Object.freeze([
   joint(0x141, "left", "outer_calf", "Left outer calf", 14, 1),
   joint(0x142, "left", "inner_calf", "Left inner calf", 27, 3),

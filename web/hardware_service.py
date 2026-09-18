@@ -769,6 +769,24 @@ class HardwareObservationManager:
             "ok": all(result["ok"] for result in results.values()),
         }
 
+    def request_health(self) -> dict[str, Any]:
+        """Refresh non-motion DBH1 diagnostics on both leg controllers."""
+
+        results: dict[str, Any] = {}
+        for side in self._states:
+            try:
+                sent = self.send_diagnostic(side, "health")
+                results[side] = {"sent": sent, "errors": [], "ok": True}
+            except ValueError as error:
+                results[side] = {"sent": None, "errors": [str(error)], "ok": False}
+        return {
+            "schema": OBSERVATION_SCHEMA,
+            "requested": "health",
+            "motionOutputEnabled": False,
+            "sides": results,
+            "ok": all(result["ok"] for result in results.values()),
+        }
+
     def ingest_line(
         self,
         side: str,

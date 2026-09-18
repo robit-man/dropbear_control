@@ -57,7 +57,7 @@ progress.
 | ROS 2 WBC guard | Exact 22-axis JSON contracts, 50 Hz watchdog, guarded activation, stand blending, knee envelope, hard/slew limits, and latched E-stop, always labelled `sil_only` | Separate from the existing 12-leg-axis JTC; no decoder→JTC or hardware transport is claimed |
 | Prompt planner | Inspectable bounded language router and browser preset preview with a 64-D development token | Keyword planning only; its token schema is deliberately not admitted to the state-token-trained CUDA checkpoint |
 | Walking RL | Local 22-action/90-observation PPO experiments launched from Robot Sim or RL Lab; source-derived MuJoCo or teaching-plant backend; 15 adjustable reward terms; tuned gentle-forward and circle-walk profiles; persistent sessions; checkpoint warm-start; update-by-update USD replay; free-root gravity/contact; 27 retained loop constraints; and a tracked 1,000-epoch reference policy | MuJoCo uses exact authored mass/inertia/joint data with inertia-derived collision proxies because the source USD collision groups do not expose finite external envelopes; Isaac/PhysX and hardware validation remain required |
-| Physical hardware path | Existing host, firmware, evidence, and fail-closed admission scaffolding | Deliberately disabled pending reviewed hardware evidence and HIL gates |
+| Physical hardware path | Live read-only USB state from both addressed Behemoth leg controllers, DBH1 health, DB3 external/raw/aligned angles, and a fail-closed three-stage frontend gate | Physical command transport remains uninstalled and locked pending reviewed HIL evidence |
 
 ## Ground-truth revisions
 
@@ -65,7 +65,7 @@ The browser control twin is pinned to:
 
 | Source | Revision | Use |
 |---|---|---|
-| [`Hyperspawn/Dropbear`](https://github.com/Hyperspawn/Dropbear/tree/main/Control%20System/Low%20Level%20Control) | `13cf5ecaa39b8b89c794fe905dcea0490cfa7726` | ESP32 task, pin, serial, sensor, and CAN behavior |
+| [`Hyperspawn/Dropbear`](https://github.com/Hyperspawn/Dropbear/tree/main/Control%20System/Low%20Level%20Control) | `91ad7a1b86b581c4fcfe692336993cf4fe203268` | Versioned Behemoth DB1/DB3 observation, ESP32 tasks, pins, sensors, and CAN behavior |
 | [`robit-man/dropbear-locomotion`](https://github.com/robit-man/dropbear-locomotion) | `a397be863fed2d328c2e8f62c3db2f1e23575eb1` | Corrected `dropbear.usd`, articulation topology, visual meshes, closed-loop leg geometry, and locomotion policy source |
 
 The 421,240,046-byte source USD is locally cached at
@@ -125,20 +125,20 @@ equivalent physics engine.
 
 ## CAN-to-USD map
 
-| CAN | Low-level axis | USD joint | Motor/path role |
+| CAN | Low-level axis | USD joint | Installed motor profile |
 |---|---|---|---|
-| `0x141` | Left outer calf | `LL_Revolute81` | RMD-X8 outer crank |
-| `0x142` | Left inner calf | `LL_Revolute67` | RMD-X8 inner crank |
-| `0x143` | Right inner calf | `RL_Revolute67` | RMD-X8 inner crank |
-| `0x144` | Right outer calf | `RL_Revolute81` | RMD-X8 outer crank |
-| `0x145` | Left knee | `LL_knee_actuator_joint` | Knee actuator |
-| `0x146` | Left hip pitch | `LL_hip_joint` | Hip pitch actuator |
-| `0x147` | Right hip pitch | `RL_hip_joint` | Hip pitch actuator |
-| `0x148` | Right knee | `RL_knee_actuator_joint` | Knee actuator |
-| `0x149` | Left hip yaw | `PG_left_leg_roll` | Physical hip yaw |
-| `0x14A` | Left hip roll | `PG_left_leg_pitch` | Physical hip roll |
-| `0x14B` | Right hip roll | `PG_right_leg_pitch` | Physical hip roll |
-| `0x14C` | Right hip yaw | `PG_right_leg_roll` | Physical hip yaw |
+| `0x141` | Left outer calf | `LL_Revolute81` | RMD-X8 Pro, legacy/V2 motor firmware |
+| `0x142` | Left inner calf | `LL_Revolute67` | RMD-X8 Pro, legacy/V2 motor firmware |
+| `0x143` | Right inner calf | `RL_Revolute67` | RMD-X8 Pro, legacy/V2 motor firmware |
+| `0x144` | Right outer calf | `RL_Revolute81` | RMD-X8 Pro, legacy/V2 motor firmware |
+| `0x145` | Left knee | `LL_knee_actuator_joint` | RMD-X10 Pro, V3 motor firmware |
+| `0x146` | Left hip pitch | `LL_hip_joint` | RMD-X10 Pro, V3 motor firmware |
+| `0x147` | Right hip pitch | `RL_hip_joint` | RMD-X10 Pro, V3 motor firmware |
+| `0x148` | Right knee | `RL_knee_actuator_joint` | RMD-X10 Pro, V3 motor firmware |
+| `0x149` | Left hip yaw | `PG_left_leg_roll` | Absolute-encoder RMD-X10 base; no AS5600 |
+| `0x14A` | Left hip roll | `PG_left_leg_pitch` | RMD-X10 Pro, V3 motor firmware |
+| `0x14B` | Right hip roll | `PG_right_leg_pitch` | RMD-X10 Pro, V3 motor firmware |
+| `0x14C` | Right hip yaw | `PG_right_leg_roll` | Absolute-encoder RMD-X10 base; no AS5600 |
 
 The final four USD names are retained from the source asset. Their semantic
 mapping is based on the authored world-space axes and body placement.
@@ -264,7 +264,10 @@ tools/setup_gr00t_runtime.sh
 .gr00t-venv/bin/python web/serve.py 8000
 ```
 
-Open <http://localhost:8000>.
+Open <http://localhost:8000/?live=1&renderer=swiftshader&asset=lite> on the
+current AGX remote desktop. This keeps the full articulated 3D USD viewer and
+uses its reduced 64,216-triangle cache at a software-renderer-friendly default
+resolution.
 
 The **Connected ESP32 devices** view compiles the trusted `.ino` files from
 `Hyperspawn/Dropbear`. Every build includes the repository's custom
@@ -316,22 +319,22 @@ Select any run to copy its exact optimizer, curriculum, guide, arm, and reward
 parameters; optionally warm-start from its checkpoint; or replay its policy.
 **New run** clears only the selection—stored history is never deleted.
 
-The seven engineering views are:
+The five exposed engineering views are:
 
-- **Robot Sim** — complete USD visualization, motor selection, live gait and
+- **Live Robot** — complete USD visualization, motor selection, live gait and
   linkage/contact telemetry, separate leg and arm motor categories, faults,
-  and configurable 50–200% render resolution;
+  and configurable 25–200% render resolution;
 - **Actuator CAD** — Dropbear-bound RMD-X8-25 Pro V2 and RMD-X10-100 S2 V3
   source STEP solids, correct source shaft axes, automatic selected-motor
   switching, technical lines, and articulation controls;
 - **Controller Lab** — ESP32 board and pin/signal inspection;
-- **Firmware** — two-controller serial/CAN behavioral console;
-- **RL Lab** — advanced local PPO configuration and experiment diagnostics;
-  source selection and playback remain unified on Robot Sim;
-- **GR00T WBC** — pinned upstream ABI status, deterministic prompt planning,
-  CUDA compatibility training/deployment checks, G1-to-USD retarget previews,
-  and retained sessions; and
-- **Evidence** — source revisions, provenance, adaptations, and limitations.
+- **ESP32 Devices** — live raw serial, addressed health/version queries, and
+  guarded compile/upload against the trusted firmware sources; and
+- **Firmware** — two-controller serial/CAN behavioral console.
+
+RL and GR00T development code remains in the repository for offline work, but
+those labs are not navigation tabs in the connected-robot dashboard. Policy
+playback belongs in Live Robot after export from `dropbear-locomotion`.
 
 Robot Sim uses one Play control and two adjacent yellow text-only selectors.
 `PRESET + CLASSIC` exposes the authored motion presets, `TRAINED + CLASSIC`

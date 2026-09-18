@@ -317,6 +317,7 @@ class Handler(SimpleHTTPRequestHandler):
                 "/api/hardware/control/revoke",
                 "/api/hardware/command",
                 "/api/hardware/observation/stream",
+                "/api/hardware/observation/health",
                 "/api/hardware/serial/query",
                 "/api/hardware/firmware/compile",
                 "/api/hardware/firmware/upload",
@@ -352,6 +353,8 @@ class Handler(SimpleHTTPRequestHandler):
                 self._send_json(200, HARDWARE_OBSERVATION.request_observation_stream(
                     payload["enabled"],
                 ))
+            elif request_path == "/api/hardware/observation/health":
+                self._send_json(200, HARDWARE_OBSERVATION.request_health())
             elif request_path == "/api/hardware/serial/query":
                 self._send_json(200, FIRMWARE_MANAGER.query(
                     str(payload.get("deviceId", "")),

@@ -55,24 +55,24 @@ DROPBEAR_OBSERVATION_MAX_AGE_MS=500 \
 python3 web/serve.py 8000
 ```
 
-Open <http://localhost:8000/?live=1>. The query parameter requests observation
+Open <http://localhost:8000/?live=1&renderer=swiftshader&asset=lite>. The live
+query requests observation
 from both controllers, waits for fresh telemetry, and selects the measured
 hardware state. Without it, click **USE LIVE STATE**. A missing or stale side stays
 visibly unobserved; it is never filled with simulated data while live state is
 selected.
 
-On remote AGX desktop sessions where Chrome cannot create a WebGL2 context,
-the same URL automatically uses the Canvas 2D measured-state viewer. This
-keeps telemetry, per-joint availability, and control-lock state visible without
-claiming that the simplified stick view is the USD renderer.
+The explicit SwiftShader renderer keeps the articulated 3D USD visible on the
+current remote AGX desktop, where the sandboxed browser cannot bind the Xavier
+GPU context. The light cache retains the 93-body kinematic graph and 27 loop
+closures while reducing the rendered mesh to 64,216 triangles. Start at 25%
+viewport resolution and raise it only when frame time permits.
 
 The paths are USB-topology identities. All three installed CP2102 bridges
 currently report the same serial number, `0001`, so `/dev/serial/by-id` cannot
-distinguish them. Passive payload classification identifies `/dev/ttyUSB0`
-(path `1.1`) and `/dev/ttyUSB1` (path `1.2`) as the left and right leg streams,
-respectively. `/dev/ttyUSB2` (path `1.4`) is reserved for the neck controller.
-The leg classification is based on the unsolicited five-angle CSV contract;
-no command was sent to any controller.
+distinguish them. The flashed DBV1 role records identify USB path `1.2` as
+`LEFTLEG` and path `1.1` as `RIGHTLEG`. USB path `1.4` is reserved for the neck
+controller and is not admitted as a leg.
 
 ## Observation contract
 
@@ -118,15 +118,28 @@ reset some ESP32 boards. The opt-in environment flag exists for that reason.
 The deployed source also enables its actuator loop on boot, so a passive host
 reader alone cannot prove that the controller or powered robot is inert.
 
-## First attached-hardware observation
+## Attached-hardware observations
 
-Observed on the AGX Xavier on 2026-09-15, without sending serial bytes:
+The first passive capture on 2026-09-15 established the five-field stream. On
+2026-09-17, Behemoth
+`behemoth-observation-protocol-2026.09.17` was compiled once and uploaded to
+both leg ESP32s with `EraseFlash=none`; the installed SPIFFS region was checked
+at `0x290000 + 0x160000` before each upload and both on-device application
+hashes were verified afterward.
 
 | Link | Result |
 |---|---|
-| Right leg, USB path `1.2` | Fresh five-field degree records; no decoder/read errors after admission |
-| Left leg, USB path `1.1` | Fresh five-field degree records; example `166,92,20,193,147`; no decoder/read errors after admission |
+| Left leg, USB path `1.2` | DB3 fresh; only CAN `0x14A` replies to RMD `0x92`; DBH1 AS5600 mask `10010` |
+| Right leg, USB path `1.1` | DB3 fresh; all CAN requests fail before a reply; DBH1 AS5600 mask `00010` |
 | Neck candidate, USB path `1.4` | Silent during passive observation, consistent with the neck's request/response `HEALTH` protocol; left unopened by the corrected leg service |
+
+The left result proves that its MCP2515 transmit/receive path and one actuator
+peer are alive. IDs `0x141`, `0x142`, `0x145`, `0x146`, and `0x149` remain
+unreachable or use unexpected IDs/power/wiring. The right controller reports
+zero accepted motor queries and consecutive transmit failures, which points to
+actuator-bus power, transceiver wiring, termination, or a disconnected CAN
+segment. Both RMD V2 and V3 protocol references define `0x92`; the installed
+motor-firmware mix does not explain the missing replies.
 
 The dashboard admits both leg streams. Physical default-stance captures map
 their measured degrees into the corrected USD coordinates. Joint signs remain
@@ -153,7 +166,8 @@ positions; legacy five-field records remain supported.
 ## Browser software zero and angle recording
 
 **ZERO MODEL FROM CURRENT POSE** accepts one fresh snapshot from both leg
-controllers and the entered torso-forward angle, currently `7°`. This action
+controllers only when each DBH1 sensor mask is `11111` and both hip-yaw CAN
+angles are available. The entered torso-forward angle defaults to `7°`. This action
 writes no serial or CAN bytes and does not invoke the ESP32 calibration
 command. The browser stores the external readings as local datums and renders
 subsequent motion from the shortest wrapped degree delta. The captured pose
@@ -165,9 +179,10 @@ The angle recorder exports one CSV row per side and joint for each admitted
 sample. It keeps external raw angle, external zeroed delta, upstream model
 joint angle, raw motor angle, raw motor zeroed delta, aligned motor angle,
 aligned model angle, and alignment fault in separate
-columns with CAN ID and availability. Hip yaw therefore has an empty external
-column, and all motor columns remain empty with an explicit status on today's
-deployed firmware. Recording stops at 120,000 rows to bound browser memory.
+columns with CAN ID and availability. Cached AS5600 numbers are recorded as
+`firmware_marked_stale` but are excluded from zeroed/model columns. Hip yaw has
+an empty external column. Recording stops at 120,000 rows to bound browser
+memory.
 
 ## ESP32 console and firmware toolchain
 

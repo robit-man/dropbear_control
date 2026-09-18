@@ -44,6 +44,8 @@ assert.equal(rows.find((row) => row.side === "left" && row.joint === "knee").ext
 assert.equal(rows.find((row) => row.joint === "hip_yaw").external_raw_deg, null);
 assert.equal(rows.every((row) => row.motor_native_available === false), true);
 assert.equal(rows.every((row) => row.motor_native_deg === null), true);
+assert.equal(rows.every((row) => row.joint === "hip_yaw" || row.external_available === true), true);
+assert.equal(rows.find((row) => row.joint === "hip_yaw").external_status, "no_dedicated_as5600");
 assert.match(rows[0].motor_native_status, /not_emitted/);
 
 payload.sides.left.motorJoints.left_knee.positionDeg = 100;
@@ -65,6 +67,7 @@ assert.equal(alignedKnee.motor_control_available, true);
 const csv = angleRecordingCsv(rows);
 assert.equal(csv.split("\n")[0], ANGLE_RECORDING_COLUMNS.join(","));
 assert.match(csv, /motor_native_deg,motor_native_zeroed_deg,motor_native_available,motor_native_status/);
+assert.match(csv, /external_raw_deg,external_available,external_status,external_zeroed_deg/);
 assert.equal(csv.trim().split("\n").length, 13);
 
 console.log("HARDWARE RECORDING TESTS PASSED");

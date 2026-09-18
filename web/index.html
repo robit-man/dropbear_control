@@ -26,12 +26,12 @@
     </div>
     <div class="source-chip" title="Grounded in the current Dropbear low-level-control source">
       <span class="live-dot"></span>
-      SOURCE <b>13cf5ec</b>
+      SOURCE <b>91ad7a1</b>
     </div>
     <div class="runbar">
       <label class="resolution-control" title="Scale the USD viewport render resolution">
         <span>USD RES</span>
-        <input id="usd-resolution" type="range" min="50" max="200" step="25" value="100" aria-label="USD viewport resolution">
+        <input id="usd-resolution" type="range" min="25" max="200" step="25" value="100" aria-label="USD viewport resolution">
         <output id="usd-resolution-output">100%</output>
       </label>
       <label class="compact-select">
@@ -435,7 +435,7 @@
           <div>
             <div class="eyebrow">USB SERIAL / FIRMWARE OPERATIONS</div>
             <h1>Connected ESP32 devices</h1>
-            <p>Raw per-device RX, passive firmware identification, trusted-source compilation, and an explicit flash interlock. The running leg streams remain compatible with their installed legacy five-angle firmware.</p>
+            <p>Raw per-device RX, version and capability negotiation, trusted-source compilation, and an explicit flash interlock. Behemoth DB3 keeps external, raw CAN, and aligned CAN angles separate.</p>
           </div>
           <div id="esp-device-status" class="load-status loading"><span></span>SCANNING USB</div>
         </div>
