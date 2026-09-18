@@ -1945,7 +1945,9 @@ function setupEspDevices() {
     }
   });
   pollEspDevices();
-  window.setInterval(pollEspDevices, 500);
+  window.setInterval(() => {
+    if (ui.view === "devices" || ui.view === "firmware") pollEspDevices();
+  }, 1000);
 }
 
 async function pollPhysicsRuntime() {
@@ -2583,8 +2585,12 @@ function setupRLLab() {
   applyRLTrainingProfile("gentle-forward", { announce: false });
   pollRLStatus();
   pollRLSessions();
-  window.setInterval(pollRLStatus, 800);
-  window.setInterval(pollRLSessions, 3000);
+  window.setInterval(() => {
+    if (ui.view === "rl" || ui.watchTraining) pollRLStatus();
+  }, 800);
+  window.setInterval(() => {
+    if (ui.view === "rl") pollRLSessions();
+  }, 3000);
 }
 
 function drawScope() {
