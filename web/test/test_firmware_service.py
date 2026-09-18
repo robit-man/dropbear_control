@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import os
 import stat
 import struct
@@ -118,6 +119,7 @@ class FirmwareServiceTests(unittest.TestCase):
         self.assertEqual(result["sourceId"], source_id)
         self.assertEqual(len(result["sha256"]), 64)
         self.assertEqual(result["binaryBytes"], 8)
+        self.assertEqual(result["binarySha256"], hashlib.sha256(b"firmware").hexdigest())
         self.assertEqual(result["spiffsOffset"], "0x290000")
         copied_partition = Path(result["sketchPath"]).parent / "partitions.csv"
         self.assertEqual(copied_partition.read_bytes(), (self.source / "partitions.csv").read_bytes())
@@ -145,6 +147,58 @@ class FirmwareServiceTests(unittest.TestCase):
     def test_unknown_source_is_rejected_before_tool_execution(self):
         with self.assertRaises(FirmwareToolError):
             self.manager.compile("../../outside")
+
+    def test_upload_flashes_only_the_precompiled_application_region(self):
+        build_dir = Path(self.temporary.name) / "build"
+        build_dir.mkdir()
+        binary = b"verified application"
+        binary_path = build_dir / "firmware_full_libs_neck.ino.bin"
+        binary_path.write_bytes(binary)
+        build = {
+            "id": "build-id",
+            "state": "passed",
+            "sha256": "source-sha",
+            "binaryBytes": len(binary),
+            "binarySha256": hashlib.sha256(binary).hexdigest(),
+            "buildPath": str(build_dir),
+            "sketchPath": str(Path(self.temporary.name) / "firmware_full_libs_neck.ino"),
+        }
+        self.manager._builds[build["id"]] = build
+        device = {
+            "id": "right-device",
+            "role": "right",
+            "stablePath": "/dev/serial/by-path/right",
+            "connected": True,
+        }
+        self.manager._device = lambda _device_id: device
+        payload = {
+            "buildId": build["id"],
+            "deviceId": device["id"],
+            "sourceSha256": build["sha256"],
+            "robotSupported": True,
+            "actuatorPowerSafe": True,
+            "estopReady": True,
+            "confirmation": "FLASH RIGHT",
+        }
+        partition = {
+            "layout": "test",
+            "spiffsOffset": "0x290000",
+            "spiffsSize": "0x160000",
+            "verifiedReadOnly": True,
+        }
+        completed = subprocess.CompletedProcess([], 0, "Hash of data verified.", "")
+        with mock.patch.object(self.manager, "_verify_device_spiffs_layout", return_value=partition), \
+             mock.patch("firmware_service.subprocess.run", return_value=completed) as run:
+            result = self.manager.upload(payload)
+        command = run.call_args.args[0]
+        self.assertEqual(command[0], sys.executable)
+        self.assertIn(str(self.esptool), command)
+        self.assertIn("write_flash", command)
+        self.assertIn(hex(0x10000), command)
+        self.assertIn(str(binary_path), command)
+        self.assertNotIn(str(self.arduino), command)
+        self.assertEqual(result["uploadMethod"], "verified-app-region-only")
+        self.assertEqual(result["partition"], partition)
 
     def test_compile_rejects_unpinned_fast_accel_stepper(self):
         sketch = self.source / "firmware_full_libs_neck.ino"

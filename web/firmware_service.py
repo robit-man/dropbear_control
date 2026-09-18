@@ -541,6 +541,8 @@ class DeviceFirmwareManager:
             "spiffsSize": hex(SPIFFS_SIZE),
             "spiffsPreservedInPlace": True,
             "binaryBytes": binary_bytes,
+            "binarySha256": hashlib.sha256(application_binary.read_bytes()).hexdigest()
+                if binary_bytes else "",
             "state": "passed" if result.returncode == 0 else "failed",
             "returnCode": result.returncode,
             "durationSeconds": round(time.time() - started, 2),
@@ -609,16 +611,29 @@ class DeviceFirmwareManager:
 
         self.stop()
         self.observation_manager.stop()
+        application_binary = (
+            Path(build["buildPath"]) / f"{Path(build['sketchPath']).name}.bin"
+        )
+        if not application_binary.is_file():
+            raise FirmwareToolError("compiled application binary is missing; compile again")
+        binary = application_binary.read_bytes()
+        if len(binary) != build.get("binaryBytes") or hashlib.sha256(binary).hexdigest() != build.get("binarySha256"):
+            raise FirmwareToolError("compiled application binary changed after verification; compile again")
+        # The target's existing partition table was read and checked above.
+        # Flash only the already-verified factory application region: this
+        # avoids Arduino's redundant multi-minute compile during upload and
+        # never writes the SPIFFS settings partition.
         command = [
-            str(self.arduino), "--upload", "--port", device["stablePath"],
-            "--board", BOARD_FQBN,
-            "--pref", f"sketchbook.path={self.sketchbook}",
-            "--pref", f"build.path={build['buildPath']}",
-            build["sketchPath"],
+            sys.executable, str(self.esptool), "--chip", "esp32",
+            "--port", device["stablePath"], "--baud", "460800",
+            "--before", "default_reset", "--after", "hard_reset",
+            "write_flash", "-z", "--flash_mode", "qio",
+            "--flash_freq", "80m", "--flash_size", "4MB",
+            hex(APP_OFFSET), str(application_binary),
         ]
         try:
             partition_check = self._verify_device_spiffs_layout(device)
-            result = subprocess.run(command, capture_output=True, text=True, timeout=300)
+            result = subprocess.run(command, capture_output=True, text=True, timeout=180)
         finally:
             self.observation_manager.start()
             self.start()
@@ -631,5 +646,6 @@ class DeviceFirmwareManager:
             "buildId": build_id,
             "sha256": build["sha256"],
             "partition": partition_check,
+            "uploadMethod": "verified-app-region-only",
             "output": output,
         }
