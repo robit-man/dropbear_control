@@ -211,6 +211,7 @@ const ui = {
   axisCategory: "leg",
   selectedArmMotorId: null,
   lastRobotFrameAt: performance.now(),
+  lastLiveDomAt: 0,
   policyMode: false,
   latestPolicyUrl: null,
   rlStatusSignature: "",
@@ -251,6 +252,7 @@ const ui = {
     recording: false,
     recordingRows: [],
     lastRecordedSignature: "",
+    lastStateRenderSignature: "",
   },
   hardwareControl: {
     challenge: "",
@@ -310,6 +312,22 @@ function renderHardwareObservationState() {
       ? `LIVE · 2/2 · CAN ${canAngles}/12`
       : freshSides === 1 ? `DEGRADED · 1/2 · CAN ${canAngles}/12` : "STALE · 0/2";
   }
+  const zero = ui.hardwareObservation.softwareZero;
+  const zeroReadiness = softwareZeroReadiness(status);
+  const recording = ui.hardwareObservation.recording;
+  const rows = ui.hardwareObservation.recordingRows;
+  const renderSignature = JSON.stringify([
+    label,
+    ui.hardwareObservation.requesting,
+    ui.hardwareObservation.active,
+    zero?.capturedAt || "",
+    zeroReadiness.ready,
+    zeroReadiness.reasons,
+    recording,
+    rows.length,
+  ]);
+  if (renderSignature === ui.hardwareObservation.lastStateRenderSignature) return;
+  ui.hardwareObservation.lastStateRenderSignature = renderSignature;
   output.textContent = `READ ONLY · ${label}`;
   output.classList.toggle("warn", ui.hardwareObservation.active && freshSides < 2);
   button.classList.toggle("active", ui.hardwareObservation.active);
@@ -318,8 +336,6 @@ function renderHardwareObservationState() {
   button.textContent = ui.hardwareObservation.requesting
     ? "REQUESTING LIVE STATE…"
     : ui.hardwareObservation.active ? "LEAVE LIVE STATE" : "USE LIVE STATE";
-  const zero = ui.hardwareObservation.softwareZero;
-  const zeroReadiness = softwareZeroReadiness(status);
   const zeroButton = $("hardware-zero-current");
   zeroButton.disabled = !ui.hardwareObservation.active || !zeroReadiness.ready;
   zeroButton.title = zeroReadiness.ready
@@ -330,12 +346,10 @@ function renderHardwareObservationState() {
     : zeroReadiness.ready
       ? "ZERO · READY TO CAPTURE"
       : `ZERO BLOCKED · ${zeroReadiness.reasons[0] || "LIVE FEEDBACK INCOMPLETE"}`;
-  const recording = ui.hardwareObservation.recording;
   const recordButton = $("hardware-record-toggle");
   recordButton.disabled = !ui.hardwareObservation.active || freshSides === 0;
   recordButton.classList.toggle("active", recording);
   recordButton.textContent = recording ? "STOP ANGLE RECORDING" : "START ANGLE RECORDING";
-  const rows = ui.hardwareObservation.recordingRows;
   const motorRows = rows.filter((row) => row.motor_native_available).length;
   $("hardware-record-download").disabled = rows.length === 0;
   $("hardware-record-state").textContent = `REC · ${rows.length.toLocaleString()} ROWS · MOTOR NATIVE ${motorRows ? `${motorRows.toLocaleString()} MEASURED` : "UNAVAILABLE"}`;
@@ -407,7 +421,9 @@ async function pollHardwareObservation() {
     const payload = await response.json();
     const validated = validateHardwareObservation(payload);
     ui.hardwareObservation.latest = payload;
-    renderControllerDiagnostics($("controller-diagnostics"), payload);
+    if (ui.view === "controller") {
+      renderControllerDiagnostics($("controller-diagnostics"), payload);
+    }
     ui.hardwareObservation.error = "";
     recordCurrentHardwareObservation(payload);
     if ((ui.hardwareObservation.active || ui.hardwareObservation.autoActivate)
@@ -778,6 +794,9 @@ function switchView(name) {
   robot.setActive(name === "sim");
   cad.setActive(name === "cad");
   board.setActive(name === "controller");
+  if (name === "controller" && ui.hardwareObservation.latest) {
+    renderControllerDiagnostics($("controller-diagnostics"), ui.hardwareObservation.latest);
+  }
   if (workspace) {
     workspace.scrollTop = 0;
     requestAnimationFrame(() => { workspace.scrollTop = 0; });
@@ -2626,6 +2645,18 @@ function renderLive() {
   const hardwareFreshSides = ["left", "right"].filter(
     (side) => ui.hardwareObservation.latest?.sides?.[side]?.fresh === true,
   ).length;
+  const poseNow = performance.now();
+  const poseDt = Math.max(0, Math.min(0.08, (poseNow - ui.lastRobotFrameAt) / 1000));
+  ui.lastRobotFrameAt = poseNow;
+  robot.setJointStates(
+    sim.joints,
+    ui.axisCategory === "leg" ? ui.selectedJointId : null,
+    armMotorStates,
+    poseDt,
+  );
+  sim.setFootContactState(robot.groundContact);
+  if (observingHardware && poseNow - ui.lastLiveDomAt < 200) return;
+  ui.lastLiveDomAt = poseNow;
   runningButton.classList.toggle("stop", effectivePlaying);
   runningButton.setAttribute("aria-pressed", String(effectivePlaying));
   runningButton.disabled = observingHardware;
@@ -2680,16 +2711,6 @@ function renderLive() {
     dot.className = `joint-dot ${joint.temperature > 80 || sim.faults.canDrop || (observingHardware && joint.observationValid && !joint.observationModelApplied) ? "warn" : observingHardware && joint.observationValid ? "observed" : sim.playMode ? "live" : ""}`;
   }
 
-  const poseNow = performance.now();
-  const poseDt = Math.max(0, Math.min(0.08, (poseNow - ui.lastRobotFrameAt) / 1000));
-  ui.lastRobotFrameAt = poseNow;
-  robot.setJointStates(
-    sim.joints,
-    ui.axisCategory === "leg" ? ui.selectedJointId : null,
-    armMotorStates,
-    poseDt,
-  );
-  sim.setFootContactState(robot.groundContact);
   for (const side of ["left", "right"]) {
     const leg = robot.legTelemetry[side];
     const gait = sim.gait[side];
