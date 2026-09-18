@@ -12,8 +12,11 @@ const SAMPLE_ORDER = Object.freeze([
 const MOTOR_ORDER = Object.freeze([...SAMPLE_ORDER, "hip_yaw"]);
 const SENSOR_BITS = Object.freeze(Object.fromEntries(SAMPLE_ORDER.map((joint, index) => [joint, index])));
 const MAX_OBSERVED_RATE_DEG_S = 720;
+const MAX_EXTERNAL_RATE_DEG_S = 240;
+const REQUIRED_EXTERNAL_STABLE_SAMPLES = 3;
 
 const previousBySim = new WeakMap();
+const temporalBySim = new WeakMap();
 
 function finite(value) {
   return typeof value === "number" && Number.isFinite(value);
@@ -73,6 +76,7 @@ export function validateHardwareObservation(payload) {
     }
     result.sides[side] = {
       sequence: sample.sequence,
+      controllerMillis: Number.isInteger(sample.controllerMillis) ? sample.controllerMillis : null,
       ageMs: finite(sample.ageMs) ? sample.ageMs : null,
       rawLine: String(sample.rawLine || ""),
       health: sample.health?.schema === "DBH1" ? { ...sample.health } : null,
@@ -93,6 +97,11 @@ export function applyHardwareObservation(sim, payload, nowMs = performance.now()
   if (!previous) {
     previous = new Map();
     previousBySim.set(sim, previous);
+  }
+  let temporal = temporalBySim.get(sim);
+  if (!temporal) {
+    temporal = new Map();
+    temporalBySim.set(sim, temporal);
   }
 
   for (const joint of sim.joints) {
@@ -192,6 +201,40 @@ export function applyHardwareObservation(sim, payload, nowMs = performance.now()
       target.observationValid = true;
       target.observationModelApplied = false;
       observedJoints += 1;
+      if (positionSource === "external_absolute" && sample.health?.schema === "DBH1") {
+        const tracked = temporal.get(canonicalName);
+        const controllerTime = Number.isInteger(sample.controllerMillis)
+          ? sample.controllerMillis : null;
+        const sameSource = tracked?.positionSource === positionSource;
+        let plausible = false;
+        if (sameSource) {
+          const controllerDtMs = controllerTime !== null
+            && Number.isInteger(tracked.controllerMillis)
+            && controllerTime > tracked.controllerMillis
+            ? controllerTime - tracked.controllerMillis : null;
+          const elapsedSeconds = Math.max(
+            0.001,
+            (controllerDtMs ?? Math.max(1, nowMs - tracked.nowMs)) / 1000,
+          );
+          plausible = Math.abs(shortestDegreeDelta(position, tracked.position) / elapsedSeconds)
+            <= MAX_EXTERNAL_RATE_DEG_S;
+        }
+        const stableSamples = !sameSource
+          ? 1 : plausible ? (tracked.stableSamples || 0) + 1 : 0;
+        temporal.set(canonicalName, {
+          position,
+          positionSource,
+          controllerMillis: controllerTime,
+          nowMs,
+          stableSamples,
+        });
+        if (stableSamples < REQUIRED_EXTERNAL_STABLE_SAMPLES) {
+          target.observationTemporalFault = !plausible && sameSource;
+          target.observationSource = `esp32_${positionSource}_${!sameSource || plausible ? "stabilizing" : "implausible_rate"}`;
+          heldJoints.push(canonicalName);
+          continue;
+        }
+      }
       if (Math.abs(observedRate) > MAX_OBSERVED_RATE_DEG_S) {
         target.observationTemporalFault = true;
         target.observationSource = `esp32_${positionSource}_implausible_rate`;
@@ -299,6 +342,7 @@ export function applyHardwareObservation(sim, payload, nowMs = performance.now()
 
 export function clearHardwareObservationHistory(sim) {
   previousBySim.delete(sim);
+  temporalBySim.delete(sim);
   for (const joint of sim.joints) {
     joint.observationValid = false;
     joint.observationModelApplied = false;

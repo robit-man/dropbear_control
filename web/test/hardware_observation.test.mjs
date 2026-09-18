@@ -178,8 +178,9 @@ maskedPayload.sides.left.motorJoints.left_hip_roll.alignmentFault = false;
 const maskedSim = new DropbearSim();
 const maskedResult = applyHardwareObservation(maskedSim, maskedPayload, 1_070, null);
 assert.equal(maskedResult.observedJoints, 3);
-assert.equal(maskedResult.appliedJoints, 2);
+assert.equal(maskedResult.appliedJoints, 1);
 assert.equal(maskedSim.getJoint("hip_roll", "left").observationPositionSource, "motor_control_aligned");
+assert.match(maskedSim.getJoint("inner_calf", "left").observationSource, /stabilizing/);
 assert.equal(maskedSim.getJoint("outer_calf", "left").observationValid, false);
 assert.equal(maskedSim.getJoint("outer_calf", "left").observationExternalDeg, 125);
 assert.equal(maskedSim.getJoint("outer_calf", "left").observationExternalFresh, false);
@@ -188,6 +189,14 @@ assert.throws(
   () => captureSoftwareZero(maskedPayload, 7),
   /AS5600 stale.*hip yaw CAN angle unavailable/,
 );
+maskedPayload.sides.left.sequence += 1;
+maskedPayload.sides.right.sequence += 1;
+applyHardwareObservation(maskedSim, maskedPayload, 1_095, null);
+maskedPayload.sides.left.sequence += 1;
+maskedPayload.sides.right.sequence += 1;
+const stabilizedResult = applyHardwareObservation(maskedSim, maskedPayload, 1_120, null);
+assert.equal(stabilizedResult.appliedJoints, 2);
+assert.equal(maskedSim.getJoint("inner_calf", "left").observationModelApplied, true);
 
 const versionedZeroPayload = attachMotorTelemetry(
   snapshot(7, 7),
