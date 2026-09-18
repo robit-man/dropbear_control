@@ -1110,9 +1110,9 @@ async function configurePlaybackSource(
 }
 
 function setupSimControls() {
-  const resolutionStorageKey = "dropbear-usd-resolution-v4";
-  const savedResolution = Number(localStorage.getItem(resolutionStorageKey) || (softwareRenderer ? 25 : 100));
-  const resolutionPercent = Math.max(25, Math.min(200, savedResolution));
+  const resolutionStorageKey = "dropbear-usd-resolution-v5";
+  const savedResolution = Number(localStorage.getItem(resolutionStorageKey) || 100);
+  const resolutionPercent = Math.max(50, Math.min(200, savedResolution));
   $("usd-resolution").value = String(resolutionPercent);
   $("usd-resolution-output").textContent = `${resolutionPercent}%`;
   robot.setResolutionScale(resolutionPercent / 100);

@@ -11,6 +11,7 @@ const SAMPLE_ORDER = Object.freeze([
 ]);
 const MOTOR_ORDER = Object.freeze([...SAMPLE_ORDER, "hip_yaw"]);
 const SENSOR_BITS = Object.freeze(Object.fromEntries(SAMPLE_ORDER.map((joint, index) => [joint, index])));
+const MAX_OBSERVED_RATE_DEG_S = 720;
 
 const previousBySim = new WeakMap();
 
@@ -108,6 +109,7 @@ export function applyHardwareObservation(sim, payload, nowMs = performance.now()
     joint.observationZeroedDeg = null;
     joint.observationMechanismDeg = null;
     joint.observationCalibration = null;
+    joint.observationTemporalFault = false;
   }
   for (const side of SIDES) {
     sim.controllers[side].serialConnected = false;
@@ -164,9 +166,15 @@ export function applyHardwareObservation(sim, payload, nowMs = performance.now()
       }
       const prior = previous.get(canonicalName);
       const dtSeconds = prior ? Math.max(0.001, (nowMs - prior.nowMs) / 1000) : 0;
-      target.velocity = prior && prior.positionSource === positionSource && sample.sequence !== prior.sequence
-        ? Math.max(-720, Math.min(720, shortestDegreeDelta(position, prior.position) / dtSeconds))
+      const observedRate = prior
+        && prior.positionSource === positionSource
+        && sample.sequence !== prior.sequence
+        ? shortestDegreeDelta(position, prior.position) / dtSeconds
         : 0;
+      target.velocity = Math.max(
+        -MAX_OBSERVED_RATE_DEG_S,
+        Math.min(MAX_OBSERVED_RATE_DEG_S, observedRate),
+      );
       target.rawAngle = ((position % 360) + 360) % 360;
       target.torque = 0;
       target.command = 0;
@@ -184,6 +192,12 @@ export function applyHardwareObservation(sim, payload, nowMs = performance.now()
       target.observationValid = true;
       target.observationModelApplied = false;
       observedJoints += 1;
+      if (Math.abs(observedRate) > MAX_OBSERVED_RATE_DEG_S) {
+        target.observationTemporalFault = true;
+        target.observationSource = `esp32_${positionSource}_implausible_rate`;
+        heldJoints.push(canonicalName);
+        continue;
+      }
       if (String(projection.calibration.captureQuality || "").startsWith("unstable")) {
         target.observationSource = `esp32_${positionSource}_unstable`;
         heldJoints.push(canonicalName);
@@ -300,6 +314,7 @@ export function clearHardwareObservationHistory(sim) {
     joint.observationZeroedDeg = null;
     joint.observationMechanismDeg = null;
     joint.observationCalibration = null;
+    joint.observationTemporalFault = false;
   }
 }
 

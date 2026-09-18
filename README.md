@@ -266,8 +266,7 @@ tools/setup_gr00t_runtime.sh
 
 Open <http://localhost:8000/?live=1&renderer=swiftshader&asset=lite> on the
 current AGX remote desktop. This keeps the full articulated 3D USD viewer and
-uses its reduced 64,216-triangle cache at a software-renderer-friendly default
-resolution.
+uses its reduced 64,216-triangle cache at full viewport resolution.
 
 The **Connected ESP32 devices** view compiles the trusted `.ino` files from
 `Hyperspawn/Dropbear`. Every build includes the repository's custom
@@ -323,7 +322,7 @@ The five exposed engineering views are:
 
 - **Live Robot** — complete USD visualization, motor selection, live gait and
   linkage/contact telemetry, separate leg and arm motor categories, faults,
-  and configurable 25–200% render resolution;
+  and configurable 50–200% render resolution;
 - **Actuator CAD** — Dropbear-bound RMD-X8-25 Pro V2 and RMD-X10-100 S2 V3
   source STEP solids, correct source shaft axes, automatic selected-motor
   switching, technical lines, and articulation controls;

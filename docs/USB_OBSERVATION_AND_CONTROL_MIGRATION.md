@@ -65,8 +65,9 @@ selected.
 The explicit SwiftShader renderer keeps the articulated 3D USD visible on the
 current remote AGX desktop, where the sandboxed browser cannot bind the Xavier
 GPU context. The light cache retains the 93-body kinematic graph and 27 loop
-closures while reducing the rendered mesh to 64,216 triangles. Start at 25%
-viewport resolution and raise it only when frame time permits.
+closures while reducing the rendered mesh to 64,216 triangles. The dashboard
+keeps full viewport resolution; its software-renderer optimization avoids
+re-solving unchanged articulated poses instead of pixelating the output.
 
 The paths are USB-topology identities. All three installed CP2102 bridges
 currently report the same serial number, `0001`, so `/dev/serial/by-id` cannot
@@ -183,6 +184,11 @@ columns with CAN ID and availability. Cached AS5600 numbers are recorded as
 `firmware_marked_stale` but are excluded from zeroed/model columns. Hip yaw has
 an empty external column. Recording stops at 120,000 rows to bound browser
 memory.
+
+The browser also rejects a fresh-but-implausible source transition above
+`720°/s` from model application. This catches disconnected/noisy PWM channels
+whose numeric values continue to change even while a packet stream is fresh;
+the raw value remains visible and recordable for diagnosis.
 
 ## ESP32 console and firmware toolchain
 

@@ -128,6 +128,15 @@ next.sides.left.joints.left_outer_calf.positionDeg = 127;
 applyHardwareObservation(sim, next, 1_100);
 assert.equal(sim.getJoint("outer_calf", "left").velocity, 20);
 
+const implausibleJump = snapshot(3, 3);
+implausibleJump.sides.left.joints.left_outer_calf.positionDeg = 220;
+const jumpResult = applyHardwareObservation(sim, implausibleJump, 1_120);
+assert.equal(sim.getJoint("outer_calf", "left").observationModelApplied, false);
+assert.equal(sim.getJoint("outer_calf", "left").observationTemporalFault, true);
+assert.match(sim.getJoint("outer_calf", "left").observationSource, /implausible_rate/);
+assert.equal(sim.getJoint("outer_calf", "left").angle, 182);
+assert.ok(jumpResult.heldJoints.includes("left_outer_calf"));
+
 const notSilent = snapshot();
 notSilent.txBytes = 1;
 assert.equal(validateHardwareObservation(notSilent).complete, true);
