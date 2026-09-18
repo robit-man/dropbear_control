@@ -109,7 +109,7 @@ export const HARDWARE_DEFAULT_STANCE_CALIBRATION = Object.freeze({
   directionEvidence: "provisional_positive_until_read_only_motion_validation",
 });
 
-export const SOFTWARE_ZERO_SCHEMA = "dropbear-browser-software-zero-v4";
+export const SOFTWARE_ZERO_SCHEMA = "dropbear-browser-software-zero-v5";
 const SENSOR_JOINTS = Object.freeze(["outer_calf", "inner_calf", "hip_pitch", "knee", "hip_roll"]);
 const MOTOR_JOINTS = Object.freeze([...SENSOR_JOINTS, "hip_yaw"]);
 const ALL_SENSOR_MASK = (1 << SENSOR_JOINTS.length) - 1;
@@ -127,6 +127,9 @@ function shortestDegreeDelta(next, previous) {
 
 export function softwareZeroReadiness(payload) {
   const reasons = [];
+  const warnings = [];
+  let externalAvailable = 0;
+  let motorAvailable = 0;
   if (payload?.mode !== "read_only_with_diagnostic_queries"
       || payload?.writeCapable !== false
       || payload?.motionWriteCapable !== false) {
@@ -139,23 +142,31 @@ export function softwareZeroReadiness(payload) {
       continue;
     }
     const healthKnown = sample.health?.schema === "DBH1";
-    if (!healthKnown) continue;
-    const sensorMask = Number(sample.health.sensorFreshMask) || 0;
+    const sensorMask = healthKnown ? Number(sample.health.sensorFreshMask) || 0 : ALL_SENSOR_MASK;
     const missingSensors = SENSOR_JOINTS.filter((_, index) => (sensorMask & (1 << index)) === 0);
-    if (missingSensors.length) {
-      reasons.push(`${side} AS5600 stale: ${missingSensors.join(", ")}`);
-    }
+    externalAvailable += SENSOR_JOINTS.length - missingSensors.length;
+    if (missingSensors.length) warnings.push(`${side} AS5600 stale: ${missingSensors.join(", ")}`);
+    motorAvailable += MOTOR_JOINTS.filter((joint) => {
+      const motor = sample.motorJoints?.[`${side}_${joint}`];
+      return (motor?.controlAvailable === true
+          && motor?.alignmentFault !== true
+          && Number.isFinite(motor?.controlPositionDeg))
+        || (motor?.available === true && Number.isFinite(motor?.positionDeg));
+    }).length;
     const yaw = sample.motorJoints?.[`${side}_hip_yaw`];
     const yawAvailable = (
       yaw?.controlAvailable === true
       && yaw?.alignmentFault !== true
       && Number.isFinite(yaw?.controlPositionDeg)
     ) || (yaw?.available === true && Number.isFinite(yaw?.positionDeg));
-    if (!yawAvailable) reasons.push(`${side} hip yaw CAN angle unavailable`);
+    if (!yawAvailable) warnings.push(`${side} hip yaw CAN angle unavailable`);
   }
   return Object.freeze({
     ready: reasons.length === 0,
     reasons: Object.freeze(reasons),
+    warnings: Object.freeze(warnings),
+    externalAvailable,
+    motorAvailable,
     requiredSensorMask: ALL_SENSOR_MASK,
   });
 }

@@ -125,6 +125,14 @@
               <span></span>Z GUIDE
             </label>
             <button id="hardware-observation-toggle" class="button observation-button" type="button" aria-pressed="false">USE LIVE STATE</button>
+            <label class="observation-source-select">
+              <span>LIVE ANGLE SOURCE</span>
+              <select id="hardware-angle-source">
+                <option value="auto">Auto · CAN then AS5600</option>
+                <option value="motor">Motor CAN only</option>
+                <option value="as5600">AS5600 only</option>
+              </select>
+            </label>
             <label class="torso-zero-control">
               <span>TORSO FORWARD</span>
               <input id="hardware-zero-torso" type="number" min="-45" max="45" step="0.5" value="7">
@@ -968,6 +976,6 @@
     </form>
   </dialog>
 
-  <script type="module" src="/js/app.js?v=20260918-live-perf-3"></script>
+  <script type="module" src="/js/app.js?v=20260918-x8-v17-alignment"></script>
 </body>
 </html>

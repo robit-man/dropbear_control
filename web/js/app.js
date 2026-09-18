@@ -44,9 +44,9 @@ import {
 
 const $ = (id) => document.getElementById(id);
 const RAD_TO_DEG = 180 / Math.PI;
-// v4 records the firmware-aligned CAN channel separately from raw RMD and
+// v5 permits a partial live-state zero while retaining each measured channel.
 // external AS5600 angles.
-const SOFTWARE_ZERO_STORAGE_KEY = "dropbear.control.softwareZero.v4";
+const SOFTWARE_ZERO_STORAGE_KEY = "dropbear.control.softwareZero.v5";
 const MAX_ANGLE_RECORDING_ROWS = 120_000;
 
 function loadSoftwareZero() {
@@ -249,6 +249,7 @@ const ui = {
     lastAppliedSignature: "",
     error: "",
     softwareZero: loadSoftwareZero(),
+    angleSource: localStorage.getItem("dropbear.control.angleSource") || "auto",
     recording: false,
     recordingRows: [],
     lastRecordedSignature: "",
@@ -301,16 +302,21 @@ function renderHardwareObservationState() {
   const output = $("hardware-observation-state");
   const button = $("hardware-observation-toggle");
   const freshSides = ["left", "right"].filter((side) => status?.sides?.[side]?.fresh === true).length;
-  const canAngles = ["left", "right"].reduce((count, side) => (
-    count + Object.values(status?.sides?.[side]?.motorJoints || {})
-      .filter((motor) => motor?.available === true && Number.isFinite(motor?.positionDeg)).length
-  ), 0);
+  const canAngles = ["left", "right"].reduce((count, side) => {
+    const sample = status?.sides?.[side];
+    if (sample?.health?.schema === "DBH1") {
+      return count + ((Number(sample.health.motorFreshMask) || 0) & 0x3f)
+        .toString(2).replaceAll("0", "").length;
+    }
+    return count + Object.values(sample?.motorJoints || {})
+      .filter((motor) => motor?.available === true && Number.isFinite(motor?.positionDeg)).length;
+  }, 0);
   let label = status?.enabled ? String(status.state || "waiting").toUpperCase() : "DISABLED";
   if (ui.hardwareObservation.requesting) label = "REQUESTING FROM ESP32S";
   if (ui.hardwareObservation.active) {
     label = freshSides === 2
-      ? `LIVE · 2/2 · CAN ${canAngles}/12`
-      : freshSides === 1 ? `DEGRADED · 1/2 · CAN ${canAngles}/12` : "STALE · 0/2";
+      ? `LIVE · 2/2 · CAN ${canAngles}/12 RECENT`
+      : freshSides === 1 ? `DEGRADED · 1/2 · CAN ${canAngles}/12 RECENT` : "STALE · 0/2";
   }
   const zero = ui.hardwareObservation.softwareZero;
   const zeroReadiness = softwareZeroReadiness(status);
@@ -323,6 +329,8 @@ function renderHardwareObservationState() {
     zero?.capturedAt || "",
     zeroReadiness.ready,
     zeroReadiness.reasons,
+    zeroReadiness.warnings,
+    ui.hardwareObservation.angleSource,
     recording,
     rows.length,
   ]);
@@ -336,15 +344,16 @@ function renderHardwareObservationState() {
   button.textContent = ui.hardwareObservation.requesting
     ? "REQUESTING LIVE STATE…"
     : ui.hardwareObservation.active ? "LEAVE LIVE STATE" : "USE LIVE STATE";
+  $("hardware-angle-source").value = ui.hardwareObservation.angleSource;
   const zeroButton = $("hardware-zero-current");
   zeroButton.disabled = !ui.hardwareObservation.active || !zeroReadiness.ready;
   zeroButton.title = zeroReadiness.ready
-    ? "Capture a browser-only zero without changing ESP32 calibration"
+    ? `Capture a browser-only zero without changing ESP32 calibration. Available now: ${zeroReadiness.motorAvailable}/12 CAN, ${zeroReadiness.externalAvailable}/10 AS5600.`
     : zeroReadiness.reasons.join("; ");
   $("hardware-zero-state").textContent = zero
     ? `ZERO · ${new Date(zero.capturedAt).toLocaleTimeString()} · TORSO ${zero.torsoForwardDeg.toFixed(1)}° FORWARD`
     : zeroReadiness.ready
-      ? "ZERO · READY TO CAPTURE"
+      ? `ZERO · READY · CAN ${zeroReadiness.motorAvailable}/12 · AS5600 ${zeroReadiness.externalAvailable}/10`
       : `ZERO BLOCKED · ${zeroReadiness.reasons[0] || "LIVE FEEDBACK INCOMPLETE"}`;
   const recordButton = $("hardware-record-toggle");
   recordButton.disabled = !ui.hardwareObservation.active || freshSides === 0;
@@ -376,9 +385,15 @@ function captureCurrentSoftwareZero() {
   localStorage.setItem(SOFTWARE_ZERO_STORAGE_KEY, JSON.stringify(zero));
   clearHardwareObservationHistory(sim);
   robot.setObservationRootPitchDegrees(zero.torsoForwardDeg);
-  applyHardwareObservation(sim, ui.hardwareObservation.latest, performance.now(), zero);
+  applyHardwareObservation(
+    sim,
+    ui.hardwareObservation.latest,
+    performance.now(),
+    zero,
+    ui.hardwareObservation.angleSource,
+  );
   appendTerminal(
-    `[hardware] software zero captured from both fresh leg streams · torso ${zero.torsoForwardDeg.toFixed(1)}° forward · ESP values unchanged`,
+    `[hardware] software zero captured from both fresh leg streams · CAN ${softwareZeroReadiness(ui.hardwareObservation.latest).motorAvailable}/12 · torso ${zero.torsoForwardDeg.toFixed(1)}° forward · ESP values unchanged`,
     "ok",
   );
   renderHardwareObservationState();
@@ -438,6 +453,7 @@ async function pollHardwareObservation() {
         payload,
         performance.now(),
         ui.hardwareObservation.softwareZero,
+        ui.hardwareObservation.angleSource,
       );
       const signature = `${result.sequences.left}:${result.sequences.right}`;
       if (signature !== ui.hardwareObservation.lastAppliedSignature) {
@@ -476,6 +492,7 @@ function setHardwareObservationActive(active) {
       ui.hardwareObservation.latest,
       performance.now(),
       ui.hardwareObservation.softwareZero,
+      ui.hardwareObservation.angleSource,
     );
     if (!selectedJoint().observationValid) {
       const firstObserved = sim.joints.find((joint) => joint.observationValid);
@@ -483,7 +500,7 @@ function setHardwareObservationActive(active) {
     }
     appendTerminal(
       `[hardware] live ${validated.availableSides.join(" + ")} state applied to USD · `
-      + `CAN feedback preferred · diagnostic tx ${Number(ui.hardwareObservation.latest?.txBytes) || 0} bytes`,
+      + `${ui.hardwareObservation.angleSource.toUpperCase()} angle source · diagnostic tx ${Number(ui.hardwareObservation.latest?.txBytes) || 0} bytes`,
       "ok",
     );
   } else {
@@ -1370,6 +1387,31 @@ function setupSimControls() {
 }
 
 function setupHardwareControls() {
+  const angleSource = $("hardware-angle-source");
+  if (![...angleSource.options].some((option) => option.value === ui.hardwareObservation.angleSource)) {
+    ui.hardwareObservation.angleSource = "auto";
+  }
+  angleSource.value = ui.hardwareObservation.angleSource;
+  angleSource.addEventListener("change", (event) => {
+    ui.hardwareObservation.angleSource = event.target.value;
+    localStorage.setItem("dropbear.control.angleSource", ui.hardwareObservation.angleSource);
+    clearHardwareObservationHistory(sim);
+    if (ui.hardwareObservation.active && ui.hardwareObservation.latest) {
+      applyHardwareObservation(
+        sim,
+        ui.hardwareObservation.latest,
+        performance.now(),
+        ui.hardwareObservation.softwareZero,
+        ui.hardwareObservation.angleSource,
+      );
+    }
+    appendTerminal(
+      `[hardware] live angle source · ${event.target.options[event.target.selectedIndex].text}`,
+      "ok",
+    );
+    ui.hardwareObservation.lastStateRenderSignature = "";
+    renderHardwareObservationState();
+  });
   if (ui.hardwareObservation.softwareZero) {
     $("hardware-zero-torso").value = ui.hardwareObservation.softwareZero.torsoForwardDeg;
   }

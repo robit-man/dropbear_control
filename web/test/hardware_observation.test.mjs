@@ -184,11 +184,11 @@ assert.match(maskedSim.getJoint("inner_calf", "left").observationSource, /stabil
 assert.equal(maskedSim.getJoint("outer_calf", "left").observationValid, false);
 assert.equal(maskedSim.getJoint("outer_calf", "left").observationExternalDeg, 125);
 assert.equal(maskedSim.getJoint("outer_calf", "left").observationExternalFresh, false);
-assert.equal(softwareZeroReadiness(maskedPayload).ready, false);
-assert.throws(
-  () => captureSoftwareZero(maskedPayload, 7),
-  /AS5600 stale.*hip yaw CAN angle unavailable/,
-);
+assert.equal(softwareZeroReadiness(maskedPayload).ready, true);
+assert.equal(softwareZeroReadiness(maskedPayload).externalAvailable, 3);
+assert.equal(softwareZeroReadiness(maskedPayload).motorAvailable, 1);
+assert.match(softwareZeroReadiness(maskedPayload).warnings.join("; "), /AS5600 stale.*hip yaw CAN angle unavailable/);
+assert.equal(captureSoftwareZero(maskedPayload, 7).torsoForwardDeg, 7);
 maskedPayload.sides.left.sequence += 1;
 maskedPayload.sides.right.sequence += 1;
 applyHardwareObservation(maskedSim, maskedPayload, 1_095, null);
@@ -207,6 +207,16 @@ versionedZeroPayload.sides.left.health = { schema: "DBH1", sensorFreshMask: 31 }
 versionedZeroPayload.sides.right.health = { schema: "DBH1", sensorFreshMask: 31 };
 assert.equal(softwareZeroReadiness(versionedZeroPayload).ready, true);
 assert.equal(captureSoftwareZero(versionedZeroPayload, 7).torsoForwardDeg, 7);
+
+const sourceZero = captureSoftwareZero(alignedPayload, 7, "2026-09-15T21:02:00Z");
+const externalSourceSim = new DropbearSim();
+applyHardwareObservation(externalSourceSim, alignedPayload, 1_080, sourceZero, "as5600");
+assert.equal(externalSourceSim.getJoint("outer_calf", "left").observationPositionSource, "external_absolute");
+assert.equal(externalSourceSim.getJoint("hip_yaw", "left").observationValid, false);
+const motorSourceSim = new DropbearSim();
+applyHardwareObservation(motorSourceSim, alignedPayload, 1_080, sourceZero, "motor");
+assert.equal(motorSourceSim.getJoint("outer_calf", "left").observationPositionSource, "motor_control_aligned");
+assert.equal(motorSourceSim.getJoint("hip_yaw", "left").observationValid, true);
 
 const missingSide = snapshot();
 missingSide.sides.right.fresh = false;

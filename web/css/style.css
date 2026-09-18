@@ -313,6 +313,7 @@ body.training-active .app-shell { height: calc(100vh - 104px); }
   letter-spacing: .12em;
 }
 .playback-source-select select { min-width: 190px; }
+.observation-source-select select { min-width: 190px; }
 .scenario-bar .stage-constraint-switch {
   min-height: 34px;
   display: inline-flex;

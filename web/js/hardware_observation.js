@@ -88,7 +88,13 @@ export function validateHardwareObservation(payload) {
   return result;
 }
 
-export function applyHardwareObservation(sim, payload, nowMs = performance.now(), softwareZero = null) {
+export function applyHardwareObservation(
+  sim,
+  payload,
+  nowMs = performance.now(),
+  softwareZero = null,
+  positionSourcePreference = "auto",
+) {
   const validated = validateHardwareObservation(payload);
   if (validated.availableSides.length === 0) {
     throw new Error("at least one leg observation must be fresh before applying hardware state");
@@ -154,13 +160,18 @@ export function applyHardwareObservation(sim, payload, nowMs = performance.now()
         ? motorObservation.controlPositionDeg
         : null;
       const motorDatum = Number(softwareZero?.sides?.[side]?.motorJoints?.[firmwareJoint]?.motorPositionDeg);
-      const useMotorControl = motorControlPosition !== null;
-      const useMotorNative = !useMotorControl && motorPosition !== null && Number.isFinite(motorDatum);
+      const preferMotor = positionSourcePreference === "motor";
+      const preferExternal = positionSourcePreference === "as5600";
+      const useMotorControl = !preferExternal && motorControlPosition !== null;
+      const useMotorNative = !preferExternal && !useMotorControl
+        && motorPosition !== null && Number.isFinite(motorDatum);
       const position = useMotorControl
-        ? motorControlPosition
-        : useMotorNative ? motorPosition : externalFresh ? externalPosition : null;
+        ? motorControlPosition : useMotorNative ? motorPosition
+          : !preferMotor && externalFresh ? externalPosition : null;
       target.observationExternalDeg = externalPosition;
       target.observationExternalFresh = externalFresh;
+      target.observationMotorDeg = motorPosition;
+      target.observationMotorControlDeg = motorControlPosition;
       if (position === null) {
         unavailableJoints.push(canonicalName);
         continue;
@@ -274,7 +285,8 @@ export function applyHardwareObservation(sim, payload, nowMs = performance.now()
       ? yawMotor.controlPositionDeg
       : null;
     const yawDatum = Number(softwareZero?.sides?.[side]?.motorJoints?.hip_yaw?.motorPositionDeg);
-    const yawPosition = yawControlPosition ?? yawMotorPosition;
+    const yawPosition = positionSourcePreference === "as5600"
+      ? null : yawControlPosition ?? yawMotorPosition;
     const yawPositionSource = yawControlPosition !== null ? "motor_control_aligned" : "motor_native";
     if (yawPosition === null || (yawControlPosition === null && !Number.isFinite(yawDatum))) {
       unavailableJoints.push(yawName);
