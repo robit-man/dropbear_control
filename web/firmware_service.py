@@ -41,6 +41,9 @@ SPIFFS_OFFSET = 0x290000
 SPIFFS_SIZE = 0x160000
 PARTITION_TABLE_OFFSET = 0x8000
 PARTITION_TABLE_SIZE = 0x1000
+FIRMWARE_SUPPORT_FILES = {
+    "firmware_full_libs_neck.ino": ("dropbear_motor_protocol.h",),
+}
 
 
 def _configure_115200(fd: int) -> None:
@@ -220,8 +223,9 @@ class DeviceFirmwareManager:
             resolved = path.resolve()
             if resolved.parent != self.source_root:
                 continue
-            data = path.read_bytes()
             name = path.name
+            bundle = self._source_bundle(path)
+            digest = self._source_bundle_sha256(bundle)
             family = (
                 "universal-behemoth"
                 if name == "firmware_full_libs_neck.ino"
@@ -239,15 +243,40 @@ class DeviceFirmwareManager:
                 else "db3 + legacy captive portal"
             )
             sources.append({
-                "id": hashlib.sha256(data).hexdigest()[:16],
+                "id": digest[:16],
                 "filename": name,
                 "family": family,
                 "interface": interface,
-                "bytes": len(data),
-                "sha256": hashlib.sha256(data).hexdigest(),
+                "bytes": sum(item.stat().st_size for item in bundle),
+                "sha256": digest,
                 "path": str(path.relative_to(self.source_root)),
+                "supportFiles": [item.name for item in bundle[1:]],
             })
         return sources
+
+    def _source_bundle(self, source_path: Path) -> list[Path]:
+        files = [source_path]
+        for filename in FIRMWARE_SUPPORT_FILES.get(source_path.name, ()):
+            support = (self.source_root / filename).resolve()
+            if support.parent != self.source_root or not support.is_file():
+                raise FirmwareToolError(
+                    f"required firmware support file is missing: {filename}"
+                )
+            files.append(support)
+        return files
+
+    @staticmethod
+    def _source_bundle_sha256(files: list[Path]) -> str:
+        digest = hashlib.sha256()
+        for path in files:
+            data = path.read_bytes()
+            digest.update(path.name.encode("utf-8"))
+            digest.update(b"\0")
+            digest.update(str(len(data)).encode("ascii"))
+            digest.update(b"\0")
+            digest.update(data)
+            digest.update(b"\0")
+        return digest.hexdigest()
 
     def _library_versions(self) -> dict[str, str]:
         versions: dict[str, str] = {}
@@ -505,6 +534,9 @@ class DeviceFirmwareManager:
         build_dir.mkdir(parents=True)
         sketch_path = sketch_dir / f"{source_path.stem}.ino"
         shutil.copy2(source_path, sketch_path)
+        support_files = self._source_bundle(source_path)[1:]
+        for support_path in support_files:
+            shutil.copy2(support_path, sketch_dir / support_path.name)
         build_partition_path = sketch_dir / PARTITION_FILENAME
         shutil.copy2(partition_path, build_partition_path)
         self.sketchbook.mkdir(parents=True, exist_ok=True)
@@ -549,6 +581,7 @@ class DeviceFirmwareManager:
             "output": output,
             "buildPath": str(build_dir),
             "sketchPath": str(sketch_path),
+            "supportFiles": [path.name for path in support_files],
         }
         with self._lock:
             self._builds[build_id] = record
@@ -625,7 +658,9 @@ class DeviceFirmwareManager:
         # never writes the SPIFFS settings partition.
         command = [
             sys.executable, str(self.esptool), "--chip", "esp32",
-            "--port", device["stablePath"], "--baud", "460800",
+            # The long robot harness/USB bridge is reliable at 115200; 460800
+            # can enter the bootloader but drop mid-write and strand the app.
+            "--port", device["stablePath"], "--baud", "115200",
             "--before", "default_reset", "--after", "hard_reset",
             "write_flash", "-z", "--flash_mode", "qio",
             "--flash_freq", "80m", "--flash_size", "4MB",

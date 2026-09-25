@@ -24,17 +24,17 @@
         <span>DROPBEAR · LOW-LEVEL DIGITAL TWIN</span>
       </div>
     </div>
-    <div class="source-chip" title="Grounded in the current Dropbear low-level-control source">
+    <div class="source-chip" title="Corrected lightweight browser derivative of the authoritative dropbear-locomotion USD">
       <span class="live-dot"></span>
-      SOURCE <b>91ad7a1</b>
+      KINEMATICS <b>a397be8</b>
     </div>
     <div class="runbar">
-      <label class="resolution-control" title="Scale the USD viewport render resolution">
+      <label class="resolution-control topbar-aux" title="Scale the USD viewport render resolution">
         <span>USD RES</span>
         <input id="usd-resolution" type="range" min="50" max="200" step="25" value="100" aria-label="USD viewport resolution">
         <output id="usd-resolution-output">100%</output>
       </label>
-      <label class="compact-select">
+      <label class="compact-select topbar-aux">
         <span>RATE</span>
         <select id="sim-speed" aria-label="Simulation rate">
           <option value="0.25">0.25×</option>
@@ -43,7 +43,7 @@
           <option value="4">4×</option>
         </select>
       </label>
-      <button id="sim-reset" class="icon-button" title="Reset simulation" aria-label="Reset simulation">↺</button>
+      <button id="sim-reset" class="icon-button topbar-aux" title="Reset simulation" aria-label="Reset simulation">↺</button>
       <button id="hardware-control-lock" class="control-lock-button" type="button">CONTROL LOCKED</button>
       <button id="sim-toggle" class="run-button" aria-pressed="false"><span class="run-icon">▶</span> PLAY</button>
       <div id="system-state" class="system-state paused"><span></span>GUARDED PAUSE</div>
@@ -79,17 +79,11 @@
         <button class="rail-item active" data-view-target="sim">
           <span class="rail-icon">⌁</span><span>Live Robot</span>
         </button>
-        <button class="rail-item" data-view-target="cad">
-          <span class="rail-icon">◇</span><span>Actuator CAD</span>
-        </button>
         <button class="rail-item" data-view-target="controller">
-          <span class="rail-icon">▦</span><span>Controller Health</span>
+          <span class="rail-icon">▦</span><span>Motor State</span>
         </button>
         <button class="rail-item" data-view-target="devices">
           <span class="rail-icon">≋</span><span>ESP32 Devices</span>
-        </button>
-        <button class="rail-item" data-view-target="firmware">
-          <span class="rail-icon">›_</span><span>Firmware</span>
         </button>
       </nav>
       <div class="rail-foot">
@@ -103,6 +97,10 @@
       <section class="view active" data-view="sim">
         <div class="view-heading">
           <div class="scenario-bar">
+            <div class="live-observation-heading" aria-hidden="true">
+              <span>LIVE ROBOT OBSERVATION</span>
+              <b>DIRECT CAN + AS5600</b>
+            </div>
             <div class="playback-mode-control">
               <span>MOTION / POLICY PLAYBACK</span>
               <div class="playback-mode-buttons">
@@ -302,10 +300,10 @@
               </div>
             </div>
             <div class="metric-strip">
-              <div><span>ANGLE</span><b id="sel-angle">180.0°</b></div>
-              <div><span>VELOCITY</span><b id="sel-velocity">0.0°/s</b></div>
-              <div><span>TORQUE</span><b id="sel-torque">0.00 N·m</b></div>
-              <div><span>SENSOR</span><b id="sel-sensor">GPIO14</b></div>
+              <div><span id="sel-angle-label">ANGLE</span><b id="sel-angle">180.0°</b></div>
+              <div><span id="sel-velocity-label">VELOCITY</span><b id="sel-velocity">0.0°/s</b></div>
+              <div><span id="sel-torque-label">TORQUE</span><b id="sel-torque">0.00 N·m</b></div>
+              <div><span id="sel-sensor-label">SENSOR</span><b id="sel-sensor">GPIO14</b></div>
             </div>
             <div class="control-grid">
               <label class="range-control">

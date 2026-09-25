@@ -239,7 +239,9 @@ const ui = {
   physicsRuntime: null,
   hardwareObservation: {
     active: false,
-    autoActivate: new URLSearchParams(window.location.search).get("live") === "1",
+    // The dashboard is an observation surface first. Live ESP32 state is the
+    // default; append ?live=0 only when deliberately reviewing synthetic state.
+    autoActivate: new URLSearchParams(window.location.search).get("live") !== "0",
     pending: false,
     requesting: false,
     healthPending: false,
@@ -249,7 +251,9 @@ const ui = {
     lastAppliedSignature: "",
     error: "",
     softwareZero: loadSoftwareZero(),
-    angleSource: localStorage.getItem("dropbear.control.angleSource") || "auto",
+    // Direct-CAN-only is a per-session commissioning choice. Never let an old
+    // browser preference make an otherwise live robot reopen as UNOBSERVED.
+    angleSource: "auto",
     recording: false,
     recordingRows: [],
     lastRecordedSignature: "",
@@ -875,12 +879,13 @@ function makeJointCards() {
     button.innerHTML = `
       <div class="joint-card-top">
         <b>${definition.label}</b>
-        <code title="${binding?.variant || "RMD"} · ${binding?.motorFirmware || "firmware unknown"} · ${binding?.encoderProfile || "feedback unknown"}">${definition.canId} · ${binding?.variant || "RMD"}</code>
+        <code title="${binding?.modelName || binding?.variant || "RMD"} · FW ${binding?.motorFirmware || "unknown"} · ${binding?.anglePayload || "angle layout unknown"} · ${binding?.encoderProfile || "feedback unknown"}">${definition.canId} · ${binding?.motor || "RMD"} ${binding?.reductionRatio || "?"}:1 · FW ${binding?.motorFirmware || "?"}</code>
       </div>
       <div class="joint-card-state">
-        <span>POSITION<em data-field="angle">180.0°</em></span>
-        <span><i class="joint-dot"></i>TORQUE<em data-field="torque">0.00 N·m</em></span>
-      </div>`;
+        <span><i class="joint-dot" data-field="motor-dot"></i>CAN MOTOR<em data-field="motor-angle">WAITING</em></span>
+        <span><i class="joint-dot" data-field="sensor-dot"></i>AS5600<em data-field="sensor-angle">WAITING</em></span>
+      </div>
+      <div class="joint-card-model"><span>MODEL</span><em data-field="angle">180.0°</em></div>`;
     button.addEventListener("click", () => selectJoint(definition.id));
     list.appendChild(button);
   }
@@ -898,7 +903,7 @@ function selectJoint(id) {
   $("selected-name").textContent = target.label;
   const usdBinding = dropbearUsdBinding(target.id);
   $("selected-can").textContent = usdBinding
-    ? `${target.canId} · ${usdBinding.variant} · ${usdBinding.motorFirmware}`
+    ? `${target.canId} · ${usdBinding.modelName || usdBinding.variant} · FW ${usdBinding.motorFirmware} · ${usdBinding.angleReference}`
     : target.canId;
   const cadModelKey = usdBinding?.motor === "RMD-X8" ? "x8-pro" : "x10-s2";
   cad.setModel(cadModelKey);
@@ -1394,7 +1399,6 @@ function setupHardwareControls() {
   angleSource.value = ui.hardwareObservation.angleSource;
   angleSource.addEventListener("change", (event) => {
     ui.hardwareObservation.angleSource = event.target.value;
-    localStorage.setItem("dropbear.control.angleSource", ui.hardwareObservation.angleSource);
     clearHardwareObservationHistory(sim);
     if (ui.hardwareObservation.active && ui.hardwareObservation.latest) {
       applyHardwareObservation(
@@ -1809,6 +1813,7 @@ function renderEspDevices() {
 
   const status = $("esp-device-status");
   status.className = `load-status ${devices.length ? "ok" : "error"}`;
+  status.title = "";
   status.innerHTML = "<span></span>";
   status.append(document.createTextNode(`${devices.length} USB DEVICE${devices.length === 1 ? "" : "S"}`));
 
@@ -1881,7 +1886,8 @@ async function pollEspDevices() {
   } catch (error) {
     const status = $("esp-device-status");
     status.className = "load-status error";
-    status.textContent = `DEVICE API · ${error.message}`;
+    status.textContent = "DEVICE SERVICE OFFLINE · RETRYING";
+    status.title = `The dashboard backend is unreachable: ${error.message}`;
   }
 }
 
@@ -2689,6 +2695,7 @@ function renderLive() {
   const selectedArm = armMotorStates.find((entry) => entry.id === ui.selectedArmMotorId);
   const runningButton = $("sim-toggle");
   const observingHardware = ui.hardwareObservation.active;
+  document.body.classList.toggle("hardware-observing", observingHardware);
   const effectivePlaying = !observingHardware && (ui.policyMode ? policyPlayer.playing : sim.playMode);
   const hardwareFreshSides = ["left", "right"].filter(
     (side) => ui.hardwareObservation.latest?.sides?.[side]?.fresh === true,
@@ -2714,16 +2721,34 @@ function renderLive() {
   $("sim-time").textContent = `${sim.time.toFixed(2)} s`;
   $("control-state").textContent = observingHardware ? "OBSERVE" : effectivePlaying ? sim.scenario.toUpperCase() : "STOP";
   $("can-load").textContent = `${sim.canUtilization.toFixed(1)}%`;
+  $("sel-angle-label").textContent = observingHardware && ui.axisCategory === "leg" ? "MODEL ANGLE" : "ANGLE";
+  $("sel-velocity-label").textContent = observingHardware && ui.axisCategory === "leg" ? "CAN MOTOR" : "VELOCITY";
+  $("sel-torque-label").textContent = observingHardware && ui.axisCategory === "leg" ? "AS5600" : "TORQUE";
+  $("sel-sensor-label").textContent = observingHardware && ui.axisCategory === "leg" ? "SIGNAL STATE" : "SENSOR";
   $("sel-angle").textContent = ui.axisCategory === "arm"
     ? `${(selectedArm?.angleDeg || 0).toFixed(1)}°`
+    : observingHardware
+      ? target.observationModelApplied
+        ? `${target.observationMechanismDeg.toFixed(1)}° · ${observationPositionLabel(target.observationPositionSource)}`
+        : "HELD · NO QUALIFIED SOURCE"
     : target.observationValid
       ? `${target.observationRawDeg.toFixed(1)}° ${observationPositionLabel(target.observationPositionSource)} · ${target.observationModelApplied ? `${target.observationZeroedDeg.toFixed(1)}° zero · ${target.observationMechanismDeg.toFixed(1)}° model` : "MODEL HELD"}`
       : `${(target.angle - 180).toFixed(1)}°`;
   $("sel-velocity").textContent = ui.axisCategory === "arm"
     ? `${(selectedArm?.velocityDegS || 0).toFixed(1)}°/s`
+    : observingHardware
+      ? Number.isFinite(target.observationMotorDeg)
+        ? `${target.observationMotorDeg.toFixed(2)}° · DIRECT`
+        : "NO 0x92 REPLY"
     : `${target.velocity.toFixed(1)}°/s`;
   $("sel-torque").textContent = ui.axisCategory === "arm"
     ? `${(selectedArm?.torqueNm || 0).toFixed(2)} N·m`
+    : observingHardware
+      ? target.sensorPin == null
+        ? "NOT FITTED"
+        : Number.isFinite(target.observationExternalDeg)
+          ? `${target.observationExternalDeg.toFixed(1)}° · ${target.observationExternalFresh ? "FRESH" : "STALE"}`
+          : "NO PWM"
     : `${target.torque.toFixed(2)} N·m`;
   $("sel-sensor").textContent = ui.axisCategory === "arm"
     ? "AUX · CAN UNMAPPED"
@@ -2733,7 +2758,7 @@ function renderLive() {
         : "NO ANALOG"
       : observingHardware
         ? target.observationValid
-          ? `LIVE GPIO${target.sensorPin} · ${target.observationModelApplied ? "MODEL APPLIED" : "RAW ONLY"} · ${Number(target.observationAgeMs || 0).toFixed(0)} ms`
+        ? `GPIO${target.sensorPin} · CAN ${Number.isFinite(target.observationMotorDeg) ? "FRESH" : "NO REPLY"} · PWM ${target.observationExternalFresh ? "FRESH" : "STALE"} · ${Number(target.observationAgeMs || 0).toFixed(0)} ms`
           : `GPIO${target.sensorPin} · UNAVAILABLE`
         : `GPIO${target.sensorPin} · ${target.adc}`;
   $("fault-sensor").textContent = ui.axisCategory === "arm"
@@ -2747,16 +2772,35 @@ function renderLive() {
 
   for (const card of document.querySelectorAll(".joint-card[data-joint-id]")) {
     const joint = sim.getJoint(Number(card.dataset.jointId));
+    const motorAvailable = Number.isFinite(joint.observationMotorDeg);
+    const sensorAvailable = Number.isFinite(joint.observationExternalDeg);
+    const motorOutput = card.querySelector('[data-field="motor-angle"]');
+    const sensorOutput = card.querySelector('[data-field="sensor-angle"]');
+    const motorDot = card.querySelector('[data-field="motor-dot"]');
+    const sensorDot = card.querySelector('[data-field="sensor-dot"]');
+    motorOutput.textContent = observingHardware
+      ? motorAvailable ? `${joint.observationMotorDeg.toFixed(2)}° · FRESH` : "— · NO REPLY"
+      : `${(joint.angle - 180).toFixed(1)}° · SIM`;
+    sensorOutput.textContent = observingHardware
+      ? joint.sensorPin == null ? "— · NOT FITTED"
+        : sensorAvailable
+          ? `${joint.observationExternalDeg.toFixed(1)}° · ${joint.observationExternalFresh ? "FRESH" : "STALE"}`
+          : "— · NO PWM"
+      : joint.sensorPin == null ? "— · NOT FITTED" : `GPIO${joint.sensorPin} · SIM`;
+    motorDot.className = `joint-dot ${motorAvailable ? "observed" : observingHardware ? "warn" : ""}`;
+    sensorDot.className = `joint-dot ${joint.observationExternalFresh ? "observed" : sensorAvailable || observingHardware ? "warn" : ""}`;
     card.querySelector('[data-field="angle"]').textContent = observingHardware && !joint.observationValid
-      ? "UNOBSERVED"
+      ? "HELD · NO QUALIFIED SOURCE"
       : joint.observationValid
         ? joint.observationModelApplied
-          ? `${joint.observationZeroedDeg.toFixed(1)}° zero · ${joint.observationRawDeg.toFixed(1)}° ${observationPositionLabel(joint.observationPositionSource)}`
-          : `${joint.observationRawDeg.toFixed(1)}° ${observationPositionLabel(joint.observationPositionSource)} · HELD`
+          ? `${joint.observationMechanismDeg.toFixed(1)}° · ${observationPositionLabel(joint.observationPositionSource)}`
+          : `HELD · ${observationPositionLabel(joint.observationPositionSource)}`
         : `${(joint.angle - 180).toFixed(1)}°`;
-    card.querySelector('[data-field="torque"]').textContent = `${joint.torque.toFixed(2)} N·m`;
-    const dot = card.querySelector(".joint-dot");
-    dot.className = `joint-dot ${joint.temperature > 80 || sim.faults.canDrop || (observingHardware && joint.observationValid && !joint.observationModelApplied) ? "warn" : observingHardware && joint.observationValid ? "observed" : sim.playMode ? "live" : ""}`;
+  }
+  if (ui.motorCategory === "legs") {
+    $("motor-map-title").textContent = observingHardware
+      ? "Live leg feedback · direct channels"
+      : "Installed leg motor map";
   }
 
   for (const side of ["left", "right"]) {
@@ -3039,6 +3083,7 @@ window.dropbearTwin = {
   robot,
   board,
   cad,
+  switchView,
   armMotorStates,
   armMotorBindings: DROPBEAR_ARM_MOTOR_BINDINGS,
   policyPlayer,

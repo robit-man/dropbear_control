@@ -79,18 +79,48 @@ MOTOR_BINDINGS = {
     ),
 }
 
+MOTOR_PROFILE_METADATA = {
+    "calf": {
+        "motorModel": "MyActuator RMD-X8 Pro 1:9",
+        "motorFirmware": "V1.7",
+        "motorProtocol": "rmd-x8-v1.7",
+        "gearRatio": 9.0,
+        "angleReference": "output_shaft",
+        "anglePayload": "signed56_le_bytes_1_7",
+    },
+    "leg": {
+        "motorModel": "MyActuator RMD-X10 1:7",
+        "motorFirmware": "V4.2+",
+        "motorProtocol": "rmd-x10-v4.2+",
+        "gearRatio": 7.0,
+        "angleReference": "output_shaft",
+        "anglePayload": "signed32_le_bytes_4_7",
+    },
+}
 
-def unavailable_motor_observations(side: str) -> dict[str, dict[str, Any]]:
+
+def _motor_profile_metadata(canonical_name: str) -> dict[str, Any]:
+    profile = MOTOR_PROFILE_METADATA[
+        "calf" if canonical_name.endswith(("outer_calf", "inner_calf")) else "leg"
+    ]
+    return dict(profile)
+
+
+def unavailable_motor_observations(
+    side: str,
+    status: str = "not_emitted_by_deployed_firmware",
+) -> dict[str, dict[str, Any]]:
     """Describe every motor-native channel without substituting sensor data."""
 
     return {
         canonical_name: {
+            **_motor_profile_metadata(canonical_name),
             "canonicalName": canonical_name,
             "canId": can_id,
             "positionDeg": None,
             "available": False,
             "source": "motor_native_unavailable",
-            "status": "not_emitted_by_deployed_firmware",
+            "status": status,
             "fresh": False,
             "controlPositionDeg": None,
             "controlAvailable": False,
@@ -117,16 +147,22 @@ def _motor_observations(
     observations = unavailable_motor_observations(side)
     for slot, ((canonical_name, _), value) in enumerate(zip(MOTOR_BINDINGS[side], values)):
         control_value = control_values[slot] if control_values is not None else None
+        profile = _motor_profile_metadata(canonical_name)
+        profile_source = (
+            "rmd_x8_v17_multi_turn_angle"
+            if profile["motorProtocol"] == "rmd-x8-v1.7"
+            else "rmd_x10_v42_multi_turn_angle"
+        )
         observations[canonical_name] = {
             **observations[canonical_name],
             "positionDeg": value,
             "available": value is not None,
-            "source": "rmd_v44_multi_turn_angle" if value is not None else "motor_native_unavailable",
+            "source": profile_source if value is not None else "motor_native_unavailable",
             "status": "measured" if value is not None else "not_fresh",
             "fresh": bool(fresh_mask & (1 << slot)) if control_values is not None else value is not None,
             "controlPositionDeg": control_value,
             "controlAvailable": bool(control_mask & (1 << slot)) and control_value is not None,
-            "controlSource": "rmd_v44_as5600_boot_aligned" if control_value is not None else "unavailable",
+            "controlSource": f"{profile_source}_as5600_boot_aligned" if control_value is not None else "unavailable",
             "alignmentFault": bool(alignment_fault_mask & (1 << slot)),
         }
     return observations
@@ -891,10 +927,21 @@ class HardwareObservationManager:
                     and state.state == "observing"
                 )
                 fresh_count += int(fresh)
-                current_motor_joints = (
-                    dict(state.motor_joints)
-                    if fresh and state.motor_joints else unavailable_motor_observations(side)
-                )
+                if fresh and state.motor_joints:
+                    current_motor_joints = dict(state.motor_joints)
+                else:
+                    profile_capable = (
+                        "motor-profile-v1" in state.capabilities
+                        or state.advertised_telemetry_protocol == "DB3"
+                    )
+                    unavailable_status = (
+                        "telemetry_stale" if state.sequence
+                        else "telemetry_not_started" if profile_capable
+                        else "not_emitted_by_deployed_firmware"
+                    )
+                    current_motor_joints = unavailable_motor_observations(
+                        side, unavailable_status,
+                    )
                 unobserved_joints.extend(
                     name for name, motor in current_motor_joints.items()
                     if not motor.get("available")

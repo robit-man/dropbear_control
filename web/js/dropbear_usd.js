@@ -7,19 +7,42 @@ export const DROPBEAR_USD_SOURCE = Object.freeze({
   attribution: "Hyperspawn Robotics — Priyanshu Pareek and Cole Myers",
 });
 
+export const DROPBEAR_MOTOR_PROFILES = Object.freeze({
+  x8V17: Object.freeze({
+    motor: "RMD-X8",
+    variant: "RMD-X8 Pro",
+    modelName: "MyActuator RMD-X8 Pro 1:9",
+    motorFirmware: "V1.7",
+    reductionRatio: 9,
+    angleReference: "output shaft",
+    anglePayload: "signed 56-bit LE · DATA[1..7] · 0.01°",
+    encoderProfile: "motor 0x92 + independent AS5600 boot reference",
+  }),
+  x10V42: Object.freeze({
+    motor: "RMD-X10",
+    variant: "RMD-X10 Pro",
+    modelName: "MyActuator RMD-X10 Pro 1:7",
+    motorFirmware: "V4.2+",
+    reductionRatio: 7,
+    angleReference: "output shaft",
+    anglePayload: "signed 32-bit LE · DATA[4..7] · 0.01°",
+    encoderProfile: "motor 0x92 + independent AS5600 where installed",
+  }),
+});
+
 export const DROPBEAR_USD_BINDINGS = Object.freeze([
-  { canId: 0x141, canLabel: "0x141", side: "left", firmwareJoint: "outer_calf", usdJoint: "LL_Revolute81", closure: false, motor: "RMD-X8", variant: "RMD-X8 Pro", motorFirmware: "legacy / V2", encoderProfile: "incremental + AS5600 boot reference" },
-  { canId: 0x142, canLabel: "0x142", side: "left", firmwareJoint: "inner_calf", usdJoint: "LL_Revolute67", closure: false, motor: "RMD-X8", variant: "RMD-X8 Pro", motorFirmware: "legacy / V2", encoderProfile: "incremental + AS5600 boot reference" },
-  { canId: 0x143, canLabel: "0x143", side: "right", firmwareJoint: "inner_calf", usdJoint: "RL_Revolute67", closure: false, motor: "RMD-X8", variant: "RMD-X8 Pro", motorFirmware: "legacy / V2", encoderProfile: "incremental + AS5600 boot reference" },
-  { canId: 0x144, canLabel: "0x144", side: "right", firmwareJoint: "outer_calf", usdJoint: "RL_Revolute81", closure: false, motor: "RMD-X8", variant: "RMD-X8 Pro", motorFirmware: "legacy / V2", encoderProfile: "incremental + AS5600 boot reference" },
-  { canId: 0x145, canLabel: "0x145", side: "left", firmwareJoint: "knee", usdJoint: "LL_knee_actuator_joint", closure: false, motor: "RMD-X10", variant: "RMD-X10 Pro", motorFirmware: "V3", encoderProfile: "incremental + AS5600 boot reference" },
-  { canId: 0x146, canLabel: "0x146", side: "left", firmwareJoint: "hip_pitch", usdJoint: "LL_hip_joint", closure: false, motor: "RMD-X10", variant: "RMD-X10 Pro", motorFirmware: "V3", encoderProfile: "incremental + AS5600 boot reference" },
-  { canId: 0x147, canLabel: "0x147", side: "right", firmwareJoint: "hip_pitch", usdJoint: "RL_hip_joint", closure: false, motor: "RMD-X10", variant: "RMD-X10 Pro", motorFirmware: "V3", encoderProfile: "incremental + AS5600 boot reference" },
-  { canId: 0x148, canLabel: "0x148", side: "right", firmwareJoint: "knee", usdJoint: "RL_knee_actuator_joint", closure: false, motor: "RMD-X10", variant: "RMD-X10 Pro", motorFirmware: "V3", encoderProfile: "incremental + AS5600 boot reference" },
-  { canId: 0x149, canLabel: "0x149", side: "left", firmwareJoint: "hip_yaw", usdJoint: "PG_left_leg_roll", closure: false, motor: "RMD-X10", variant: "RMD-X10 base", motorFirmware: "firmware unspecified", encoderProfile: "motor absolute; no AS5600" },
-  { canId: 0x14A, canLabel: "0x14A", side: "left", firmwareJoint: "hip_roll", usdJoint: "PG_left_leg_pitch", closure: false, motor: "RMD-X10", variant: "RMD-X10 Pro", motorFirmware: "V3", encoderProfile: "incremental + AS5600 boot reference" },
-  { canId: 0x14B, canLabel: "0x14B", side: "right", firmwareJoint: "hip_roll", usdJoint: "PG_right_leg_pitch", closure: false, motor: "RMD-X10", variant: "RMD-X10 Pro", motorFirmware: "V3", encoderProfile: "incremental + AS5600 boot reference" },
-  { canId: 0x14C, canLabel: "0x14C", side: "right", firmwareJoint: "hip_yaw", usdJoint: "PG_right_leg_roll", closure: false, motor: "RMD-X10", variant: "RMD-X10 base", motorFirmware: "firmware unspecified", encoderProfile: "motor absolute; no AS5600" },
+  { canId: 0x141, canLabel: "0x141", side: "left", firmwareJoint: "outer_calf", usdJoint: "LL_Revolute81", closure: false, ...DROPBEAR_MOTOR_PROFILES.x8V17 },
+  { canId: 0x142, canLabel: "0x142", side: "left", firmwareJoint: "inner_calf", usdJoint: "LL_Revolute67", closure: false, ...DROPBEAR_MOTOR_PROFILES.x8V17 },
+  { canId: 0x143, canLabel: "0x143", side: "right", firmwareJoint: "inner_calf", usdJoint: "RL_Revolute67", closure: false, ...DROPBEAR_MOTOR_PROFILES.x8V17 },
+  { canId: 0x144, canLabel: "0x144", side: "right", firmwareJoint: "outer_calf", usdJoint: "RL_Revolute81", closure: false, ...DROPBEAR_MOTOR_PROFILES.x8V17 },
+  { canId: 0x145, canLabel: "0x145", side: "left", firmwareJoint: "knee", usdJoint: "LL_knee_actuator_joint", closure: false, ...DROPBEAR_MOTOR_PROFILES.x10V42 },
+  { canId: 0x146, canLabel: "0x146", side: "left", firmwareJoint: "hip_pitch", usdJoint: "LL_hip_joint", closure: false, ...DROPBEAR_MOTOR_PROFILES.x10V42 },
+  { canId: 0x147, canLabel: "0x147", side: "right", firmwareJoint: "hip_pitch", usdJoint: "RL_hip_joint", closure: false, ...DROPBEAR_MOTOR_PROFILES.x10V42 },
+  { canId: 0x148, canLabel: "0x148", side: "right", firmwareJoint: "knee", usdJoint: "RL_knee_actuator_joint", closure: false, ...DROPBEAR_MOTOR_PROFILES.x10V42 },
+  { canId: 0x149, canLabel: "0x149", side: "left", firmwareJoint: "hip_yaw", usdJoint: "PG_left_leg_roll", closure: false, ...DROPBEAR_MOTOR_PROFILES.x10V42, variant: "RMD-X10 base", modelName: "MyActuator RMD-X10 base 1:7", encoderProfile: "motor 0x92; no AS5600" },
+  { canId: 0x14A, canLabel: "0x14A", side: "left", firmwareJoint: "hip_roll", usdJoint: "PG_left_leg_pitch", closure: false, ...DROPBEAR_MOTOR_PROFILES.x10V42 },
+  { canId: 0x14B, canLabel: "0x14B", side: "right", firmwareJoint: "hip_roll", usdJoint: "PG_right_leg_pitch", closure: false, ...DROPBEAR_MOTOR_PROFILES.x10V42 },
+  { canId: 0x14C, canLabel: "0x14C", side: "right", firmwareJoint: "hip_yaw", usdJoint: "PG_right_leg_roll", closure: false, ...DROPBEAR_MOTOR_PROFILES.x10V42, variant: "RMD-X10 base", modelName: "MyActuator RMD-X10 base 1:7", encoderProfile: "motor 0x92; no AS5600" },
 ]);
 
 // Arm axes are present in the ground-truth USD but are not assigned CAN IDs by

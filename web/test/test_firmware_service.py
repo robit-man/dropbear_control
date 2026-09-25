@@ -39,6 +39,11 @@ class FirmwareServiceTests(unittest.TestCase):
         self.core_root = root / "esp32-core"
         self.project.mkdir()
         self.source.mkdir()
+        (self.source / "dropbear_motor_protocol.h").write_text(
+            "#ifndef DROPBEAR_MOTOR_PROTOCOL_H\n"
+            "#define DROPBEAR_MOTOR_PROTOCOL_H\n"
+            "#endif\n"
+        )
         (self.source / "partitions.csv").write_text(
             "nvs,data,nvs,0x9000,0x5000,\n"
             "otadata,data,ota,0xe000,0x2000,\n"
@@ -89,6 +94,7 @@ class FirmwareServiceTests(unittest.TestCase):
         self.assertEqual(snapshot["sources"][0]["family"], "universal-behemoth")
         self.assertEqual(snapshot["sources"][0]["interface"], "db3 + DB1 + guarded captive portal")
         self.assertEqual(snapshot["sources"][0]["filename"], sketch.name)
+        self.assertEqual(snapshot["sources"][0]["supportFiles"], ["dropbear_motor_protocol.h"])
         self.assertTrue(snapshot["toolchain"]["available"])
         self.assertTrue(snapshot["toolchain"]["ready"])
         self.assertEqual(snapshot["toolchain"]["libraryVersions"]["FastAccelStepper"], "0.30.15")
@@ -123,6 +129,33 @@ class FirmwareServiceTests(unittest.TestCase):
         self.assertEqual(result["spiffsOffset"], "0x290000")
         copied_partition = Path(result["sketchPath"]).parent / "partitions.csv"
         self.assertEqual(copied_partition.read_bytes(), (self.source / "partitions.csv").read_bytes())
+
+    def test_behemoth_compile_stages_required_protocol_header(self):
+        sketch = self.source / "firmware_full_libs_neck.ino"
+        sketch.write_text('#include "dropbear_motor_protocol.h"\nvoid setup() {}\nvoid loop() {}\n')
+        source_id = self.manager.snapshot()["sources"][0]["id"]
+
+        def successful_compile(command, **_kwargs):
+            build_path = Path(next(
+                item.partition("=")[2] for item in command if item.startswith("build.path=")
+            ))
+            build_path.mkdir(parents=True, exist_ok=True)
+            (build_path / "firmware_full_libs_neck.ino.bin").write_bytes(b"firmware")
+            return subprocess.CompletedProcess(command, 0, "Sketch uses 100 bytes", "")
+
+        with mock.patch("firmware_service.subprocess.run", side_effect=successful_compile):
+            result = self.manager.compile(source_id)
+
+        staged = Path(result["sketchPath"]).parent / "dropbear_motor_protocol.h"
+        self.assertEqual(staged.read_bytes(), (self.source / staged.name).read_bytes())
+        self.assertEqual(result["supportFiles"], [staged.name])
+
+    def test_behemoth_source_requires_protocol_header(self):
+        sketch = self.source / "firmware_full_libs_neck.ino"
+        sketch.write_text("void setup() {}\nvoid loop() {}\n")
+        (self.source / "dropbear_motor_protocol.h").unlink()
+        with self.assertRaisesRegex(FirmwareToolError, "dropbear_motor_protocol.h"):
+            self.manager.snapshot()
 
     def test_binary_partition_parser_finds_spiffs(self):
         entry = struct.pack(

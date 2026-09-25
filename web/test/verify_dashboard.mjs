@@ -36,8 +36,10 @@ function check(name, condition) {
 const index = await request(`${base}/`);
 check("index served", index.status === 200);
 check(
-  "five control and state views exposed",
-  (index.body.match(/data-view-target=/g) || []).length === 5
+  "three focused live-state views exposed",
+  (index.body.match(/data-view-target=/g) || []).length === 3
+    && !index.body.includes('data-view-target="cad"')
+    && !index.body.includes('data-view-target="firmware"')
     && !index.body.includes('data-view-target="rl"')
     && !index.body.includes('data-view-target="gr00t"')
     && !index.body.includes('data-view-target="evidence"'),
@@ -55,7 +57,10 @@ check("USD robot viewport replaces schematic", index.body.includes('id="robot-ca
 check("STEP-derived CAD viewport present", index.body.includes('id="cad-canvas"'));
 check("live controller functional schematic present", index.body.includes('id="controller-diagnostics"'));
 check("firmware terminal present", index.body.includes('id="terminal-form"'));
-check("current Dropbear source revision shown", index.body.includes("91ad7a1"));
+check(
+  "authoritative Dropbear kinematic revision shown",
+  index.body.includes("KINEMATICS") && index.body.includes("a397be8"),
+);
 check("separate dropbear_firmware repository is absent", !index.body.includes("dropbear_firmware"));
 check("deprecated decorative brand mark removed", !index.body.includes('class="brand-mark"'));
 check("Hyperspawn identity applied", index.body.includes("HYPERSPAWN<em>_</em>"));
@@ -170,6 +175,13 @@ check(
 );
 
 const app = await request(`${base}/js/app.js`);
+check(
+  "live motor cards separate direct CAN and AS5600 channels",
+  app.body.includes('data-field="motor-angle"')
+    && app.body.includes('data-field="sensor-angle"')
+    && app.body.includes("NO 0x92 REPLY")
+    && index.body.includes("DIRECT CAN + AS5600"),
+);
 check(
   "firmware compile progress reports ready, running, pass, and failure states",
   app.body.includes('compiling: "COMPILING"')
