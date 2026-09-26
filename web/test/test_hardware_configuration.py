@@ -3,6 +3,7 @@ from __future__ import annotations
 import sys
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
 
 
@@ -126,6 +127,24 @@ class HardwareConfigurationProtocolTests(unittest.TestCase):
             manager.send_guarded_command("left", "direction right_knee +")
         with self.assertRaises(ValueError):
             manager.send_diagnostic("left", "torque knee 1")
+
+    def test_grouped_observation_commands_are_uart_paced(self):
+        writes: list[bytes] = []
+        manager = HardwareObservationManager(
+            left_path="/dev/test-left",
+            enabled=True,
+            diagnostic_writer=lambda _path, data: writes.append(data) or len(data),
+        )
+        manager._states["left"].command_protocol = "DB1"
+        with mock.patch("hardware_service.time.sleep") as sleep:
+            result = manager.request_observation_stream(True)
+        self.assertTrue(result["sides"]["left"]["ok"])
+        self.assertEqual(writes[:3], [
+            b"<DB1:LEFTLEG> version\n",
+            b"<DB1:LEFTLEG> health\n",
+            b"<DB1:LEFTLEG> observe on\n",
+        ])
+        self.assertGreaterEqual(sleep.call_args_list.count(mock.call(0.08)), 2)
 
     def test_host_configuration_route_translates_only_structured_settings(self):
         observation = _MaintenanceObservation()

@@ -33,6 +33,7 @@ MAX_LINE_BYTES = 256
 MAX_BUFFER_BYTES = 4096
 DEFAULT_MAX_SAMPLE_AGE_MS = 250.0
 RAW_SERIAL_TAIL_LINES = 160
+DIAGNOSTIC_INTERCOMMAND_DELAY_S = 0.08
 # Some legacy builds flood USB at roughly 600 lines/s despite documenting a
 # 50 Hz stream. The browser polls at 10 Hz, so admitting at most 50 complete
 # records/s preserves the controller's intended motion bandwidth while keeping
@@ -982,9 +983,16 @@ class HardwareObservationManager:
                  else ("version", "health", "observe on"))
                 if enabled else ("observe off",)
             )
-            for command in commands:
+            for index, command in enumerate(commands):
                 try:
                     sent.append(self.send_diagnostic(side, command))
+                    # ESP32's USB UART RX ring is small. Back-to-back addressed
+                    # version/health/observe records can be acknowledged by the
+                    # host write while still overrunning the controller before
+                    # its 5 ms command task drains them. Preserve record
+                    # boundaries with a bounded gap; each side has its own port.
+                    if index + 1 < len(commands):
+                        time.sleep(DIAGNOSTIC_INTERCOMMAND_DELAY_S)
                 except ValueError as error:
                     errors.append(str(error))
             results[side] = {"sent": sent, "errors": errors, "ok": not errors}
