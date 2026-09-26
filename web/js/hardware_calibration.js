@@ -121,6 +121,18 @@ const HIP_YAW_CALIBRATION = Object.freeze({
   captureQuality: "motor_zero_required",
 });
 
+// Validated against physical motion on the source-of-truth lightweight USD.
+// These signs translate encoder-positive motion into the authored USD joint
+// coordinate only; they do not alter firmware torque/direction configuration.
+export const HARDWARE_TO_USD_DIRECTION = Object.freeze({
+  left: Object.freeze({}),
+  right: Object.freeze({
+    hip_pitch: -1,
+    knee: -1,
+    hip_yaw: -1,
+  }),
+});
+
 function shortestDegreeDelta(next, previous) {
   return ((next - previous + 540) % 360) - 180;
 }
@@ -258,6 +270,7 @@ export function projectHardwareDegrees(
   softwareZero = null,
   positionSource = "external_absolute",
 ) {
+  const direction = HARDWARE_TO_USD_DIRECTION[side]?.[firmwareJoint] ?? 1;
   const baseCalibration = HARDWARE_DEFAULT_STANCE_CALIBRATION.sides[side]?.[firmwareJoint]
     || (firmwareJoint === "hip_yaw" ? HIP_YAW_CALIBRATION : null);
   const isMotorNative = positionSource === "motor_native";
@@ -292,16 +305,18 @@ export function projectHardwareDegrees(
       mechanismDegrees: null,
       renderDegrees: null,
       withinUsdLimits: false,
+      direction,
       calibration: calibration || null,
     });
   }
   const zeroedDegrees = shortestDegreeDelta(rawDegrees, calibration.rawDatumDeg);
-  const mechanismDegrees = calibration.referenceDeg + zeroedDegrees;
+  const mechanismDegrees = calibration.referenceDeg + direction * zeroedDegrees;
   return Object.freeze({
     calibrated: true,
     rawDegrees,
     zeroedDegrees,
     mechanismDegrees,
+    direction,
     // DropbearSim retains 180 degrees as its internal zero. Robot3D then
     // converts this value back to the signed USD coordinate.
     renderDegrees: 180 + mechanismDegrees,

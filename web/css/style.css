@@ -838,6 +838,44 @@ input[type="range"] { width: 100%; accent-color: var(--cyan); }
 .esp-device-card small { font: 500 8px/1.5 "IBM Plex Mono"; }
 .esp-device-card .device-live { color: var(--green); }
 .esp-device-card .device-warn { color: var(--amber); }
+.esp-observability-workspace { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(420px, .85fr); gap: 12px; margin-bottom: 12px; align-items: start; }
+.esp-state-panel, .esp-config-panel { min-width: 0; }
+.esp-state-summary { display: grid; grid-template-columns: repeat(6, minmax(95px, 1fr)); gap: 1px; background: var(--line); border-bottom: 1px solid var(--line); }
+.esp-state-summary > div { min-height: 62px; padding: 11px; background: #090e14; }
+.esp-state-summary span { display: block; color: var(--quiet); font: 600 7px/1.4 "IBM Plex Mono"; letter-spacing: .1em; text-transform: uppercase; }
+.esp-state-summary b { display: block; margin-top: 5px; color: #d8e0e7; font: 700 13px/1.2 "IBM Plex Mono"; overflow: hidden; text-overflow: ellipsis; }
+.esp-state-summary b.ok { color: var(--green); }
+.esp-state-summary b.warn { color: var(--amber); }
+.esp-state-summary b.bad { color: var(--red); }
+.esp-state-tables { display: grid; gap: 14px; padding: 14px; }
+.esp-state-tables h3, .esp-config-section h3 { margin: 0 0 8px; color: #b7c4ce; font: 700 9px "IBM Plex Mono"; letter-spacing: .08em; text-transform: uppercase; }
+.esp-table-scroll { max-width: 100%; overflow-x: auto; border: 1px solid var(--line); }
+.esp-state-table { width: 100%; border-collapse: collapse; font: 500 8px/1.45 "IBM Plex Mono"; }
+.esp-state-table th { padding: 7px 8px; color: var(--quiet); background: #080c11; text-align: left; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+.esp-state-table td { padding: 7px 8px; border-top: 1px solid var(--line); color: #aab7c1; vertical-align: middle; white-space: nowrap; }
+.esp-state-table td:first-child { color: #d4dde4; text-transform: uppercase; }
+.esp-state-table .state-ok { color: var(--green); }
+.esp-state-table .state-warn { color: var(--amber); }
+.esp-state-table .state-bad { color: var(--red); }
+.esp-state-table input, .esp-state-table select { min-width: 72px; max-width: 100px; height: 27px; padding: 4px 6px; font-size: 8px; }
+.esp-diagnostic-actions { display: flex; flex-wrap: wrap; gap: 7px; padding: 0 14px 12px; }
+.esp-diagnostic-actions button { min-height: 27px; padding: 4px 8px; border: 1px solid var(--line); background: #0b1118; color: #8798a5; font: 700 7px "IBM Plex Mono"; letter-spacing: .06em; cursor: pointer; }
+.esp-diagnostic-actions button:hover { border-color: var(--cyan); color: var(--cyan); }
+.esp-operation-result { margin: 0 14px 14px; padding: 9px; border: 1px solid var(--line); background: #070b10; color: var(--quiet); font: 500 8px/1.5 "IBM Plex Mono"; }
+.esp-operation-result.ok { border-color: rgba(74,222,128,.35); color: var(--green); }
+.esp-operation-result.error { border-color: rgba(239,68,68,.4); color: var(--red); }
+.esp-config-panel { display: grid; }
+.esp-config-section { display: grid; gap: 9px; padding: 14px; border-top: 1px solid var(--line); }
+.esp-config-section p, .esp-config-section small { margin: 0; color: var(--quiet); font: 500 8px/1.55 "IBM Plex Mono"; }
+.esp-calibration-section { background: rgba(245,158,11,.018); }
+.esp-safety-checks { display: grid; gap: 6px; }
+.esp-safety-checks label, .esp-check-field { display: flex; gap: 7px; align-items: center; color: #8d9ba6; font: 500 8px/1.4 "IBM Plex Mono"; }
+.esp-confirm-field { display: grid; gap: 5px; color: #8494a1; font: 600 8px "IBM Plex Mono"; }
+.esp-confirm-field input { width: 100%; }
+.esp-config-global { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.esp-config-global > label:not(.esp-check-field) { display: grid; gap: 5px; color: #8494a1; font: 600 8px "IBM Plex Mono"; }
+.esp-config-global input:not([type="checkbox"]), .esp-config-global select { width: 100%; }
+.esp-config-interlock { background: rgba(239,68,68,.02); }
 .esp-device-workspace { display: grid; grid-template-columns: minmax(480px, 1.25fr) minmax(390px, .9fr); gap: 12px; }
 .esp-serial-panel, .esp-flash-panel { min-height: 600px; }
 .esp-serial-panel .panel-head select { max-width: 300px; }
@@ -1487,9 +1525,11 @@ input[type="range"] { width: 100%; accent-color: var(--cyan); }
   .cad-aside, .controller-aside { display: grid; grid-template-columns: 1fr; grid-template-rows: auto; }
   .cad-toolbar { gap: 10px; }
   .cad-toolbar .button { margin-left: 0; }
-  .firmware-grid, .evidence-grid, .esp-device-workspace { grid-template-columns: 1fr; }
+  .firmware-grid, .evidence-grid, .esp-device-workspace, .esp-observability-workspace { grid-template-columns: 1fr; }
   .esp-device-cards { grid-template-columns: 1fr; }
   .esp-query-row { grid-template-columns: 1fr; }
+  .esp-state-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .esp-config-global { grid-template-columns: 1fr; }
   .rl-config-grid { grid-template-columns: 1fr 1fr; }
   .rl-metrics { grid-template-columns: 1fr 1fr 1fr; }
   .rl-policy-summary { grid-template-columns: 1fr 1fr; }

@@ -446,6 +446,72 @@
           <div id="esp-device-status" class="load-status loading"><span></span>SCANNING USB</div>
         </div>
         <div id="esp-device-cards" class="esp-device-cards"></div>
+        <div class="esp-observability-workspace">
+          <article class="panel esp-state-panel">
+            <div class="panel-head">
+              <div><span class="panel-kicker">LIVE STATE INSPECTION</span><h2 id="esp-state-title">Select a leg controller</h2></div>
+              <button id="esp-refresh-state" class="button subtle" type="button">REFRESH CONFIG + HEALTH</button>
+            </div>
+            <div id="esp-state-summary" class="esp-state-summary"></div>
+            <div class="esp-state-tables">
+              <div><h3>Motor-native CAN state</h3><div class="esp-table-scroll"><table class="esp-state-table"><thead><tr><th>Joint</th><th>CAN</th><th>Motor / firmware</th><th>Raw angle</th><th>Control angle</th><th>State</th></tr></thead><tbody id="esp-motor-state"></tbody></table></div></div>
+              <div><h3>Independent AS5600 state</h3><div class="esp-table-scroll"><table class="esp-state-table"><thead><tr><th>Joint</th><th>GPIO</th><th>Angle</th><th>Fresh</th><th>Source</th></tr></thead><tbody id="esp-sensor-state"></tbody></table></div></div>
+            </div>
+            <div class="esp-diagnostic-actions">
+              <button type="button" data-esp-diagnostic="health">HEALTH</button>
+              <button type="button" data-esp-diagnostic="can bus">CAN CONTROLLER</button>
+              <button type="button" data-esp-diagnostic="can scan">DISCOVER CAN IDS</button>
+              <button type="button" data-esp-diagnostic="config show">READ CONFIG</button>
+            </div>
+            <div id="esp-operation-result" class="esp-operation-result">No maintenance operation has run in this browser session.</div>
+          </article>
+
+          <article class="panel esp-config-panel">
+            <div class="panel-head"><div><span class="panel-kicker">CALIBRATION + CONFIGURATION</span><h2>Leg commissioning</h2></div><span id="esp-config-state" class="count-chip">READ ONLY</span></div>
+            <div class="esp-config-section esp-calibration-section">
+              <h3>AS5600 pose calibration</h3>
+              <p id="esp-calibration-readiness">Select a left or right leg controller.</p>
+              <div class="esp-safety-checks">
+                <label><input id="esp-cal-supported" type="checkbox"> Robot is mechanically supported.</label>
+                <label><input id="esp-cal-clear" type="checkbox"> Area is clear; the leg is held at the intended 180° reference pose.</label>
+                <label><input id="esp-cal-estop" type="checkbox"> E-stop and physical disconnect are ready.</label>
+              </div>
+              <label class="esp-confirm-field"><span id="esp-cal-confirm-label">TYPE CALIBRATE &lt;SIDE&gt;</span><input id="esp-cal-confirm" autocomplete="off" spellcheck="false"></label>
+              <button id="esp-calibrate" class="button danger" type="button" disabled>CAPTURE + SAVE ALL 5 SENSOR OFFSETS</button>
+              <small>Calibration samples each AS5600 independently and saves only when all five channels supply 10 valid PWM frames. It never commands a motor.</small>
+            </div>
+
+            <div class="esp-config-section">
+              <h3>Controller configuration</h3>
+              <div class="esp-config-global">
+                <label><span>Operating mode</span><select id="esp-cfg-mode"><option value="standalone">Standalone</option><option value="hyperspawn">HyperSpawn route</option></select></label>
+                <label><span>Max torque limit</span><input id="esp-cfg-max-torque" type="number" min="0.1" max="100" step="0.1"></label>
+                <label><span>HyperSpawn timeout (ms)</span><input id="esp-cfg-timeout" type="number" min="50" max="10000" step="10"></label>
+                <label><span>Wire units / degree</span><input id="esp-cfg-scale" type="number" min="0.0001" max="1000" step="0.001"></label>
+                <label class="esp-check-field"><input id="esp-cfg-raw" type="checkbox"><span>Raw sensor mode (bypass offsets)</span></label>
+                <label class="esp-check-field"><input id="esp-cfg-legacy" type="checkbox"><span>Legacy HyperSpawn broadcast</span></label>
+                <label class="esp-check-field"><input id="esp-cfg-autoarm" type="checkbox"><span>HyperSpawn auto-arm</span></label>
+              </div>
+              <button id="esp-apply-controller-config" class="button subtle" type="button" disabled>APPLY CHANGED CONTROLLER FIELDS</button>
+            </div>
+
+            <div class="esp-config-section">
+              <h3>Per-joint offsets, direction, and limits</h3>
+              <div class="esp-table-scroll"><table class="esp-state-table esp-config-table"><thead><tr><th>Joint</th><th>Offset</th><th>Direction</th><th>Min</th><th>Max</th></tr></thead><tbody id="esp-joint-config"></tbody></table></div>
+              <button id="esp-apply-joint-config" class="button subtle" type="button" disabled>APPLY CHANGED JOINT FIELDS</button>
+            </div>
+
+            <div class="esp-config-section esp-config-interlock">
+              <div class="esp-safety-checks">
+                <label><input id="esp-cfg-supported" type="checkbox"> Robot is mechanically supported.</label>
+                <label><input id="esp-cfg-estop" type="checkbox"> E-stop and physical disconnect are ready.</label>
+                <label><input id="esp-cfg-limits" type="checkbox"> Direction, offsets, and limits were reviewed for this appendage.</label>
+              </div>
+              <label class="esp-confirm-field"><span id="esp-cfg-confirm-label">TYPE APPLY &lt;SIDE&gt; CONFIG</span><input id="esp-cfg-confirm" autocomplete="off" spellcheck="false"></label>
+              <small>Each changed field is validated and persisted independently. Mode changes stop output and require a controller reboot before authority changes.</small>
+            </div>
+          </article>
+        </div>
         <div class="esp-device-workspace">
           <article class="panel esp-serial-panel">
             <div class="panel-head">
@@ -461,6 +527,9 @@
                 <option value="chirality">chirality</option>
                 <option value="mac">mac</option>
                 <option value="saved">saved offsets</option>
+                <option value="config show">full configuration</option>
+                <option value="can bus">CAN controller faults</option>
+                <option value="can scan">discover CAN IDs</option>
                 <option value="help">help</option>
                 <option value="observe on">observe on</option>
                 <option value="observe off">observe off</option>

@@ -1,0 +1,18 @@
+[Unit]
+Description=Dropbear low-level digital twin dashboard
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/Documents/Dropbear-Actuator-Control-Workspace/dropbear_control
+Environment=PYTHONUNBUFFERED=1
+Environment=DROPBEAR_OBSERVATION_ENABLE=1
+Environment=DROPBEAR_OBSERVATION_RIGHT=/dev/serial/by-path/platform-141a0000.pcie-pci-0005:01:00.0-usb-0:1.1:1.0-port0
+Environment=DROPBEAR_OBSERVATION_LEFT=/dev/serial/by-path/platform-141a0000.pcie-pci-0005:01:00.0-usb-0:1.2:1.0-port0
+ExecStart=/usr/bin/python3 web/serve.py 8000
+Restart=always
+RestartSec=3
+TimeoutStopSec=15
+
+[Install]
+WantedBy=default.target

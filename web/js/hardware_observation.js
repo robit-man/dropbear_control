@@ -193,7 +193,7 @@ export function applyHardwareObservation(
         : 0;
       target.velocity = Math.max(
         -MAX_OBSERVED_RATE_DEG_S,
-        Math.min(MAX_OBSERVED_RATE_DEG_S, observedRate),
+        Math.min(MAX_OBSERVED_RATE_DEG_S, observedRate * projection.direction),
       );
       target.rawAngle = ((position % 360) + 360) % 360;
       target.torque = 0;
@@ -301,7 +301,8 @@ export function applyHardwareObservation(
     const prior = previous.get(yawName);
     const dtSeconds = prior ? Math.max(0.001, (nowMs - prior.nowMs) / 1000) : 0;
     yawTarget.velocity = prior && sample.sequence !== prior.sequence
-      ? Math.max(-720, Math.min(720, shortestDegreeDelta(yawPosition, prior.position) / dtSeconds))
+      ? Math.max(-720, Math.min(720,
+        shortestDegreeDelta(yawPosition, prior.position) / dtSeconds * projection.direction))
       : 0;
     yawTarget.rawAngle = ((yawPosition % 360) + 360) % 360;
     yawTarget.torque = 0;

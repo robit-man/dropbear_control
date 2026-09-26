@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import hashlib
+import math
 import os
+import re
 import select
 import shutil
 import stat
@@ -20,6 +22,7 @@ from pathlib import Path
 from typing import Any
 
 
+
 FIRMWARE_SCHEMA = "dropbear-esp32-devices-v3"
 BOARD_FQBN = "esp32:esp32:esp32:PartitionScheme=huge_app,EraseFlash=none"
 REQUIRED_ESP32_CORE_VERSION = "2.0.13"
@@ -27,7 +30,8 @@ REQUIRED_ESP32_CORE_PATCH = "uartSetPins-invalid-index-return-false-v1"
 RAW_TAIL_LINES = 160
 READ_ONLY_SERIAL_COMMANDS = frozenset({
     "version", "/version", "capabilities", "health", "status", "chirality",
-    "mac", "saved", "help", "observe on", "observe off",
+    "mac", "saved", "help", "observe on", "observe off", "config show",
+    "can bus", "can scan",
 })
 REQUIRED_LIBRARY_VERSIONS = {
     "FastAccelStepper": "0.30.15",
@@ -438,6 +442,12 @@ class DeviceFirmwareManager:
                     "rawTail": side.get("rawTail", []),
                     "firmware": side.get("firmware", {}),
                     "health": side.get("health", {}),
+                    "fresh": side.get("fresh", False),
+                    "ageMs": side.get("ageMs"),
+                    "joints": side.get("joints", {}),
+                    "motorJoints": side.get("motorJoints", {}),
+                    "configuration": side.get("configuration", {}),
+                    "calibration": side.get("calibration", {}),
                     "observationStreaming": side.get("observationStreaming", False),
                     "telemetryFormat": side.get("telemetryFormat", ""),
                     "decodedLines": side.get("decodedLines", 0),
@@ -602,13 +612,15 @@ class DeviceFirmwareManager:
                     f"diagnostic target {target} does not match device role {expected}"
                 )
             payload = cleaned.split(">", 1)[1].strip()
-        if payload.lower() not in READ_ONLY_SERIAL_COMMANDS:
+        lowered = payload.lower()
+        can_info = re.fullmatch(r"can info (0x[0-9a-f]{3}|[0-9]{3,4})", lowered)
+        if lowered not in READ_ONLY_SERIAL_COMMANDS and not can_info:
             raise FirmwareToolError(
                 "serial diagnostics permit version/capabilities/health/observe and passive status queries only"
             )
         if device["role"] in {"left", "right"}:
             result = self.observation_manager.send_diagnostic(
-                device["role"], payload.lower()
+                device["role"], lowered
             )
             self.tx_bytes += result["bytes"]
             return {**result, "device": device}
@@ -625,6 +637,171 @@ class DeviceFirmwareManager:
             os.close(fd)
         self.tx_bytes += written
         return {"sent": True, "bytes": written, "device": device, "command": cleaned}
+
+    def _latest_side(self, side: str) -> dict[str, Any]:
+        return self.observation_manager.snapshot().get("sides", {}).get(side, {})
+
+    def _require_capability(self, side: str, capability: str) -> None:
+        capabilities = self._latest_side(side).get("firmware", {}).get("capabilities", [])
+        if capability not in capabilities:
+            raise FirmwareToolError(
+                f"{side} firmware does not advertise {capability}; update and verify firmware before this operation"
+            )
+
+    def inspect_configuration(self, device_id: str) -> dict[str, Any]:
+        device = self._device(device_id)
+        if device["role"] not in {"left", "right"}:
+            raise FirmwareToolError("configuration inspection requires a mapped left or right leg controller")
+        side = device["role"]
+        self._require_capability(side, "config-records-v1")
+        before = int(self._latest_side(side).get("configuration", {}).get("completeMonotonicNs", 0))
+        sent = self.observation_manager.send_diagnostic(side, "config show")
+        deadline = time.monotonic() + 1.25
+        configuration: dict[str, Any] = {}
+        while time.monotonic() < deadline:
+            configuration = self._latest_side(side).get("configuration", {})
+            if int(configuration.get("completeMonotonicNs", 0)) > before and len(configuration.get("constraints", {})) >= 6:
+                break
+            time.sleep(0.025)
+        if int(configuration.get("completeMonotonicNs", 0)) <= before:
+            raise RuntimeError("controller did not return DBCFG1 configuration records")
+        return {
+            "schema": "dropbear-leg-configuration-v1",
+            "device": device,
+            "configuration": configuration,
+            "sent": sent,
+        }
+
+    @staticmethod
+    def _require_interlock(payload: dict[str, Any], expected: str, acknowledgements: tuple[str, ...]) -> None:
+        if str(payload.get("confirmation", "")) != expected:
+            raise FirmwareToolError(f"type {expected} exactly to release this interlock")
+        if not all(payload.get(name) is True for name in acknowledgements):
+            raise FirmwareToolError("all physical-safety acknowledgements are required")
+
+    def calibrate(self, payload: dict[str, Any]) -> dict[str, Any]:
+        device = self._device(str(payload.get("deviceId", "")))
+        if device["role"] not in {"left", "right"}:
+            raise FirmwareToolError("AS5600 calibration requires a mapped left or right leg controller")
+        side = device["role"]
+        self._require_capability(side, "calibration-result-v1")
+        self._require_interlock(
+            payload,
+            f"CALIBRATE {side.upper()}",
+            ("robotSupported", "areaClear", "estopReady"),
+        )
+        health = self._latest_side(side).get("health", {})
+        if not health.get("runtimeReady"):
+            raise FirmwareToolError(f"{side} leg runtime is not ready; calibration held")
+        before = int(self._latest_side(side).get("calibration", {}).get("updatedMonotonicNs", 0))
+        sent = self.observation_manager.send_guarded_command(side, "calibrate save")
+        deadline = time.monotonic() + 1.75
+        calibration: dict[str, Any] = {}
+        while time.monotonic() < deadline:
+            calibration = self._latest_side(side).get("calibration", {})
+            if int(calibration.get("updatedMonotonicNs", 0)) > before:
+                break
+            time.sleep(0.025)
+        if int(calibration.get("updatedMonotonicNs", 0)) <= before:
+            raise RuntimeError("controller did not return a DBCAL1 calibration result")
+        # Refresh the persisted offsets after either success or a sensor-count failure.
+        configuration = None
+        if calibration.get("status") == "ok":
+            configuration = self.inspect_configuration(device["id"])["configuration"]
+        return {
+            "schema": "dropbear-leg-calibration-v1",
+            "device": device,
+            "sent": sent,
+            "calibration": calibration,
+            "configuration": configuration,
+            "saved": calibration.get("status") == "ok",
+        }
+
+    def configure(self, payload: dict[str, Any]) -> dict[str, Any]:
+        device = self._device(str(payload.get("deviceId", "")))
+        if device["role"] not in {"left", "right"}:
+            raise FirmwareToolError("configuration changes require a mapped left or right leg controller")
+        side = device["role"]
+        self._require_capability(side, "config-records-v1")
+        self._require_interlock(
+            payload,
+            f"APPLY {side.upper()} CONFIG",
+            ("robotSupported", "estopReady", "limitsReviewed"),
+        )
+        setting = str(payload.get("setting", ""))
+        joint = str(payload.get("joint", "")).lower()
+        value = payload.get("value")
+        allowed_sensor_joints = {"outer_calf", "inner_calf", "hip_pitch", "knee", "hip_roll"}
+        allowed_constraints = allowed_sensor_joints | {"hip_yaw"}
+        def finite_number(candidate: Any, label: str) -> float:
+            try:
+                number = float(candidate)
+            except (TypeError, ValueError) as error:
+                raise FirmwareToolError(f"{label} must be numeric") from error
+            if not math.isfinite(number):
+                raise FirmwareToolError(f"{label} must be finite")
+            return number
+
+        def integer_number(candidate: Any, label: str) -> int:
+            number = finite_number(candidate, label)
+            if isinstance(candidate, bool) or not number.is_integer():
+                raise FirmwareToolError(f"{label} must be an integer")
+            return int(number)
+
+        if setting == "maxTorque":
+            number = finite_number(value, "max torque")
+            if not 0.0 < number <= 100.0:
+                raise FirmwareToolError("max torque must be >0 and <=100")
+            command = f"config set max_torque {number:.3f}"
+        elif setting == "offset":
+            if joint not in allowed_sensor_joints:
+                raise FirmwareToolError("offset requires a valid AS5600 joint")
+            number = integer_number(value, "offset")
+            if not -720 <= number <= 720:
+                raise FirmwareToolError("offset must be from -720 through 720")
+            command = f"config set offset {joint} {number}"
+        elif setting == "direction":
+            if joint not in allowed_sensor_joints or value not in {"+", "-"}:
+                raise FirmwareToolError("direction requires a valid joint and + or -")
+            command = f"direction {side}_{joint} {value}"
+        elif setting == "constraint":
+            if joint not in allowed_constraints or not isinstance(value, dict):
+                raise FirmwareToolError("constraint requires a valid joint and min/max object")
+            minimum = integer_number(value.get("min"), "constraint min")
+            maximum = integer_number(value.get("max"), "constraint max")
+            if minimum > maximum or minimum < -720 or maximum > 720:
+                raise FirmwareToolError("constraint must satisfy -720 <= min <= max <= 720")
+            command = f"constrain {joint}_{side} {minimum} {maximum}"
+        elif setting == "operatingMode" and value in {"standalone", "hyperspawn"}:
+            command = f"mode {value}"
+        elif setting == "rawMode" and isinstance(value, bool):
+            command = f"raw {'on' if value else 'off'}"
+        elif setting == "hyperspawnTimeout":
+            number = integer_number(value, "hyperspawn timeout")
+            if not 50 <= number <= 10000:
+                raise FirmwareToolError("hyperspawn timeout must be 50..10000 ms")
+            command = f"hyperspawn timeout {number}"
+        elif setting == "hyperspawnScale":
+            number = finite_number(value, "hyperspawn scale")
+            if not 0.0001 < number <= 1000.0:
+                raise FirmwareToolError("hyperspawn scale must be >0.0001 and <=1000")
+            command = f"hyperspawn scale {number:.6f}"
+        elif setting in {"hyperspawnLegacy", "hyperspawnAutoArm"} and isinstance(value, bool):
+            name = "legacy" if setting == "hyperspawnLegacy" else "autoarm"
+            command = f"hyperspawn {name} {'on' if value else 'off'}"
+        else:
+            raise FirmwareToolError("unsupported configuration field or value")
+
+        sent = self.observation_manager.send_guarded_command(side, command)
+        time.sleep(0.08)
+        configuration = self.inspect_configuration(device["id"])["configuration"]
+        return {
+            "schema": "dropbear-leg-configuration-v1",
+            "device": device,
+            "sent": sent,
+            "configuration": configuration,
+            "rebootRequired": bool(configuration.get("meta", {}).get("rebootRequired")),
+        }
 
     def upload(self, payload: dict[str, Any]) -> dict[str, Any]:
         build_id = str(payload.get("buildId", ""))

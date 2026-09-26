@@ -273,6 +273,10 @@ const ui = {
     busy: false,
     compileState: "idle",
     lastRawText: "",
+    configBusy: false,
+    configDirty: false,
+    configSignature: "",
+    configBaseline: null,
   },
 };
 
@@ -1797,6 +1801,178 @@ function renderEspUploadInterlock() {
   );
 }
 
+const ESP_SENSOR_JOINTS = ["outer_calf", "inner_calf", "hip_pitch", "knee", "hip_roll"];
+const ESP_MOTOR_JOINTS = ["outer_calf", "inner_calf", "hip_pitch", "knee", "hip_yaw", "hip_roll"];
+
+function countMask(mask, width) {
+  let count = 0;
+  for (let bit = 0; bit < width; bit += 1) count += Boolean(Number(mask) & (1 << bit));
+  return count;
+}
+
+function appendStateCell(row, text, className = "") {
+  const cell = document.createElement("td");
+  cell.textContent = text;
+  if (className) cell.className = className;
+  row.append(cell);
+  return cell;
+}
+
+function formatObservedAngle(value) {
+  return Number.isFinite(Number(value)) ? `${Number(value).toFixed(2)}°` : "—";
+}
+
+function renderEspStateInspection(device) {
+  const leg = device && ["left", "right"].includes(device.role);
+  $("esp-state-title").textContent = leg
+    ? `${device.role.toUpperCase()} LEG · ${device.tty}`
+    : "Select a mapped leg controller";
+  const health = leg ? (device.health || {}) : {};
+  const motorCount = countMask(health.motorFreshMask, 6);
+  const sensorCount = countMask(health.sensorFreshMask, 5);
+  const summary = [
+    ["Controller", String(health.overall || (leg ? "waiting" : "unavailable")).toUpperCase(), health.overall === "ok" ? "ok" : health.overall === "fault" ? "bad" : "warn"],
+    ["Telemetry", device?.fresh ? "FRESH" : "STALE", device?.fresh ? "ok" : "bad"],
+    ["CAN motors", `${motorCount}/6 fresh`, motorCount === 6 ? "ok" : "warn"],
+    ["AS5600", `${sensorCount}/5 fresh`, sensorCount === 5 ? "ok" : "warn"],
+    ["CAN failures", String(health.canConsecutiveFailures ?? "—"), Number(health.canConsecutiveFailures) === 0 ? "ok" : "bad"],
+    ["Alignment faults", `0x${Number(health.alignmentFaultMask || 0).toString(16).padStart(2, "0")}`, Number(health.alignmentFaultMask) === 0 ? "ok" : "bad"],
+  ];
+  $("esp-state-summary").replaceChildren(...summary.map(([label, value, state]) => {
+    const item = document.createElement("div");
+    const caption = document.createElement("span");
+    const output = document.createElement("b");
+    caption.textContent = label;
+    output.textContent = value;
+    output.className = state;
+    item.append(caption, output);
+    return item;
+  }));
+
+  const motors = $("esp-motor-state");
+  motors.replaceChildren(...ESP_MOTOR_JOINTS.map((joint) => {
+    const record = device?.motorJoints?.[`${device.role}_${joint}`] || {};
+    const row = document.createElement("tr");
+    appendStateCell(row, joint.replaceAll("_", " "));
+    const canCell = appendStateCell(row, record.canId || "—");
+    if (record.canId) {
+      canCell.className = "esp-can-query";
+      canCell.dataset.canInfo = record.canId;
+      canCell.title = "Click to request the safe CAN info suite for this motor";
+    }
+    appendStateCell(row, record.motorModel ? `${record.motorModel} · ${record.motorFirmware}` : "—");
+    appendStateCell(row, formatObservedAngle(record.positionDeg));
+    appendStateCell(row, formatObservedAngle(record.controlPositionDeg));
+    const state = record.alignmentFault ? "ALIGNMENT FAULT" : record.fresh ? "FRESH" : String(record.status || "unobserved").replaceAll("_", " ").toUpperCase();
+    appendStateCell(row, state, record.alignmentFault ? "state-bad" : record.fresh ? "state-ok" : "state-warn");
+    return row;
+  }));
+
+  const sensors = $("esp-sensor-state");
+  sensors.replaceChildren(...ESP_SENSOR_JOINTS.map((joint, index) => {
+    const record = device?.joints?.[`${device.role}_${joint}`] || {};
+    const fresh = Boolean(Number(health.sensorFreshMask) & (1 << index));
+    const row = document.createElement("tr");
+    appendStateCell(row, joint.replaceAll("_", " "));
+    appendStateCell(row, record.sensorGpio === undefined ? "—" : `GPIO ${record.sensorGpio}`);
+    appendStateCell(row, formatObservedAngle(record.positionDeg));
+    appendStateCell(row, fresh ? "FRESH" : "STALE / MISSING", fresh ? "state-ok" : "state-warn");
+    appendStateCell(row, record.source || "external_absolute");
+    return row;
+  }));
+}
+
+function populateEspConfiguration(device) {
+  const configuration = device?.configuration || {};
+  const meta = configuration.meta;
+  const complete = Boolean(meta && configuration.offsets && configuration.directions
+    && Object.keys(configuration.constraints || {}).length >= 6);
+  const signature = complete ? JSON.stringify(configuration) : "";
+  const capabilities = device?.firmware?.capabilities || [];
+  const configCapable = capabilities.includes("config-records-v1");
+  if (complete && signature !== ui.hardwareDevices.configSignature && !ui.hardwareDevices.configDirty) {
+    $("esp-cfg-mode").value = meta.operatingMode;
+    $("esp-cfg-max-torque").value = meta.maxTorque;
+    $("esp-cfg-timeout").value = configuration.hyperspawn?.timeoutMs ?? 250;
+    $("esp-cfg-scale").value = configuration.hyperspawn?.positionUnitsPerDegree ?? 1;
+    $("esp-cfg-raw").checked = Boolean(meta.rawMode);
+    $("esp-cfg-legacy").checked = Boolean(configuration.hyperspawn?.legacyBroadcast);
+    $("esp-cfg-autoarm").checked = Boolean(configuration.hyperspawn?.autoArm);
+    const body = $("esp-joint-config");
+    body.replaceChildren(...ESP_MOTOR_JOINTS.map((joint) => {
+      const row = document.createElement("tr");
+      row.dataset.joint = joint;
+      appendStateCell(row, joint.replaceAll("_", " "));
+      const offsetCell = document.createElement("td");
+      const offset = document.createElement("input");
+      offset.type = "number"; offset.min = "-720"; offset.max = "720"; offset.step = "1";
+      offset.dataset.configField = "offset";
+      offset.value = configuration.offsets[joint] ?? 0;
+      offset.disabled = joint === "hip_yaw";
+      offsetCell.append(offset); row.append(offsetCell);
+      const directionCell = document.createElement("td");
+      const direction = document.createElement("select");
+      direction.dataset.configField = "direction";
+      direction.append(new Option("+", "+"), new Option("−", "-"));
+      direction.value = Number(configuration.directions[joint]) < 0 ? "-" : "+";
+      direction.disabled = joint === "hip_yaw";
+      directionCell.append(direction); row.append(directionCell);
+      for (const field of ["min", "max"]) {
+        const cell = document.createElement("td");
+        const input = document.createElement("input");
+        input.type = "number"; input.min = "-720"; input.max = "720"; input.step = "1";
+        input.dataset.configField = field;
+        input.value = configuration.constraints[joint]?.[field] ?? 0;
+        cell.append(input); row.append(cell);
+      }
+      return row;
+    }));
+    ui.hardwareDevices.configSignature = signature;
+    ui.hardwareDevices.configBaseline = JSON.parse(JSON.stringify(configuration));
+  }
+  const configState = $("esp-config-state");
+  configState.textContent = !configCapable ? "FIRMWARE UPDATE REQUIRED" : !complete ? "READ CONFIG" : meta.rebootRequired ? "REBOOT REQUIRED" : "CONFIG LOADED";
+  const health = device?.health || {};
+  const freshSensors = countMask(health.sensorFreshMask, 5);
+  const calibration = device?.calibration;
+  $("esp-calibration-readiness").textContent = !device || !["left", "right"].includes(device.role)
+    ? "Select a left or right leg controller."
+    : calibration?.status === "error"
+      ? `Last calibration aborted · valid PWM samples ${Object.values(calibration.values || {}).join(" / ")}. Current sensor freshness ${freshSensors}/5.`
+      : calibration?.status === "ok"
+        ? `Last calibration saved · offsets ${Object.values(calibration.values || {}).join(" / ")}. Current sensor freshness ${freshSensors}/5.`
+        : `${freshSensors}/5 AS5600 channels are currently fresh. The firmware will require 10/10 valid samples from every channel.`;
+}
+
+function updateEspCommissioningInterlocks() {
+  const device = selectedEspDevice();
+  const leg = device && ["left", "right"].includes(device.role);
+  const side = leg ? device.role.toUpperCase() : "<SIDE>";
+  const calibrationExpected = `CALIBRATE ${side}`;
+  const configurationExpected = `APPLY ${side} CONFIG`;
+  const capabilities = device?.firmware?.capabilities || [];
+  const calibrationCapable = capabilities.includes("calibration-result-v1");
+  const configurationCapable = capabilities.includes("config-records-v1");
+  $("esp-cal-confirm-label").textContent = `TYPE ${calibrationExpected}`;
+  $("esp-cfg-confirm-label").textContent = `TYPE ${configurationExpected}`;
+  $("esp-calibrate").disabled = !leg || !calibrationCapable || ui.hardwareDevices.configBusy
+    || !["esp-cal-supported", "esp-cal-clear", "esp-cal-estop"].every((id) => $(id).checked)
+    || $("esp-cal-confirm").value !== calibrationExpected;
+  const configReady = leg && configurationCapable && ui.hardwareDevices.configBaseline
+    && ["esp-cfg-supported", "esp-cfg-estop", "esp-cfg-limits"].every((id) => $(id).checked)
+    && $("esp-cfg-confirm").value === configurationExpected
+    && !ui.hardwareDevices.configBusy;
+  $("esp-apply-controller-config").disabled = !configReady;
+  $("esp-apply-joint-config").disabled = !configReady;
+}
+
+function renderEspCommissioning() {
+  const device = selectedEspDevice();
+  renderEspStateInspection(device);
+  populateEspConfiguration(device);
+  updateEspCommissioningInterlocks();
+}
+
 function renderEspDevices() {
   const payload = ui.hardwareDevices.latest;
   if (!payload) return;
@@ -1835,6 +2011,9 @@ function renderEspDevices() {
       if (ui.hardwareDevices.selectedDeviceId !== device.id) {
         ui.hardwareDevices.selectedDeviceId = device.id;
         ui.hardwareDevices.lastRawText = "";
+        ui.hardwareDevices.configDirty = false;
+        ui.hardwareDevices.configSignature = "";
+        ui.hardwareDevices.configBaseline = null;
         clearEspBuild("Device changed. Compile again after reviewing the exact target.");
       }
       renderEspDevices();
@@ -1877,6 +2056,7 @@ function renderEspDevices() {
     : `SPIFFS LAYOUT BLOCKED · ${(partition.issues || []).join(" · ")}`;
   renderEspCompileStatus();
   renderEspUploadInterlock();
+  renderEspCommissioning();
 }
 
 async function pollEspDevices() {
@@ -1891,11 +2071,152 @@ async function pollEspDevices() {
   }
 }
 
+function setEspOperationResult(message, state = "") {
+  const output = $("esp-operation-result");
+  output.textContent = message;
+  output.className = `esp-operation-result ${state}`.trim();
+}
+
+async function sendEspDiagnostic(command) {
+  const device = selectedEspDevice();
+  if (!device) throw new Error("select a serial device first");
+  const result = await requestJson("/api/hardware/serial/query", {
+    method: "POST",
+    body: JSON.stringify({ deviceId: device.id, command }),
+  });
+  setEspOperationResult(`Sent ${result.command} to ${device.role.toUpperCase()} · ${result.bytes} bytes · inspect the raw serial tail for the bounded response.`, "ok");
+  window.setTimeout(pollEspDevices, command === "can scan" ? 1500 : 180);
+  return result;
+}
+
+async function refreshEspConfiguration() {
+  const device = selectedEspDevice();
+  if (!device || !["left", "right"].includes(device.role)) throw new Error("select a mapped leg controller");
+  ui.hardwareDevices.configBusy = true;
+  updateEspCommissioningInterlocks();
+  setEspOperationResult(`Reading ${device.role.toUpperCase()} configuration and health…`);
+  try {
+    const [configuration] = await Promise.all([
+      requestJson("/api/hardware/configuration/inspect", {
+        method: "POST",
+        body: JSON.stringify({ deviceId: device.id }),
+      }),
+      sendEspDiagnostic("health"),
+    ]);
+    device.configuration = configuration.configuration;
+    ui.hardwareDevices.configDirty = false;
+    ui.hardwareDevices.configSignature = "";
+    setEspOperationResult(`Configuration loaded from ${device.role.toUpperCase()} · ${Object.keys(configuration.configuration.constraints || {}).length}/6 joint limits present.`, "ok");
+    renderEspCommissioning();
+    window.setTimeout(pollEspDevices, 120);
+  } finally {
+    ui.hardwareDevices.configBusy = false;
+    updateEspCommissioningInterlocks();
+  }
+}
+
+function configurationMutationPayload(device, mutation) {
+  return {
+    deviceId: device.id,
+    ...mutation,
+    robotSupported: $("esp-cfg-supported").checked,
+    estopReady: $("esp-cfg-estop").checked,
+    limitsReviewed: $("esp-cfg-limits").checked,
+    confirmation: $("esp-cfg-confirm").value,
+  };
+}
+
+async function applyEspConfigurationMutations(mutations, label) {
+  const device = selectedEspDevice();
+  if (!device || !mutations.length) {
+    setEspOperationResult(mutations.length ? "Select a mapped leg controller." : `No changed ${label} fields to apply.`, mutations.length ? "error" : "ok");
+    return;
+  }
+  ui.hardwareDevices.configBusy = true;
+  updateEspCommissioningInterlocks();
+  setEspOperationResult(`Applying ${mutations.length} changed ${label} field${mutations.length === 1 ? "" : "s"} to ${device.role.toUpperCase()}…`);
+  try {
+    let latest = null;
+    for (const mutation of mutations) {
+      latest = await requestJson("/api/hardware/configuration/apply", {
+        method: "POST",
+        body: JSON.stringify(configurationMutationPayload(device, mutation)),
+      });
+    }
+    device.configuration = latest.configuration;
+    ui.hardwareDevices.configDirty = false;
+    ui.hardwareDevices.configSignature = "";
+    setEspOperationResult(`Applied and re-read ${mutations.length} ${label} field${mutations.length === 1 ? "" : "s"}${latest.rebootRequired ? " · controller reboot required" : ""}.`, "ok");
+    renderEspCommissioning();
+    window.setTimeout(pollEspDevices, 120);
+  } catch (error) {
+    setEspOperationResult(`Configuration held · ${error.message}`, "error");
+    throw error;
+  } finally {
+    ui.hardwareDevices.configBusy = false;
+    updateEspCommissioningInterlocks();
+  }
+}
+
+function changedControllerConfiguration() {
+  const baseline = ui.hardwareDevices.configBaseline;
+  if (!baseline) return [];
+  const changes = [];
+  const proposed = {
+    maxTorque: Number($("esp-cfg-max-torque").value),
+    rawMode: $("esp-cfg-raw").checked,
+    hyperspawnTimeout: Number($("esp-cfg-timeout").value),
+    hyperspawnScale: Number($("esp-cfg-scale").value),
+    hyperspawnLegacy: $("esp-cfg-legacy").checked,
+    hyperspawnAutoArm: $("esp-cfg-autoarm").checked,
+    operatingMode: $("esp-cfg-mode").value,
+  };
+  const current = {
+    maxTorque: Number(baseline.meta.maxTorque),
+    rawMode: Boolean(baseline.meta.rawMode),
+    hyperspawnTimeout: Number(baseline.hyperspawn?.timeoutMs),
+    hyperspawnScale: Number(baseline.hyperspawn?.positionUnitsPerDegree),
+    hyperspawnLegacy: Boolean(baseline.hyperspawn?.legacyBroadcast),
+    hyperspawnAutoArm: Boolean(baseline.hyperspawn?.autoArm),
+    operatingMode: baseline.meta.operatingMode,
+  };
+  for (const setting of ["maxTorque", "rawMode", "hyperspawnTimeout", "hyperspawnScale", "hyperspawnLegacy", "hyperspawnAutoArm", "operatingMode"]) {
+    if (proposed[setting] !== current[setting]) changes.push({ setting, value: proposed[setting] });
+  }
+  return changes;
+}
+
+function changedJointConfiguration() {
+  const baseline = ui.hardwareDevices.configBaseline;
+  if (!baseline) return [];
+  const changes = [];
+  $("esp-joint-config").querySelectorAll("tr[data-joint]").forEach((row) => {
+    const joint = row.dataset.joint;
+    const value = (field) => row.querySelector(`[data-config-field="${field}"]`);
+    if (joint !== "hip_yaw") {
+      const offset = Number(value("offset").value);
+      const direction = value("direction").value;
+      if (offset !== Number(baseline.offsets[joint])) changes.push({ setting: "offset", joint, value: offset });
+      const currentDirection = Number(baseline.directions[joint]) < 0 ? "-" : "+";
+      if (direction !== currentDirection) changes.push({ setting: "direction", joint, value: direction });
+    }
+    const constraint = { min: Number(value("min").value), max: Number(value("max").value) };
+    const current = baseline.constraints[joint] || {};
+    if (constraint.min !== Number(current.min) || constraint.max !== Number(current.max)) {
+      changes.push({ setting: "constraint", joint, value: constraint });
+    }
+  });
+  return changes;
+}
+
 function setupEspDevices() {
   const chooseDevice = (value) => {
     if (ui.hardwareDevices.selectedDeviceId !== value) {
       ui.hardwareDevices.selectedDeviceId = value;
       ui.hardwareDevices.lastRawText = "";
+      ui.hardwareDevices.configDirty = false;
+      ui.hardwareDevices.configSignature = "";
+      ui.hardwareDevices.configBaseline = null;
       clearEspBuild("Device changed. Compile again after reviewing the exact target.");
     }
     renderEspDevices();
@@ -1921,6 +2242,68 @@ function setupEspDevices() {
       window.setTimeout(pollEspDevices, 150);
     } catch (error) {
       appendTerminal(`[serial] diagnostic query held · ${error.message}`, "err");
+    }
+  });
+  $("esp-refresh-state").addEventListener("click", () => {
+    refreshEspConfiguration().catch((error) => setEspOperationResult(`Inspection failed · ${error.message}`, "error"));
+  });
+  document.querySelectorAll("[data-esp-diagnostic]").forEach((button) => {
+    button.addEventListener("click", () => {
+      sendEspDiagnostic(button.dataset.espDiagnostic).catch((error) => setEspOperationResult(`Diagnostic held · ${error.message}`, "error"));
+    });
+  });
+  $("esp-motor-state").addEventListener("click", (event) => {
+    const target = event.target.closest("[data-can-info]");
+    if (!target) return;
+    sendEspDiagnostic(`can info ${target.dataset.canInfo}`).catch((error) => setEspOperationResult(`CAN info held · ${error.message}`, "error"));
+  });
+  ["esp-cal-supported", "esp-cal-clear", "esp-cal-estop", "esp-cal-confirm",
+    "esp-cfg-supported", "esp-cfg-estop", "esp-cfg-limits", "esp-cfg-confirm"]
+    .forEach((id) => $(id).addEventListener("input", updateEspCommissioningInterlocks));
+  ["esp-cfg-mode", "esp-cfg-max-torque", "esp-cfg-timeout", "esp-cfg-scale",
+    "esp-cfg-raw", "esp-cfg-legacy", "esp-cfg-autoarm"]
+    .forEach((id) => $(id).addEventListener("input", () => { ui.hardwareDevices.configDirty = true; }));
+  $("esp-joint-config").addEventListener("input", () => { ui.hardwareDevices.configDirty = true; });
+  $("esp-apply-controller-config").addEventListener("click", () => {
+    applyEspConfigurationMutations(changedControllerConfiguration(), "controller")
+      .catch(() => {});
+  });
+  $("esp-apply-joint-config").addEventListener("click", () => {
+    applyEspConfigurationMutations(changedJointConfiguration(), "joint")
+      .catch(() => {});
+  });
+  $("esp-calibrate").addEventListener("click", async () => {
+    const device = selectedEspDevice();
+    if (!device || ui.hardwareDevices.configBusy) return;
+    ui.hardwareDevices.configBusy = true;
+    updateEspCommissioningInterlocks();
+    setEspOperationResult(`Sampling five ${device.role.toUpperCase()} AS5600 channels…`);
+    try {
+      const result = await requestJson("/api/hardware/calibration", {
+        method: "POST",
+        body: JSON.stringify({
+          deviceId: device.id,
+          robotSupported: $("esp-cal-supported").checked,
+          areaClear: $("esp-cal-clear").checked,
+          estopReady: $("esp-cal-estop").checked,
+          confirmation: $("esp-cal-confirm").value,
+        }),
+      });
+      device.calibration = result.calibration;
+      if (result.configuration) device.configuration = result.configuration;
+      ui.hardwareDevices.configDirty = false;
+      ui.hardwareDevices.configSignature = "";
+      const values = Object.values(result.calibration.values || {}).join(" / ");
+      setEspOperationResult(result.saved
+        ? `Calibration saved · offsets ${values}`
+        : `Calibration aborted by firmware · valid PWM samples ${values}`, result.saved ? "ok" : "error");
+      renderEspCommissioning();
+      window.setTimeout(pollEspDevices, 120);
+    } catch (error) {
+      setEspOperationResult(`Calibration held · ${error.message}`, "error");
+    } finally {
+      ui.hardwareDevices.configBusy = false;
+      updateEspCommissioningInterlocks();
     }
   });
   $("esp-compile").addEventListener("click", async () => {

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Dropbear Robot Status
+Comment=Live connection and motor-feedback status for Dropbear controllers
+Exec=/usr/bin/python3 /home/robit/Documents/Dropbear-Actuator-Control-Workspace/dropbear_control/ops/dropbear_desktop_status.py
+Icon=network-transmit-receive
+Terminal=false
+StartupNotify=false
+Categories=Utility;Robotics;
+OnlyShowIn=GNOME;
+X-GNOME-Autostart-enabled=true

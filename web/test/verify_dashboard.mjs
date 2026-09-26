@@ -52,6 +52,15 @@ check(
     && index.body.includes('id="esp-compile-status"')
     && index.body.includes('id="esp-upload"'),
 );
+check(
+  "leg state inspection, calibration, and configuration suite are exposed",
+  index.body.includes('id="esp-motor-state"')
+    && index.body.includes('id="esp-sensor-state"')
+    && index.body.includes('id="esp-calibrate"')
+    && index.body.includes('id="esp-apply-controller-config"')
+    && index.body.includes('id="esp-apply-joint-config"')
+    && index.body.includes("CAPTURE + SAVE ALL 5 SENSOR OFFSETS"),
+);
 check("full Dropbear USD simulation present", index.body.includes("Dropbear closed-loop articulation"));
 check("USD robot viewport replaces schematic", index.body.includes('id="robot-canvas"') && !index.body.includes('id="robot-svg"'));
 check("STEP-derived CAD viewport present", index.body.includes('id="cad-canvas"'));
@@ -187,6 +196,23 @@ check(
   app.body.includes('compiling: "COMPILING"')
     && app.body.includes('passed: "COMPILE PASSED"')
     && app.body.includes('failed: "COMPILE FAILED"'),
+);
+check(
+  "dashboard calibration and configuration use guarded host endpoints",
+  app.body.includes('requestJson("/api/hardware/calibration"')
+    && app.body.includes('requestJson("/api/hardware/configuration/inspect"')
+    && app.body.includes('requestJson("/api/hardware/configuration/apply"')
+    && app.body.includes("calibration-result-v1")
+    && app.body.includes("config-records-v1"),
+);
+const hardwareCalibration = await request(`${base}/js/hardware_calibration.js`);
+check(
+  "validated right knee, hip pitch, and yaw hardware-to-USD signs are explicit",
+  hardwareCalibration.status === 200
+    && hardwareCalibration.body.includes("HARDWARE_TO_USD_DIRECTION")
+    && hardwareCalibration.body.includes("hip_pitch: -1")
+    && hardwareCalibration.body.includes("knee: -1")
+    && hardwareCalibration.body.includes("hip_yaw: -1"),
 );
 check("dashboard instantiates CAD viewer", app.body.includes("new CadViewer"));
 check(

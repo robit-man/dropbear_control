@@ -319,6 +319,9 @@ class Handler(SimpleHTTPRequestHandler):
                 "/api/hardware/observation/stream",
                 "/api/hardware/observation/health",
                 "/api/hardware/serial/query",
+                "/api/hardware/configuration/inspect",
+                "/api/hardware/configuration/apply",
+                "/api/hardware/calibration",
                 "/api/hardware/firmware/compile",
                 "/api/hardware/firmware/upload",
             }
@@ -360,6 +363,14 @@ class Handler(SimpleHTTPRequestHandler):
                     str(payload.get("deviceId", "")),
                     str(payload.get("command", "")),
                 ))
+            elif request_path == "/api/hardware/configuration/inspect":
+                self._send_json(200, FIRMWARE_MANAGER.inspect_configuration(
+                    str(payload.get("deviceId", "")),
+                ))
+            elif request_path == "/api/hardware/configuration/apply":
+                self._send_json(200, FIRMWARE_MANAGER.configure(payload))
+            elif request_path == "/api/hardware/calibration":
+                self._send_json(200, FIRMWARE_MANAGER.calibrate(payload))
             elif request_path == "/api/hardware/firmware/compile":
                 self._send_json(200, FIRMWARE_MANAGER.compile(
                     str(payload.get("sourceId", "")),

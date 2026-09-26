@@ -40,9 +40,9 @@ RAW_SERIAL_TAIL_LINES = 160
 MIN_ADMITTED_SAMPLE_INTERVAL_NS = 20_000_000
 DIAGNOSTIC_COMMANDS = frozenset({
     "version", "/version", "capabilities", "health", "status", "chirality",
-    "mac", "saved", "help", "observe on", "observe off",
+    "mac", "saved", "help", "observe on", "observe off", "config show",
+    "can bus", "can scan",
 })
-
 JOINT_BINDINGS = {
     "left": (
         ("left_outer_calf", "outer_calf", "0x141", "LL_Revolute81", 14),
@@ -361,6 +361,92 @@ def parse_firmware_health_line(side: str, line: str) -> dict[str, Any]:
     }
 
 
+def parse_firmware_configuration_line(side: str, line: str) -> dict[str, Any]:
+    """Decode one bounded DBCFG1 configuration record."""
+
+    fields = [field.strip() for field in line.strip().split(",")]
+    expected_role = f"{side.upper()}LEG"
+    if len(fields) < 3 or fields[0] != "DBCFG1" or fields[1] != expected_role:
+        raise ObservationParseError("DBCFG1 role or prefix is invalid")
+    kind = fields[2]
+    try:
+        if kind == "end" and len(fields) == 3:
+            return {"kind": kind, "value": True}
+        if kind == "meta" and len(fields) == 10:
+            max_torque = float(fields[5])
+            if (fields[3] not in {"0", "1"} or fields[4] not in {"standalone", "hyperspawn"}
+                    or fields[6] not in {"0", "1"} or fields[7] not in {"0", "1"}
+                    or fields[8] not in {"0", "1"}
+                    or not math.isfinite(max_torque) or not 0.0 < max_torque <= 100.0):
+                raise ValueError("max torque out of range")
+            return {"kind": kind, "value": {
+                "configured": bool(int(fields[3])),
+                "operatingMode": fields[4],
+                "maxTorque": max_torque,
+                "legacyUnaddressedCommands": bool(int(fields[6])),
+                "rawMode": bool(int(fields[7])),
+                "rebootRequired": bool(int(fields[8])),
+                "firmwareVersion": fields[9],
+            }}
+        if kind == "hyperspawn" and len(fields) == 7:
+            scale = float(fields[6])
+            timeout = int(fields[3])
+            if (fields[4] not in {"0", "1"} or fields[5] not in {"0", "1"}
+                    or not 50 <= timeout <= 10000 or not math.isfinite(scale)
+                    or not 0.0001 < scale <= 1000.0):
+                raise ValueError("hyperspawn values out of range")
+            return {"kind": kind, "value": {
+                "timeoutMs": timeout,
+                "legacyBroadcast": bool(int(fields[4])),
+                "autoArm": bool(int(fields[5])),
+                "positionUnitsPerDegree": scale,
+            }}
+        if kind in {"offsets", "directions"} and len(fields) == 8:
+            names = ("outer_calf", "inner_calf", "hip_pitch", "knee", "hip_roll")
+            if kind == "offsets":
+                values = [int(value) for value in fields[3:]]
+                if not all(-720 <= value <= 720 for value in values):
+                    raise ValueError("offset out of range")
+            else:
+                # Firmware direction ordering follows motor command order:
+                # calves, knee, hip pitch, hip roll.
+                names = ("outer_calf", "inner_calf", "knee", "hip_pitch", "hip_roll")
+                values = [float(value) for value in fields[3:]]
+                if not all(value in {-1.0, 1.0} for value in values):
+                    raise ValueError("direction is not +/-1")
+            return {"kind": kind, "value": dict(zip(names, values))}
+        if kind == "constraint" and len(fields) == 6:
+            joint = fields[3]
+            if joint not in {"outer_calf", "inner_calf", "knee", "hip_pitch", "hip_yaw", "hip_roll"}:
+                raise ValueError("unknown constraint joint")
+            minimum, maximum = int(fields[4]), int(fields[5])
+            if minimum > maximum:
+                raise ValueError("constraint minimum exceeds maximum")
+            return {"kind": kind, "joint": joint, "value": {"min": minimum, "max": maximum}}
+    except ValueError as error:
+        raise ObservationParseError(f"invalid DBCFG1 {kind} record") from error
+    raise ObservationParseError(f"unsupported DBCFG1 record kind: {kind}")
+
+
+def parse_firmware_calibration_line(side: str, line: str) -> dict[str, Any]:
+    fields = [field.strip() for field in line.strip().split(",")]
+    expected_role = f"{side.upper()}LEG"
+    if len(fields) != 9 or fields[0] != "DBCAL1" or fields[1] != expected_role:
+        raise ObservationParseError("DBCAL1 record is invalid")
+    if ((fields[2], fields[3]) not in {("ok", "offsets"), ("error", "valid_counts")}):
+        raise ObservationParseError("DBCAL1 state is invalid")
+    try:
+        values = [int(value) for value in fields[4:]]
+    except ValueError as error:
+        raise ObservationParseError("DBCAL1 values must be integers") from error
+    names = ("outer_calf", "inner_calf", "hip_pitch", "knee", "hip_roll")
+    return {
+        "status": fields[2],
+        "kind": fields[3],
+        "values": dict(zip(names, values)),
+    }
+
+
 def parse_esp32_csv_line(side: str, line: str) -> dict[str, dict[str, Any]]:
     """Compatibility wrapper returning external sensor joints only."""
 
@@ -394,6 +480,8 @@ class _SideState:
     advertised_telemetry_protocol: str = ""
     capabilities: tuple[str, ...] = ()
     health: dict[str, Any] = field(default_factory=dict)
+    configuration: dict[str, Any] = field(default_factory=lambda: {"constraints": {}})
+    calibration: dict[str, Any] = field(default_factory=dict)
     observation_streaming: bool = False
     diagnostic_tx_bytes: int = 0
     last_diagnostic_command: str = ""
@@ -534,7 +622,15 @@ class _PassiveTTYReader:
                         ]
                         # Preserve identity/health acknowledgements even when a
                         # fast DB3 stream shares the same kernel read.
-                        for raw in diagnostic_records[-8:]:
+                        # A complete DBCFG1 snapshot is 11 short records; keep
+                        # every structured config/calibration record even when
+                        # they arrive in one USB read, while other human/CAN
+                        # diagnostics retain the bounded tail behavior.
+                        structured_records = [
+                            raw for raw in diagnostic_records
+                            if raw.rstrip(b"\r").strip().startswith((b"DBCFG1,", b"DBCAL1,"))
+                        ]
+                        for raw in [*structured_records, *diagnostic_records[-8:]]:
                             line = raw.rstrip(b"\r").decode("ascii", errors="replace")
                             self.on_line(self.side, line, received_ns)
                         if received_ns - last_dispatched_ns >= MIN_ADMITTED_SAMPLE_INTERVAL_NS:
@@ -703,6 +799,51 @@ class HardwareObservationManager:
         # bare-version fallback for legacy images.
         return "DB1"
 
+    @staticmethod
+    def _validate_diagnostic_payload(side: str, payload: str) -> bool:
+        if payload in DIAGNOSTIC_COMMANDS:
+            return True
+        match = re.fullmatch(r"can info (0x[0-9a-f]{3}|[0-9]{3,4})", payload)
+        if not match:
+            return False
+        try:
+            motor_id = int(match.group(1), 0)
+        except ValueError:
+            return False
+        return motor_id in {int(can_id, 16) for _, can_id in MOTOR_BINDINGS[side]}
+
+    @staticmethod
+    def _validate_guarded_payload(side: str, payload: str) -> bool:
+        side_prefix = f"{side}_"
+        if payload == "calibrate save" or payload in {
+            "mode standalone", "mode hyperspawn", "raw on", "raw off",
+            "hyperspawn legacy on", "hyperspawn legacy off",
+            "hyperspawn autoarm on", "hyperspawn autoarm off",
+        }:
+            return True
+        if re.fullmatch(r"config set max_torque (?:\d+(?:\.\d*)?|\.\d+)", payload):
+            return True
+        if re.fullmatch(
+            r"config set offset (?:outer_calf|inner_calf|hip_pitch|knee|hip_roll) -?\d+",
+            payload,
+        ):
+            return True
+        if re.fullmatch(
+            rf"direction {side_prefix}(?:outer_calf|inner_calf|knee|hip_pitch|hip_roll) [+-]",
+            payload,
+        ):
+            return True
+        if re.fullmatch(
+            rf"constrain (?:outer_calf|inner_calf|knee|hip_pitch|hip_yaw|hip_roll)_{side} -?\d+ -?\d+",
+            payload,
+        ):
+            return True
+        if re.fullmatch(r"hyperspawn timeout \d+", payload):
+            return True
+        if re.fullmatch(r"hyperspawn scale (?:\d+(?:\.\d*)?|\.\d+)", payload):
+            return True
+        return False
+
     def send_diagnostic(
         self,
         side: str,
@@ -715,7 +856,7 @@ class HardwareObservationManager:
         if side not in self._states:
             raise ValueError("diagnostic side must be left or right")
         payload = str(command).strip().lower()
-        if payload not in DIAGNOSTIC_COMMANDS:
+        if not self._validate_diagnostic_payload(side, payload):
             raise ValueError("serial diagnostics permit version/capabilities/health/observe and passive status queries only")
         with self._lock:
             state = self._states[side]
@@ -758,6 +899,52 @@ class HardwareObservationManager:
             "wireCommand": wire_command,
             "commandProtocol": protocol,
             "motionCapable": False,
+        }
+
+    def send_guarded_command(self, side: str, command: str) -> dict[str, Any]:
+        """Send one validated non-motion calibration/configuration command."""
+
+        if side not in self._states:
+            raise ValueError("guarded command side must be left or right")
+        payload = str(command).strip().lower()
+        if not self._validate_guarded_payload(side, payload):
+            raise ValueError("guarded serial command is not an admitted calibration/configuration mutation")
+        with self._lock:
+            state = self._states[side]
+            if not self.enabled or not state.configured_path:
+                raise ValueError(f"{side} observation serial path is not enabled")
+            wire_command = f"<DB1:{self._address_for_side(side)}> {payload}"
+            path = state.configured_path
+        encoded = (wire_command + "\n").encode("ascii", errors="strict")
+        try:
+            written = self._diagnostic_writer(path, encoded)
+            if written != len(encoded):
+                raise OSError(f"short serial guarded write: {written}/{len(encoded)} bytes")
+        except (OSError, termios.error) as error:
+            with self._lock:
+                self._states[side].last_diagnostic_error = str(error)
+            raise ValueError(f"{side} guarded request failed: {error}") from error
+        now_ns = time.monotonic_ns()
+        with self._lock:
+            state = self._states[side]
+            state.diagnostic_tx_bytes += written
+            state.last_diagnostic_command = payload
+            state.last_diagnostic_error = ""
+            state.raw_lines.append({
+                "receivedMonotonicNs": now_ns,
+                "text": wire_command,
+                "direction": "tx-guarded",
+            })
+            self._diagnostic_tx_bytes += written
+        return {
+            "sent": True,
+            "side": side,
+            "bytes": written,
+            "command": payload,
+            "wireCommand": wire_command,
+            "motionCapable": False,
+            "guardedMutation": True,
+            "sentMonotonicNs": now_ns,
         }
 
     def request_observation_stream(self, enabled: bool) -> dict[str, Any]:
@@ -871,6 +1058,30 @@ class HardwareObservationManager:
                     state.rejected_lines += 1
                     return False
                 return True
+            if cleaned_line.startswith("DBCFG1,"):
+                try:
+                    record = parse_firmware_configuration_line(side, cleaned_line)
+                except ObservationParseError:
+                    state.rejected_lines += 1
+                    return False
+                if record["kind"] == "meta":
+                    state.configuration = {"constraints": {}, "meta": record["value"]}
+                elif record["kind"] == "constraint":
+                    state.configuration.setdefault("constraints", {})[record["joint"]] = record["value"]
+                elif record["kind"] == "end":
+                    state.configuration["completeMonotonicNs"] = received_ns
+                else:
+                    state.configuration[record["kind"]] = record["value"]
+                state.configuration["updatedMonotonicNs"] = received_ns
+                return True
+            if cleaned_line.startswith("DBCAL1,"):
+                try:
+                    state.calibration = parse_firmware_calibration_line(side, cleaned_line)
+                except ObservationParseError:
+                    state.rejected_lines += 1
+                    return False
+                state.calibration["updatedMonotonicNs"] = received_ns
+                return True
             if cleaned_line.startswith("DBO1,"):
                 fields = [field.strip() for field in cleaned_line.split(",")]
                 if len(fields) not in {3, 4} or fields[1] != self._address_for_side(side):
@@ -966,6 +1177,11 @@ class HardwareObservationManager:
                         "capabilities": list(state.capabilities),
                     },
                     "health": dict(state.health),
+                    "configuration": {
+                        **state.configuration,
+                        "constraints": dict(state.configuration.get("constraints", {})),
+                    },
+                    "calibration": dict(state.calibration),
                     "observationStreaming": state.observation_streaming,
                     "diagnosticTxBytes": state.diagnostic_tx_bytes,
                     "lastDiagnosticCommand": state.last_diagnostic_command,
