@@ -835,17 +835,18 @@ class DeviceFirmwareManager:
         # never writes the SPIFFS settings partition.
         command = [
             sys.executable, str(self.esptool), "--chip", "esp32",
-            # The long robot harness/USB bridge is reliable at 115200; 460800
-            # can enter the bootloader but drop mid-write and strand the app.
-            "--port", device["stablePath"], "--baud", "115200",
+            # The long robot harness/USB bridge has been verified end-to-end
+            # only at 57600 with compression disabled. Faster or compressed
+            # transfers can enter the bootloader but fail during the write.
+            "--port", device["stablePath"], "--baud", "57600",
             "--before", "default_reset", "--after", "hard_reset",
-            "write_flash", "-z", "--flash_mode", "qio",
+            "write_flash", "--no-compress", "--flash_mode", "qio",
             "--flash_freq", "80m", "--flash_size", "4MB",
             hex(APP_OFFSET), str(application_binary),
         ]
         try:
             partition_check = self._verify_device_spiffs_layout(device)
-            result = subprocess.run(command, capture_output=True, text=True, timeout=180)
+            result = subprocess.run(command, capture_output=True, text=True, timeout=600)
         finally:
             self.observation_manager.start()
             self.start()

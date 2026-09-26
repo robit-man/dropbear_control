@@ -227,9 +227,13 @@ class FirmwareServiceTests(unittest.TestCase):
         self.assertEqual(command[0], sys.executable)
         self.assertIn(str(self.esptool), command)
         self.assertIn("write_flash", command)
+        self.assertEqual(command[command.index("--baud") + 1], "57600")
+        self.assertIn("--no-compress", command)
+        self.assertNotIn("-z", command)
         self.assertIn(hex(0x10000), command)
         self.assertIn(str(binary_path), command)
         self.assertNotIn(str(self.arduino), command)
+        self.assertEqual(run.call_args.kwargs["timeout"], 600)
         self.assertEqual(result["uploadMethod"], "verified-app-region-only")
         self.assertEqual(result["partition"], partition)
 
