@@ -110,6 +110,12 @@ class HardwareConfigurationProtocolTests(unittest.TestCase):
         self.assertEqual(writes[1], b"<DB1:LEFTLEG> config set offset knee -12\n")
         manager.send_diagnostic("left", "can info 0x14b")
         self.assertEqual(writes[2], b"<DB1:LEFTLEG> can info 0x14b\n")
+        manager.send_diagnostic("left", "can poll off")
+        manager.send_diagnostic("left", "can registers")
+        manager.send_diagnostic("left", "can poll on")
+        self.assertEqual(writes[3], b"<DB1:LEFTLEG> can poll off\n")
+        self.assertEqual(writes[4], b"<DB1:LEFTLEG> can registers\n")
+        self.assertEqual(writes[5], b"<DB1:LEFTLEG> can poll on\n")
         with self.assertRaises(ValueError):
             manager.send_diagnostic("left", "can info 0x140")
         with self.assertRaises(ValueError):
@@ -118,6 +124,8 @@ class HardwareConfigurationProtocolTests(unittest.TestCase):
             manager.send_guarded_command("left", "torque knee 10")
         with self.assertRaises(ValueError):
             manager.send_guarded_command("left", "direction right_knee +")
+        with self.assertRaises(ValueError):
+            manager.send_diagnostic("left", "torque knee 1")
 
     def test_host_configuration_route_translates_only_structured_settings(self):
         observation = _MaintenanceObservation()

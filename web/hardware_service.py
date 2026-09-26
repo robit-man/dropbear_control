@@ -41,7 +41,8 @@ MIN_ADMITTED_SAMPLE_INTERVAL_NS = 20_000_000
 DIAGNOSTIC_COMMANDS = frozenset({
     "version", "/version", "capabilities", "health", "status", "chirality",
     "mac", "saved", "help", "observe on", "observe off", "config show",
-    "can bus", "can scan",
+    "can bus", "can registers", "can scan",
+    "can poll on", "can poll off", "can poll status",
 })
 JOINT_BINDINGS = {
     "left": (
