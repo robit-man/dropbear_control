@@ -108,8 +108,12 @@ class HardwareConfigurationProtocolTests(unittest.TestCase):
         manager.send_guarded_command("left", "config set offset knee -12")
         self.assertEqual(writes[0], b"<DB1:LEFTLEG> can info 0x141\n")
         self.assertEqual(writes[1], b"<DB1:LEFTLEG> config set offset knee -12\n")
+        manager.send_diagnostic("left", "can info 0x14b")
+        self.assertEqual(writes[2], b"<DB1:LEFTLEG> can info 0x14b\n")
         with self.assertRaises(ValueError):
-            manager.send_diagnostic("left", "can info 0x14b")
+            manager.send_diagnostic("left", "can info 0x140")
+        with self.assertRaises(ValueError):
+            manager.send_diagnostic("left", "can info 0x161")
         with self.assertRaises(ValueError):
             manager.send_guarded_command("left", "torque knee 10")
         with self.assertRaises(ValueError):

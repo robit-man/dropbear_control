@@ -810,7 +810,10 @@ class HardwareObservationManager:
             motor_id = int(match.group(1), 0)
         except ValueError:
             return False
-        return motor_id in {int(can_id, 16) for _, can_id in MOTOR_BINDINGS[side]}
+        # Firmware discovery covers this bounded RMD range. Read-only INFO must
+        # also reach a locally discovered motor whose stored ID does not match
+        # the configured leg map; motion commands remain separately guarded.
+        return 0x141 <= motor_id <= 0x160
 
     @staticmethod
     def _validate_guarded_payload(side: str, payload: str) -> bool:
