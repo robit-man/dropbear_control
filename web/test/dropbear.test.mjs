@@ -144,7 +144,7 @@ assert.equal(sim.firmwarePlayDefault, true);
 assert.equal(sim.canBitrate, 1_000_000);
 assert.equal(sim.getJoint("knee", "left").minAngle, 180);
 assert.equal(sim.getJoint("knee", "right").maxAngle, 210);
-assert.ok(Math.abs(sim.getJoint("knee", "right").angle - 197.188734) < 1e-6);
+assert.equal(sim.getJoint("knee", "right").angle, 180);
 assert.ok(Math.abs(sim.getJoint("inner_calf", "right").angle - 168.540844) < 1e-6);
 assert.ok(Math.abs(sim.getJoint("hip_roll", "right").angle - 174.270422) < 1e-6);
 sim.setJointTarget(0x145, 90, true);

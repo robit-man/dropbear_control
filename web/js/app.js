@@ -44,9 +44,9 @@ import {
 
 const $ = (id) => document.getElementById(id);
 const RAD_TO_DEG = 180 / Math.PI;
-// v5 permits a partial live-state zero while retaining each measured channel.
-// external AS5600 angles.
-const SOFTWARE_ZERO_STORAGE_KEY = "dropbear.control.softwareZero.v5";
+// v6 resets the browser-only root datum to an upright torso. Firmware offsets
+// and the independent AS5600/CAN observations are unchanged.
+const SOFTWARE_ZERO_STORAGE_KEY = "dropbear.control.softwareZero.v6";
 const MAX_ANGLE_RECORDING_ROWS = 120_000;
 
 function loadSoftwareZero() {

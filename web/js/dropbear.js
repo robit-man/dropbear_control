@@ -90,13 +90,14 @@ const DEFAULT_IMPEDANCE = Object.freeze({
   hip_yaw: { k: 0, d: 0 },
 });
 
-// Corrected dropbear-locomotion initial pose. These are signed USD joint
-// coordinates in degrees; the simulation stores them around its 180° datum.
+// Neutral commissioning pose. These are signed USD joint coordinates in
+// degrees; the simulation stores them around its 180° datum. The knee datum
+// is the mechanical lock, so a paused/default twin must start at exactly 0°.
 const DEFAULT_STANCE_DEG = Object.freeze({
   outer_calf: 0,
   inner_calf: -11.459156,
   hip_pitch: 0,
-  knee: 17.188734,
+  knee: 0,
   hip_roll: -5.729578,
   hip_yaw: 0,
 });

@@ -177,8 +177,8 @@ export class Robot3D {
       height: 0.80,
       velocityZ: 0,
       x: 0,
-      roll: 0.012,
-      pitch: -0.008,
+      roll: 0,
+      pitch: 0,
       rollRate: 0,
       pitchRate: 0,
     };
@@ -1099,8 +1099,8 @@ export class Robot3D {
         height: 0.80,
         velocityZ: 0,
         x: 0,
-        roll: 0.012,
-        pitch: -0.008,
+        roll: 0,
+        pitch: 0,
         rollRate: 0,
         pitchRate: 0,
       };

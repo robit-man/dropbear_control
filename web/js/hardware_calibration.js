@@ -109,7 +109,7 @@ export const HARDWARE_DEFAULT_STANCE_CALIBRATION = Object.freeze({
   directionEvidence: "provisional_positive_until_read_only_motion_validation",
 });
 
-export const SOFTWARE_ZERO_SCHEMA = "dropbear-browser-software-zero-v5";
+export const SOFTWARE_ZERO_SCHEMA = "dropbear-browser-software-zero-v6";
 const SENSOR_JOINTS = Object.freeze(["outer_calf", "inner_calf", "hip_pitch", "knee", "hip_roll"]);
 const MOTOR_JOINTS = Object.freeze([...SENSOR_JOINTS, "hip_yaw"]);
 const ALL_SENSOR_MASK = (1 << SENSOR_JOINTS.length) - 1;
@@ -183,7 +183,7 @@ export function softwareZeroReadiness(payload) {
   });
 }
 
-export function captureSoftwareZero(payload, torsoForwardDeg = 7, capturedAt = new Date().toISOString()) {
+export function captureSoftwareZero(payload, torsoForwardDeg = 0, capturedAt = new Date().toISOString()) {
   if (payload?.mode !== "read_only_with_diagnostic_queries"
       || payload?.writeCapable !== false
       || payload?.motionWriteCapable !== false) {

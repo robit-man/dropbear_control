@@ -207,6 +207,13 @@ check(
 );
 const hardwareCalibration = await request(`${base}/js/hardware_calibration.js`);
 check(
+  "neutral viewer starts with locked knees and an upright torso datum",
+  dropbear.body.includes("knee: 0")
+    && index.body.includes('id="hardware-zero-torso" type="number" min="-45" max="45" step="0.5" value="0"')
+    && hardwareCalibration.body.includes("torsoForwardDeg = 0")
+    && app.body.includes("dropbear.control.softwareZero.v6"),
+);
+check(
   "validated right knee, hip pitch, and yaw hardware-to-USD signs are explicit",
   hardwareCalibration.status === 200
     && hardwareCalibration.body.includes("HARDWARE_TO_USD_DIRECTION")
