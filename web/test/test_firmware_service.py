@@ -103,6 +103,40 @@ class FirmwareServiceTests(unittest.TestCase):
         self.assertTrue(snapshot["toolchain"]["spiffsPreservedInPlace"])
         self.assertEqual(snapshot["toolchain"]["spiffsOffset"], "0x290000")
 
+    def test_status_snapshot_omits_heavy_build_and_raw_diagnostics(self):
+        self.manager.observation_manager.snapshot = lambda: {
+            "sides": {
+                "right": {
+                    "state": "observing",
+                    "firmware": {"version": "test-firmware"},
+                    "health": {"canReady": True, "motorFreshMask": 63},
+                    "fresh": True,
+                    "ageMs": 12.5,
+                    "observationStreaming": True,
+                    "rawTail": [{"text": "large diagnostic data"}],
+                }
+            }
+        }
+        self.manager._devices = lambda: [{
+            "id": "right-device",
+            "stablePath": "/dev/serial/by-path/right",
+            "resolvedPath": "/dev/ttyUSB0",
+            "tty": "ttyUSB0",
+            "role": "right",
+            "connected": True,
+        }]
+
+        with mock.patch.object(self.manager, "_refresh_aux_readers"), \
+             mock.patch.object(self.manager, "_sources") as sources:
+            snapshot = self.manager.status_snapshot()
+
+        sources.assert_not_called()
+        self.assertEqual(snapshot["schema"], "dropbear-device-status-v1")
+        self.assertEqual(snapshot["devices"][0]["firmware"]["version"], "test-firmware")
+        self.assertTrue(snapshot["devices"][0]["fresh"])
+        self.assertNotIn("rawTail", snapshot["devices"][0])
+        self.assertNotIn("toolchain", snapshot)
+
     def test_compile_uses_argument_list_and_session_bound_build(self):
         sketch = self.source / "esp32_devkitc_v4_hybrid.ino"
         sketch.write_text("void setup() {}\nvoid loop() {}\n")

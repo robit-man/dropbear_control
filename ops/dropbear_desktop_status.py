@@ -17,11 +17,11 @@ import tkinter as tk
 
 
 API_URL = os.environ.get(
-    "DROPBEAR_DEVICE_API", "http://127.0.0.1:8000/api/hardware/devices"
+    "DROPBEAR_DEVICE_API", "http://127.0.0.1:8000/api/hardware/status"
 )
 DASHBOARD_URL = os.environ.get("DROPBEAR_DASHBOARD_URL", "http://127.0.0.1:8000")
 POLL_MS = 2000
-REQUEST_TIMEOUT_SECONDS = 5.0
+REQUEST_TIMEOUT_SECONDS = 2.0
 
 BACKGROUND = "#10151d"
 PANEL = "#18212c"

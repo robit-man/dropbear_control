@@ -430,6 +430,42 @@ class DeviceFirmwareManager:
             "verifiedReadOnly": True,
         }
 
+    def status_snapshot(self) -> dict[str, Any]:
+        """Return live device state without source/toolchain inventory work."""
+        self._refresh_aux_readers()
+        sides = self.observation_manager.snapshot().get("sides", {})
+        devices = []
+        for discovered in self._devices():
+            device = dict(discovered)
+            side = sides.get(device["role"])
+            if side is not None:
+                device.update({
+                    "serialState": side.get("state", "unknown"),
+                    "firmware": side.get("firmware", {}),
+                    "health": side.get("health", {}),
+                    "fresh": side.get("fresh", False),
+                    "ageMs": side.get("ageMs"),
+                    "observationStreaming": side.get("observationStreaming", False),
+                })
+            else:
+                reader = self._aux_readers.get(device["id"])
+                device.update({
+                    "serialState": reader.state if reader else "not-monitored",
+                    "firmware": {
+                        "family": "unknown",
+                        "version": "",
+                        "detection": "passive-serial",
+                    },
+                    "fresh": False,
+                    "error": reader.error if reader else "",
+                })
+            devices.append(device)
+        return {
+            "schema": "dropbear-device-status-v1",
+            "baudrate": 115200,
+            "devices": devices,
+        }
+
     def snapshot(self) -> dict[str, Any]:
         self._refresh_aux_readers()
         observation = self.observation_manager.snapshot()

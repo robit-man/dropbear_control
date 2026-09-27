@@ -293,6 +293,9 @@ class Handler(SimpleHTTPRequestHandler):
         if request_path == "/api/hardware/control/status":
             self._send_json(200, HARDWARE_CONTROL_GATE.snapshot())
             return
+        if request_path == "/api/hardware/status":
+            self._send_json(200, FIRMWARE_MANAGER.status_snapshot())
+            return
         if request_path == "/api/hardware/devices":
             self._send_json(200, FIRMWARE_MANAGER.snapshot())
             return
