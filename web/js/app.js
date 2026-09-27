@@ -1850,23 +1850,59 @@ function renderEspStateInspection(device) {
   }));
 
   const motors = $("esp-motor-state");
-  motors.replaceChildren(...ESP_MOTOR_JOINTS.map((joint) => {
+  const configuredMotorIds = new Set();
+  const motorRows = ESP_MOTOR_JOINTS.map((joint) => {
     const record = device?.motorJoints?.[`${device.role}_${joint}`] || {};
+    if (record.canId) configuredMotorIds.add(record.canId);
     const row = document.createElement("tr");
     appendStateCell(row, joint.replaceAll("_", " "));
     const canCell = appendStateCell(row, record.canId || "—");
     if (record.canId) {
       canCell.className = "esp-can-query";
       canCell.dataset.canInfo = record.canId;
-      canCell.title = "Click to request the safe CAN info suite for this motor";
+      canCell.title = "Click to discover this motor's reported model, software date, reply ID, and angle codec";
     }
-    appendStateCell(row, record.motorModel ? `${record.motorModel} · ${record.motorFirmware}` : "—");
+    const identitySuffix = record.discoveredIdentity
+      ? ` · ${record.replyConvention || "reply unknown"} · ${record.motorProtocol || "protocol unknown"}`
+      : " · configured expectation";
+    appendStateCell(row, record.motorModel ? `${record.motorModel} · ${record.motorFirmware}${identitySuffix}` : "—");
     appendStateCell(row, formatObservedAngle(record.positionDeg));
     appendStateCell(row, formatObservedAngle(record.controlPositionDeg));
     const state = record.alignmentFault ? "ALIGNMENT FAULT" : record.fresh ? "FRESH" : String(record.status || "unobserved").replaceAll("_", " ").toUpperCase();
-    appendStateCell(row, state, record.alignmentFault ? "state-bad" : record.fresh ? "state-ok" : "state-warn");
+    const stateCell = appendStateCell(row, state, record.alignmentFault ? "state-bad" : record.fresh ? "state-ok" : "state-warn");
+    if (record.canId) {
+      const normalize = document.createElement("button");
+      normalize.type = "button";
+      normalize.className = "esp-inline-action";
+      normalize.dataset.canNormalize = record.canId;
+      normalize.textContent = "NORMALIZE REPLIES";
+      normalize.title = "Disable MyActuator B6 unsolicited reply slots; does not command motion";
+      stateCell.append(normalize);
+    }
     return row;
-  }));
+  });
+  Object.values(device?.motorIdentities || {})
+    .filter((identity) => !configuredMotorIds.has(identity.canId))
+    .sort((a, b) => a.canId.localeCompare(b.canId))
+    .forEach((identity) => {
+      const row = document.createElement("tr");
+      appendStateCell(row, "unmapped discovered motor");
+      const canCell = appendStateCell(row, identity.canId);
+      canCell.className = "esp-can-query";
+      canCell.dataset.canInfo = identity.canId;
+      appendStateCell(row, `${identity.model} · ${identity.versionDate} · ${identity.replyConvention} · ${identity.protocolEvidence}`);
+      appendStateCell(row, "—");
+      appendStateCell(row, "—");
+      const stateCell = appendStateCell(row, `DISCOVERED · ${identity.responses} REPLIES`, "state-warn");
+      const normalize = document.createElement("button");
+      normalize.type = "button";
+      normalize.className = "esp-inline-action";
+      normalize.dataset.canNormalize = identity.canId;
+      normalize.textContent = "NORMALIZE REPLIES";
+      stateCell.append(normalize);
+      motorRows.push(row);
+    });
+  motors.replaceChildren(...motorRows);
 
   const sensors = $("esp-sensor-state");
   sensors.replaceChildren(...ESP_SENSOR_JOINTS.map((joint, index) => {
@@ -2253,9 +2289,16 @@ function setupEspDevices() {
     });
   });
   $("esp-motor-state").addEventListener("click", (event) => {
+    const normalize = event.target.closest("[data-can-normalize]");
+    if (normalize) {
+      sendEspDiagnostic(`can replies normal ${normalize.dataset.canNormalize}`)
+        .then(() => window.setTimeout(() => sendEspDiagnostic(`can identify ${normalize.dataset.canNormalize}`), 250))
+        .catch((error) => setEspOperationResult(`CAN reply normalization held · ${error.message}`, "error"));
+      return;
+    }
     const target = event.target.closest("[data-can-info]");
     if (!target) return;
-    sendEspDiagnostic(`can info ${target.dataset.canInfo}`).catch((error) => setEspOperationResult(`CAN info held · ${error.message}`, "error"));
+    sendEspDiagnostic(`can identify ${target.dataset.canInfo}`).catch((error) => setEspOperationResult(`CAN identity held · ${error.message}`, "error"));
   });
   ["esp-cal-supported", "esp-cal-clear", "esp-cal-estop", "esp-cal-confirm",
     "esp-cfg-supported", "esp-cfg-estop", "esp-cfg-limits", "esp-cfg-confirm"]

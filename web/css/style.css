@@ -857,6 +857,9 @@ input[type="range"] { width: 100%; accent-color: var(--cyan); }
 .esp-state-table .state-ok { color: var(--green); }
 .esp-state-table .state-warn { color: var(--amber); }
 .esp-state-table .state-bad { color: var(--red); }
+.esp-can-query { color: #71c9ff !important; cursor: pointer; text-decoration: underline dotted; text-underline-offset: 3px; }
+.esp-inline-action { display: block; margin-top: 5px; padding: 3px 6px; border: 1px solid #344451; border-radius: 3px; background: #101820; color: #91a8b8; font: 700 7px "IBM Plex Mono"; letter-spacing: .04em; cursor: pointer; }
+.esp-inline-action:hover { border-color: #71c9ff; color: #d5efff; }
 .esp-state-table input, .esp-state-table select { min-width: 72px; max-width: 100px; height: 27px; padding: 4px 6px; font-size: 8px; }
 .esp-diagnostic-actions { display: flex; flex-wrap: wrap; gap: 7px; padding: 0 14px 12px; }
 .esp-diagnostic-actions button { min-height: 27px; padding: 4px 8px; border: 1px solid var(--line); background: #0b1118; color: #8798a5; font: 700 7px "IBM Plex Mono"; letter-spacing: .06em; cursor: pointer; }

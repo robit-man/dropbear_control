@@ -15,6 +15,7 @@ from hardware_service import (  # noqa: E402
     ObservationParseError,
     parse_firmware_calibration_line,
     parse_firmware_configuration_line,
+    parse_motor_identity_line,
 )
 from firmware_service import DeviceFirmwareManager, FirmwareToolError  # noqa: E402
 
@@ -98,6 +99,27 @@ class HardwareConfigurationProtocolTests(unittest.TestCase):
         self.assertEqual(result["status"], "ok")
         self.assertEqual(result["values"]["knee"], -4)
 
+    def test_motor_identity_records_override_expectations_and_keep_unmapped_ids(self):
+        record = (
+            "DBM1,LEFTLEG,0x141,responses=7,reply=direct,version_date=20230912,"
+            "model=RMD-X8,angle_payload=signed56_1_7,protocol=rmd_v3_v4_2"
+        )
+        parsed = parse_motor_identity_line("left", record)
+        self.assertEqual(parsed["versionDate"], "20230912")
+        self.assertEqual(parsed["replyConvention"], "direct")
+        manager = HardwareObservationManager(enabled=False)
+        self.assertTrue(manager.ingest_line("left", record, 1))
+        self.assertTrue(manager.ingest_line(
+            "left",
+            "DBM1,LEFTLEG,0x148,responses=2,reply=offset,version_date=unknown,"
+            "model=unknown,angle_payload=signed32_4_7,protocol=rmd_generation_unknown",
+            2,
+        ))
+        side = manager.snapshot()["sides"]["left"]
+        self.assertEqual(side["motorJoints"]["left_outer_calf"]["motorModel"], "RMD-X8")
+        self.assertEqual(side["motorJoints"]["left_outer_calf"]["motorFirmware"], "20230912")
+        self.assertIn("0x148", side["motorIdentities"])
+
     def test_diagnostic_and_guarded_allowlists_remain_non_motion(self):
         writes: list[bytes] = []
         manager = HardwareObservationManager(
@@ -117,6 +139,12 @@ class HardwareConfigurationProtocolTests(unittest.TestCase):
         self.assertEqual(writes[3], b"<DB1:LEFTLEG> can poll off\n")
         self.assertEqual(writes[4], b"<DB1:LEFTLEG> can registers\n")
         self.assertEqual(writes[5], b"<DB1:LEFTLEG> can poll on\n")
+        manager.send_diagnostic("left", "can identify 0x149")
+        manager.send_diagnostic("left", "can replies normal 0x149")
+        manager.send_diagnostic("left", "can discover")
+        self.assertEqual(writes[6], b"<DB1:LEFTLEG> can identify 0x149\n")
+        self.assertEqual(writes[7], b"<DB1:LEFTLEG> can replies normal 0x149\n")
+        self.assertEqual(writes[8], b"<DB1:LEFTLEG> can discover\n")
         with self.assertRaises(ValueError):
             manager.send_diagnostic("left", "can info 0x140")
         with self.assertRaises(ValueError):

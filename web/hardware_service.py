@@ -42,7 +42,7 @@ MIN_ADMITTED_SAMPLE_INTERVAL_NS = 20_000_000
 DIAGNOSTIC_COMMANDS = frozenset({
     "version", "/version", "capabilities", "health", "status", "chirality",
     "mac", "saved", "help", "observe on", "observe off", "config show",
-    "can bus", "can registers", "can scan",
+    "can bus", "can registers", "can scan", "can discover",
     "can poll on", "can poll off", "can poll status",
 })
 JOINT_BINDINGS = {
@@ -363,6 +363,53 @@ def parse_firmware_health_line(side: str, line: str) -> dict[str, Any]:
     }
 
 
+def parse_motor_identity_line(side: str, line: str) -> dict[str, Any]:
+    """Decode one bounded DBM1 record emitted by read-only RMD discovery."""
+
+    fields = [field.strip() for field in line.strip().split(",")]
+    expected_role = f"{side.upper()}LEG"
+    if len(fields) != 9 or fields[0] != "DBM1" or fields[1] != expected_role:
+        raise ObservationParseError("DBM1 role or field count is invalid")
+    if not re.fullmatch(r"0x[0-9A-Fa-f]{3}", fields[2]):
+        raise ObservationParseError("DBM1 CAN ID is invalid")
+    can_value = int(fields[2], 16)
+    if not 0x141 <= can_value <= 0x160:
+        raise ObservationParseError("DBM1 CAN ID is outside the RMD discovery range")
+    expected_keys = (
+        "responses", "reply", "version_date", "model", "angle_payload", "protocol",
+    )
+    values: dict[str, str] = {}
+    for field, key in zip(fields[3:], expected_keys):
+        actual, separator, value = field.partition("=")
+        if separator != "=" or actual != key or not value:
+            raise ObservationParseError(f"DBM1 {key} field is invalid")
+        values[key] = value
+    try:
+        responses = int(values["responses"])
+    except ValueError as error:
+        raise ObservationParseError("DBM1 response count is invalid") from error
+    if not 0 <= responses <= 65535 or values["reply"] not in {
+        "none", "direct", "offset", "mixed",
+    } or values["angle_payload"] not in {
+        "unknown", "signed32_4_7", "signed56_1_7", "mixed",
+    }:
+        raise ObservationParseError("DBM1 reply evidence is invalid")
+    version_date = values["version_date"]
+    if version_date != "unknown" and not re.fullmatch(r"20\d{6}", version_date):
+        raise ObservationParseError("DBM1 version date is invalid")
+    return {
+        "schema": "DBM1",
+        "role": fields[1],
+        "canId": f"0x{can_value:03X}",
+        "responses": responses,
+        "replyConvention": values["reply"],
+        "versionDate": version_date,
+        "model": values["model"],
+        "anglePayload": values["angle_payload"],
+        "protocolEvidence": values["protocol"],
+    }
+
+
 def parse_firmware_configuration_line(side: str, line: str) -> dict[str, Any]:
     """Decode one bounded DBCFG1 configuration record."""
 
@@ -482,6 +529,7 @@ class _SideState:
     advertised_telemetry_protocol: str = ""
     capabilities: tuple[str, ...] = ()
     health: dict[str, Any] = field(default_factory=dict)
+    motor_identities: dict[str, dict[str, Any]] = field(default_factory=dict)
     configuration: dict[str, Any] = field(default_factory=lambda: {"constraints": {}})
     calibration: dict[str, Any] = field(default_factory=dict)
     observation_streaming: bool = False
@@ -805,7 +853,10 @@ class HardwareObservationManager:
     def _validate_diagnostic_payload(side: str, payload: str) -> bool:
         if payload in DIAGNOSTIC_COMMANDS:
             return True
-        match = re.fullmatch(r"can info (0x[0-9a-f]{3}|[0-9]{3,4})", payload)
+        match = re.fullmatch(
+            r"can (?:info|identify|replies normal) (0x[0-9a-f]{3}|[0-9]{3,4})",
+            payload,
+        )
         if not match:
             return False
         try:
@@ -1070,6 +1121,15 @@ class HardwareObservationManager:
                     state.rejected_lines += 1
                     return False
                 return True
+            if cleaned_line.startswith("DBM1,"):
+                try:
+                    identity = parse_motor_identity_line(side, cleaned_line)
+                except ObservationParseError:
+                    state.rejected_lines += 1
+                    return False
+                identity["updatedMonotonicNs"] = received_ns
+                state.motor_identities[identity["canId"]] = identity
+                return True
             if cleaned_line.startswith("DBCFG1,"):
                 try:
                     record = parse_firmware_configuration_line(side, cleaned_line)
@@ -1165,6 +1225,24 @@ class HardwareObservationManager:
                     current_motor_joints = unavailable_motor_observations(
                         side, unavailable_status,
                     )
+                current_motor_joints = {
+                    name: dict(motor) for name, motor in current_motor_joints.items()
+                }
+                for motor in current_motor_joints.values():
+                    identity = state.motor_identities.get(str(motor.get("canId", "")))
+                    if not identity:
+                        continue
+                    motor["configuredMotorModel"] = motor.get("motorModel", "")
+                    motor["configuredMotorFirmware"] = motor.get("motorFirmware", "")
+                    if identity["model"] != "unknown":
+                        motor["motorModel"] = identity["model"]
+                    if identity["versionDate"] != "unknown":
+                        motor["motorFirmware"] = identity["versionDate"]
+                    motor["motorProtocol"] = identity["protocolEvidence"]
+                    motor["discoveredIdentity"] = True
+                    motor["identityResponses"] = identity["responses"]
+                    motor["replyConvention"] = identity["replyConvention"]
+                    motor["discoveredAnglePayload"] = identity["anglePayload"]
                 unobserved_joints.extend(
                     name for name, motor in current_motor_joints.items()
                     if not motor.get("available")
@@ -1189,6 +1267,10 @@ class HardwareObservationManager:
                         "capabilities": list(state.capabilities),
                     },
                     "health": dict(state.health),
+                    "motorIdentities": {
+                        can_id: dict(identity)
+                        for can_id, identity in state.motor_identities.items()
+                    },
                     "configuration": {
                         **state.configuration,
                         "constraints": dict(state.configuration.get("constraints", {})),
@@ -1366,5 +1448,6 @@ __all__ = [
     "parse_esp32_csv_line",
     "parse_esp32_telemetry_line",
     "parse_firmware_health_line",
+    "parse_motor_identity_line",
     "parse_firmware_version_line",
 ]

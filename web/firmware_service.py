@@ -31,7 +31,7 @@ RAW_TAIL_LINES = 160
 READ_ONLY_SERIAL_COMMANDS = frozenset({
     "version", "/version", "capabilities", "health", "status", "chirality",
     "mac", "saved", "help", "observe on", "observe off", "config show",
-    "can bus", "can registers", "can scan",
+    "can bus", "can registers", "can scan", "can discover",
     "can poll on", "can poll off", "can poll status",
 })
 REQUIRED_LIBRARY_VERSIONS = {
@@ -614,7 +614,10 @@ class DeviceFirmwareManager:
                 )
             payload = cleaned.split(">", 1)[1].strip()
         lowered = payload.lower()
-        can_info = re.fullmatch(r"can info (0x[0-9a-f]{3}|[0-9]{3,4})", lowered)
+        can_info = re.fullmatch(
+            r"can (?:info|identify|replies normal) (0x[0-9a-f]{3}|[0-9]{3,4})",
+            lowered,
+        )
         if lowered not in READ_ONLY_SERIAL_COMMANDS and not can_info:
             raise FirmwareToolError(
                 "serial diagnostics permit version/capabilities/health/observe and passive status queries only"
