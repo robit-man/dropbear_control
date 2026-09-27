@@ -101,11 +101,11 @@ class HardwareConfigurationProtocolTests(unittest.TestCase):
 
     def test_motor_identity_records_override_expectations_and_keep_unmapped_ids(self):
         record = (
-            "DBM1,LEFTLEG,0x141,responses=7,reply=direct,version_date=20230912,"
+            "DBM1,LEFTLEG,0x141,responses=7,reply=direct,version_date=2023091204,"
             "model=RMD-X8,angle_payload=signed56_1_7,protocol=rmd_v3_v4_2"
         )
         parsed = parse_motor_identity_line("left", record)
-        self.assertEqual(parsed["versionDate"], "20230912")
+        self.assertEqual(parsed["versionDate"], "2023091204")
         self.assertEqual(parsed["replyConvention"], "direct")
         manager = HardwareObservationManager(enabled=False)
         self.assertTrue(manager.ingest_line("left", record, 1))
@@ -117,7 +117,7 @@ class HardwareConfigurationProtocolTests(unittest.TestCase):
         ))
         side = manager.snapshot()["sides"]["left"]
         self.assertEqual(side["motorJoints"]["left_outer_calf"]["motorModel"], "RMD-X8")
-        self.assertEqual(side["motorJoints"]["left_outer_calf"]["motorFirmware"], "20230912")
+        self.assertEqual(side["motorJoints"]["left_outer_calf"]["motorFirmware"], "2023091204")
         self.assertIn("0x148", side["motorIdentities"])
 
     def test_diagnostic_and_guarded_allowlists_remain_non_motion(self):

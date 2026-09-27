@@ -395,7 +395,7 @@ def parse_motor_identity_line(side: str, line: str) -> dict[str, Any]:
     }:
         raise ObservationParseError("DBM1 reply evidence is invalid")
     version_date = values["version_date"]
-    if version_date != "unknown" and not re.fullmatch(r"20\d{6}", version_date):
+    if version_date != "unknown" and not re.fullmatch(r"20\d{6}(?:\d{2})?", version_date):
         raise ObservationParseError("DBM1 version date is invalid")
     return {
         "schema": "DBM1",
