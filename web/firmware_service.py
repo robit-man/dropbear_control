@@ -32,7 +32,7 @@ READ_ONLY_SERIAL_COMMANDS = frozenset({
     "version", "/version", "capabilities", "health", "status", "chirality",
     "mac", "saved", "help", "observe on", "observe off", "config show",
     "can bus", "can registers", "can scan", "can discover",
-    "can poll on", "can poll off", "can poll status",
+    "can poll on", "can poll off", "can poll status", "can bitrate status",
 })
 REQUIRED_LIBRARY_VERSIONS = {
     "FastAccelStepper": "0.30.15",
@@ -654,7 +654,15 @@ class DeviceFirmwareManager:
             r"can (?:info|identify|replies normal) (0x[0-9a-f]{3}|[0-9]{3,4})",
             lowered,
         )
-        if lowered not in READ_ONLY_SERIAL_COMMANDS and not can_info:
+        # The controller performs the authoritative bounded-ID, token-count,
+        # duration, and read-opcode checks. Relaying only this diagnostic verb
+        # keeps the host compatible as its safe trace grammar evolves.
+        can_trace = lowered.startswith("can trace ")
+        can_bitrate = re.fullmatch(
+            r"can bitrate (?:250000|500000|1000000|250k|500k|1000k)", lowered
+        )
+        if (lowered not in READ_ONLY_SERIAL_COMMANDS and not can_info
+                and not can_trace and not can_bitrate):
             raise FirmwareToolError(
                 "serial diagnostics permit version/capabilities/health/observe and passive status queries only"
             )
@@ -859,6 +867,10 @@ class DeviceFirmwareManager:
         if str(payload.get("confirmation", "")) != expected:
             raise FirmwareToolError(f"type {expected} exactly to release the upload interlock")
 
+        # Quiesce automatic CAN reads while the old application still owns the
+        # UART. This prevents controller traffic and diagnostic output from
+        # racing the ESP32 reset/bootloader handshake.
+        self.observation_manager.request_observation_stream(False)
         self.stop()
         self.observation_manager.stop()
         application_binary = (
@@ -876,9 +888,9 @@ class DeviceFirmwareManager:
         command = [
             sys.executable, str(self.esptool), "--chip", "esp32",
             # The long robot harness/USB bridge has been verified end-to-end
-            # only at 57600 with compression disabled. Faster or compressed
+            # only at 38400 with compression disabled. Faster or compressed
             # transfers can enter the bootloader but fail during the write.
-            "--port", device["stablePath"], "--baud", "57600",
+            "--port", device["stablePath"], "--baud", "38400",
             "--before", "default_reset", "--after", "hard_reset",
             "write_flash", "--no-compress", "--flash_mode", "qio",
             "--flash_freq", "80m", "--flash_size", "4MB",
@@ -890,6 +902,11 @@ class DeviceFirmwareManager:
         finally:
             self.observation_manager.start()
             self.start()
+            # esptool's hard reset returns before the application has always
+            # finished bringing up its UART tasks. Give it one bounded boot
+            # interval, then restore the explicit dashboard-owned poll.
+            time.sleep(0.75)
+            self.observation_manager.request_observation_stream(True)
         output = (result.stdout + "\n" + result.stderr).strip()[-24000:]
         if result.returncode != 0:
             raise RuntimeError(f"firmware upload failed ({result.returncode}): {output}")

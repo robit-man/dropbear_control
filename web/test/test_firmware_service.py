@@ -19,6 +19,9 @@ from firmware_service import DeviceFirmwareManager, FirmwareToolError  # noqa: E
 
 
 class _Observation:
+    def __init__(self):
+        self.stream_requests = []
+
     def snapshot(self):
         return {"sides": {}}
 
@@ -27,6 +30,10 @@ class _Observation:
 
     def stop(self):
         pass
+
+    def request_observation_stream(self, enabled):
+        self.stream_requests.append(enabled)
+        return {"ok": True, "requested": "on" if enabled else "off"}
 
 
 class FirmwareServiceTests(unittest.TestCase):
@@ -255,13 +262,14 @@ class FirmwareServiceTests(unittest.TestCase):
         }
         completed = subprocess.CompletedProcess([], 0, "Hash of data verified.", "")
         with mock.patch.object(self.manager, "_verify_device_spiffs_layout", return_value=partition), \
-             mock.patch("firmware_service.subprocess.run", return_value=completed) as run:
+             mock.patch("firmware_service.subprocess.run", return_value=completed) as run, \
+             mock.patch("firmware_service.time.sleep"):
             result = self.manager.upload(payload)
         command = run.call_args.args[0]
         self.assertEqual(command[0], sys.executable)
         self.assertIn(str(self.esptool), command)
         self.assertIn("write_flash", command)
-        self.assertEqual(command[command.index("--baud") + 1], "57600")
+        self.assertEqual(command[command.index("--baud") + 1], "38400")
         self.assertIn("--no-compress", command)
         self.assertNotIn("-z", command)
         self.assertIn(hex(0x10000), command)
@@ -270,6 +278,7 @@ class FirmwareServiceTests(unittest.TestCase):
         self.assertEqual(run.call_args.kwargs["timeout"], 600)
         self.assertEqual(result["uploadMethod"], "verified-app-region-only")
         self.assertEqual(result["partition"], partition)
+        self.assertEqual(self.manager.observation_manager.stream_requests, [False, True])
 
     def test_compile_rejects_unpinned_fast_accel_stepper(self):
         sketch = self.source / "firmware_full_libs_neck.ino"

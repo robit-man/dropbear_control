@@ -187,7 +187,7 @@ class PassiveObservationTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             manager.send_diagnostic("left", "play")
 
-    def test_stream_request_sends_version_health_and_observe_without_motion(self):
+    def test_stream_request_resets_can_then_polls_and_observes_without_motion(self):
         writes = []
 
         def writer(path, encoded):
@@ -206,8 +206,10 @@ class PassiveObservationTests(unittest.TestCase):
         )
         result = manager.request_observation_stream(True)
         self.assertTrue(result["ok"])
-        self.assertEqual(len(writes), 6)
+        self.assertEqual(len(writes), 10)
         self.assertTrue(all(b"play" not in wire for wire in writes))
+        self.assertIn(b"<DB1:LEFTLEG> can bitrate 1000000\n", writes)
+        self.assertIn(b"<DB1:RIGHTLEG> can poll on\n", writes)
         self.assertIn(b"<DB1:RIGHTLEG> observe on\n", writes)
 
     def test_health_refresh_queries_both_addressed_legs_without_motion(self):

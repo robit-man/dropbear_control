@@ -44,6 +44,7 @@ DIAGNOSTIC_COMMANDS = frozenset({
     "mac", "saved", "help", "observe on", "observe off", "config show",
     "can bus", "can registers", "can scan", "can discover",
     "can poll on", "can poll off", "can poll status",
+    "can bitrate status", "can bitrate 1000000",
 })
 JOINT_BINDINGS = {
     "left": (
@@ -854,7 +855,8 @@ class HardwareObservationManager:
         if payload in DIAGNOSTIC_COMMANDS:
             return True
         match = re.fullmatch(
-            r"can (?:info|identify|replies normal) (0x[0-9a-f]{3}|[0-9]{3,4})",
+            r"can (?:(?:info|identify|replies normal)|poll retry) "
+            r"(0x[0-9a-f]{3}|[0-9]{3,4})",
             payload,
         )
         if not match:
@@ -1030,9 +1032,10 @@ class HardwareObservationManager:
                 except ValueError as error:
                     errors.append(str(error))
             commands = (
-                (("health", "observe on") if version_requested
-                 else ("version", "health", "observe on"))
-                if enabled else ("observe off",)
+                (("health", "can bitrate 1000000", "can poll on", "observe on")
+                 if version_requested else
+                 ("version", "health", "can bitrate 1000000", "can poll on", "observe on"))
+                if enabled else ("can poll off", "observe off")
             )
             for index, command in enumerate(commands):
                 try:

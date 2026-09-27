@@ -141,10 +141,12 @@ class HardwareConfigurationProtocolTests(unittest.TestCase):
         self.assertEqual(writes[5], b"<DB1:LEFTLEG> can poll on\n")
         manager.send_diagnostic("left", "can identify 0x149")
         manager.send_diagnostic("left", "can replies normal 0x149")
+        manager.send_diagnostic("left", "can poll retry 0x149")
         manager.send_diagnostic("left", "can discover")
         self.assertEqual(writes[6], b"<DB1:LEFTLEG> can identify 0x149\n")
         self.assertEqual(writes[7], b"<DB1:LEFTLEG> can replies normal 0x149\n")
-        self.assertEqual(writes[8], b"<DB1:LEFTLEG> can discover\n")
+        self.assertEqual(writes[8], b"<DB1:LEFTLEG> can poll retry 0x149\n")
+        self.assertEqual(writes[9], b"<DB1:LEFTLEG> can discover\n")
         with self.assertRaises(ValueError):
             manager.send_diagnostic("left", "can info 0x140")
         with self.assertRaises(ValueError):
@@ -167,12 +169,30 @@ class HardwareConfigurationProtocolTests(unittest.TestCase):
         with mock.patch("hardware_service.time.sleep") as sleep:
             result = manager.request_observation_stream(True)
         self.assertTrue(result["sides"]["left"]["ok"])
-        self.assertEqual(writes[:3], [
+        self.assertEqual(writes[:5], [
             b"<DB1:LEFTLEG> version\n",
             b"<DB1:LEFTLEG> health\n",
+            b"<DB1:LEFTLEG> can bitrate 1000000\n",
+            b"<DB1:LEFTLEG> can poll on\n",
             b"<DB1:LEFTLEG> observe on\n",
         ])
-        self.assertGreaterEqual(sleep.call_args_list.count(mock.call(0.08)), 2)
+        self.assertGreaterEqual(sleep.call_args_list.count(mock.call(0.08)), 4)
+
+    def test_disabling_observation_quiesces_can_before_serial_stream(self):
+        writes: list[bytes] = []
+        manager = HardwareObservationManager(
+            left_path="/dev/test-left",
+            enabled=True,
+            diagnostic_writer=lambda _path, data: writes.append(data) or len(data),
+        )
+        manager._states["left"].command_protocol = "DB1"
+        with mock.patch("hardware_service.time.sleep"):
+            result = manager.request_observation_stream(False)
+        self.assertTrue(result["sides"]["left"]["ok"])
+        self.assertEqual(writes[:2], [
+            b"<DB1:LEFTLEG> can poll off\n",
+            b"<DB1:LEFTLEG> observe off\n",
+        ])
 
     def test_host_configuration_route_translates_only_structured_settings(self):
         observation = _MaintenanceObservation()

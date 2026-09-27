@@ -437,12 +437,19 @@ def main():
     print("Serving local Three.js modules and tracked STEP-derived CAD.", flush=True)
     HARDWARE_OBSERVATION.start()
     FIRMWARE_MANAGER.start()
+    observation_request = HARDWARE_OBSERVATION.request_observation_stream(True)
     observation = HARDWARE_OBSERVATION.snapshot()
     print(
         "Hardware observation: "
         f"{observation['state']} (read-only, tx_bytes={observation['txBytes']}).",
         flush=True,
     )
+    if not observation_request["ok"]:
+        print(
+            "Hardware observation start had per-side errors: "
+            f"{observation_request['sides']}",
+            flush=True,
+        )
     print("Press Ctrl+C to stop.")
     try:
         httpd.serve_forever()
