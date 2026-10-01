@@ -1,0 +1,24 @@
+#!/bin/sh
+# Keep the Jetson's RTL8153 management adapter out of its unstable EEE state.
+# NetworkManager invokes this as: script INTERFACE ACTION
+
+INTERFACE_NAME="${1:-}"
+ACTION="${2:-}"
+
+[ "$INTERFACE_NAME" = "eth1" ] || exit 0
+
+case "$ACTION" in
+    up|dhcp4-change|connectivity-change)
+        if ! /usr/sbin/ethtool --set-eee "$INTERFACE_NAME" eee off; then
+            logger -t dropbear-ethernet-hardening \
+                "Unable to disable EEE on $INTERFACE_NAME"
+        fi
+
+        USB_POWER_CONTROL="/sys/class/net/$INTERFACE_NAME/device/../power/control"
+        if [ -w "$USB_POWER_CONTROL" ]; then
+            printf '%s\n' on > "$USB_POWER_CONTROL"
+        fi
+        ;;
+esac
+
+exit 0

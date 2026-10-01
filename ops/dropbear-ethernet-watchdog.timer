@@ -1,0 +1,12 @@
+[Unit]
+Description=Monitor the Dropbear wired management link
+
+[Timer]
+OnBootSec=45s
+OnUnitActiveSec=30s
+AccuracySec=5s
+Persistent=true
+Unit=dropbear-ethernet-watchdog.service
+
+[Install]
+WantedBy=timers.target

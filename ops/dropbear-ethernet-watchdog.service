@@ -1,0 +1,10 @@
+[Unit]
+Description=Dropbear wired management link health check
+After=NetworkManager.service
+Wants=NetworkManager.service
+ConditionPathExists=/sys/class/net/eth1
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/dropbear-ethernet-watchdog
+TimeoutStartSec=90

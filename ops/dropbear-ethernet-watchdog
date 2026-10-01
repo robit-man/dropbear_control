@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+INTERFACE_NAME="${DROPBEAR_ETH_INTERFACE:-eth1}"
+FAILURE_LIMIT="${DROPBEAR_ETH_FAILURE_LIMIT:-2}"
+STATE_FILE="/run/dropbear-ethernet-watchdog.failures"
+LOCK_FILE="/run/dropbear-ethernet-watchdog.lock"
+
+exec 9>"$LOCK_FILE"
+flock -n 9 || exit 0
+
+log() {
+    logger -t dropbear-ethernet-watchdog -- "$*"
+    printf '%s\n' "$*"
+}
+
+clear_failures() {
+    rm -f "$STATE_FILE"
+}
+
+if [[ ! -d "/sys/class/net/$INTERFACE_NAME" ]]; then
+    clear_failures
+    exit 0
+fi
+
+if [[ $(<"/sys/class/net/$INTERFACE_NAME/carrier") != "1" ]]; then
+    clear_failures
+    exit 0
+fi
+
+IPV4_ADDRESS="$(
+    ip -4 -o address show dev "$INTERFACE_NAME" scope global |
+        awk 'NR == 1 { split($4, address, "/"); print address[1] }'
+)"
+GATEWAY="$(
+    ip -4 route show default dev "$INTERFACE_NAME" |
+        awk 'NR == 1 { print $3 }'
+)"
+
+if [[ -z "$IPV4_ADDRESS" || -z "$GATEWAY" ]]; then
+    clear_failures
+    exit 0
+fi
+
+if ping -I "$INTERFACE_NAME" -c 1 -W 1 "$GATEWAY" >/dev/null 2>&1; then
+    clear_failures
+    exit 0
+fi
+
+FAILURES=0
+if [[ -r "$STATE_FILE" ]]; then
+    read -r FAILURES < "$STATE_FILE" || FAILURES=0
+fi
+if [[ ! "$FAILURES" =~ ^[0-9]+$ ]]; then
+    FAILURES=0
+fi
+FAILURES=$((FAILURES + 1))
+printf '%s\n' "$FAILURES" > "$STATE_FILE"
+
+if ((FAILURES < FAILURE_LIMIT)); then
+    log "$INTERFACE_NAME gateway probe failed ($FAILURES/$FAILURE_LIMIT); waiting for confirmation"
+    exit 0
+fi
+
+CONNECTION_NAME="$(
+    nmcli -g GENERAL.CONNECTION device show "$INTERFACE_NAME" 2>/dev/null |
+        head -n 1
+)"
+if [[ -z "$CONNECTION_NAME" || "$CONNECTION_NAME" == "--" ]]; then
+    log "$INTERFACE_NAME is unhealthy but has no active NetworkManager profile"
+    exit 1
+fi
+
+clear_failures
+log "$INTERFACE_NAME failed $FAILURE_LIMIT consecutive gateway probes; cycling '$CONNECTION_NAME'"
+
+nmcli connection down id "$CONNECTION_NAME" >/dev/null 2>&1 || true
+sleep 2
+nmcli connection up id "$CONNECTION_NAME" ifname "$INTERFACE_NAME" >/dev/null
+
+/usr/sbin/ethtool --set-eee "$INTERFACE_NAME" eee off >/dev/null 2>&1 || true
+USB_POWER_CONTROL="/sys/class/net/$INTERFACE_NAME/device/../power/control"
+if [[ -w "$USB_POWER_CONTROL" ]]; then
+    printf '%s\n' on > "$USB_POWER_CONTROL"
+fi
+
+sleep 2
+if ping -I "$INTERFACE_NAME" -c 2 -W 1 "$GATEWAY" >/dev/null 2>&1; then
+    log "$INTERFACE_NAME recovered with address $IPV4_ADDRESS"
+    exit 0
+fi
+
+log "$INTERFACE_NAME remained unreachable after the NetworkManager reset"
+exit 1
